@@ -1,0 +1,2746 @@
+开始测试维度事实唯一键重复情况...
+
+正在读取文件: /Users/xuechenglong/Desktop/felouPRD/insurance-analytics/test/测试数据2024.csv
+文件表头: [
+  'snapshot_date',
+  'policy_start_year',
+  'business_type_category',
+  'chengdu_branch',
+  'third_level_organization',
+  'customer_category_3',
+  'insurance_type',
+  'is_new_energy_vehicle',
+  'coverage_type',
+  'is_transferred_vehicle',
+  'renewal_status',
+  'vehicle_insurance_grade',
+  'highway_risk_grade',
+  'large_truck_score',
+  'small_truck_score',
+  'terminal_source',
+  'signed_premium_yuan',
+  'matured_premium_yuan',
+  'policy_count',
+  'claim_case_count',
+  'reported_claim_payment_yuan',
+  'expense_amount_yuan',
+  'commercial_premium_before_discount_yuan',
+  'premium_plan_yuan',
+  'marginal_contribution_amount_yuan',
+  'week_number'
+]
+成功解析 16967 条记录
+
+=== 分析文件: 测试数据2024.csv ===
+检查维度组合 (共17个字段): [
+  'snapshot_date',
+  'policy_start_year',
+  'business_type_category',
+  'chengdu_branch',
+  'third_level_organization',
+  'customer_category_3',
+  'insurance_type',
+  'is_new_energy_vehicle',
+  'coverage_type',
+  'is_transferred_vehicle',
+  'renewal_status',
+  'vehicle_insurance_grade',
+  'highway_risk_grade',
+  'large_truck_score',
+  'small_truck_score',
+  'terminal_source',
+  'week_number'
+]
+总记录数: 16967
+唯一维度组合数: 16893
+重复记录数: 74
+重复率: 0.44%
+
+❌ 测试数据2024.csv 中发现 74 个重复的维度组合:
+
+--- 重复组 1 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|天府|营业货车|交强险|False|主全|False|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 主全
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 963 (首次), 964 (重复)
+关键字段对比:
+  signed_premium_yuan: 9267.93 | 9554.71 (有差异)
+  matured_premium_yuan: 6775.4214 | 9554.71 (有差异)
+  policy_count: 4 (相同)
+  claim_case_count: 0 (相同)
+
+--- 重复组 2 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|天府|营业货车|交强险|False|主全|False|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 主全
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 978 (首次), 979 (重复)
+关键字段对比:
+  signed_premium_yuan: 2027.36 | 5858.49 (有差异)
+  matured_premium_yuan: 1744.085 | 5858.49 (有差异)
+  policy_count: 1 | 2 (有差异)
+  claim_case_count: 0 | 1 (有差异)
+
+--- 重复组 3 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|天府|营业货车|交强险|False|交三|False|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 992 (首次), 993 (重复)
+关键字段对比:
+  signed_premium_yuan: 35044.35 | 4054.72 (有差异)
+  matured_premium_yuan: 25116.4394 | 4054.72 (有差异)
+  policy_count: 15 | 2 (有差异)
+  claim_case_count: 2 | 0 (有差异)
+
+--- 重复组 4 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|天府|营业货车|交强险|False|交三|False|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1010 (首次), 1011 (重复)
+关键字段对比:
+  signed_premium_yuan: 14191.51 | 7160.37 (有差异)
+  matured_premium_yuan: 10840.2023 | 7160.37 (有差异)
+  policy_count: 6 | 3 (有差异)
+  claim_case_count: 2 | 1 (有差异)
+
+--- 重复组 5 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|天府|营业货车|交强险|False|单交|False|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1030 (首次), 1031 (重复)
+关键字段对比:
+  signed_premium_yuan: 2606.6 | 4956.61 (有差异)
+  matured_premium_yuan: 1523.1946 | 4956.61 (有差异)
+  policy_count: 1 | 2 (有差异)
+  claim_case_count: 0 (相同)
+
+--- 重复组 6 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|天府|营业货车|交强险|False|单交|False|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1039 (首次), 1040 (重复)
+关键字段对比:
+  signed_premium_yuan: 2027.36 (相同)
+  matured_premium_yuan: 1819.0695 | 2027.36 (有差异)
+  policy_count: 1 (相同)
+  claim_case_count: 0 (相同)
+
+--- 重复组 7 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|天府|营业货车|交强险|False|单交|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1048 (首次), 1050 (重复)
+关键字段对比:
+  signed_premium_yuan: 2896.23 | 9047.18 (有差异)
+  matured_premium_yuan: 1860.7285 | 8660.6853 (有差异)
+  policy_count: 1 | 3 (有差异)
+  claim_case_count: 0 | 1 (有差异)
+
+--- 重复组 8 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|天府|营业货车|商业保险|False|主全|False|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 主全
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1053 (首次), 1054 (重复)
+关键字段对比:
+  signed_premium_yuan: 14573.22 | 6366.55 (有差异)
+  matured_premium_yuan: 10539.0983 | 6366.55 (有差异)
+  policy_count: 4 | 2 (有差异)
+  claim_case_count: 0 (相同)
+
+--- 重复组 9 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|天府|营业货车|商业保险|False|交三|False|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1080 (首次), 1081 (重复)
+关键字段对比:
+  signed_premium_yuan: 26102.25 | 6054.13 (有差异)
+  matured_premium_yuan: 19493.7482 | 6054.13 (有差异)
+  policy_count: 14 | 3 (有差异)
+  claim_case_count: 2 | 0 (有差异)
+
+--- 重复组 10 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|天府|营业货车|商业保险|False|交三|False|转保|||||0101柜面|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0101柜面
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1097 (首次), 1100 (重复)
+关键字段对比:
+  signed_premium_yuan: 3706.35 | 1504.88 (有差异)
+  matured_premium_yuan: 2853.3818 | 1245.1336 (有差异)
+  policy_count: 1 (相同)
+  claim_case_count: 0 (相同)
+
+--- 重复组 11 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|天府|营业货车|商业保险|False|交三|False|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1098 (首次), 1101 (重复)
+关键字段对比:
+  signed_premium_yuan: 7332.1 | 10915.83 (有差异)
+  matured_premium_yuan: 6168.5341 | 8303.5665 (有差异)
+  policy_count: 2 | 6 (有差异)
+  claim_case_count: 0 | 2 (有差异)
+
+--- 重复组 12 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|天府|营业货车|商业保险|False|交三|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1113 (首次), 1115 (重复)
+关键字段对比:
+  signed_premium_yuan: 3477.48 | 71395.66 (有差异)
+  matured_premium_yuan: 3048.7496 | 65548.4878 (有差异)
+  policy_count: 1 | 19 (有差异)
+  claim_case_count: 0 | 6 (有差异)
+
+--- 重复组 13 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|新都|营业货车|交强险|False|交三|False|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 新都
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1136 (首次), 1137 (重复)
+关键字段对比:
+  signed_premium_yuan: 2027.36 | 642.55 (有差异)
+  matured_premium_yuan: 1691.5495 | 642.55 (有差异)
+  policy_count: 1 (相同)
+  claim_case_count: 0 (相同)
+
+--- 重复组 14 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|新都|营业货车|交强险|False|交三|False|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 新都
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1154 (首次), 1155 (重复)
+关键字段对比:
+  signed_premium_yuan: 2027.36 (相同)
+  matured_premium_yuan: 1271.9601 | 2027.36 (有差异)
+  policy_count: 1 (相同)
+  claim_case_count: 0 (相同)
+
+--- 重复组 15 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|新都|营业货车|商业保险|False|交三|False|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 新都
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1191 (首次), 1192 (重复)
+关键字段对比:
+  signed_premium_yuan: 3831.8 | 618.22 (有差异)
+  matured_premium_yuan: 3191.417 | 618.22 (有差异)
+  policy_count: 1 (相同)
+  claim_case_count: 0 (相同)
+
+--- 重复组 16 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|新都|营业货车|商业保险|False|交三|False|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 新都
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 3 (包括首次出现)
+行号: 1209 (首次), 1210, 1211 (重复)
+关键字段对比:
+  signed_premium_yuan: 3477.48 | 2068.29 | 1509.45 (有差异)
+  matured_premium_yuan: 2677.1832 | 1297.6395 | 1509.45 (有差异)
+  policy_count: 1 (相同)
+  claim_case_count: 1 | 0 | 0 (有差异)
+
+--- 重复组 17 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|青羊|营业货车|交强险|False|交三|False|续保|||||0110融合销售|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 青羊
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0110融合销售
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1284 (首次), 1285 (重复)
+关键字段对比:
+  signed_premium_yuan: 30690.49 | 9267.92 (有差异)
+  matured_premium_yuan: 22431.3058 | 9267.92 (有差异)
+  policy_count: 15 | 4 (有差异)
+  claim_case_count: 2 | 1 (有差异)
+
+--- 重复组 18 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|青羊|营业货车|商业保险|False|交三|False|续保|||||0110融合销售|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 青羊
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0110融合销售
+  week_number: 82
+重复次数: 3 (包括首次出现)
+行号: 1345 (首次), 1346, 1347 (重复)
+关键字段对比:
+  signed_premium_yuan: 3477.48 | 21647.94 | 6721.35 (有差异)
+  matured_premium_yuan: 2553.3278 | 16496.5012 | 6721.35 (有差异)
+  policy_count: 1 | 14 | 4 (有差异)
+  claim_case_count: 0 | 2 | 1 (有差异)
+
+--- 重复组 19 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|青羊|营业货车|商业保险|False|交三|False|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 青羊
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1361 (首次), 1363 (重复)
+关键字段对比:
+  signed_premium_yuan: 5890.84 | 865.82 (有差异)
+  matured_premium_yuan: 5132.2935 | 865.82 (有差异)
+  policy_count: 1 (相同)
+  claim_case_count: 0 (相同)
+
+--- 重复组 20 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|青羊|营业货车|商业保险|False|交三|False|转保|||||0110融合销售|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 青羊
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0110融合销售
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1362 (首次), 1364 (重复)
+关键字段对比:
+  signed_premium_yuan: 3477.48 | 4503.17 (有差异)
+  matured_premium_yuan: 2524.7458 | 3107.8247 (有差异)
+  policy_count: 1 | 2 (有差异)
+  claim_case_count: 0 | 1 (有差异)
+
+--- 重复组 21 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|高新|营业货车|交强险|False|交三|False|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 高新
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1399 (首次), 1400 (重复)
+关键字段对比:
+  signed_premium_yuan: 17087.75 | 9590.57 (有差异)
+  matured_premium_yuan: 12352.2176 | 9590.57 (有差异)
+  policy_count: 7 | 4 (有差异)
+  claim_case_count: 0 (相同)
+
+--- 重复组 22 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|高新|营业货车|商业保险|False|主全|False|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 高新
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 主全
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1432 (首次), 1433 (重复)
+关键字段对比:
+  signed_premium_yuan: 2295.84 | 3754.37 (有差异)
+  matured_premium_yuan: 1761.1923 | 3754.37 (有差异)
+  policy_count: 1 (相同)
+  claim_case_count: 0 (相同)
+
+--- 重复组 23 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|高新|营业货车|商业保险|False|交三|False|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 高新
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1451 (首次), 1452 (重复)
+关键字段对比:
+  signed_premium_yuan: 13095.32 | 5335.5 (有差异)
+  matured_premium_yuan: 9416.0152 | 5335.5 (有差异)
+  policy_count: 7 | 3 (有差异)
+  claim_case_count: 0 (相同)
+
+--- 重复组 24 ---
+维度组合: 2025-07-27|2024|2-9吨营业货车|成都|高新|营业货车|商业保险|False|交三|False|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 高新
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1464 (首次), 1465 (重复)
+关键字段对比:
+  signed_premium_yuan: 3477.48 | 3660.79 (有差异)
+  matured_premium_yuan: 2076.9607 | 2523.4665 (有差异)
+  policy_count: 1 | 2 (有差异)
+  claim_case_count: 0 (相同)
+
+--- 重复组 25 ---
+维度组合: 2025-07-27|2024|2吨以下营业货车|中支|资阳|营业货车|交强险|False|单交|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2吨以下营业货车
+  chengdu_branch: 中支
+  third_level_organization: 资阳
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1705 (首次), 1706 (重复)
+关键字段对比:
+  signed_premium_yuan: 1745.28 | 5235.84 (有差异)
+  matured_premium_yuan: 1388.2546 | 3836.5943 (有差异)
+  policy_count: 1 | 3 (有差异)
+  claim_case_count: 0 (相同)
+
+--- 重复组 26 ---
+维度组合: 2025-07-27|2024|2吨以下营业货车|成都|天府|营业货车|交强险|False|交三|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2吨以下营业货车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1782 (首次), 1784 (重复)
+关键字段对比:
+  signed_premium_yuan: 1745.28 | 148348.8 (有差异)
+  matured_premium_yuan: 1589.8783 | 140740.9427 (有差异)
+  policy_count: 1 | 85 (有差异)
+  claim_case_count: 0 | 13 (有差异)
+
+--- 重复组 27 ---
+维度组合: 2025-07-27|2024|2吨以下营业货车|成都|天府|营业货车|交强险|False|单交|False|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2吨以下营业货车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1788 (首次), 1790 (重复)
+关键字段对比:
+  signed_premium_yuan: 1396.23 | 39966.99 (有差异)
+  matured_premium_yuan: 1396.23 | 39966.99 (有差异)
+  policy_count: 1 | 29 (有差异)
+  claim_case_count: 0 | 3 (有差异)
+
+--- 重复组 28 ---
+维度组合: 2025-07-27|2024|2吨以下营业货车|成都|天府|营业货车|交强险|False|单交|True|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2吨以下营业货车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1831 (首次), 1833 (重复)
+关键字段对比:
+  signed_premium_yuan: 1745.28 | 23910.34 (有差异)
+  matured_premium_yuan: 1314.937 | 23642.5701 (有差异)
+  policy_count: 1 | 14 (有差异)
+  claim_case_count: 0 (相同)
+
+--- 重复组 29 ---
+维度组合: 2025-07-27|2024|2吨以下营业货车|成都|天府|营业货车|交强险|False|单交|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2吨以下营业货车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1836 (首次), 1838 (重复)
+关键字段对比:
+  signed_premium_yuan: 15707.52 | 141367.68 (有差异)
+  matured_premium_yuan: 13612.4865 | 134988.3756 (有差异)
+  policy_count: 9 | 81 (有差异)
+  claim_case_count: 1 | 15 (有差异)
+
+--- 重复组 30 ---
+维度组合: 2025-07-27|2024|2吨以下营业货车|成都|新都|营业货车|交强险|False|交三|True|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2吨以下营业货车
+  chengdu_branch: 成都
+  third_level_organization: 新都
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 1954 (首次), 1956 (重复)
+关键字段对比:
+  signed_premium_yuan: 1745.28 | 6981.12 (有差异)
+  matured_premium_yuan: 1458.3847 | 6981.12 (有差异)
+  policy_count: 1 | 4 (有差异)
+  claim_case_count: 0 (相同)
+
+--- 重复组 31 ---
+维度组合: 2025-07-27|2024|2吨以下营业货车|成都|新都|营业货车|商业保险|False|交三|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2吨以下营业货车
+  chengdu_branch: 成都
+  third_level_organization: 新都
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 2018 (首次), 2020 (重复)
+关键字段对比:
+  signed_premium_yuan: 2321.65 | 33679.78 (有差异)
+  matured_premium_yuan: 1940.0089 | 33547.1942 (有差异)
+  policy_count: 1 | 13 (有差异)
+  claim_case_count: 0 | 3 (有差异)
+
+--- 重复组 32 ---
+维度组合: 2025-07-27|2024|2吨以下营业货车|成都|高新|营业货车|交强险|False|单交|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 2吨以下营业货车
+  chengdu_branch: 成都
+  third_level_organization: 高新
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 2283 (首次), 2284 (重复)
+关键字段对比:
+  signed_premium_yuan: 3490.56 | 54103.68 (有差异)
+  matured_premium_yuan: 2870.348 | 49281.4469 (有差异)
+  policy_count: 2 | 31 (有差异)
+  claim_case_count: 0 | 10 (有差异)
+
+--- 重复组 33 ---
+维度组合: 2025-07-27|2024|特种车|中支|自贡|特种车|交强险|False|交三|False|转保|||||0101柜面|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 特种车
+  chengdu_branch: 中支
+  third_level_organization: 自贡
+  customer_category_3: 特种车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0101柜面
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 2885 (首次), 2886 (重复)
+关键字段对比:
+  signed_premium_yuan: 1833.96 | 815.09 (有差异)
+  matured_premium_yuan: 1833.96 | 815.09 (有差异)
+  policy_count: 2 | 1 (有差异)
+  claim_case_count: 1 | 0 (有差异)
+
+--- 重复组 34 ---
+维度组合: 2025-07-27|2024|特种车|中支|自贡|特种车|商业保险|False|交三|False|转保|||||0101柜面|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 特种车
+  chengdu_branch: 中支
+  third_level_organization: 自贡
+  customer_category_3: 特种车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0101柜面
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 2902 (首次), 2903 (重复)
+关键字段对比:
+  signed_premium_yuan: 3212.92 | 2073.4 (有差异)
+  matured_premium_yuan: 3212.92 | 2073.4 (有差异)
+  policy_count: 2 (相同)
+  claim_case_count: 1 | 0 (有差异)
+
+--- 重复组 35 ---
+维度组合: 2025-07-27|2024|特种车|成都|天府|特种车|商业保险|False|主全|False|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 特种车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 特种车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 主全
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 2952 (首次), 2953 (重复)
+关键字段对比:
+  signed_premium_yuan: 3362.11 | 11109.03 (有差异)
+  matured_premium_yuan: 3362.11 | 11109.03 (有差异)
+  policy_count: 1 | 2 (有差异)
+  claim_case_count: 0 (相同)
+
+--- 重复组 36 ---
+维度组合: 2025-07-27|2024|自卸|成都|天府|营业货车|交强险|False|交三|False|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 自卸
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 3129 (首次), 3130 (重复)
+关键字段对比:
+  signed_premium_yuan: 2027.36 | 20514.15 (有差异)
+  matured_premium_yuan: 1155.3175 | 20514.15 (有差异)
+  policy_count: 1 | 8 (有差异)
+  claim_case_count: 0 | 1 (有差异)
+
+--- 重复组 37 ---
+维度组合: 2025-07-27|2024|自卸|成都|天府|营业货车|交强险|False|交三|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 自卸
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 3149 (首次), 3151 (重复)
+关键字段对比:
+  signed_premium_yuan: 1745.28 | 29396.2 (有差异)
+  matured_premium_yuan: 1372.3161 | 27998.216 (有差异)
+  policy_count: 1 | 14 (有差异)
+  claim_case_count: 0 | 4 (有差异)
+
+--- 重复组 38 ---
+维度组合: 2025-07-27|2024|自卸|成都|天府|营业货车|商业保险|False|交三|False|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 自卸
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 3196 (首次), 3197 (重复)
+关键字段对比:
+  signed_premium_yuan: 2540.08 | 1407.87 (有差异)
+  matured_premium_yuan: 1447.4976 | 1407.87 (有差异)
+  policy_count: 1 (相同)
+  claim_case_count: 0 (相同)
+
+--- 重复组 39 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|中支|乐山|非营业货车|交强险|False|单交|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 中支
+  third_level_organization: 乐山
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 15348 (首次), 15351 (重复)
+关键字段对比:
+  signed_premium_yuan: 1132.08 | 9056.64 (有差异)
+  matured_premium_yuan: 1074.0544 | 8420.1034 (有差异)
+  policy_count: 1 | 8 (有差异)
+  claim_case_count: 0 | 2 (有差异)
+
+--- 重复组 40 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|中支|乐山|非营业货车|交强险|False|单交|True|转保|||||0202APP|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 中支
+  third_level_organization: 乐山
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0202APP
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 15349 (首次), 15352 (重复)
+关键字段对比:
+  signed_premium_yuan: 1132.08 | 9056.64 (有差异)
+  matured_premium_yuan: 787.8036 | 7949.308 (有差异)
+  policy_count: 1 | 8 (有差异)
+  claim_case_count: 0 (相同)
+
+--- 重复组 41 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|中支|宜宾|非营业货车|交强险|False|单交|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 中支
+  third_level_organization: 宜宾
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 15493 (首次), 15494 (重复)
+关键字段对比:
+  signed_premium_yuan: 1132.08 | 9056.64 (有差异)
+  matured_premium_yuan: 760.8693 | 8789.4294 (有差异)
+  policy_count: 1 | 8 (有差异)
+  claim_case_count: 0 | 2 (有差异)
+
+--- 重复组 42 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|中支|德阳|非营业货车|交强险|False|单交|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 中支
+  third_level_organization: 德阳
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 15634 (首次), 15635 (重复)
+关键字段对比:
+  signed_premium_yuan: 5660.4 | 31621.34 (有差异)
+  matured_premium_yuan: 4123.9503 | 29766.1121 (有差异)
+  policy_count: 5 | 28 (有差异)
+  claim_case_count: 1 | 0 (有差异)
+
+--- 重复组 43 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|中支|泸州|非营业货车|交强险|False|单交|True|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 中支
+  third_level_organization: 泸州
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 15776 (首次), 15779 (重复)
+关键字段对比:
+  signed_premium_yuan: 4528.32 | 17902.37 (有差异)
+  matured_premium_yuan: 3897.5343 | 17157.9886 (有差异)
+  policy_count: 4 | 16 (有差异)
+  claim_case_count: 1 | 2 (有差异)
+
+--- 重复组 44 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|中支|泸州|非营业货车|交强险|False|单交|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 中支
+  third_level_organization: 泸州
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 15780 (首次), 15781 (重复)
+关键字段对比:
+  signed_premium_yuan: 13584.96 | 107732.14 (有差异)
+  matured_premium_yuan: 11588.118 | 96952.1284 (有差异)
+  policy_count: 12 | 96 (有差异)
+  claim_case_count: 1 | 20 (有差异)
+
+--- 重复组 45 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|中支|泸州|非营业货车|商业保险|False|交三|True|转保|||||0107B2B|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 中支
+  third_level_organization: 泸州
+  customer_category_3: 非营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0107B2B
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 15841 (首次), 15843 (重复)
+关键字段对比:
+  signed_premium_yuan: 1532.27 | 3578.8 (有差异)
+  matured_premium_yuan: 1532.27 | 3578.8 (有差异)
+  policy_count: 1 | 2 (有差异)
+  claim_case_count: 1 | 0 (有差异)
+
+--- 重复组 46 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|中支|自贡|非营业货车|交强险|False|交三|True|转保|||||0202APP|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 中支
+  third_level_organization: 自贡
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0202APP
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 15869 (首次), 15871 (重复)
+关键字段对比:
+  signed_premium_yuan: 1132.08 (相同)
+  matured_premium_yuan: 1125.8768 | 1132.08 (有差异)
+  policy_count: 1 (相同)
+  claim_case_count: 0 (相同)
+
+--- 重复组 47 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|中支|自贡|非营业货车|交强险|False|单交|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 中支
+  third_level_organization: 自贡
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 15889 (首次), 15892 (重复)
+关键字段对比:
+  signed_premium_yuan: 1132.08 | 7924.56 (有差异)
+  matured_premium_yuan: 669.9432 | 7909.0521 (有差异)
+  policy_count: 1 | 7 (有差异)
+  claim_case_count: 1 | 3 (有差异)
+
+--- 重复组 48 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|中支|自贡|非营业货车|交强险|False|单交|True|转保|||||0202APP|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 中支
+  third_level_organization: 自贡
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0202APP
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 15890 (首次), 15893 (重复)
+关键字段对比:
+  signed_premium_yuan: 1132.08 (相同)
+  matured_premium_yuan: 846.7338 | 1132.08 (有差异)
+  policy_count: 1 (相同)
+  claim_case_count: 0 (相同)
+
+--- 重复组 49 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|中支|资阳|非营业货车|交强险|False|交三|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 中支
+  third_level_organization: 资阳
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 15975 (首次), 15976 (重复)
+关键字段对比:
+  signed_premium_yuan: 1132.08 | 22641.6 (有差异)
+  matured_premium_yuan: 711.8147 | 20641.1395 (有差异)
+  policy_count: 1 | 20 (有差异)
+  claim_case_count: 2 | 3 (有差异)
+
+--- 重复组 50 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|中支|资阳|非营业货车|交强险|False|单交|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 中支
+  third_level_organization: 资阳
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16004 (首次), 16005 (重复)
+关键字段对比:
+  signed_premium_yuan: 2264.16 | 9962.3 (有差异)
+  matured_premium_yuan: 1654.6977 | 8336.681 (有差异)
+  policy_count: 2 | 9 (有差异)
+  claim_case_count: 0 | 2 (有差异)
+
+--- 重复组 51 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|中支|资阳|非营业货车|商业保险|False|交三|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 中支
+  third_level_organization: 资阳
+  customer_category_3: 非营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16049 (首次), 16050 (重复)
+关键字段对比:
+  signed_premium_yuan: 1186.53 | 35483.39 (有差异)
+  matured_premium_yuan: 744.4257 | 32172.4253 (有差异)
+  policy_count: 1 | 23 (有差异)
+  claim_case_count: 2 | 3 (有差异)
+
+--- 重复组 52 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|中支|达州|非营业货车|交强险|False|单交|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 中支
+  third_level_organization: 达州
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16106 (首次), 16107 (重复)
+关键字段对比:
+  signed_premium_yuan: 1132.08 | 6792.48 (有差异)
+  matured_premium_yuan: 730.1657 | 6792.48 (有差异)
+  policy_count: 1 | 6 (有差异)
+  claim_case_count: 0 | 1 (有差异)
+
+--- 重复组 53 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|天府|非营业货车|交强险|False|主全|True|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 主全
+  is_transferred_vehicle: True
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16171 (首次), 16172 (重复)
+关键字段对比:
+  signed_premium_yuan: 1132.08 | 2264.16 (有差异)
+  matured_premium_yuan: 766.0925 | 2264.16 (有差异)
+  policy_count: 1 | 2 (有差异)
+  claim_case_count: 0 | 2 (有差异)
+
+--- 重复组 54 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|天府|非营业货车|交强险|False|交三|False|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16174 (首次), 16177 (重复)
+关键字段对比:
+  signed_premium_yuan: 1018.87 | 125192.2 (有差异)
+  matured_premium_yuan: 1018.87 | 125192.2 (有差异)
+  policy_count: 1 | 139 (有差异)
+  claim_case_count: 0 | 14 (有差异)
+
+--- 重复组 55 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|天府|非营业货车|交强险|False|交三|True|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16232 (首次), 16234 (重复)
+关键字段对比:
+  signed_premium_yuan: 2264.16 | 86208.67 (有差异)
+  matured_premium_yuan: 1755.4994 | 81609.0779 (有差异)
+  policy_count: 2 | 77 (有差异)
+  claim_case_count: 0 | 13 (有差异)
+
+--- 重复组 56 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|天府|非营业货车|交强险|False|交三|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16236 (首次), 16238 (重复)
+关键字段对比:
+  signed_premium_yuan: 7924.56 | 457943.61 (有差异)
+  matured_premium_yuan: 7206.9298 | 428404.6247 (有差异)
+  policy_count: 7 | 405 (有差异)
+  claim_case_count: 2 | 71 (有差异)
+
+--- 重复组 57 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|天府|非营业货车|交强险|False|单交|False|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16274 (首次), 16277 (重复)
+关键字段对比:
+  signed_premium_yuan: 905.66 | 72226.46 (有差异)
+  matured_premium_yuan: 905.66 | 72226.46 (有差异)
+  policy_count: 1 | 76 (有差异)
+  claim_case_count: 0 | 9 (有差异)
+
+--- 重复组 58 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|天府|非营业货车|交强险|False|单交|False|转保|||||0107B2B|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0107B2B
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16275 (首次), 16278 (重复)
+关键字段对比:
+  signed_premium_yuan: 792.45 | 6050.1 (有差异)
+  matured_premium_yuan: 792.45 | 6050.1 (有差异)
+  policy_count: 1 | 7 (有差异)
+  claim_case_count: 0 | 1 (有差异)
+
+--- 重复组 59 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|天府|非营业货车|交强险|False|单交|True|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16306 (首次), 16308 (重复)
+关键字段对比:
+  signed_premium_yuan: 7924.56 | 135849.6 (有差异)
+  matured_premium_yuan: 6416.4122 | 131445.522 (有差异)
+  policy_count: 7 | 120 (有差异)
+  claim_case_count: 0 | 15 (有差异)
+
+--- 重复组 60 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|天府|非营业货车|交强险|False|单交|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16312 (首次), 16314 (重复)
+关键字段对比:
+  signed_premium_yuan: 60000.24 | 751733.68 (有差异)
+  matured_premium_yuan: 48106.6142 | 705237.7155 (有差异)
+  policy_count: 53 | 666 (有差异)
+  claim_case_count: 4 | 73 (有差异)
+
+--- 重复组 61 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|天府|非营业货车|商业保险|False|交三|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 非营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16428 (首次), 16430 (重复)
+关键字段对比:
+  signed_premium_yuan: 3066.48 | 700520.66 (有差异)
+  matured_premium_yuan: 2901.3824 | 656954.3767 (有差异)
+  policy_count: 3 | 456 (有差异)
+  claim_case_count: 0 | 79 (有差异)
+
+--- 重复组 62 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|新都|非营业货车|交强险|False|单交|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 新都
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16507 (首次), 16509 (重复)
+关键字段对比:
+  signed_premium_yuan: 4528.32 | 41307.78 (有差异)
+  matured_premium_yuan: 4151.6061 | 40889.97 (有差异)
+  policy_count: 4 | 36 (有差异)
+  claim_case_count: 0 | 5 (有差异)
+
+--- 重复组 63 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|武侯|非营业货车|交强险|False|单交|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 武侯
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16614 (首次), 16616 (重复)
+关键字段对比:
+  signed_premium_yuan: 1132.08 | 28302.0 (有差异)
+  matured_premium_yuan: 1132.08 | 28084.6302 (有差异)
+  policy_count: 1 | 25 (有差异)
+  claim_case_count: 0 | 2 (有差异)
+
+--- 重复组 64 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|青羊|非营业货车|交强险|False|交三|False|续保|||||0110融合销售|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 青羊
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0110融合销售
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16674 (首次), 16676 (重复)
+关键字段对比:
+  signed_premium_yuan: 792.45 | 134744.33 (有差异)
+  matured_premium_yuan: 792.45 | 134744.33 (有差异)
+  policy_count: 1 | 154 (有差异)
+  claim_case_count: 0 | 21 (有差异)
+
+--- 重复组 65 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|青羊|非营业货车|交强险|False|单交|False|续保|||||0110融合销售|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 青羊
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0110融合销售
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16710 (首次), 16713 (重复)
+关键字段对比:
+  signed_premium_yuan: 4641.51 | 78491.74 (有差异)
+  matured_premium_yuan: 4641.51 | 78491.74 (有差异)
+  policy_count: 5 | 89 (有差异)
+  claim_case_count: 1 | 6 (有差异)
+
+--- 重复组 66 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|青羊|非营业货车|交强险|False|单交|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 青羊
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16742 (首次), 16743 (重复)
+关键字段对比:
+  signed_premium_yuan: 1132.08 | 10188.72 (有差异)
+  matured_premium_yuan: 794.0068 | 9607.172 (有差异)
+  policy_count: 1 | 9 (有差异)
+  claim_case_count: 0 | 1 (有差异)
+
+--- 重复组 67 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|高新|非营业货车|交强险|False|交三|False|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 高新
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16818 (首次), 16820 (重复)
+关键字段对比:
+  signed_premium_yuan: 1248.11 | 41547.14 (有差异)
+  matured_premium_yuan: 865.1283 | 41547.14 (有差异)
+  policy_count: 1 | 46 (有差异)
+  claim_case_count: 0 | 8 (有差异)
+
+--- 重复组 68 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|高新|非营业货车|交强险|False|交三|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 高新
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16852 (首次), 16854 (重复)
+关键字段对比:
+  signed_premium_yuan: 1132.08 | 253066.41 (有差异)
+  matured_premium_yuan: 1132.08 | 237478.2151 (有差异)
+  policy_count: 1 | 224 (有差异)
+  claim_case_count: 0 | 42 (有差异)
+
+--- 重复组 69 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|高新|非营业货车|交强险|False|单交|False|续保|||||0107B2B|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 高新
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0107B2B
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16857 (首次), 16860 (重复)
+关键字段对比:
+  signed_premium_yuan: 792.45 | 5320.75 (有差异)
+  matured_premium_yuan: 792.45 | 5320.75 (有差异)
+  policy_count: 1 | 6 (有差异)
+  claim_case_count: 0 (相同)
+
+--- 重复组 70 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|高新|非营业货车|交强险|False|单交|True|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 高新
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16897 (首次), 16899 (重复)
+关键字段对比:
+  signed_premium_yuan: 1132.08 | 29434.08 (有差异)
+  matured_premium_yuan: 722.6702 | 27499.4637 (有差异)
+  policy_count: 1 | 26 (有差异)
+  claim_case_count: 0 | 3 (有差异)
+
+--- 重复组 71 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|高新|非营业货车|交强险|False|单交|True|转保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 高新
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16902 (首次), 16904 (重复)
+关键字段对比:
+  signed_premium_yuan: 9056.64 | 239774.54 (有差异)
+  matured_premium_yuan: 7322.8516 | 225674.0042 (有差异)
+  policy_count: 8 | 212 (有差异)
+  claim_case_count: 0 | 35 (有差异)
+
+--- 重复组 72 ---
+维度组合: 2025-07-27|2024|非营业货车旧车|成都|高新|非营业货车|商业保险|False|交三|False|续保|||||0106移动展业(App)|82
+维度详情:
+  snapshot_date: 2025-07-27
+  policy_start_year: 2024
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 高新
+  customer_category_3: 非营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 82
+重复次数: 2 (包括首次出现)
+行号: 16927 (首次), 16929 (重复)
+关键字段对比:
+  signed_premium_yuan: 2256.08 | 45768.18 (有差异)
+  matured_premium_yuan: 1563.8034 | 45768.18 (有差异)
+  policy_count: 1 | 43 (有差异)
+  claim_case_count: 0 | 9 (有差异)
+
+总计: 72 个不同的重复维度组合
+正在读取文件: /Users/xuechenglong/Desktop/felouPRD/insurance-analytics/test/测试数据2025.csv
+文件表头: [
+  'snapshot_date',
+  'policy_start_year',
+  'business_type_category',
+  'chengdu_branch',
+  'third_level_organization',
+  'customer_category_3',
+  'insurance_type',
+  'is_new_energy_vehicle',
+  'coverage_type',
+  'is_transferred_vehicle',
+  'renewal_status',
+  'vehicle_insurance_grade',
+  'highway_risk_grade',
+  'large_truck_score',
+  'small_truck_score',
+  'terminal_source',
+  'signed_premium_yuan',
+  'matured_premium_yuan',
+  'policy_count',
+  'claim_case_count',
+  'reported_claim_payment_yuan',
+  'expense_amount_yuan',
+  'commercial_premium_before_discount_yuan',
+  'premium_plan_yuan',
+  'marginal_contribution_amount_yuan',
+  'week_number'
+]
+成功解析 14182 条记录
+
+=== 分析文件: 测试数据2025.csv ===
+检查维度组合 (共17个字段): [
+  'snapshot_date',
+  'policy_start_year',
+  'business_type_category',
+  'chengdu_branch',
+  'third_level_organization',
+  'customer_category_3',
+  'insurance_type',
+  'is_new_energy_vehicle',
+  'coverage_type',
+  'is_transferred_vehicle',
+  'renewal_status',
+  'vehicle_insurance_grade',
+  'highway_risk_grade',
+  'large_truck_score',
+  'small_truck_score',
+  'terminal_source',
+  'week_number'
+]
+总记录数: 14182
+唯一维度组合数: 14161
+重复记录数: 21
+重复率: 0.15%
+
+❌ 测试数据2025.csv 中发现 21 个重复的维度组合:
+
+--- 重复组 1 ---
+维度组合: 2025-09-14|2025|2-9吨营业货车|成都|天府|营业货车|商业保险|False|交三|False|转保|||||0106移动展业(App)|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 661 (首次), 663 (重复)
+关键字段对比:
+  signed_premium_yuan: 4699.23 | 13496.49 (有差异)
+  matured_premium_yuan: 2368.9269 | 5141.6304 (有差异)
+  policy_count: 1 | 7 (有差异)
+  claim_case_count: 0 (相同)
+
+--- 重复组 2 ---
+维度组合: 2025-09-14|2025|2-9吨营业货车|成都|新都|营业货车|商业保险|False|交三|False|转保|||||0101柜面|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 新都
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0101柜面
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 761 (首次), 762 (重复)
+关键字段对比:
+  signed_premium_yuan: 4021.73 | 19379.83 (有差异)
+  matured_premium_yuan: 2490.1671 | 3670.5507 (有差异)
+  policy_count: 1 | 11 (有差异)
+  claim_case_count: 0 (相同)
+
+--- 重复组 3 ---
+维度组合: 2025-09-14|2025|2-9吨营业货车|成都|青羊|营业货车|商业保险|False|交三|False|续保|||||0110融合销售|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 青羊
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0110融合销售
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 847 (首次), 848 (重复)
+关键字段对比:
+  signed_premium_yuan: 3517.12 | 69434.0 (有差异)
+  matured_premium_yuan: 1956.0969 | 23639.2112 (有差异)
+  policy_count: 1 | 39 (有差异)
+  claim_case_count: 0 | 1 (有差异)
+
+--- 重复组 4 ---
+维度组合: 2025-09-14|2025|2-9吨营业货车|成都|高新|营业货车|商业保险|False|交三|False|转保|||||0106移动展业(App)|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 2-9吨营业货车
+  chengdu_branch: 成都
+  third_level_organization: 高新
+  customer_category_3: 营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 910 (首次), 911 (重复)
+关键字段对比:
+  signed_premium_yuan: 3477.48 | 15099.41 (有差异)
+  matured_premium_yuan: 2257.9802 | 2424.7588 (有差异)
+  policy_count: 1 | 8 (有差异)
+  claim_case_count: 0 (相同)
+
+--- 重复组 5 ---
+维度组合: 2025-09-14|2025|其他|中支|泸州|营业公路客运|交强险|False|主全|False|续保|||||0106移动展业(App)|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 其他
+  chengdu_branch: 中支
+  third_level_organization: 泸州
+  customer_category_3: 营业公路客运
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 主全
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 1692 (首次), 1693 (重复)
+关键字段对比:
+  signed_premium_yuan: 4235.85 | 21989.59 (有差异)
+  matured_premium_yuan: 2790.6339 | 6855.0071 (有差异)
+  policy_count: 2 | 11 (有差异)
+  claim_case_count: 0 | 1 (有差异)
+
+--- 重复组 6 ---
+维度组合: 2025-09-14|2025|其他|中支|泸州|营业公路客运|交强险|True|主全|False|续保|||||0106移动展业(App)|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 其他
+  chengdu_branch: 中支
+  third_level_organization: 泸州
+  customer_category_3: 营业公路客运
+  insurance_type: 交强险
+  is_new_energy_vehicle: True
+  coverage_type: 主全
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 1695 (首次), 1696 (重复)
+关键字段对比:
+  signed_premium_yuan: 81853.85 | 5190.57 (有差异)
+  matured_premium_yuan: 51130.6241 | 639.9333 (有差异)
+  policy_count: 20 | 2 (有差异)
+  claim_case_count: 5 | 0 (有差异)
+
+--- 重复组 7 ---
+维度组合: 2025-09-14|2025|其他|中支|泸州|营业公路客运|商业保险|False|主全|False|续保|||||0106移动展业(App)|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 其他
+  chengdu_branch: 中支
+  third_level_organization: 泸州
+  customer_category_3: 营业公路客运
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 主全
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 1699 (首次), 1700 (重复)
+关键字段对比:
+  signed_premium_yuan: 2237.45 | 38915.62 (有差异)
+  matured_premium_yuan: 2237.45 | 11555.7242 (有差异)
+  policy_count: 1 | 12 (有差异)
+  claim_case_count: 0 | 2 (有差异)
+
+--- 重复组 8 ---
+维度组合: 2025-09-14|2025|其他|中支|泸州|营业公路客运|商业保险|True|主全|False|续保|||||0106移动展业(App)|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 其他
+  chengdu_branch: 中支
+  third_level_organization: 泸州
+  customer_category_3: 营业公路客运
+  insurance_type: 商业保险
+  is_new_energy_vehicle: True
+  coverage_type: 主全
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 1702 (首次), 1703 (重复)
+关键字段对比:
+  signed_premium_yuan: 139442.86 | 10322.33 (有差异)
+  matured_premium_yuan: 86339.9626 | 1272.616 (有差异)
+  policy_count: 20 | 2 (有差异)
+  claim_case_count: 6 | 0 (有差异)
+
+--- 重复组 9 ---
+维度组合: 2025-09-14|2025|其他|中支|达州|营业公路客运|交强险|False|主全|False|转保|||||0106移动展业(App)|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 其他
+  chengdu_branch: 中支
+  third_level_organization: 达州
+  customer_category_3: 营业公路客运
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 主全
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 1711 (首次), 1712 (重复)
+关键字段对比:
+  signed_premium_yuan: 16777.36 | 9073.59 (有差异)
+  matured_premium_yuan: 10107.0782 | 3632.385 (有差异)
+  policy_count: 7 | 3 (有差异)
+  claim_case_count: 0 | 1 (有差异)
+
+--- 重复组 10 ---
+维度组合: 2025-09-14|2025|其他|中支|达州|营业公路客运|商业保险|False|主全|False|转保|||||0106移动展业(App)|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 其他
+  chengdu_branch: 中支
+  third_level_organization: 达州
+  customer_category_3: 营业公路客运
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 主全
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 1716 (首次), 1717 (重复)
+关键字段对比:
+  signed_premium_yuan: 15603.62 | 6296.07 (有差异)
+  matured_premium_yuan: 8866.4786 | 2497.4263 (有差异)
+  policy_count: 7 | 3 (有差异)
+  claim_case_count: 0 | 1 (有差异)
+
+--- 重复组 11 ---
+维度组合: 2025-09-14|2025|非营业货车旧车|中支|泸州|非营业货车|交强险|False|交三|True|转保|||||0106移动展业(App)|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 中支
+  third_level_organization: 泸州
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 13294 (首次), 13295 (重复)
+关键字段对比:
+  signed_premium_yuan: 1132.08 | 118981.6 (有差异)
+  matured_premium_yuan: 50.4 | 44351.4063 (有差异)
+  policy_count: 1 | 105 (有差异)
+  claim_case_count: 0 | 4 (有差异)
+
+--- 重复组 12 ---
+维度组合: 2025-09-14|2025|非营业货车旧车|中支|泸州|非营业货车|交强险|False|单交|True|转保|||||0106移动展业(App)|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 中支
+  third_level_organization: 泸州
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 13323 (首次), 13324 (重复)
+关键字段对比:
+  signed_premium_yuan: 2264.16 | 21169.89 (有差异)
+  matured_premium_yuan: 1036.8354 | 11852.4733 (有差异)
+  policy_count: 2 | 19 (有差异)
+  claim_case_count: 0 | 2 (有差异)
+
+--- 重复组 13 ---
+维度组合: 2025-09-14|2025|非营业货车旧车|中支|泸州|非营业货车|商业保险|False|交三|True|转保|||||0106移动展业(App)|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 中支
+  third_level_organization: 泸州
+  customer_category_3: 非营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 13373 (首次), 13374 (重复)
+关键字段对比:
+  signed_premium_yuan: 3667.52 | 295985.36 (有差异)
+  matured_premium_yuan: 919.9334 | 104677.8613 (有差异)
+  policy_count: 2 | 166 (有差异)
+  claim_case_count: 0 | 8 (有差异)
+
+--- 重复组 14 ---
+维度组合: 2025-09-14|2025|非营业货车旧车|成都|天府|非营业货车|交强险|False|主全|False|续保|||||0106移动展业(App)|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 主全
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 13575 (首次), 13576 (重复)
+关键字段对比:
+  signed_premium_yuan: 1386.79 | 8218.87 (有差异)
+  matured_premium_yuan: 41.8 | 2928.1648 (有差异)
+  policy_count: 1 | 6 (有差异)
+  claim_case_count: 0 | 1 (有差异)
+
+--- 重复组 15 ---
+维度组合: 2025-09-14|2025|非营业货车旧车|成都|天府|非营业货车|交强险|False|交三|True|转保|||||0106移动展业(App)|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 13654 (首次), 13656 (重复)
+关键字段对比:
+  signed_premium_yuan: 1132.08 | 431482.83 (有差异)
+  matured_premium_yuan: 525.7193 | 142326.0241 (有差异)
+  policy_count: 1 | 382 (有差异)
+  claim_case_count: 0 | 29 (有差异)
+
+--- 重复组 16 ---
+维度组合: 2025-09-14|2025|非营业货车旧车|成都|天府|非营业货车|交强险|False|单交|True|转保|||||0106移动展业(App)|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 13704 (首次), 13706 (重复)
+关键字段对比:
+  signed_premium_yuan: 4415.11 | 144906.24 (有差异)
+  matured_premium_yuan: 2131.721 | 78348.0329 (有差异)
+  policy_count: 4 | 128 (有差异)
+  claim_case_count: 0 | 7 (有差异)
+
+--- 重复组 17 ---
+维度组合: 2025-09-14|2025|非营业货车旧车|成都|天府|非营业货车|商业保险|False|主全|False|续保|||||0106移动展业(App)|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 非营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 主全
+  is_transferred_vehicle: False
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 13718 (首次), 13719 (重复)
+关键字段对比:
+  signed_premium_yuan: 2578.15 | 14083.06 (有差异)
+  matured_premium_yuan: 77.7 | 4023.3938 (有差异)
+  policy_count: 1 | 4 (有差异)
+  claim_case_count: 0 (相同)
+
+--- 重复组 18 ---
+维度组合: 2025-09-14|2025|非营业货车旧车|成都|天府|非营业货车|商业保险|False|交三|True|转保|||||0106移动展业(App)|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 天府
+  customer_category_3: 非营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 13798 (首次), 13800 (重复)
+关键字段对比:
+  signed_premium_yuan: 1528.79 | 684073.22 (有差异)
+  matured_premium_yuan: 1047.1164 | 223613.1772 (有差异)
+  policy_count: 1 | 497 (有差异)
+  claim_case_count: 0 | 37 (有差异)
+
+--- 重复组 19 ---
+维度组合: 2025-09-14|2025|非营业货车旧车|成都|武侯|非营业货车|交强险|False|单交|False|转保|||||0106移动展业(App)|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 武侯
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 单交
+  is_transferred_vehicle: False
+  renewal_status: 转保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0106移动展业(App)
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 13892 (首次), 13894 (重复)
+关键字段对比:
+  signed_premium_yuan: 1132.08 | 2264.16 (有差异)
+  matured_premium_yuan: 9.3 | 954.514 (有差异)
+  policy_count: 1 | 2 (有差异)
+  claim_case_count: 0 (相同)
+
+--- 重复组 20 ---
+维度组合: 2025-09-14|2025|非营业货车旧车|成都|青羊|非营业货车|交强险|False|交三|True|续保|||||0110融合销售|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 青羊
+  customer_category_3: 非营业货车
+  insurance_type: 交强险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0110融合销售
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 13969 (首次), 13970 (重复)
+关键字段对比:
+  signed_premium_yuan: 1132.08 | 29434.08 (有差异)
+  matured_premium_yuan: 400.105 | 11814.0171 (有差异)
+  policy_count: 1 | 26 (有差异)
+  claim_case_count: 0 | 1 (有差异)
+
+--- 重复组 21 ---
+维度组合: 2025-09-14|2025|非营业货车旧车|成都|青羊|非营业货车|商业保险|False|交三|True|续保|||||0110融合销售|37
+维度详情:
+  snapshot_date: 2025-09-14
+  policy_start_year: 2025
+  business_type_category: 非营业货车旧车
+  chengdu_branch: 成都
+  third_level_organization: 青羊
+  customer_category_3: 非营业货车
+  insurance_type: 商业保险
+  is_new_energy_vehicle: False
+  coverage_type: 交三
+  is_transferred_vehicle: True
+  renewal_status: 续保
+  vehicle_insurance_grade: 
+  highway_risk_grade: 
+  large_truck_score: 
+  small_truck_score: 
+  terminal_source: 0110融合销售
+  week_number: 37
+重复次数: 2 (包括首次出现)
+行号: 14051 (首次), 14052 (重复)
+关键字段对比:
+  signed_premium_yuan: 1483.2 | 34453.23 (有差异)
+  matured_premium_yuan: 524.1995 | 14607.6133 (有差异)
+  policy_count: 1 | 26 (有差异)
+  claim_case_count: 0 | 1 (有差异)
+
+总计: 21 个不同的重复维度组合
+
+============================================================
+汇总报告
+============================================================
+测试数据2024.csv:
+  总记录数: 16967
+  唯一维度组合: 16893
+  重复记录数: 74
+  重复率: 0.44%
+
+测试数据2025.csv:
+  总记录数: 14182
+  唯一维度组合: 14161
+  重复记录数: 21
+  重复率: 0.15%
+
+整体统计:
+  总记录数: 31149
+  总重复记录数: 95
+  整体重复率: 0.30%
+
+⚠️  建议: 发现重复的维度组合，可能需要调整唯一键策略或数据清洗
