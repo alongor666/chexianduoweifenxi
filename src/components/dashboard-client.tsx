@@ -10,7 +10,7 @@ import { PremiumAnalysisBarChart } from '@/components/features/structure-bar-cha
 import { ClaimAnalysisBarChart } from '@/components/features/claim-analysis-bar-chart'
 import { DistributionPieChart } from '@/components/features/distribution-pie-chart'
 import { ComparisonAnalysisPanel } from '@/components/features/comparison-analysis'
-import { MultiDimensionRadar } from '@/components/features/multi-dimension-radar'
+import { MultiChartTabs } from '@/components/features/multi-chart-tabs'
 import { CustomerSegmentationBubble } from '@/components/features/customer-segmentation-bubble'
 import { ExpenseHeatmap } from '@/components/features/expense-heatmap'
 import { ThematicAnalysis } from '@/components/features/thematic-analysis'
@@ -268,10 +268,7 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
             {/* 多维图表展示 */}
             {activeTab === 'multichart' && (
               <div className="space-y-8">
-                <MultiDimensionRadar />
-                <PremiumAnalysisBarChart />
-                <ClaimAnalysisBarChart />
-                <DistributionPieChart />
+                <MultiChartTabs />
                 <ComparisonAnalysisPanel />
               </div>
             )}

@@ -182,6 +182,7 @@ export function useSmartComparison(
   // 使用细粒度选择器避免对象引用导致的无限重渲染问题
   const rawData = useAppStore(state => state.rawData)
   const viewMode = useAppStore(state => state.filters.viewMode)
+  const dataViewType = useAppStore(state => state.filters.dataViewType)
   const singleModeWeek = useAppStore(state => state.filters.singleModeWeek)
   const years = useAppStore(state => state.filters.years)
   const weeks = useAppStore(state => state.filters.weeks)
@@ -335,9 +336,18 @@ export function useSmartComparison(
       `[useSmartComparison] 开始计算环比数据，当前周: ${currentWeek}，数据量: ${filteredData.length} 条`
     )
 
-    // 计算当前KPI
+    // 获取当前年份
+    const currentYear =
+      years.length > 0
+        ? Math.max(...years)
+        : new Date().getFullYear()
+
+    // 计算当前KPI（传递完整的计算参数）
     const currentKpi = kpiEngine.calculate(filteredData, {
       annualTargetYuan,
+      mode: dataViewType || 'current',
+      currentWeekNumber: currentWeek,
+      year: currentYear,
     })
 
     // 查找上一个有数据的周期
@@ -358,16 +368,19 @@ export function useSmartComparison(
       }
     }
 
-    // 计算上一周期的KPI
-    const compareKpi = kpiEngine.calculate(previousWeekData, {
-      annualTargetYuan,
-    })
-
     // 获取上一周期的周次（优化：避免对大数组使用展开运算符）
     const previousWeekNumber =
       previousWeekData.length > 0
         ? previousWeekData.reduce((max, r) => Math.max(max, r.week_number), 0)
         : 1 // 默认为第1周
+
+    // 计算上一周期的KPI（同样传递完整的计算参数）
+    const compareKpi = kpiEngine.calculate(previousWeekData, {
+      annualTargetYuan,
+      mode: dataViewType || 'current',
+      currentWeekNumber: previousWeekNumber,
+      year: currentYear,
+    })
 
     const elapsed = performance.now() - startTime
     console.log(
@@ -379,7 +392,7 @@ export function useSmartComparison(
       compareKpi,
       previousWeekNumber,
     }
-  }, [filteredData, rawData, filters, annualTargetYuan, maxJumpBack, viewMode, singleModeWeek])
+  }, [filteredData, rawData, filters, annualTargetYuan, maxJumpBack, viewMode, singleModeWeek, dataViewType, years])
 
   return comparison
 }
