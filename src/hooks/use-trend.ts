@@ -132,7 +132,9 @@ export function useTrendData(): TrendPoint[] {
         // 周增量模式：计算当前周与前一周的差值
         const previousKey = sortedKeys[index - 1]
         const previousRows = grouped.get(previousKey)!
-        kpi = kpiEngine.calculateIncrement(rows, previousRows)
+        kpi = kpiEngine.calculateIncrement(rows, previousRows, {
+          annualTargetYuan: targetForScope ?? undefined,
+        })
       } else {
         // 当周值模式 或 第一周（没有前一周可比较）
         kpi = kpiEngine.calculate(rows, {

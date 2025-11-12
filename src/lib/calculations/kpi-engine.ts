@@ -438,7 +438,32 @@ export class KPIEngine {
     }
 
     // 检查缓存
-    const cacheKey = this.generateCacheKey(currentWeekRecords, 'increment')
+    // 周增量模式的缓存键需要同时包含当前周和前一周的信息
+    // 使用周次、年份和所有业务指标的哈希确保缓存键的唯一性
+    const currentWeek = currentWeekRecords[0]?.week_number ?? 0
+    const currentYear = currentWeekRecords[0]?.policy_start_year ?? 0
+    const previousWeek = previousWeekRecords[0]?.week_number ?? 0
+    const previousYear = previousWeekRecords[0]?.policy_start_year ?? 0
+
+    // 生成数据哈希：包含所有关键业务指标，避免只依赖保费总和
+    const generateDataHash = (records: InsuranceRecord[]): string => {
+      if (records.length === 0) return '0'
+      const aggregated = aggregateData(records)
+      return [
+        aggregated.signed_premium_yuan.toFixed(2),
+        aggregated.matured_premium_yuan.toFixed(2),
+        aggregated.policy_count,
+        aggregated.claim_case_count,
+        aggregated.reported_claim_payment_yuan.toFixed(2),
+        aggregated.expense_amount_yuan.toFixed(2),
+      ].join('_')
+    }
+
+    const currentHash = generateDataHash(currentWeekRecords)
+    const previousHash = generateDataHash(previousWeekRecords)
+    const targetKey = annualTargetYuan ? `_t${Math.round(annualTargetYuan)}` : ''
+    const cacheKey = `inc_${currentYear}w${currentWeek}_${currentHash}_${previousYear}w${previousWeek}_${previousHash}${targetKey}`
+
     if (useCache && this.cache.has(cacheKey)) {
       return this.cache.get(cacheKey)!
     }

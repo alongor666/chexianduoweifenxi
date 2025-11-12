@@ -74,6 +74,7 @@ export interface InsuranceRecord {
 
   // 组织维度
   chengdu_branch: '成都' | '中支' // 地域属性
+  second_level_organization?: string // 二级机构（可选）
   third_level_organization: string // 三级机构
 
   // 客户维度

@@ -89,6 +89,8 @@ export const InsuranceRecordSchema = z
       message: '地域属性必须为"成都"或"中支"',
     }),
 
+    second_level_organization: z.string().optional(),
+
     third_level_organization: z.enum(thirdLevelOrganizations, {
       message: '三级机构代码不存在',
     }),
