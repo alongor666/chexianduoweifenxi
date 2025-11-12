@@ -1,0 +1,4 @@
+# Python 依赖包
+# 用于 CSV 转 DuckDB 脚本
+
+duckdb>=0.10.0
