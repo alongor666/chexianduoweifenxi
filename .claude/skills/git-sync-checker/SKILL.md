@@ -1,413 +1,342 @@
 ---
-name: git-sync-checker
-description: 智能检查本地代码与GitHub的同步状态,识别未提交、未推送、未拉取的更改,帮助在多台电脑之间无缝切换开发。触发词:"检查同步"、"切换电脑"、"准备下班"、"开始工作"。
+---
+name: git-sync-checker-enhanced
+description: 智能检查本地代码与远程仓库的同步状态，支持多分支、多仓库、批量检查，提供AI驱动的冲突预测和智能建议。当用户提到'检查同步状态'、'Git同步'、'推送代码'、'pull代码'、'下班前检查'、'准备下班'、'拉取最新代码'、'批量检查仓库'、'git status'、'冲突预测'、'gitignore优化'或需要Git状态分析时自动使用此技能。
 allowed-tools: Bash, Read, Grep
 ---
+# Instructions
 
-# Git 同步状态检查器
+## 核心职责
 
-## 目标
-在多台电脑（公司、家里）之间切换开发时,自动检查代码同步状态,确保不会丢失代码或产生冲突。
+本技能是增强版的 Git 同步状态检查工具，提供智能分析和情境感知的操作建议。
 
-## 何时使用
+**核心功能**：
 
-### 📍 下班前（公司电脑）
-- 准备离开公司,需要确保所有代码已推送到 GitHub
-- 触发词: "准备下班"、"检查同步"、"推送代码"
+- ✅ 自动检测分支和远程仓库配置
+- ✅ 支持单个或批量检查多个仓库
+- ✅ AI 驱动的冲突预测和风险评估
+- ✅ 智能 .gitignore 检查和优化建议
+- ✅ 项目类型感知的个性化建议
+- ✅ 生成详细的同步报告（支持多种格式）
+- ❌ 不自动执行危险操作（需用户确认）
 
-### 🏠 到家后（家里电脑）
-- 刚回到家,准备继续开发
-- 触发词: "开始工作"、"拉取最新代码"、"检查同步"
+## 可用工具脚本
 
-### 🏢 上班前（公司电脑）
-- 刚到公司,准备继续开发
-- 触发词: "开始工作"、"检查同步"
+本技能包含三个辅助脚本，可在需要时调用：
 
-### 🔄 任何时候
-- 想知道当前代码与远程仓库的差异
-- 触发词: "检查同步状态"、"git状态"
+1. **batch-checker.sh** - 批量检查多个仓库
 
-## 检查流程
-
-### 步骤 1: 检查基本 Git 状态
-
-```bash
-# 检查当前分支和状态
-git status
-git branch -vv
-```
-
-**识别问题**:
-- ✅ 工作区干净: `nothing to commit, working tree clean`
-- ⚠️ 有未暂存的修改: `Changes not staged for commit`
-- ⚠️ 有未提交的修改: `Changes to be committed`
-- ⚠️ 有未跟踪的文件: `Untracked files`
-
-### 步骤 2: 检查与远程仓库的差异
-
-```bash
-# 获取远程仓库最新信息（不拉取代码）
-git fetch origin
-
-# 检查本地与远程的差异
-git status -sb
-git log --oneline origin/main..HEAD  # 本地领先的提交
-git log --oneline HEAD..origin/main  # 远程领先的提交
-```
-
-**识别问题**:
-- ✅ 本地领先: `Your branch is ahead of 'origin/main' by X commits`
-- ⚠️ 远程领先: `Your branch is behind 'origin/main' by X commits`
-- 🔴 分叉了: `Your branch and 'origin/main' have diverged`
-
-### 步骤 3: 检查未推送的提交
-
-```bash
-# 查看未推送的提交详情
-git log origin/main..HEAD --oneline
-git diff origin/main..HEAD --stat
-```
-
-### 步骤 4: 检查潜在冲突
-
-```bash
-# 检查是否有潜在冲突（模拟合并）
-git fetch origin
-git merge-base HEAD origin/main
-git diff --name-only $(git merge-base HEAD origin/main)..HEAD
-git diff --name-only $(git merge-base HEAD origin/main)..origin/main
-```
-
-### 步骤 5: 生成同步报告
-
-## 输出格式
-
-### 场景 A: 准备下班（公司电脑）
-
-```markdown
-# 🏢 → 🏠 同步检查报告
-
-## 📊 当前状态
-- 分支: main
-- 本地提交: 3 个未推送
-- 工作区: 2 个文件有修改
-
-## ⚠️ 需要处理的问题
-
-### 1. 未提交的修改（2个文件）
-\```
-M  src/components/dashboard-client.tsx
-M  src/hooks/use-smart-comparison.ts
-\```
-
-**建议操作**:
-\```bash
-git add .
-git commit -m "feat: 完成XXX功能开发"
-\```
-
-### 2. 未推送的提交（3个）
-\```
-e18cf2e feat: 添加多图表标签页功能
-a1b2c3d fix: 修复KPI计算精度问题
-d4e5f6g docs: 更新开发文档
-\```
-
-**建议操作**:
-\```bash
-git push origin main
-\```
-
-## ✅ 推送清单
-
-在离开公司前,请完成以下步骤:
-- [ ] 提交所有未保存的修改
-- [ ] 推送所有提交到 GitHub
-- [ ] 验证 GitHub 上能看到最新代码
-- [ ] 记录当前工作状态（可选）
-
-## 🎯 推送后验证命令
-\```bash
-git status  # 应显示 "nothing to commit, working tree clean"
-git log --oneline origin/main..HEAD  # 应无输出（表示已完全同步）
-\```
-```
-
-### 场景 B: 开始工作（家里/公司电脑）
-
-```markdown
-# 🏠/🏢 开始工作 - 同步检查报告
-
-## 📊 当前状态
-- 分支: main
-- 远程领先: 3 个提交
-- 工作区: 干净
-
-## 📥 需要拉取的更新
-
-### 远程新增的提交（3个）
-\```
-e18cf2e feat: 添加多图表标签页功能
-a1b2c3d fix: 修复KPI计算精度问题
-d4e5f6g docs: 更新开发文档
-\```
-
-### 变更的文件
-\```
-src/components/features/multi-chart-tabs.tsx   (新文件)
-src/hooks/use-smart-comparison.ts              (修改)
-开发文档/01_features/F014_multi_chart_tabs/    (新增)
-\```
-
-## ✅ 拉取建议
-
-**安全拉取命令**:
-\```bash
-# 1. 确认本地工作区干净
-git status
-
-# 2. 拉取最新代码
-git pull origin main
-
-# 3. 验证拉取成功
-git status
-pnpm dev  # 启动项目验证
-\```
-
-## ⚠️ 注意事项
-- ✅ 工作区干净,可以安全拉取
-- 📝 拉取后建议运行 `pnpm dev` 验证项目正常
-- 📚 查看更新的开发文档了解新功能
-```
-
-### 场景 C: 代码分叉警告
-
-```markdown
-# 🔴 代码分叉警告
-
-## 问题描述
-本地分支和远程分支已经分叉:
-- 本地独有提交: 2 个
-- 远程独有提交: 3 个
-
-## 📊 分叉详情
-
-### 本地独有的提交
-\```
-a1b2c3d feat: 添加XXX功能（在家里电脑上提交）
-d4e5f6g fix: 修复YYY问题
-\```
-
-### 远程独有的提交
-\```
-e18cf2e feat: 添加ZZZ功能（在公司电脑上提交）
-f7g8h9i fix: 修复AAA问题
-j0k1l2m docs: 更新文档
-\```
-
-## 🔧 解决方案
-
-### 方案 1: Rebase（推荐，保持线性历史）
-\```bash
-# 1. 备份当前分支
-git branch backup-$(date +%Y%m%d-%H%M%S)
-
-# 2. 获取最新远程代码
-git fetch origin
-
-# 3. Rebase 到远程分支
-git rebase origin/main
-
-# 4. 如果有冲突，解决后继续
-git rebase --continue
-
-# 5. 强制推送（仅当确定本地更改正确时）
-git push origin main --force-with-lease
-\```
-
-### 方案 2: Merge（保留完整历史）
-\```bash
-# 1. 拉取并合并
-git pull origin main
-
-# 2. 解决冲突（如果有）
-# 编辑有冲突的文件
-
-# 3. 提交合并
-git add .
-git commit -m "merge: 合并远程更改"
-
-# 4. 推送
-git push origin main
-\```
-
-## ⚠️ 预防措施
-1. **始终在下班前推送代码**
-2. **始终在开始工作前拉取代码**
-3. **避免在多台电脑同时开发同一功能**
-4. **使用功能分支隔离不同的开发任务**
-```
-
-## 常见场景处理
-
-### 场景 1: 忘记推送就下班了
-**症状**: 在家里电脑上拉取时，发现没有公司的最新代码
-
-**解决**:
-1. 第二天到公司后，运行检查命令
-2. 发现未推送的提交
-3. 推送到 GitHub
-4. 回家后重新拉取
-
-### 场景 2: 两台电脑都有未推送的提交
-**症状**: 代码分叉，本地和远程都有独有的提交
-
-**解决**:
-1. 运行检查命令，识别分叉
-2. 选择 Rebase 或 Merge 方案
-3. 解决冲突（如果有）
-4. 推送合并后的代码
-
-### 场景 3: 不确定当前在哪台电脑上工作过
-**症状**: 混淆了工作进度
-
-**解决**:
-1. 运行检查命令
-2. 查看未推送的提交信息
-3. 查看提交时间和作者信息
-4. 根据提交内容判断
-
-## 最佳实践
-
-### ✅ 推荐的工作流程
-
-**下班前（公司电脑）**:
-```bash
-# 1. 运行同步检查
-<使用此 skill>
-
-# 2. 提交所有修改
-git add .
-git commit -m "feat: 完成XXX功能"
-
-# 3. 推送到 GitHub
-git push origin main
-
-# 4. 验证推送成功
-git log --oneline origin/main..HEAD  # 应无输出
-```
-
-**开始工作前（家里/公司电脑）**:
-```bash
-# 1. 运行同步检查
-<使用此 skill>
-
-# 2. 拉取最新代码
-git pull origin main
-
-# 3. 验证项目正常
-pnpm dev
-
-# 4. 开始开发
-```
-
-### 🔒 安全措施
-
-1. **永远不要使用 `git push --force`**
-   - 除非你 100% 确定远程代码是错误的
-   - 使用 `--force-with-lease` 更安全
-
-2. **提交前先拉取**
    ```bash
-   git fetch origin
-   git status  # 检查是否有冲突
+   bash batch-checker.sh /path/to/projects
+   ```
+2. **conflict-predictor.sh** - 运行冲突预测算法
+
+   ```bash
+   bash conflict-predictor.sh
+   ```
+3. **gitignore-checker.sh** - 检查和优化 .gitignore
+
+   ```bash
+   bash gitignore-checker.sh
    ```
 
-3. **使用功能分支**
-   ```bash
-   # 在公司开发新功能
-   git checkout -b feature/new-dashboard
+## 执行流程
 
-   # 下班前推送
-   git push origin feature/new-dashboard
+### 阶段 1：环境检测与配置识别
 
-   # 在家拉取并继续开发
-   git fetch origin
-   git checkout feature/new-dashboard
-   git pull origin feature/new-dashboard
-   ```
-
-4. **定期同步**
-   - 不要积累太多未推送的提交
-   - 建议每完成一个小功能就推送一次
-
-## 检查命令速查表
+#### 1.1 检测仓库信息
 
 ```bash
-# 基础状态检查
-git status                           # 工作区状态
-git branch -vv                       # 分支与跟踪关系
+# 获取当前分支
+CURRENT_BRANCH=$(git branch --show-current)
 
-# 与远程对比
-git fetch origin                     # 获取远程更新（不合并）
-git log origin/main..HEAD            # 本地独有的提交
-git log HEAD..origin/main            # 远程独有的提交
+# 获取远程仓库名称
+REMOTE_NAME=$(git remote | head -n 1)
 
-# 差异对比
-git diff origin/main                 # 与远程的详细差异
-git diff --stat origin/main          # 差异文件统计
+# 获取远程 URL
+git remote -v
 
-# 提交历史
-git log --oneline -10                # 最近10个提交
-git log --graph --oneline --all      # 分支图形化历史
-
-# 远程仓库信息
-git remote -v                        # 远程仓库地址
-git remote show origin               # 远程仓库详细信息
+# 检测上游分支
+git rev-parse --abbrev-ref @{upstream} 2>/dev/null
 ```
 
-## 工具限制
+**识别内容**：
 
-本 skill 只能**检查和建议**,不能自动执行 Git 操作。所有 Git 命令需要用户手动执行,以确保安全。
+- 当前分支名
+- 远程仓库名（origin/upstream/其他）
+- 是否有上游分支配置
+- 远程仓库类型（GitHub/GitLab/Bitbucket/自建）
 
-## 输出原则
-
-1. **清晰的状态总结** - 用户一眼看懂当前情况
-2. **具体的操作建议** - 提供可直接复制执行的命令
-3. **风险提示** - 标注潜在的问题和注意事项
-4. **验证步骤** - 告诉用户如何确认操作成功
-
-## 高级功能
-
-### 识别工作电脑
-
-可以在 Git 配置中为不同电脑设置标识:
+#### 1.2 检测项目类型
 
 ```bash
-# 在公司电脑上
-git config user.name "张三 (公司)"
-git config user.email "zhangsan@company.com"
+# 检查项目配置文件
+ls -la | grep -E "package.json|requirements.txt|go.mod|Cargo.toml|pom.xml|build.gradle"
 
-# 在家里电脑上
-git config user.name "张三 (家)"
-git config user.email "zhangsan@personal.com"
+# 检查框架标识
+[ -f "package.json" ] && cat package.json | grep -E "react|vue|angular|next|nuxt"
 ```
 
-这样通过 `git log` 就能清楚看到哪些提交是在哪台电脑上完成的。
+**识别项目类型**：
 
-### 自动检查脚本（可选）
+- 前端（React/Vue/Angular）
+- 后端（Node/Python/Go/Java）
+- 全栈（Next.js/Nuxt）
+- 移动端（React Native/Flutter）
 
-可以创建一个 pre-commit hook 自动检查:
+### 阶段 2：状态检查与分析
+
+#### 2.1 工作区状态
 
 ```bash
-# .git/hooks/pre-commit
-#!/bin/bash
-git fetch origin
-LOCAL=$(git rev-parse @)
-REMOTE=$(git rev-parse origin/main)
+# 详细状态
+git status --porcelain
 
-if [ $LOCAL != $REMOTE ]; then
-    echo "⚠️  警告: 远程仓库有更新，请先拉取！"
-    exit 1
-fi
+# 未跟踪文件
+git ls-files --others --exclude-standard
+
+# 已修改但未暂存
+git diff --name-only
+
+# 已暂存但未提交
+git diff --cached --name-only
 ```
+
+#### 2.2 本地与远程对比
+
+```bash
+# 获取远程更新（不拉取代码）
+git fetch $REMOTE_NAME
+
+# 本地领先的提交
+git log $REMOTE_NAME/$CURRENT_BRANCH..$CURRENT_BRANCH --oneline
+
+# 远程领先的提交
+git log $CURRENT_BRANCH..$REMOTE_NAME/$CURRENT_BRANCH --oneline
+
+# 检查分叉
+git rev-list --left-right --count $CURRENT_BRANCH...$REMOTE_NAME/$CURRENT_BRANCH
+```
+
+#### 2.3 智能冲突预测
+
+使用 `conflict-predictor.sh` 脚本或执行以下命令：
+
+```bash
+# 获取本地和远程修改的文件列表
+LOCAL_FILES=$(git diff --name-only $REMOTE_NAME/$CURRENT_BRANCH..$CURRENT_BRANCH)
+REMOTE_FILES=$(git diff --name-only $CURRENT_BRANCH..$REMOTE_NAME/$CURRENT_BRANCH)
+
+# 找出可能冲突的文件（两边都修改了）
+echo "$LOCAL_FILES" | sort > /tmp/local_files
+echo "$REMOTE_FILES" | sort > /tmp/remote_files
+comm -12 /tmp/local_files /tmp/remote_files
+```
+
+**冲突风险评级**：
+
+- 🟢 低风险：无共同修改文件
+- 🟡 中风险：1-3 个共同修改文件
+- 🔴 高风险：>3 个共同修改文件或关键文件冲突
+
+### 阶段 3：.gitignore 检查
+
+使用 `gitignore-checker.sh` 脚本或执行：
+
+```bash
+# 检查是否有不该提交的文件
+git status --porcelain | grep -E "\.env|\.key|\.pem|node_modules|\.DS_Store|\.vscode"
+```
+
+根据项目类型推荐 .gitignore 规则（详见 reference.md）。
+
+### 阶段 4：批量检查支持
+
+使用 `batch-checker.sh` 脚本批量检查多个仓库：
+
+```bash
+# 扫描指定目录下的所有 Git 仓库
+bash batch-checker.sh ~/projects
+```
+
+**批量检查输出示例**：
+
+```
+📦 批量检查结果 (3 个仓库)
+
+✅ project-a: 已同步
+⚠️ project-b: 2 个未推送提交
+🔴 project-c: 有未提交修改 + 远程领先
+```
+
+### 阶段 5：智能报告生成
+
+#### 标准报告格式
+
+```markdown
+# Git 同步状态报告
+生成时间: 2025-11-17 14:30:00
+
+## 📊 基本信息
+- 仓库: my-project
+- 分支: feature/new-feature
+- 远程: origin (github.com)
+- 项目类型: React 前端项目
+
+## 🔍 状态概览
+- 工作区: 3 个文件有修改
+- 暂存区: 1 个文件已暂存
+- 本地提交: 2 个未推送
+- 远程更新: 0 个未拉取
+
+## ⚠️ 风险评估
+- 冲突风险: 🟢 低风险
+- 敏感文件: ⚠️ 发现 .env 文件未忽略
+
+## 💡 操作建议
+1. 添加 .env 到 .gitignore
+2. 提交当前修改
+3. 推送到远程
+
+## 📝 详细命令
+\`\`\`bash
+echo ".env" >> .gitignore
+git add .gitignore src/
+git commit -m "feat: 完成新功能"
+git push origin feature/new-feature
+\`\`\`
+```
+
+#### 简洁模式（适合快速查看）
+
+```
+✅ main | ↑2 | 干净
+⚠️ feature | ↑1 ↓3 | 2 个修改
+🔴 hotfix | ↑0 ↓1 | 有冲突
+```
+
+### 阶段 6：情境感知建议
+
+#### 时间感知
+
+根据当前时间提供不同优先级建议：
+
+- **下班前（17:00-19:00）**：优先检查"推送代码"、"清理工作区"
+- **上班后（9:00-11:00）**：优先检查"拉取更新"、"检查依赖"
+- **其他时间**：常规检查
+
+#### 项目类型感知
+
+**前端项目**：
+
+- 检查 node_modules 是否被忽略
+- 提醒运行 `npm install` 或 `pnpm install`
+- 建议检查 package-lock.json 冲突
+
+**后端项目**：
+
+- 检查虚拟环境是否被忽略
+- 提醒运行数据库迁移
+- 建议检查 API 版本兼容性
+
+**全栈项目**：
+
+- 检查前后端同步状态
+- 提醒环境变量配置
+- 建议测试端到端功能
+
+## 使用场景快速参考
+
+| 场景            | 触发词示例                 | 重点检查               |
+| --------------- | -------------------------- | ---------------------- |
+| 下班前检查      | "准备下班"、"检查同步"     | 所有修改已提交、已推送 |
+| 上班后检查      | "开始工作"、"拉取最新代码" | 拉取远程更新、检查依赖 |
+| 批量检查        | "检查所有项目"             | 多仓库状态概览         |
+| 冲突预测        | "会有冲突吗"               | 分析共同修改文件       |
+| .gitignore 优化 | "检查 gitignore"           | 敏感文件、项目规则     |
+
+## 安全限制与边界
+
+### 安全限制
+
+- ❌ 永不执行强制推送（`--force`）
+- ❌ 永不修改已推送的提交历史
+- ❌ 永不自动删除分支
+- ⚠️ 危险操作必须明确警告
+
+### 功能边界
+
+- ✅ 只检查和建议，不自动执行修改操作
+- ✅ 所有 Git 命令需用户手动确认
+- ✅ 冲突解决提供方案，不自动处理
+- ✅ 敏感信息检测后立即警告
+
+### 性能考虑
+
+- 批量检查时限制仓库数量（建议 ≤20）
+- 大仓库检查时显示进度
+- 超时保护（单个仓库检查 <30 秒）
+
+## 报告格式选项
+
+用户可以指定报告格式：
+
+```
+# 默认格式（带颜色的终端输出）
+检查同步状态
+
+# Markdown 报告
+检查同步状态，生成 markdown 报告
+
+# JSON 格式（供脚本使用）
+检查同步状态，输出 json
+
+# HTML 报告（可在浏览器查看）
+检查同步状态，生成 html 报告
+```
+
+## 参考文档
+
+- **examples.md** - 6个详细使用场景示例
+- **reference.md** - 高级功能、算法详解和完整 .gitignore 规则
+- **DEPLOYMENT.md** - 部署和安装指南
+- **CHANGELOG.md** - 版本历史
+
+## 快速示例
+
+### 示例 1：基本检查
+
+**用户输入**：检查同步状态
+
+**执行**：
+
+1. 检测当前分支和远程仓库
+2. 对比本地与远程提交
+3. 生成状态报告
+4. 提供操作建议
+
+### 示例 2：冲突预测
+
+**用户输入**：我要合并最新代码，会有冲突吗？
+
+**执行**：
+
+1. 运行 `conflict-predictor.sh`
+2. 分析共同修改文件
+3. 计算冲突风险评分
+4. 提供安全合并步骤
+
+### 示例 3：批量检查
+
+**用户输入**：检查 ~/projects 下所有仓库
+
+**执行**：
+
+1. 运行 `batch-checker.sh ~/projects`
+2. 扫描所有 Git 仓库
+3. 生成批量报告
+4. 突出显示需要处理的项目
+
+完整示例请参考 examples.md 文件。
+
+---

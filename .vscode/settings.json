@@ -1,3 +1,4 @@
 {
-    "claude-code.useTerminal": false
+    "claude-code.useTerminal": false,
+    "liveServer.settings.port": 5501
 }

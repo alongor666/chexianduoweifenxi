@@ -2,3 +2,6 @@
 # 用于 CSV 转 DuckDB 脚本
 
 duckdb>=0.10.0
+pandas>=2.0.0
+plotly>=5.18.0
+kaleido>=0.2.1

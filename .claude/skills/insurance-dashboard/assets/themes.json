@@ -1,0 +1,82 @@
+{
+  "themes": {
+    "mckinsey": {
+      "name": "McKinsey 专业商务",
+      "primary": "#003D5B",
+      "secondary": "#ED8B00",
+      "accent": "#00A4BD",
+      "success": "#76BC21",
+      "warning": "#F37021",
+      "danger": "#E31C23",
+      "background": "#F5F5F5",
+      "text": "#2C2C2C",
+      "description": "麦肯锡经典配色方案，深蓝色代表专业与信任，橙色提供视觉焦点"
+    },
+    "apple": {
+      "name": "Apple 简约现代",
+      "primary": "#007AFF",
+      "secondary": "#5856D6",
+      "accent": "#FF9500",
+      "success": "#34C759",
+      "warning": "#FF9500",
+      "danger": "#FF3B30",
+      "background": "#F2F2F7",
+      "text": "#1C1C1E",
+      "description": "苹果系统风格，清新简洁，采用渐变和毛玻璃效果"
+    },
+    "financial": {
+      "name": "金融稳健",
+      "primary": "#1E3A8A",
+      "secondary": "#0F766E",
+      "accent": "#CA8A04",
+      "success": "#16A34A",
+      "warning": "#EA580C",
+      "danger": "#DC2626",
+      "background": "#F8FAFC",
+      "text": "#0F172A",
+      "description": "适合金融保险行业的稳重配色"
+    },
+    "modern": {
+      "name": "现代科技",
+      "primary": "#6366F1",
+      "secondary": "#8B5CF6",
+      "accent": "#EC4899",
+      "success": "#10B981",
+      "warning": "#F59E0B",
+      "danger": "#EF4444",
+      "background": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      "text": "#1F2937",
+      "description": "渐变色系，适合创新型报告"
+    }
+  },
+  "chart_palettes": {
+    "professional": [
+      "#003D5B",
+      "#ED8B00",
+      "#00A4BD",
+      "#76BC21",
+      "#8B4789"
+    ],
+    "apple": [
+      "#007AFF",
+      "#5856D6",
+      "#FF9500",
+      "#34C759",
+      "#FF2D55"
+    ],
+    "ocean": [
+      "#0ea5e9",
+      "#06b6d4",
+      "#14b8a6",
+      "#10b981",
+      "#22c55e"
+    ],
+    "warm": [
+      "#f43f5e",
+      "#ec4899",
+      "#f59e0b",
+      "#eab308",
+      "#84cc16"
+    ]
+  }
+}
