@@ -43,7 +43,7 @@ import {
   getComparisonColor,
   type ComparisonMetrics,
 } from '@/utils/comparison'
-import { formatPercent, formatNumber } from '@/utils/format'
+import { formatPercent, formatNumber } from '@/utils/formatters'
 import type { KPIResult } from '@/types/insurance'
 import {
   usePremiumDimensionAnalysis,

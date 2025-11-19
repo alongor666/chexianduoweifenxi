@@ -20,7 +20,7 @@ import {
   formatCurrency,
   getContributionMarginColor,
   getContributionMarginBgColor,
-} from '@/utils/format'
+} from '@/utils/formatters'
 import type { KPIResult } from '@/types/insurance'
 
 export interface KPIDashboardProps {

@@ -12,7 +12,7 @@ import {
   Cell,
 } from 'recharts'
 import { useFilteredData } from '@/store/use-app-store'
-import { formatNumber } from '@/utils/format'
+import { formatNumber } from '@/utils/formatters'
 import type { InsuranceRecord } from '@/types/insurance'
 import { getContributionMarginHexColor } from '@/utils/color-scale'
 

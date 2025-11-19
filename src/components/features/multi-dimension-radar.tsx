@@ -22,7 +22,7 @@ import {
   convertKPIToRadarScores,
   type RadarScoreResult,
 } from '@/utils/radar-score'
-import { formatPercent, formatNumber } from '@/utils/format'
+import { formatPercent, formatNumber } from '@/utils/formatters'
 import { cn } from '@/lib/utils'
 import { getOrganizationColor } from '@/utils/organization-config'
 import { OrganizationSelector } from './organization-selector'

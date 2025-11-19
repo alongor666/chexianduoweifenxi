@@ -1,127 +1,51 @@
 /**
  * 数值格式化工具函数
+ *
+ * @deprecated 此文件已弃用，请使用 @/utils/formatters 代替
+ * 为保持向后兼容性，此文件重新导出所有格式化函数
+ *
+ * @see @/utils/formatters - 新的格式化工具包
  */
 
-/**
- * 格式化数字为千分位格式
- * @param value 数值
- * @param decimals 小数位数（默认0）
- * @returns 格式化后的字符串
- */
-export function formatNumber(
-  value: number | null | undefined,
-  decimals = 0
-): string {
-  if (value === null || value === undefined || isNaN(value)) {
-    return '-'
-  }
+// 重新导出所有格式化函数以保持向后兼容
+export {
+  formatNumber,
+  formatInteger,
+  formatDecimal,
+} from './formatters/number'
 
-  return value.toLocaleString('zh-CN', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  })
-}
+export {
+  formatCurrency,
+  formatYuan,
+  formatWanYuan,
+  type CurrencyUnit,
+} from './formatters/currency'
 
-/**
- * 格式化百分比
- * @param value 数值（0-100）
- * @param decimals 小数位数（默认2）
- * @returns 格式化后的字符串（带%符号）
- */
-export function formatPercent(
-  value: number | null | undefined,
-  decimals = 2
-): string {
-  if (value === null || value === undefined || isNaN(value)) {
-    return '-'
-  }
+export {
+  formatPercent,
+  formatPercentFromDecimal,
+} from './formatters/percent'
 
-  return `${value.toFixed(decimals)}%`
-}
+export {
+  formatChange,
+  type ChangeDirection,
+  type FormattedChange,
+} from './formatters/change'
 
-/**
- * 格式化金额（万元）
- * @param value 金额（万元）
- * @param decimals 小数位数（默认0）
- * @returns 格式化后的字符串（带"万元"单位）
- */
-export function formatCurrency(
-  value: number | null | undefined,
-  decimals = 0
-): string {
-  if (value === null || value === undefined || isNaN(value)) {
-    return '-'
-  }
+export {
+  formatFileSize,
+} from './formatters/file-size'
 
-  return `${formatNumber(value, decimals)} 万元`
-}
+export {
+  formatTime,
+  formatDateTime,
+  formatDate,
+} from './formatters/time'
 
-/**
- * 格式化整数
- * @param value 数值
- * @returns 格式化后的字符串（千分位）
- */
-export function formatInteger(value: number | null | undefined): string {
-  return formatNumber(value, 0)
-}
-
-/**
- * 格式化小数
- * @param value 数值
- * @param decimals 小数位数
- * @returns 格式化后的字符串
- */
-export function formatDecimal(
-  value: number | null | undefined,
-  decimals = 3
-): string {
-  return formatNumber(value, decimals)
-}
-
-/**
- * 格式化变化值（带正负号和颜色）
- * @param value 变化值
- * @param isPercentage 是否为百分比
- * @returns { text: string, color: string, direction: 'up' | 'down' | 'flat' }
- */
-export function formatChange(
-  value: number | null | undefined,
-  isPercentage = false
-): {
-  text: string
-  color: string
-  direction: 'up' | 'down' | 'flat'
-} {
-  if (value === null || value === undefined || isNaN(value)) {
-    return { text: '-', color: 'text-slate-500', direction: 'flat' }
-  }
-
-  const absValue = Math.abs(value)
-  const integerValue = Math.round(absValue)
-  const formattedValue = isPercentage
-    ? `${absValue.toFixed(2)}%`
-    : formatNumber(integerValue, 0)
-
-  if (value > 0) {
-    return {
-      text: `+${formattedValue}`,
-      color: 'text-green-600',
-      direction: 'up',
-    }
-  } else if (value < 0) {
-    return {
-      text: `-${formattedValue}`,
-      color: 'text-red-600',
-      direction: 'down',
-    }
-  } else {
-    return {
-      text: formattedValue,
-      color: 'text-slate-500',
-      direction: 'flat',
-    }
-  }
-}
+export {
+  formatWeekRange,
+  formatWeek,
+} from './formatters/week'
 
 /**
  * 根据满期边际贡献率获取颜色

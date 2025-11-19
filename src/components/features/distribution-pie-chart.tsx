@@ -13,7 +13,7 @@ import {
   useCustomerDistribution,
   useChannelDistribution,
 } from '@/hooks/use-aggregation'
-import { formatNumber } from '@/utils/format'
+import { formatNumber } from '@/utils/formatters'
 import type { PiePoint } from '@/hooks/use-aggregation'
 
 const COLORS = [

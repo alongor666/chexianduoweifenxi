@@ -31,7 +31,7 @@ import {
   fitTrend,
   type TrendFittingOptions,
 } from '@/lib/analytics/trend-fitting'
-import { formatNumber, formatPercent } from '@/utils/format'
+import { formatNumber, formatPercent } from '@/utils/formatters'
 
 const LOSS_RISK_THRESHOLD = 70
 const LOSS_ROLLING_WINDOW = 4

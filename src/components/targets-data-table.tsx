@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
-import { formatNumber } from '@/utils/format'
+import { formatNumber } from '@/utils/formatters'
 import { getDynamicColorByPremiumProgress } from '@/utils/color-scale'
 import { getTimeProgressForWeek } from '@/lib/utils/date-utils'
 

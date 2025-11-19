@@ -8,6 +8,7 @@
 import React from 'react'
 import { Calendar, CheckCircle2, AlertTriangle, FileText } from 'lucide-react'
 import type { WeekInfo } from '@/lib/storage/data-persistence'
+import { formatFileSize } from '@/utils/formatters'
 
 interface FileWeekPreview {
   fileName: string
@@ -21,17 +22,6 @@ interface UploadWeekPreviewProps {
   filesPreviews: FileWeekPreview[]
   onConfirm: () => void
   onCancel: () => void
-}
-
-/**
- * 格式化文件大小
- */
-const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return '0 B'
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
 /**

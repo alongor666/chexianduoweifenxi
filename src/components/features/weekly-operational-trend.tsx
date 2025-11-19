@@ -5,7 +5,7 @@ import * as echarts from 'echarts'
 import { AlertTriangle } from 'lucide-react'
 import { useTrendData } from '@/hooks/use-trend'
 import { applyFilters } from '@/hooks/use-filtered-data'
-import { formatNumber, formatPercent } from '@/utils/format'
+import { formatNumber, formatPercent } from '@/utils/formatters'
 import { useAppStore } from '@/store/use-app-store'
 import type { FilterState, InsuranceRecord } from '@/types/insurance'
 
