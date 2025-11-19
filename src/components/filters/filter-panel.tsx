@@ -31,6 +31,9 @@ export function FilterPanel() {
     filters.coverageTypes.length > 0 ||
     filters.customerCategories.length > 0 ||
     filters.vehicleGrades.length > 0 ||
+    filters.highwayRiskGrades.length > 0 ||
+    filters.smallTruckScores.length > 0 ||
+    filters.largeTruckScores.length > 0 ||
     filters.renewalStatuses.length > 0 ||
     filters.terminalSources.length > 0 ||
     filters.isNewEnergy !== null

@@ -4,12 +4,17 @@ import { FilterContainer } from './filter-container'
 import { MultiSelectFilter } from './multi-select-filter'
 import { useAppStore } from '@/store/use-app-store'
 import { filterRecordsWithExclusions } from '@/store/use-app-store'
-import type { VehicleInsuranceGrade } from '@/types/insurance'
+import type {
+  VehicleInsuranceGrade,
+  HighwayRiskGrade,
+  TruckScore,
+} from '@/types/insurance'
 import { normalizeChineseText } from '@/lib/utils'
 import {
   CANONICAL_RENEWAL_STATUSES,
   CANONICAL_CUSTOMER_CATEGORIES,
 } from '@/constants/dimensions'
+import { getRatingVisibility } from '@/utils/rating-visibility'
 
 export function CustomerFilter() {
   const filters = useAppStore(state => state.filters)
@@ -33,7 +38,10 @@ export function CustomerFilter() {
     .sort((a, b) => a.localeCompare(b, 'zh-CN'))
     .map(cat => ({ label: cat, value: cat }))
 
-  // 联动：根据其他筛选条件提取唯一的车险评级
+  // 获取评级筛选器可见性配置
+  const ratingVisibility = getRatingVisibility(filters)
+
+  // 联动：根据其他筛选条件提取唯一的车险评级（客车）
   const recordsForVehicleGrades = filterRecordsWithExclusions(
     rawData,
     filters,
@@ -53,6 +61,69 @@ export function CustomerFilter() {
     }, [] as NonNullable<VehicleInsuranceGrade>[])
     .sort()
     .map(grade => ({ label: grade, value: grade }))
+
+  // 联动：根据其他筛选条件提取唯一的高速风险等级（客车）
+  const recordsForHighwayRiskGrades = filterRecordsWithExclusions(
+    rawData,
+    filters,
+    ['highwayRiskGrades']
+  )
+  const availableHighwayRiskGrades = recordsForHighwayRiskGrades
+    .map(record => record.highway_risk_grade)
+    .filter(
+      (grade): grade is NonNullable<typeof grade> =>
+        grade != null && grade !== 'X' && grade.trim() !== ''
+    )
+    .reduce((unique, grade) => {
+      if (!unique.includes(grade)) {
+        unique.push(grade)
+      }
+      return unique
+    }, [] as NonNullable<HighwayRiskGrade>[])
+    .sort()
+    .map(grade => ({ label: grade, value: grade }))
+
+  // 联动：根据其他筛选条件提取唯一的小货车评分
+  const recordsForSmallTruckScores = filterRecordsWithExclusions(
+    rawData,
+    filters,
+    ['smallTruckScores']
+  )
+  const availableSmallTruckScores = recordsForSmallTruckScores
+    .map(record => record.small_truck_score)
+    .filter(
+      (score): score is NonNullable<typeof score> =>
+        score != null && score !== 'X' && score.trim() !== ''
+    )
+    .reduce((unique, score) => {
+      if (!unique.includes(score)) {
+        unique.push(score)
+      }
+      return unique
+    }, [] as NonNullable<TruckScore>[])
+    .sort()
+    .map(score => ({ label: score, value: score }))
+
+  // 联动：根据其他筛选条件提取唯一的大货车评分
+  const recordsForLargeTruckScores = filterRecordsWithExclusions(
+    rawData,
+    filters,
+    ['largeTruckScores']
+  )
+  const availableLargeTruckScores = recordsForLargeTruckScores
+    .map(record => record.large_truck_score)
+    .filter(
+      (score): score is NonNullable<typeof score> =>
+        score != null && score !== 'X' && score.trim() !== ''
+    )
+    .reduce((unique, score) => {
+      if (!unique.includes(score)) {
+        unique.push(score)
+      }
+      return unique
+    }, [] as NonNullable<TruckScore>[])
+    .sort()
+    .map(score => ({ label: score, value: score }))
 
   // 联动：根据其他筛选条件提取唯一的新续转状态
   const recordsForRenewalStatuses = filterRecordsWithExclusions(
@@ -79,6 +150,18 @@ export function CustomerFilter() {
     updateFilters({ vehicleGrades: grades })
   }
 
+  const handleHighwayRiskGradeChange = (grades: string[]) => {
+    updateFilters({ highwayRiskGrades: grades })
+  }
+
+  const handleSmallTruckScoreChange = (scores: string[]) => {
+    updateFilters({ smallTruckScores: scores })
+  }
+
+  const handleLargeTruckScoreChange = (scores: string[]) => {
+    updateFilters({ largeTruckScores: scores })
+  }
+
   const handleRenewalStatusChange = (statuses: string[]) => {
     updateFilters({ renewalStatuses: statuses })
   }
@@ -87,6 +170,9 @@ export function CustomerFilter() {
     updateFilters({
       customerCategories: [],
       vehicleGrades: [],
+      highwayRiskGrades: [],
+      smallTruckScores: [],
+      largeTruckScores: [],
       renewalStatuses: [],
     })
   }
@@ -94,6 +180,9 @@ export function CustomerFilter() {
   const hasFilters =
     filters.customerCategories.length > 0 ||
     filters.vehicleGrades.length > 0 ||
+    filters.highwayRiskGrades.length > 0 ||
+    filters.smallTruckScores.length > 0 ||
+    filters.largeTruckScores.length > 0 ||
     filters.renewalStatuses.length > 0
 
   return (
@@ -117,20 +206,87 @@ export function CustomerFilter() {
               emptyText="未找到客户分类"
             />
           </div>
-          <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">
-              车险评级
-            </label>
-            <MultiSelectFilter
-              id="customer-filter-vehicle-grade"
-              options={availableVehicleGrades}
-              selectedValues={filters.vehicleGrades}
-              onChange={handleVehicleGradeChange}
-              placeholder="选择车险评级"
-              searchPlaceholder="搜索车险评级..."
-              emptyText="未找到车险评级"
-            />
-          </div>
+
+          {/* 车险评级 - 仅客车可选 */}
+          {ratingVisibility.showVehicleGrade && (
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                车险分等级
+                <span className="ml-2 text-xs text-slate-500">（客车）</span>
+              </label>
+              <MultiSelectFilter
+                id="customer-filter-vehicle-grade"
+                options={availableVehicleGrades}
+                selectedValues={filters.vehicleGrades}
+                onChange={handleVehicleGradeChange}
+                placeholder="选择车险分等级"
+                searchPlaceholder="搜索车险分等级..."
+                emptyText="未找到车险分等级"
+              />
+            </div>
+          )}
+
+          {/* 高速风险等级 - 仅客车可选 */}
+          {ratingVisibility.showHighwayRisk && (
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                高速风险等级
+                <span className="ml-2 text-xs text-slate-500">（客车）</span>
+              </label>
+              <MultiSelectFilter
+                id="customer-filter-highway-risk"
+                options={availableHighwayRiskGrades}
+                selectedValues={filters.highwayRiskGrades}
+                onChange={handleHighwayRiskGradeChange}
+                placeholder="选择高速风险等级"
+                searchPlaceholder="搜索高速风险等级..."
+                emptyText="未找到高速风险等级"
+              />
+            </div>
+          )}
+
+          {/* 小货车评分 - 仅9吨以下货车可选 */}
+          {ratingVisibility.showSmallTruck && (
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                小货车评分
+                <span className="ml-2 text-xs text-slate-500">
+                  （9吨以下货车）
+                </span>
+              </label>
+              <MultiSelectFilter
+                id="customer-filter-small-truck"
+                options={availableSmallTruckScores}
+                selectedValues={filters.smallTruckScores}
+                onChange={handleSmallTruckScoreChange}
+                placeholder="选择小货车评分"
+                searchPlaceholder="搜索小货车评分..."
+                emptyText="未找到小货车评分"
+              />
+            </div>
+          )}
+
+          {/* 大货车评分 - 仅9吨以上货车可选 */}
+          {ratingVisibility.showLargeTruck && (
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                大货车评分
+                <span className="ml-2 text-xs text-slate-500">
+                  （9吨以上货车）
+                </span>
+              </label>
+              <MultiSelectFilter
+                id="customer-filter-large-truck"
+                options={availableLargeTruckScores}
+                selectedValues={filters.largeTruckScores}
+                onChange={handleLargeTruckScoreChange}
+                placeholder="选择大货车评分"
+                searchPlaceholder="搜索大货车评分..."
+                emptyText="未找到大货车评分"
+              />
+            </div>
+          )}
+
           <div>
             <label className="mb-2 block text-sm font-medium text-slate-700">
               新续转状态

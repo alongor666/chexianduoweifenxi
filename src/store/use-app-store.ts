@@ -245,6 +245,9 @@ const defaultFilters: FilterState = {
   coverageTypes: [],
   customerCategories: [],
   vehicleGrades: [],
+  highwayRiskGrades: [],
+  smallTruckScores: [],
+  largeTruckScores: [],
   terminalSources: [],
   isNewEnergy: null,
   renewalStatuses: [],
@@ -465,6 +468,15 @@ export const useAppStore = create<AppState>()(
               ).map(normalizeChineseText),
               vehicleGrades: (
                 newFilters.vehicleGrades ?? state.filters.vehicleGrades
+              ).map(normalizeChineseText),
+              highwayRiskGrades: (
+                newFilters.highwayRiskGrades ?? state.filters.highwayRiskGrades
+              ).map(normalizeChineseText),
+              smallTruckScores: (
+                newFilters.smallTruckScores ?? state.filters.smallTruckScores
+              ).map(normalizeChineseText),
+              largeTruckScores: (
+                newFilters.largeTruckScores ?? state.filters.largeTruckScores
               ).map(normalizeChineseText),
               renewalStatuses: (
                 newFilters.renewalStatuses ?? state.filters.renewalStatuses
@@ -725,6 +737,11 @@ export const useFilteredData = () => {
   const coverageTypes = useAppStore(state => state.filters.coverageTypes)
   const customerCategories = useAppStore(state => state.filters.customerCategories)
   const vehicleGrades = useAppStore(state => state.filters.vehicleGrades)
+  const highwayRiskGrades = useAppStore(
+    state => state.filters.highwayRiskGrades
+  )
+  const smallTruckScores = useAppStore(state => state.filters.smallTruckScores)
+  const largeTruckScores = useAppStore(state => state.filters.largeTruckScores)
   const terminalSources = useAppStore(state => state.filters.terminalSources)
   const isNewEnergy = useAppStore(state => state.filters.isNewEnergy)
   const renewalStatuses = useAppStore(state => state.filters.renewalStatuses)
@@ -742,6 +759,9 @@ export const useFilteredData = () => {
           coverageTypes,
           customerCategories,
           vehicleGrades,
+          highwayRiskGrades,
+          smallTruckScores,
+          largeTruckScores,
           terminalSources,
           isNewEnergy,
           renewalStatuses,
@@ -816,6 +836,33 @@ export const useFilteredData = () => {
           }
         }
 
+        if (filters.highwayRiskGrades.length > 0) {
+          if (
+            record.highway_risk_grade &&
+            !filters.highwayRiskGrades.includes(record.highway_risk_grade)
+          ) {
+            return false
+          }
+        }
+
+        if (filters.smallTruckScores.length > 0) {
+          if (
+            record.small_truck_score &&
+            !filters.smallTruckScores.includes(record.small_truck_score)
+          ) {
+            return false
+          }
+        }
+
+        if (filters.largeTruckScores.length > 0) {
+          if (
+            record.large_truck_score &&
+            !filters.largeTruckScores.includes(record.large_truck_score)
+          ) {
+            return false
+          }
+        }
+
         // 渠道筛选
         if (
           filters.terminalSources.length > 0 &&
@@ -851,6 +898,9 @@ export const useFilteredData = () => {
       coverageTypes,
       customerCategories,
       vehicleGrades,
+      highwayRiskGrades,
+      smallTruckScores,
+      largeTruckScores,
       terminalSources,
       isNewEnergy,
       renewalStatuses,
@@ -949,6 +999,39 @@ export function filterRecordsWithExclusions(
         if (
           record.vehicle_insurance_grade &&
           !filters.vehicleGrades.includes(record.vehicle_insurance_grade)
+        ) {
+          return false
+        }
+      }
+    }
+
+    if (!excluded.has('highwayRiskGrades')) {
+      if (filters.highwayRiskGrades.length > 0) {
+        if (
+          record.highway_risk_grade &&
+          !filters.highwayRiskGrades.includes(record.highway_risk_grade)
+        ) {
+          return false
+        }
+      }
+    }
+
+    if (!excluded.has('smallTruckScores')) {
+      if (filters.smallTruckScores.length > 0) {
+        if (
+          record.small_truck_score &&
+          !filters.smallTruckScores.includes(record.small_truck_score)
+        ) {
+          return false
+        }
+      }
+    }
+
+    if (!excluded.has('largeTruckScores')) {
+      if (filters.largeTruckScores.length > 0) {
+        if (
+          record.large_truck_score &&
+          !filters.largeTruckScores.includes(record.large_truck_score)
         ) {
           return false
         }

@@ -69,6 +69,9 @@ const defaultFilters: FilterState = {
   coverageTypes: [],
   customerCategories: [],
   vehicleGrades: [],
+  highwayRiskGrades: [],
+  smallTruckScores: [],
+  largeTruckScores: [],
   terminalSources: [],
   isNewEnergy: null,
   renewalStatuses: [],
@@ -111,6 +114,15 @@ export const useFilterStore = create<FilterStore>()(
                 ).map(normalizeChineseText),
                 vehicleGrades: (
                   newFilters.vehicleGrades ?? state.filters.vehicleGrades
+                ).map(normalizeChineseText),
+                highwayRiskGrades: (
+                  newFilters.highwayRiskGrades ?? state.filters.highwayRiskGrades
+                ).map(normalizeChineseText),
+                smallTruckScores: (
+                  newFilters.smallTruckScores ?? state.filters.smallTruckScores
+                ).map(normalizeChineseText),
+                largeTruckScores: (
+                  newFilters.largeTruckScores ?? state.filters.largeTruckScores
                 ).map(normalizeChineseText),
                 renewalStatuses: (
                   newFilters.renewalStatuses ?? state.filters.renewalStatuses
@@ -173,6 +185,12 @@ export const useFilterStore = create<FilterStore>()(
           )
             count++
           if (filters.vehicleGrades && filters.vehicleGrades.length > 0) count++
+          if (filters.highwayRiskGrades && filters.highwayRiskGrades.length > 0)
+            count++
+          if (filters.smallTruckScores && filters.smallTruckScores.length > 0)
+            count++
+          if (filters.largeTruckScores && filters.largeTruckScores.length > 0)
+            count++
           if (filters.terminalSources && filters.terminalSources.length > 0)
             count++
           if (filters.isNewEnergy !== null) count++

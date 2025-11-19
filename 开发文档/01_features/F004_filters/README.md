@@ -26,7 +26,11 @@
   - 险别组合：基于 `CANONICAL_COVERAGE_TYPES`（3种：主全、交三、单交）
 - ✅ **客户维度筛选**: 按客户类型、评级、新续转等属性筛选。
   - 客户分类：基于 `CANONICAL_CUSTOMER_CATEGORIES`（11种，严格符合CSV规范）
-  - 车险评级：从数据中动态提取（排除X和空值）
+  - 评级筛选（条件显示）：根据车辆类型智能显示对应评级项
+    - **车险分等级**：仅客车类型可选（客车相关客户类别或业务类型）
+    - **高速风险等级**：仅客车类型可选（客车相关客户类别或业务类型）
+    - **小货车评分**：仅9吨以下货车可选（对应业务类型）
+    - **大货车评分**：仅9吨以上货车可选（对应业务类型）
   - 新续转状态：基于 `CANONICAL_RENEWAL_STATUSES`（3种：新保、续保、转保）
 - ✅ **筛选预设**: 支持保存和加载常用的筛选组合。
 - ✅ **状态重置**: 一键清空所有业务维度筛选条件。
@@ -53,6 +57,10 @@
 - ✅ [`src/components/filters/product-filter.tsx`](../../../src/components/filters/product-filter.tsx)
 - ✅ [`src/components/filters/customer-filter.tsx`](../../../src/components/filters/customer-filter.tsx)
 
+### 工具模块
+
+- ✅ [`src/utils/rating-visibility.ts`](../../../src/utils/rating-visibility.ts) (评级筛选器可见性逻辑)
+
 ## 相关文档
 
 - [全局筛选器重构总结.md](../../archive/全局筛选器重构总结.md)
@@ -60,6 +68,29 @@
 - [CSV导入规范](../../archive/CSV导入规范.md)
 
 ## 变更日志
+
+### v3.2.0 (2025-11-19)
+- **重构**: 评级筛选器从单一字段拆分为四种评级类型
+  - 新增 `highwayRiskGrades`（高速风险等级）筛选器
+  - 新增 `smallTruckScores`（小货车评分）筛选器
+  - 新增 `largeTruckScores`（大货车评分）筛选器
+  - 保留 `vehicleGrades`（车险分等级）筛选器
+- **新增**: 智能条件显示逻辑
+  - 根据已选择的客户类别或业务类型，动态显示对应的评级筛选项
+  - 客车类型显示车险分等级和高速风险等级
+  - 9吨以下货车显示小货车评分
+  - 9吨以上货车显示大货车评分
+  - 未选择时默认显示所有评级选项
+- **修复**: "更多筛选"对话框重复关闭按钮问题
+  - 移除了手动添加的关闭按钮，使用 DialogContent 组件自带的关闭按钮
+- **重构**: 抽取评级显示逻辑为独立工具模块 `src/utils/rating-visibility.ts`
+  - 提供可复用的工具函数：`shouldShowPassengerRatings`, `shouldShowSmallTruckRating`, `shouldShowLargeTruckRating`, `getRatingVisibility`
+  - 定义车辆类型常量：`PASSENGER_CUSTOMER_CATEGORIES`, `PASSENGER_BUSINESS_TYPES`, `SMALL_TRUCK_BUSINESS_TYPES`, `LARGE_TRUCK_BUSINESS_TYPES`
+  - 提高代码可维护性和可测试性
+- **测试**: 新增完整的单元测试和 E2E 测试
+  - 单元测试：31 个测试用例，100% 通过 (`src/utils/__tests__/rating-visibility.test.ts`)
+  - E2E 测试：7 个场景测试 (`tests/e2e/filter-conditional-display.spec.ts`)
+  - 覆盖所有条件显示逻辑和边界情况
 
 ### v3.1.0 (2025-11-02)
 - **修复**: 业务类型筛选器现在使用 `CANONICAL_BUSINESS_TYPES` 常量，确保仅显示符合CSV规范的16种业务类型
@@ -69,8 +100,20 @@
 
 ## 测试覆盖
 
-- ✅ **100% 通过**: 所有筛选器功能，包括全局和业务维度，均已通过端到端测试。
-- [测试记录-2025-10-20-最终.md](../../archive/测试记录-2025-10-20-最终.md)
+### 单元测试
+- ✅ **评级可见性逻辑测试** (`src/utils/__tests__/rating-visibility.test.ts`)
+  - 31 个测试用例，100% 通过
+  - 覆盖客车、小货车、大货车评级显示逻辑
+  - 包含边界情况和组合场景测试
+
+### E2E 测试
+- ✅ **评级筛选器条件显示测试** (`tests/e2e/filter-conditional-display.spec.ts`)
+  - 7 个场景测试
+  - 验证用户交互流程和UI响应
+  - 测试关闭按钮唯一性
+- ✅ **其他筛选器功能测试**
+  - 所有筛选器功能，包括全局和业务维度，均已通过端到端测试
+  - [测试记录-2025-10-20-最终.md](../../archive/测试记录-2025-10-20-最终.md)
 
 ## 技术栈
 
@@ -80,5 +123,5 @@
 
 ---
 
-*最后更新: 2025-11-02*
-*更新内容: 修复业务类型和客户分类筛选器的枚举值规范化问题*
+*最后更新: 2025-11-19*
+*更新内容: 评级筛选器重构，实现四种评级类型的条件显示，修复更多筛选对话框UI问题*

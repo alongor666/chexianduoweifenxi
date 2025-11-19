@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Filter, X } from 'lucide-react'
+import { Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -30,26 +30,14 @@ export function MoreFiltersDialog() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <DialogTitle className="text-xl font-bold text-slate-800">
-                  更多筛选
-                </DialogTitle>
-                <DialogDescription className="text-slate-600">
-                  精细筛选业务数据，快速定位目标信息
-                </DialogDescription>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setOpen(false)}
-                className="p-1 h-8 w-8"
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
+            <DialogTitle className="text-xl font-bold text-slate-800">
+              更多筛选
+            </DialogTitle>
+            <DialogDescription className="text-slate-600">
+              精细筛选业务数据，快速定位目标信息
+            </DialogDescription>
           </DialogHeader>
-          
+
           <div className="mt-6">
             <FilterPanel />
           </div>

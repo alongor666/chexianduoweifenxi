@@ -74,7 +74,7 @@ export interface InsuranceRecord {
 
   // 组织维度
   chengdu_branch: '成都' | '中支' // 地域属性
-  second_level_organization?: string // 二级机构（可选）
+  second_level_organization: string // 二级机构（可选）
   third_level_organization: string // 三级机构
 
   // 客户维度
@@ -300,7 +300,10 @@ export interface FilterState {
 
   // 客户筛选
   customerCategories: string[] // 客户分类
-  vehicleGrades: string[] // 车险评级
+  vehicleGrades: string[] // 车险评级（客车）
+  highwayRiskGrades: string[] // 高速风险等级（客车）
+  smallTruckScores: string[] // 小货车评分（9吨以下货车）
+  largeTruckScores: string[] // 大货车评分（9吨以上货车）
 
   // 其他筛选
   terminalSources: string[]

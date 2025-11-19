@@ -192,14 +192,20 @@ export function useSmartComparison(
   const coverageTypes = useAppStore(state => state.filters.coverageTypes)
   const customerCategories = useAppStore(state => state.filters.customerCategories)
   const vehicleGrades = useAppStore(state => state.filters.vehicleGrades)
+  const highwayRiskGrades = useAppStore(state => state.filters.highwayRiskGrades)
+  const smallTruckScores = useAppStore(state => state.filters.smallTruckScores)
+  const largeTruckScores = useAppStore(state => state.filters.largeTruckScores)
   const terminalSources = useAppStore(state => state.filters.terminalSources)
   const isNewEnergy = useAppStore(state => state.filters.isNewEnergy)
   const renewalStatuses = useAppStore(state => state.filters.renewalStatuses)
+  const trendModeWeeks = useAppStore(state => state.filters.trendModeWeeks)
 
   // 重建 filters 对象供内部函数使用
   const filters = useMemo(() => ({
     viewMode,
+    dataViewType,
     singleModeWeek,
+    trendModeWeeks,
     years,
     weeks,
     organizations,
@@ -208,12 +214,17 @@ export function useSmartComparison(
     coverageTypes,
     customerCategories,
     vehicleGrades,
+    highwayRiskGrades,
+    smallTruckScores,
+    largeTruckScores,
     terminalSources,
     isNewEnergy,
     renewalStatuses,
   }), [
     viewMode,
+    dataViewType,
     singleModeWeek,
+    trendModeWeeks,
     years,
     weeks,
     organizations,
@@ -222,6 +233,9 @@ export function useSmartComparison(
     coverageTypes,
     customerCategories,
     vehicleGrades,
+    highwayRiskGrades,
+    smallTruckScores,
+    largeTruckScores,
     terminalSources,
     isNewEnergy,
     renewalStatuses,

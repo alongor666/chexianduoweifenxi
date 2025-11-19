@@ -7,6 +7,7 @@ import { useTrendData } from '@/hooks/use-trend'
 import { applyFilters } from '@/hooks/use-filtered-data'
 import { formatNumber, formatPercent } from '@/utils/format'
 import { useAppStore } from '@/store/use-app-store'
+import { WeeklyDrilldownModal } from './weekly-drilldown-modal'
 import type { FilterState, InsuranceRecord } from '@/types/insurance'
 
 /**
@@ -39,6 +40,32 @@ import type { FilterState, InsuranceRecord } from '@/types/insurance'
 const LOSS_RISK_THRESHOLD = 70
 
 /**
+ * 计算指定周的日期范围
+ * @param year 年份
+ * @param week 周数
+ * @returns 日期范围字符串，格式：MM/DD-MM/DD
+ */
+function getWeekDateRange(year: number, week: number): string {
+  // ISO 8601周历：周一为一周的第一天
+  // 计算该年第1周的第1天（周一）
+  const jan4 = new Date(year, 0, 4) // ISO规定：包含1月4日的周为第1周
+  const week1Monday = new Date(jan4)
+  week1Monday.setDate(jan4.getDate() - jan4.getDay() + 1) // 调整到周一
+
+  // 计算目标周的周一
+  const targetMonday = new Date(week1Monday)
+  targetMonday.setDate(week1Monday.getDate() + (week - 1) * 7)
+
+  // 计算目标周的周日
+  const targetSunday = new Date(targetMonday)
+  targetSunday.setDate(targetMonday.getDate() + 6)
+
+  // 格式化日期
+  const formatDate = (date: Date) => `${date.getMonth() + 1}/${date.getDate()}`
+  return `${formatDate(targetMonday)}-${formatDate(targetSunday)}`
+}
+
+/**
  * 图表数据点类型
  */
 interface ChartDataPoint {
@@ -48,6 +75,7 @@ interface ChartDataPoint {
   signedPremium: number // 签单保费（万元）
   lossRatio: number | null // 赔付率（%）
   isRisk: boolean // 是否为风险点
+  dateRange: string // 日期范围（如 11/11-11/17）
 }
 
 /**
@@ -507,6 +535,21 @@ export const WeeklyOperationalTrend = React.memo(function WeeklyOperationalTrend
   const filters = useAppStore((state) => state.filters)
   const rawRecords = useAppStore((state) => state.rawData)
 
+  // 下钻状态管理
+  const [drilldownOpen, setDrilldownOpen] = useState(false)
+  const [drilldownState, setDrilldownState] = useState<{
+    level: 0 | 1 | 2 | 3 | 4
+    weekNumber: number
+    year: number
+    organization?: string
+    businessType?: string
+    coverageType?: string
+  }>({
+    level: 0,
+    weekNumber: 0,
+    year: 0,
+  })
+
   // 处理数据
   const chartData = useMemo(() => {
     if (!trendData || trendData.length === 0) return []
@@ -519,6 +562,7 @@ export const WeeklyOperationalTrend = React.memo(function WeeklyOperationalTrend
         signedPremium: d.signed_premium_10k,
         lossRatio: d.loss_ratio,
         isRisk: d.loss_ratio !== null && d.loss_ratio >= LOSS_RISK_THRESHOLD,
+        dateRange: getWeekDateRange(d.year, d.week),
       }))
       .sort((a, b) => {
         if (a.year !== b.year) return a.year - b.year
@@ -833,14 +877,14 @@ export const WeeklyOperationalTrend = React.memo(function WeeklyOperationalTrend
     const chart = chartInstanceRef.current
 
     // 准备数据
-    // 优化X轴标签：只显示周序号，不显示年份；只显示每月第1周和最近1周
+    // 优化X轴标签：显示周序号和日期范围
     const weeks = displayData.map((d, index) => {
       const isFirstWeekOfMonth = d.weekNumber % 4 === 1 || d.weekNumber === 1
       const isLastWeek = index === displayData.length - 1
 
       // 只在每月第1周和最近1周显示标签
       if (isFirstWeekOfMonth || isLastWeek) {
-        return `第${d.weekNumber}周`
+        return `第${d.weekNumber}周\n(${d.dateRange})`
       }
       return '' // 其他周不显示标签
     })
@@ -897,7 +941,8 @@ export const WeeklyOperationalTrend = React.memo(function WeeklyOperationalTrend
               : null
 
           let html = `<div style="min-width: 260px;">
-            <div style="font-weight: 600; margin-bottom: 8px; font-size: 13px;">${point.week}</div>
+            <div style="font-weight: 600; margin-bottom: 4px; font-size: 13px;">${point.week}</div>
+            <div style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">${point.dateRange}</div>
             <div style="margin-bottom: 4px;">
               <span style="color: #64748b;">签单保费：</span>
               <span style="font-weight: 600;">${formatNumber(point.signedPremium, 1)} 万元</span>
@@ -1204,16 +1249,13 @@ export const WeeklyOperationalTrend = React.memo(function WeeklyOperationalTrend
     console.log('🔍 下钻分析：', point)
     setSelectedPoint(point)
 
-    // TODO: 集成下钻逻辑
-    // 可以触发筛选器更新、打开详情面板等
-    // 例如：
-    // updateFilters({
-    //   years: [point.year],
-    //   weeks: [point.weekNumber],
-    // })
-    // router.push('/detail-analysis')
-
-    alert(`点击了 ${point.week}\n将进入车型/机构剖面下钻分析`)
+    // 打开下钻模态框，从第1层（三级机构）开始
+    setDrilldownState({
+      level: 1,
+      weekNumber: point.weekNumber,
+      year: point.year,
+    })
+    setDrilldownOpen(true)
   }
 
   if (!displayData || displayData.length === 0) {
@@ -1273,17 +1315,6 @@ export const WeeklyOperationalTrend = React.memo(function WeeklyOperationalTrend
                 {analysisNarrative.insight && (
                   <p>{analysisNarrative.insight}</p>
                 )}
-
-                <div className="space-y-1">
-                  <p className="font-medium text-slate-700">管理建议</p>
-                  <ul className="list-disc space-y-1 pl-5 text-slate-600">
-                    {analysisNarrative.actionLines.map((line, index) => (
-                      <li key={`action-${index}`}>{line}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                <p>{analysisNarrative.followUp}</p>
               </div>
             ) : (
               <p className="mt-2 text-sm leading-relaxed text-slate-600">
@@ -1326,6 +1357,16 @@ export const WeeklyOperationalTrend = React.memo(function WeeklyOperationalTrend
           <span>趋势线</span>
         </div>
       </div>
+
+      {/* 下钻分析模态框 */}
+      <WeeklyDrilldownModal
+        open={drilldownOpen}
+        onClose={() => setDrilldownOpen(false)}
+        drilldownState={drilldownState}
+        onDrilldownChange={setDrilldownState}
+        rawRecords={rawRecords}
+        filters={filters}
+      />
     </div>
   )
 })
