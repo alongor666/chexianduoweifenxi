@@ -37,3 +37,10 @@ export { formatChange, type ChangeDirection, type FormattedChange } from './chan
 
 // 周次格式化
 export { formatWeekRange, formatWeek } from './week'
+
+// 颜色工具函数（重新导出以保持兼容）
+export {
+  getContributionMarginColor,
+  getContributionMarginBgColor,
+  getKPIStatusColor,
+} from '../format'
