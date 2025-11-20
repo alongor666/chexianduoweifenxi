@@ -12,7 +12,6 @@ import {
   ResponsiveContainer,
   Scatter,
   Tooltip,
-  type TooltipProps,
   XAxis,
   YAxis,
   Line,
@@ -33,198 +32,23 @@ import {
 } from '@/lib/analytics/trend-fitting'
 import { formatNumber, formatPercent } from '@/utils/formatters'
 
-const LOSS_RISK_THRESHOLD = 70
-const LOSS_ROLLING_WINDOW = 4
-
-type SeriesKey = 'signed' | 'matured' | 'loss'
-
-interface BrushRange {
-  startIndex?: number
-  endIndex?: number
-}
-
-interface PointAnalytics {
-  wowSignedRate: number | null
-  yoySignedRate: number | null
-  wowMaturedRate: number | null
-  yoyMaturedRate: number | null
-  wowLossDelta: number | null
-  yoyLossDelta: number | null
-  rollingLossAvg: number | null
-  maturedShare: number | null
-}
-
-function calcRelativeChange(
-  current: number | null,
-  base: number | null
-): number | null {
-  if (
-    current === null ||
-    base === null ||
-    Number.isNaN(current) ||
-    Number.isNaN(base) ||
-    base === 0
-  ) {
-    return null
-  }
-  return (current - base) / base
-}
-
-function calcDifference(
-  current: number | null,
-  base: number | null
-): number | null {
-  if (
-    current === null ||
-    base === null ||
-    Number.isNaN(current) ||
-    Number.isNaN(base)
-  ) {
-    return null
-  }
-  return current - base
-}
-
-function formatDelta(
-  change: number | null,
-  mode: 'relative' | 'absolutePercent',
-  digits = 1
-): string {
-  if (change === null || Number.isNaN(change)) return '—'
-  const sign = change > 0 ? '+' : change < 0 ? '-' : ''
-
-  if (mode === 'relative') {
-    return `${sign}${Math.abs(change * 100).toFixed(digits)}%`
-  }
-
-  return `${sign}${Math.abs(change).toFixed(digits)}pp`
-}
-
-function getDeltaClass(change: number | null, inverse = false): string {
-  if (change === null || Number.isNaN(change) || change === 0) {
-    return 'text-slate-500'
-  }
-  const isPositive = change > 0
-  const isGood = inverse ? !isPositive : isPositive
-  return isGood ? 'text-emerald-600' : 'text-rose-500'
-}
-
-interface CustomTooltipPayload {
-  key: string
-  signed_premium_10k: number
-  matured_premium_10k: number
-  loss_ratio: number | null
-  anomalyScore?: number
-  anomalyType?: string
-}
-
-interface Insight {
-  id: string
-  text: string
-}
-
-const TrendTooltip = React.memo(function TrendTooltip({
-  active,
-  payload,
-  label,
-  analyticsMap,
-  trendMap,
-  anomalyMap,
-}: any & {
-  analyticsMap: Map<string, PointAnalytics>
-  trendMap: Map<string, number>
-  anomalyMap: Map<string, { score: number; type: string }>
-}) {
-  if (!active || !payload || payload.length === 0) return null
-
-  const base = payload[0]?.payload as CustomTooltipPayload | undefined
-  if (!base) return null
-
-  const analytics = analyticsMap.get(base.key)
-  const trend = base.key ? trendMap.get(base.key) : undefined
-  const anomaly = base.key ? anomalyMap.get(base.key) : undefined
-
-  return (
-    <div className="w-64 rounded-xl border border-slate-200 bg-white/95 p-3 shadow-2xl backdrop-blur">
-      <div className="mb-2 flex items-center justify-between">
-        <span className="text-sm font-semibold text-slate-700">{label}</span>
-        {anomaly && (
-          <span className="rounded-md bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-700">
-            异常 {anomaly.type === 'high' ? '高波动' : '低波动'}
-          </span>
-        )}
-      </div>
-
-      <div className="space-y-1.5 text-xs text-slate-600">
-        <div className="flex items-center justify-between">
-          <span>签单保费</span>
-          <span className="font-semibold text-slate-800">
-            {formatNumber(base.signed_premium_10k, 1)} 万
-          </span>
-        </div>
-        <div className="flex items-center justify-between">
-          <span>满期保费</span>
-          <span className="font-semibold text-slate-800">
-            {formatNumber(base.matured_premium_10k, 1)} 万
-          </span>
-        </div>
-        <div className="flex items-center justify-between">
-          <span>赔付率</span>
-          <span
-            className={`font-semibold ${
-              base.loss_ratio !== null && base.loss_ratio >= LOSS_RISK_THRESHOLD
-                ? 'text-rose-500'
-                : 'text-slate-800'
-            }`}
-          >
-            {formatPercent(base.loss_ratio, 2)}
-          </span>
-        </div>
-
-        {trend !== undefined && (
-          <div className="flex items-center justify-between">
-            <span>趋势线</span>
-            <span className="text-slate-700">{formatPercent(trend, 2)}</span>
-          </div>
-        )}
-
-        {analytics && (
-          <>
-            <div className="flex items-center justify-between">
-              <span>环比签单</span>
-              <span className={getDeltaClass(analytics.wowSignedRate, false)}>
-                {formatDelta(analytics.wowSignedRate, 'relative', 1)}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>环比赔付率</span>
-              <span className={getDeltaClass(analytics.wowLossDelta, true)}>
-                {formatDelta(analytics.wowLossDelta, 'absolutePercent', 1)}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>4周滑动平均</span>
-              <span className="text-slate-700">
-                {analytics.rollingLossAvg !== null
-                  ? formatPercent(analytics.rollingLossAvg, 2)
-                  : '—'}
-              </span>
-            </div>
-          </>
-        )}
-
-        {anomaly && (
-          <div className="flex items-center justify-between">
-            <span>异常评分</span>
-            <span className="text-orange-700">{anomaly.score.toFixed(2)}</span>
-          </div>
-        )}
-      </div>
-    </div>
-  )
-})
-
-TrendTooltip.displayName = 'TrendTooltip'
+import {
+  LOSS_RISK_THRESHOLD,
+  LOSS_ROLLING_WINDOW,
+} from './trend-chart/constants'
+import type {
+  SeriesKey,
+  BrushRange,
+  PointAnalytics,
+  Insight,
+} from './trend-chart/types'
+import {
+  calcRelativeChange,
+  calcDifference,
+  formatDelta,
+  getDeltaClass,
+} from './trend-chart/utils'
+import { TrendTooltip } from './trend-chart/components/TrendTooltip'
 
 export const TrendChart = React.memo(function TrendChart() {
   const data = useTrendData()
