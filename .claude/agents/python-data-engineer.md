@@ -36,34 +36,23 @@ description: Python数据工程专家，精通pandas、数据处理和ETL流程
 
 ## 技术栈
 
+> 本项目的 Python 环境默认仅安装 `pandas`, `duckdb`, `plotly`, `kaleido`（见 `scripts/requirements.txt`），示例代码均基于这些库。
+
 ### 必备库
 ```python
 import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
-import logging
+import duckdb
+import plotly.graph_objects as go
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 ```
 
-### 常用库
+### 常用库（可选）
 ```python
-# 数据验证
-from pydantic import BaseModel, validator
-import pandera as pa
-
-# 性能工具
-import dask.dataframe as dd
-from tqdm import tqdm
-
-# 数据库
-import sqlite3
-import duckdb
-from sqlalchemy import create_engine
-
-# 数据质量
-from dataprep.eda import create_report
-import great_expectations as ge
+# 需要自行安装的扩展工具
+import numpy as np              # 数值处理
+from tqdm import tqdm           # 进度提示
+# 其余如 pandera/great_expectations/dask 仅在被明确授权安装后使用
 ```
 
 ## 代码规范
@@ -72,7 +61,7 @@ import great_expectations as ge
 ```python
 def load_data(file_path: str, **kwargs) -> pd.DataFrame:
     """
-    加载CSV数据，自动处理编码和数据类型
+    加载 CSV 数据，自动处理编码和数据类型
 
     Args:
         file_path: 文件路径
@@ -132,13 +121,17 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     df = df.drop_duplicates()
 
     # 处理日期字段
-    date_columns = ['开始日期', '结束日期']
+    date_columns = ['snapshot_date']
     for col in date_columns:
         if col in df.columns:
             df[col] = pd.to_datetime(df[col], errors='coerce')
 
     # 处理数值字段
-    numeric_columns = ['签单保费', '满期保费', '边际贡献']
+    numeric_columns = [
+        'signed_premium_yuan',
+        'matured_premium_yuan',
+        'marginal_contribution_amount_yuan'
+    ]
     for col in numeric_columns:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors='coerce')
@@ -153,11 +146,12 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
 ### 4. 性能优化技巧
 ```python
-# 1. 指定数据类型减少内存
+# 1. 指定数据类型减少内存（对 InsuranceRecord 字段）
 dtype_dict = {
-    '保单号': 'str',
-    '签单保费': 'float32',  # 使用float32而非float64
-    '是否新能源车': 'category',  # 类别字段使用category类型
+    'snapshot_date': 'string',
+    'signed_premium_yuan': 'float32',
+    'policy_count': 'int32',
+    'is_new_energy_vehicle': 'category',
 }
 
 # 2. 分块读取大文件

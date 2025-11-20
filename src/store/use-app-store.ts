@@ -768,21 +768,20 @@ export const useFilteredData = () => {
         }
         // 时间筛选
         if (
+          filters.years &&
           filters.years.length > 0 &&
           !filters.years.includes(record.policy_start_year)
         ) {
           return false
         }
 
-        if (
-          filters.weeks.length > 0 &&
-          !filters.weeks.includes(record.week_number)
-        ) {
+        if (filters.weeks && filters.weeks.length > 0 && !filters.weeks.includes(record.week_number)) {
           return false
         }
 
         // 空间筛选
         if (
+          filters.organizations &&
           filters.organizations.length > 0 &&
           !filters.organizations.includes(
             normalizeChineseText(record.third_level_organization)
@@ -793,6 +792,7 @@ export const useFilteredData = () => {
 
         // 产品筛选
         if (
+          filters.insuranceTypes &&
           filters.insuranceTypes.length > 0 &&
           !filters.insuranceTypes.includes(record.insurance_type)
         ) {
@@ -800,6 +800,7 @@ export const useFilteredData = () => {
         }
 
         if (
+          filters.businessTypes &&
           filters.businessTypes.length > 0 &&
           !filters.businessTypes.includes(
             normalizeChineseText(record.business_type_category)
@@ -809,6 +810,7 @@ export const useFilteredData = () => {
         }
 
         if (
+          filters.coverageTypes &&
           filters.coverageTypes.length > 0 &&
           !filters.coverageTypes.includes(record.coverage_type)
         ) {
@@ -817,6 +819,7 @@ export const useFilteredData = () => {
 
         // 客户筛选
         if (
+          filters.customerCategories &&
           filters.customerCategories.length > 0 &&
           !filters.customerCategories.includes(
             normalizeChineseText(record.customer_category_3)
@@ -825,7 +828,7 @@ export const useFilteredData = () => {
           return false
         }
 
-        if (filters.vehicleGrades.length > 0) {
+        if (filters.vehicleGrades && filters.vehicleGrades.length > 0) {
           // 如果记录有车险评级，则检查是否在过滤器范围内
           // 如果记录没有车险评级（空值），则不过滤（允许显示）
           if (
@@ -836,7 +839,7 @@ export const useFilteredData = () => {
           }
         }
 
-        if (filters.highwayRiskGrades.length > 0) {
+        if (filters.highwayRiskGrades && filters.highwayRiskGrades.length > 0) {
           if (
             record.highway_risk_grade &&
             !filters.highwayRiskGrades.includes(record.highway_risk_grade)
@@ -845,7 +848,7 @@ export const useFilteredData = () => {
           }
         }
 
-        if (filters.smallTruckScores.length > 0) {
+        if (filters.smallTruckScores && filters.smallTruckScores.length > 0) {
           if (
             record.small_truck_score &&
             !filters.smallTruckScores.includes(record.small_truck_score)
@@ -854,7 +857,7 @@ export const useFilteredData = () => {
           }
         }
 
-        if (filters.largeTruckScores.length > 0) {
+        if (filters.largeTruckScores && filters.largeTruckScores.length > 0) {
           if (
             record.large_truck_score &&
             !filters.largeTruckScores.includes(record.large_truck_score)
@@ -865,6 +868,7 @@ export const useFilteredData = () => {
 
         // 渠道筛选
         if (
+          filters.terminalSources &&
           filters.terminalSources.length > 0 &&
           !filters.terminalSources.includes(
             normalizeChineseText(record.terminal_source)
@@ -922,6 +926,7 @@ export function filterRecordsWithExclusions(
     // 时间筛选
     if (!excluded.has('years')) {
       if (
+        filters.years &&
         filters.years.length > 0 &&
         !filters.years.includes(record.policy_start_year)
       ) {
@@ -930,10 +935,7 @@ export function filterRecordsWithExclusions(
     }
 
     if (!excluded.has('weeks')) {
-      if (
-        filters.weeks.length > 0 &&
-        !filters.weeks.includes(record.week_number)
-      ) {
+      if (filters.weeks && filters.weeks.length > 0 && !filters.weeks.includes(record.week_number)) {
         return false
       }
     }
@@ -941,6 +943,7 @@ export function filterRecordsWithExclusions(
     // 空间筛选
     if (!excluded.has('organizations')) {
       if (
+        filters.organizations &&
         filters.organizations.length > 0 &&
         !filters.organizations.includes(
           normalizeChineseText(record.third_level_organization)
@@ -953,6 +956,7 @@ export function filterRecordsWithExclusions(
     // 产品筛选
     if (!excluded.has('insuranceTypes')) {
       if (
+        filters.insuranceTypes &&
         filters.insuranceTypes.length > 0 &&
         !filters.insuranceTypes.includes(record.insurance_type)
       ) {
@@ -962,6 +966,7 @@ export function filterRecordsWithExclusions(
 
     if (!excluded.has('businessTypes')) {
       if (
+        filters.businessTypes &&
         filters.businessTypes.length > 0 &&
         !filters.businessTypes.includes(
           normalizeChineseText(record.business_type_category)
@@ -973,6 +978,7 @@ export function filterRecordsWithExclusions(
 
     if (!excluded.has('coverageTypes')) {
       if (
+        filters.coverageTypes &&
         filters.coverageTypes.length > 0 &&
         !filters.coverageTypes.includes(record.coverage_type)
       ) {
@@ -983,6 +989,7 @@ export function filterRecordsWithExclusions(
     // 客户筛选
     if (!excluded.has('customerCategories')) {
       if (
+        filters.customerCategories &&
         filters.customerCategories.length > 0 &&
         !filters.customerCategories.includes(
           normalizeChineseText(record.customer_category_3)
@@ -993,7 +1000,7 @@ export function filterRecordsWithExclusions(
     }
 
     if (!excluded.has('vehicleGrades')) {
-      if (filters.vehicleGrades.length > 0) {
+      if (filters.vehicleGrades && filters.vehicleGrades.length > 0) {
         // 如果记录有车险评级，则检查是否在过滤器范围内
         // 如果记录没有车险评级（空值），则不过滤（允许显示）
         if (
@@ -1006,7 +1013,7 @@ export function filterRecordsWithExclusions(
     }
 
     if (!excluded.has('highwayRiskGrades')) {
-      if (filters.highwayRiskGrades.length > 0) {
+      if (filters.highwayRiskGrades && filters.highwayRiskGrades.length > 0) {
         if (
           record.highway_risk_grade &&
           !filters.highwayRiskGrades.includes(record.highway_risk_grade)
@@ -1017,7 +1024,7 @@ export function filterRecordsWithExclusions(
     }
 
     if (!excluded.has('smallTruckScores')) {
-      if (filters.smallTruckScores.length > 0) {
+      if (filters.smallTruckScores && filters.smallTruckScores.length > 0) {
         if (
           record.small_truck_score &&
           !filters.smallTruckScores.includes(record.small_truck_score)
@@ -1028,7 +1035,7 @@ export function filterRecordsWithExclusions(
     }
 
     if (!excluded.has('largeTruckScores')) {
-      if (filters.largeTruckScores.length > 0) {
+      if (filters.largeTruckScores && filters.largeTruckScores.length > 0) {
         if (
           record.large_truck_score &&
           !filters.largeTruckScores.includes(record.large_truck_score)
@@ -1041,6 +1048,7 @@ export function filterRecordsWithExclusions(
     // 渠道筛选
     if (!excluded.has('terminalSources')) {
       if (
+        filters.terminalSources &&
         filters.terminalSources.length > 0 &&
         !filters.terminalSources.includes(
           normalizeChineseText(record.terminal_source)
@@ -1060,6 +1068,7 @@ export function filterRecordsWithExclusions(
 
     if (!excluded.has('renewalStatuses')) {
       if (
+        filters.renewalStatuses &&
         filters.renewalStatuses.length > 0 &&
         !filters.renewalStatuses.includes(record.renewal_status)
       ) {
