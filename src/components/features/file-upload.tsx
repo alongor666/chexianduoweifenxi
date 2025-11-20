@@ -14,26 +14,7 @@ import { cn } from '@/lib/utils'
 import { safeMinMax } from '@/lib/utils/array-utils'
 import { UploadResultsDetail } from './upload-results-detail'
 import { useAppStore } from '@/store/use-app-store'
-
-/**
- * 格式化文件大小
- */
-const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return '0 B'
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-}
-
-/**
- * 格式化时间
- */
-const formatTime = (ms: number): string => {
-  if (ms < 1000) return `${Math.round(ms)}ms`
-  if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`
-  return `${Math.floor(ms / 60000)}m ${Math.floor((ms % 60000) / 1000)}s`
-}
+import { formatFileSize, formatTime } from '@/utils/formatters'
 
 export function FileUpload() {
   const [isDragging, setIsDragging] = useState(false)

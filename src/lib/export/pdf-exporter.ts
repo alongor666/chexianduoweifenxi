@@ -12,7 +12,7 @@
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 import { KPIResult, FilterState } from '@/types/insurance'
-import { formatCurrency, formatNumber, formatPercent } from '@/utils/format'
+import { formatCurrency, formatNumber, formatPercent } from '@/utils/formatters'
 
 export interface PDFReportConfig {
   title: string // 报告标题

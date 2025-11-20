@@ -5,7 +5,7 @@ import {
   useOrganizationComparison,
   useInsuranceTypeStructure,
 } from '@/hooks/use-comparison-analysis'
-import { formatNumber, formatPercent, formatCurrency } from '@/utils/format'
+import { formatNumber, formatPercent, formatCurrency } from '@/utils/formatters'
 import {
   BarChart,
   Bar,

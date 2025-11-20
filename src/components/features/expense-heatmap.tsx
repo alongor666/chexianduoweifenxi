@@ -15,7 +15,7 @@
 import { useMemo } from 'react'
 import { useFilteredData } from '@/hooks/use-filtered-data'
 import { InsuranceRecord } from '@/types/insurance'
-import { formatPercent, formatCurrency, formatNumber } from '@/utils/format'
+import { formatPercent, formatCurrency, formatNumber } from '@/utils/formatters'
 
 interface HeatmapCell {
   organization: string

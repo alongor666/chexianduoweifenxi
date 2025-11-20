@@ -30,7 +30,7 @@ import {
 import type { TooltipProps } from 'recharts'
 import { useFilteredData } from '@/hooks/use-filtered-data'
 import { InsuranceRecord } from '@/types/insurance'
-import { formatNumber, formatPercent } from '@/utils/format'
+import { formatNumber, formatPercent } from '@/utils/formatters'
 
 // 颜色配置 - 按客户类型
 const CUSTOMER_COLORS: Record<string, string> = {
