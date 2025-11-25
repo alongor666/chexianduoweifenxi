@@ -7,7 +7,10 @@
 'use client'
 
 import { useMemo } from 'react'
-import { useAppStore, useFilteredData } from '@/store/use-app-store'
+import { useFilterStore } from '@/store/domains/filterStore'
+import { useTargetStore } from '@/store/domains/targetStore'
+import { useDataStore } from '@/store/domains/dataStore'
+import { useFilteredData } from './use-filtered-data'
 import type { InsuranceRecord } from '@/types/insurance'
 import { kpiEngine } from '@/lib/calculations/kpi-engine'
 
@@ -40,8 +43,8 @@ export interface MarginalContributionItem {
  * 获取前一周的数据（应用相同的筛选条件，但周次为前一周）
  */
 function usePreviousWeekData(): InsuranceRecord[] {
-  const rawData = useAppStore(state => state.rawData)
-  const filters = useAppStore(state => state.filters)
+  const rawData = useDataStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
 
   return useMemo(() => {
     const currentWeek =
@@ -131,7 +134,7 @@ function usePreviousWeekData(): InsuranceRecord[] {
 export function useMarginalContributionAnalysis(): MarginalContributionItem[] {
   const filteredData = useFilteredData()
   const previousWeekData = usePreviousWeekData()
-  const filters = useAppStore(state => state.filters)
+  const filters = useFilterStore(state => state.filters)
   const dataViewType = filters.dataViewType
 
   return useMemo(() => {
