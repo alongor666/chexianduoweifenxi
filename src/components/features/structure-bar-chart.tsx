@@ -11,7 +11,7 @@ import {
   CartesianGrid,
   Cell,
 } from 'recharts'
-import { useFilteredData } from '@/store/use-app-store'
+import { useInsuranceData } from '@/hooks/domains/useInsuranceData'
 import { formatNumber } from '@/utils/formatters'
 import type { InsuranceRecord } from '@/types/insurance'
 import { getContributionMarginHexColor } from '@/utils/color-scale'
@@ -93,7 +93,7 @@ function aggregateByDimension(
 
 // 使用React.memo优化组件性能
 export const PremiumAnalysisBarChart = React.memo(function PremiumAnalysisBarChart() {
-  const filteredData = useFilteredData()
+  const { filteredData } = useInsuranceData()
 
   // Y轴维度选择
   const [yDimension, setYDimension] = useState<YAxisDimension>('business_type')
