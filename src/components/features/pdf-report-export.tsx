@@ -17,6 +17,9 @@ import { useKPI } from '@/hooks/use-kpi'
 import { exportPDFReport, PDFReportConfig } from '@/lib/export/pdf-exporter'
 import { useToast } from '@/hooks/use-toast'
 import { FileText } from 'lucide-react'
+import { logger } from '@/lib/logger'
+
+const log = logger.create('PDFReportExport')
 
 interface Props {
   className?: string
@@ -97,7 +100,7 @@ export function PDFReportExport({ className }: Props) {
         description: `PDF报告已成功生成并下载`,
       })
     } catch (error) {
-      console.error('PDF export failed:', error)
+      log.error('PDF export failed', error)
       toast({
         title: '导出失败',
         description: error instanceof Error ? error.message : '未知错误',

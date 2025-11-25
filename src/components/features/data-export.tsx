@@ -25,6 +25,9 @@ import {
 } from '@/lib/export/csv-exporter'
 import { exportChartAsImage } from '@/lib/export/chart-exporter'
 import { useState } from 'react'
+import { logger } from '@/lib/logger'
+
+const log = logger.create('DataExport')
 
 /**
  * 数据导出组件
@@ -112,7 +115,7 @@ export function DataExport() {
 
       // 不关闭对话框，方便用户导出多个图表
     } catch (error) {
-      console.error('图表导出失败:', error)
+      log.error('图表导出失败', error)
       alert('图表导出失败，请重试')
     }
   }
