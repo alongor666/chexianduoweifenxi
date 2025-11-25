@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
-import { useAppStore } from '@/store/use-app-store'
+import { useFilterStore } from '@/store/domains/filterStore'
+import { useTargetStore } from '@/store/domains/targetStore'
+import { useDataStore } from '@/store/domains/dataStore'
 import type { InsuranceRecord } from '@/types/insurance'
 import { useFilteredData, applyFilters } from './use-filtered-data'
 import { buildPreviousFilters } from './utils/filter-helpers'
@@ -141,8 +143,8 @@ export function useLossDimensionAnalysis(
   dimensionKey: LossDimensionKey
 ): LossDimensionItem[] {
   const filteredData = useFilteredData()
-  const rawData = useAppStore(state => state.rawData)
-  const filters = useAppStore(state => state.filters)
+  const rawData = useDataStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
 
   const previousFilters = useMemo(
     () => buildPreviousFilters(filters),
