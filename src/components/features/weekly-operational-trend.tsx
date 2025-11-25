@@ -6,7 +6,8 @@ import { AlertTriangle } from 'lucide-react'
 import { useTrendData } from '@/hooks/use-trend'
 import { applyFilters } from '@/hooks/use-filtered-data'
 import { formatNumber, formatPercent } from '@/utils/formatters'
-import { useAppStore } from '@/store/use-app-store'
+import { useDataStore } from '@/store/domains/dataStore'
+import { useFilterStore } from '@/store/domains/filterStore'
 import type { FilterState, InsuranceRecord } from '@/types/insurance'
 import {
   LOSS_RISK_THRESHOLD,
@@ -59,9 +60,9 @@ export const WeeklyOperationalTrend = React.memo(function WeeklyOperationalTrend
   const chartRef = useRef<HTMLDivElement>(null)
   const chartInstanceRef = useRef<echarts.ECharts | null>(null)
   const [selectedPoint, setSelectedPoint] = useState<ChartDataPoint | null>(null)
-  const dataViewType = useAppStore((state) => state.filters.dataViewType)
-  const filters = useAppStore((state) => state.filters)
-  const rawRecords = useAppStore((state) => state.rawData)
+  const filters = useFilterStore((state) => state.filters)
+  const dataViewType = filters.dataViewType
+  const rawRecords = useDataStore((state) => state.rawData)
 
   // 处理数据
   const chartData = useMemo(() => {
