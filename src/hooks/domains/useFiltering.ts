@@ -18,7 +18,6 @@
 
 import { useCallback } from 'react'
 import { useFilterStore } from '@/store/domains/filterStore'
-import { useAppStore } from '@/store/use-app-store'
 import { safeMax } from '@/lib/utils/array-utils'
 import type { FilterState } from '@/types/insurance'
 
@@ -27,46 +26,14 @@ import type { FilterState } from '@/types/insurance'
  */
 export function useFiltering() {
   const filters = useFilterStore(state => state.filters)
-  const filterUpdateFilters = useFilterStore(state => state.updateFilters)
-  const filterResetFilters = useFilterStore(state => state.resetFilters)
-  const filterSetViewMode = useFilterStore(state => state.setViewMode)
-  const filterSetDataViewType = useFilterStore(state => state.setDataViewType)
+  const updateFilters = useFilterStore(state => state.updateFilters)
+  const resetFilters = useFilterStore(state => state.resetFilters)
+  const setViewMode = useFilterStore(state => state.setViewMode)
+  const setDataViewType = useFilterStore(state => state.setDataViewType)
   const getActiveFilterCount = useFilterStore(
     state => state.getActiveFilterCount
   )
   const isFilterActive = useFilterStore(state => state.isFilterActive)
-  const appUpdateFilters = useAppStore(state => state.updateFilters)
-  const appResetFilters = useAppStore(state => state.resetFilters)
-  const appSetViewMode = useAppStore(state => state.setViewMode)
-
-  const updateFilters = useCallback(
-    (nextFilters: Partial<FilterState>) => {
-      filterUpdateFilters(nextFilters)
-      appUpdateFilters(nextFilters)
-    },
-    [filterUpdateFilters, appUpdateFilters]
-  )
-
-  const resetFilters = useCallback(() => {
-    filterResetFilters()
-    appResetFilters()
-  }, [filterResetFilters, appResetFilters])
-
-  const setViewMode = useCallback(
-    (mode: 'single' | 'trend') => {
-      filterSetViewMode(mode)
-      appSetViewMode(mode)
-    },
-    [filterSetViewMode, appSetViewMode]
-  )
-
-  const setDataViewType = useCallback(
-    (type: FilterState['dataViewType']) => {
-      filterSetDataViewType(type)
-      appUpdateFilters({ dataViewType: type })
-    },
-    [filterSetDataViewType, appUpdateFilters]
-  )
 
   // 便捷方法：设置年份筛选
   const setYears = useCallback(
@@ -187,23 +154,8 @@ export function useFiltering() {
  * 提供常用的筛选预设
  */
 export function useFilterPresets() {
-  const filterUpdateFilters = useFilterStore(state => state.updateFilters)
-  const filterResetFilters = useFilterStore(state => state.resetFilters)
-  const appUpdateFilters = useAppStore(state => state.updateFilters)
-  const appResetFilters = useAppStore(state => state.resetFilters)
-
-  const updateFilters = useCallback(
-    (nextFilters: Partial<FilterState>) => {
-      filterUpdateFilters(nextFilters)
-      appUpdateFilters(nextFilters)
-    },
-    [filterUpdateFilters, appUpdateFilters]
-  )
-
-  const resetFilters = useCallback(() => {
-    filterResetFilters()
-    appResetFilters()
-  }, [filterResetFilters, appResetFilters])
+  const updateFilters = useFilterStore(state => state.updateFilters)
+  const resetFilters = useFilterStore(state => state.resetFilters)
 
   // 预设1：查看最近一周
   const viewLatestWeek = useCallback(() => {
