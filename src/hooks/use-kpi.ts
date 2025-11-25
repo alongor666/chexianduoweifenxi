@@ -2,10 +2,15 @@
  * KPI 计算 Hook
  * 基于筛选后的数据计算 KPI 指标
  * 支持当周值和周增量两种模式
+ *
+ * @deprecated 建议使用 useKPICalculation()，此Hook仅为保持向后兼容
  */
 
 import { useMemo } from 'react'
-import { useAppStore, useFilteredData } from '@/store/use-app-store'
+import { useDataStore } from '@/store/domains/dataStore'
+import { useFilterStore } from '@/store/domains/filterStore'
+import { useTargetStore } from '@/store/domains/targetStore'
+import { useFilteredData } from './use-filtered-data'
 import { kpiEngine } from '@/lib/calculations/kpi-engine'
 import type { KPIResult, InsuranceRecord, FilterState } from '@/types/insurance'
 import { normalizeChineseText } from '@/lib/utils'
@@ -18,22 +23,22 @@ import { DataService } from '@/services/DataService'
  */
 export function useKPI(): KPIResult | null {
   const filteredData = useFilteredData()
-  const rawData = useAppStore(state => state.rawData)
+  const rawData = useDataStore(state => state.rawData)
   // 使用细粒度选择器避免对象引用问题
-  const businessTypes = useAppStore(state => state.filters.businessTypes)
-  const organizations = useAppStore(state => state.filters.organizations)
-  const customerCategories = useAppStore(state => state.filters.customerCategories)
-  const insuranceTypes = useAppStore(state => state.filters.insuranceTypes)
-  const years = useAppStore(state => state.filters.years)
-  const coverageTypes = useAppStore(state => state.filters.coverageTypes)
-  const vehicleGrades = useAppStore(state => state.filters.vehicleGrades)
-  const terminalSources = useAppStore(state => state.filters.terminalSources)
-  const isNewEnergy = useAppStore(state => state.filters.isNewEnergy)
-  const renewalStatuses = useAppStore(state => state.filters.renewalStatuses)
-  const viewMode = useAppStore(state => state.filters.viewMode)
-  const singleModeWeek = useAppStore(state => state.filters.singleModeWeek)
-  const dataViewType = useAppStore(state => state.filters.dataViewType)
-  const premiumTargets = useAppStore(state => state.premiumTargets)
+  const businessTypes = useFilterStore(state => state.filters.businessTypes)
+  const organizations = useFilterStore(state => state.filters.organizations)
+  const customerCategories = useFilterStore(state => state.filters.customerCategories)
+  const insuranceTypes = useFilterStore(state => state.filters.insuranceTypes)
+  const years = useFilterStore(state => state.filters.years)
+  const coverageTypes = useFilterStore(state => state.filters.coverageTypes)
+  const vehicleGrades = useFilterStore(state => state.filters.vehicleGrades)
+  const terminalSources = useFilterStore(state => state.filters.terminalSources)
+  const isNewEnergy = useFilterStore(state => state.filters.isNewEnergy)
+  const renewalStatuses = useFilterStore(state => state.filters.renewalStatuses)
+  const viewMode = useFilterStore(state => state.filters.viewMode)
+  const singleModeWeek = useFilterStore(state => state.filters.singleModeWeek)
+  const dataViewType = useFilterStore(state => state.filters.dataViewType)
+  const premiumTargets = useTargetStore(state => state.premiumTargets)
 
   const currentTargetYuan = useMemo(() => {
     if (!premiumTargets) return null
