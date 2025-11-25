@@ -20,7 +20,7 @@ import {
 import { TrendingUp, AlertTriangle, Settings } from 'lucide-react'
 
 import { useTrendData } from '@/hooks/use-trend'
-import { useAppStore } from '@/store/use-app-store'
+import { useFilterStore } from '@/store/domains/filterStore'
 import {
   detectAnomalies,
   type AnomalyDetectionOptions,
@@ -52,8 +52,8 @@ import { TrendTooltip } from './trend-chart/components/TrendTooltip'
 
 export const TrendChart = React.memo(function TrendChart() {
   const data = useTrendData()
-  const filters = useAppStore(state => state.filters)
-  const updateFilters = useAppStore(state => state.updateFilters)
+  const filters = useFilterStore(state => state.filters)
+  const updateFilters = useFilterStore(state => state.updateFilters)
 
   const [visible, setVisible] = useState<Record<SeriesKey, boolean>>({
     signed: true,
