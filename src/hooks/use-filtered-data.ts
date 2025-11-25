@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import { useAppStore } from '@/store/use-app-store'
+import { useDataStore } from '@/store/domains/dataStore'
+import { useFilterStore } from '@/store/domains/filterStore'
 import type { InsuranceRecord, FilterState } from '@/types/insurance'
 import { DataService } from '@/services/DataService'
 
@@ -22,10 +23,12 @@ export function applyFilters(
 /**
  * 获取过滤后的数据
  * 根据当前的筛选条件过滤原始数据
+ *
+ * @deprecated 建议使用 useInsuranceData().filteredData，此Hook仅为保持向后兼容
  */
 export function useFilteredData(): InsuranceRecord[] {
-  const rawData = useAppStore(state => state.rawData)
-  const filters = useAppStore(state => state.filters)
+  const rawData = useDataStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
 
   return useMemo(() => DataService.filter(rawData, filters), [rawData, filters])
 }
