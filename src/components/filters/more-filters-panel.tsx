@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import { ChevronDown, ChevronUp, Filter } from 'lucide-react'
 import { MultiSelectFilter } from './multi-select-filter'
-import { useAppStore } from '@/store/use-app-store'
 import { useFilterStore } from '@/store/domains/filterStore'
-import { filterRecordsWithExclusions } from '@/store/use-app-store'
+import { useInsuranceData } from '@/hooks/domains/useInsuranceData'
+import { DataService } from '@/services/DataService'
 import { cn, normalizeChineseText } from '@/lib/utils'
 import { CANONICAL_TERMINAL_SOURCES } from '@/constants/dimensions'
 
@@ -16,15 +16,13 @@ import { CANONICAL_TERMINAL_SOURCES } from '@/constants/dimensions'
 export function MoreFiltersPanel() {
   const [isExpanded, setIsExpanded] = useState(false)
 
-  const rawData = useAppStore(state => state.rawData)
+  const { rawData } = useInsuranceData()
   const filters = useFilterStore(state => state.filters)
   const updateFilters = useFilterStore(state => state.updateFilters)
-  const updateAppFilters = useAppStore(state => state.updateFilters)
 
-  // 同步更新两个store的筛选器
+  // 更新筛选器
   const handleUpdateFilters = (newFilters: any) => {
     updateFilters(newFilters)
-    updateAppFilters(newFilters)
   }
 
   // 切换展开状态
@@ -34,7 +32,7 @@ export function MoreFiltersPanel() {
 
   // 获取终端来源选项（使用 Canonical 并按数据出现过滤）
   const getTerminalSourceOptions = () => {
-    const filtered = filterRecordsWithExclusions(rawData, filters, [
+    const filtered = DataService.filter(rawData, filters, [
       'terminalSources',
     ])
     const present = new Set(

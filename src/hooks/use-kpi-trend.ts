@@ -7,6 +7,9 @@ import { useMemo, useRef } from 'react'
 import { useAppStore } from '@/store/use-app-store'
 import { calculateKPIs } from '@/lib/calculations/kpi-engine'
 import type { InsuranceRecord, FilterState } from '@/types/insurance'
+import { logger } from '@/lib/logger'
+
+const log = logger.create('KPITrend')
 
 /**
  * KPI趋势数据点
@@ -114,7 +117,7 @@ function calculateKPITrend(
       const value = kpi[kpiKey]
       trendData[i] = typeof value === 'number' ? value : null
     } catch (error) {
-      console.warn(`计算第 ${weekKey} 周的KPI时出错:`, error)
+      log.warn('计算KPI时出错', { weekKey, error })
       trendData[i] = null
     }
   }

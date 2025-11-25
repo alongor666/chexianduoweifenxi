@@ -3,17 +3,16 @@
 import { useEffect, useState } from 'react'
 import { AlertCircle, CheckCircle, Info, Lightbulb } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { useAppStore } from '@/store/use-app-store'
-import { useFilteredData } from '@/hooks/use-filtered-data'
+import { useFilterStore } from '@/store/domains/filterStore'
+import { useInsuranceData } from '@/hooks/domains/useInsuranceData'
 
 /**
  * 筛选器反馈组件
  * 提供智能的用户提示和操作建议
  */
 export function FilterFeedback() {
-  const filters = useAppStore(state => state.filters)
-  const rawData = useAppStore(state => state.rawData)
-  const filteredData = useFilteredData()
+  const filters = useFilterStore(state => state.filters)
+  const { rawData, filteredData } = useInsuranceData()
   const [feedback, setFeedback] = useState<{
     type: 'info' | 'warning' | 'success' | 'tip'
     message: string
@@ -158,9 +157,8 @@ export function FilterFeedback() {
  * 显示当前筛选状态的详细统计
  */
 export function FilterStats() {
-  const filters = useAppStore(state => state.filters)
-  const rawData = useAppStore(state => state.rawData)
-  const filteredData = useFilteredData()
+  const filters = useFilterStore(state => state.filters)
+  const { rawData, filteredData } = useInsuranceData()
 
   if (!rawData || rawData.length === 0) return null
 

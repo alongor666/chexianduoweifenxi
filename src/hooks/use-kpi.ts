@@ -7,9 +7,10 @@
 import { useMemo } from 'react'
 import { useAppStore, useFilteredData } from '@/store/use-app-store'
 import { kpiEngine } from '@/lib/calculations/kpi-engine'
-import type { KPIResult, InsuranceRecord } from '@/types/insurance'
+import type { KPIResult, InsuranceRecord, FilterState } from '@/types/insurance'
 import { normalizeChineseText } from '@/lib/utils'
 import { safeMax } from '@/lib/utils/array-utils'
+import { DataService } from '@/services/DataService'
 
 /**
  * 使用 KPI 计算
@@ -145,81 +146,15 @@ export function useKPI(): KPIResult | null {
     // 获取当前周的数据（已经是筛选后的数据）
     const currentWeekData = filteredData
 
-    // 获取前一周的数据
+    // 获取前一周的数据 - 使用 DataService.filter() 统一过滤逻辑
     const previousWeek = currentWeek - 1
-    const previousWeekData = rawData.filter((record: InsuranceRecord) => {
-      // 应用除了周次之外的所有筛选条件
-      if (
-        filters.years.length > 0 &&
-        !filters.years.includes(record.policy_start_year)
-      ) {
-        return false
-      }
-
-      // 前一周的数据
-      if (record.week_number !== previousWeek) {
-        return false
-      }
-
-      // 应用其他筛选条件
-      if (
-        filters.organizations.length > 0 &&
-        !filters.organizations.includes(record.third_level_organization)
-      ) {
-        return false
-      }
-      if (
-        filters.insuranceTypes.length > 0 &&
-        !filters.insuranceTypes.includes(record.insurance_type)
-      ) {
-        return false
-      }
-      if (
-        filters.businessTypes.length > 0 &&
-        !filters.businessTypes.includes(record.business_type_category)
-      ) {
-        return false
-      }
-      if (
-        filters.coverageTypes.length > 0 &&
-        !filters.coverageTypes.includes(record.coverage_type)
-      ) {
-        return false
-      }
-      if (
-        filters.customerCategories.length > 0 &&
-        !filters.customerCategories.includes(record.customer_category_3)
-      ) {
-        return false
-      }
-      if (
-        filters.vehicleGrades.length > 0 &&
-        record.vehicle_insurance_grade &&
-        !filters.vehicleGrades.includes(record.vehicle_insurance_grade)
-      ) {
-        return false
-      }
-      if (
-        filters.terminalSources.length > 0 &&
-        !filters.terminalSources.includes(record.terminal_source)
-      ) {
-        return false
-      }
-      if (
-        filters.isNewEnergy !== null &&
-        record.is_new_energy_vehicle !== filters.isNewEnergy
-      ) {
-        return false
-      }
-      if (
-        filters.renewalStatuses.length > 0 &&
-        !filters.renewalStatuses.includes(record.renewal_status)
-      ) {
-        return false
-      }
-
-      return true
-    })
+    const previousWeekFilters: FilterState = {
+      ...filters,
+      weeks: [previousWeek],
+      dataViewType: 'current',
+      trendModeWeeks: [],
+    }
+    const previousWeekData = DataService.filter(rawData, previousWeekFilters)
 
     // 计算周增量（使用increment模式）
     return kpiEngine.calculateIncrement(currentWeekData, previousWeekData, {

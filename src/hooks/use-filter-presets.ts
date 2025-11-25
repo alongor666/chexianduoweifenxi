@@ -5,6 +5,9 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import type { FilterState } from '@/types/insurance'
+import { logger } from '@/lib/logger'
+
+const log = logger.create('FilterPresets')
 
 export interface FilterPreset {
   /**
@@ -61,7 +64,7 @@ export function useFilterPresets() {
         setPresets(parsed)
       }
     } catch (error) {
-      console.error('加载筛选预设失败:', error)
+      log.error('加载筛选预设失败', error)
     } finally {
       setIsLoading(false)
     }
@@ -72,7 +75,7 @@ export function useFilterPresets() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(newPresets))
     } catch (error) {
-      console.error('保存筛选预设失败:', error)
+      log.error('保存筛选预设失败', error)
     }
   }, [])
 

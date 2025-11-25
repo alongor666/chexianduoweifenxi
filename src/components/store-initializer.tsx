@@ -8,7 +8,7 @@
 'use client'
 
 import { useRef } from 'react'
-import { useAppStore } from '@/store/use-app-store'
+import { useDataStore } from '@/store/domains/dataStore'
 import type { InsuranceRecord } from '@/types/insurance'
 
 interface StoreInitializerProps {
@@ -18,9 +18,9 @@ interface StoreInitializerProps {
 export function StoreInitializer({ initialData }: StoreInitializerProps) {
   const initialized = useRef(false)
 
-  // 这个组件的核心：确保 setRawData 只被调用一次
-  if (!initialized.current) {
-    useAppStore.getState().setRawData(initialData)
+  // 这个组件的核心：确保 setData 只被调用一次
+  if (!initialized.current && initialData.length > 0) {
+    useDataStore.getState().setData(initialData, false) // autoSave=false，避免立即保存
     initialized.current = true
   }
 

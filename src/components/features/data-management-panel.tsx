@@ -10,20 +10,20 @@ import { FileUpload } from './file-upload'
 import { DataExport } from './data-export'
 import { PDFReportExport } from './pdf-report-export'
 
-import { useAppStore } from '@/store/use-app-store'
+import { useDataStore } from '@/store/domains/dataStore'
 import { usePersistData } from '@/hooks/use-persist-data'
 import { Database, Download, Trash2, Filter } from 'lucide-react'
 
 export function DataManagementPanel() {
   const [activeSubTab, setActiveSubTab] = useState<'upload' | 'export'>('upload')
   const { clearPersistedData } = usePersistData()
-  const rawData = useAppStore(state => state.rawData)
+  const rawData = useDataStore(state => state.rawData)
 
-  const handleClearData = () => {
+  const handleClearData = async () => {
     if (
       confirm('确定要清空当前数据并重新开始吗?此操作将清除所有缓存的数据。')
     ) {
-      useAppStore.getState().clearData()
+      await useDataStore.getState().clearData()
       clearPersistedData()
     }
   }

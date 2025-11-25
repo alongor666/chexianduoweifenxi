@@ -2,8 +2,9 @@
 
 import { FilterContainer } from './filter-container'
 import { MultiSelectFilter } from './multi-select-filter'
-import { useAppStore } from '@/store/use-app-store'
-import { filterRecordsWithExclusions } from '@/store/use-app-store'
+import { useFilterStore } from '@/store/domains/filterStore'
+import { useInsuranceData } from '@/hooks/domains/useInsuranceData'
+import { DataService } from '@/services/DataService'
 import { normalizeChineseText } from '@/lib/utils'
 import {
   CANONICAL_INSURANCE_TYPES,
@@ -12,12 +13,12 @@ import {
 } from '@/constants/dimensions'
 
 export function ProductFilter() {
-  const filters = useAppStore(state => state.filters)
-  const updateFilters = useAppStore(state => state.updateFilters)
-  const rawData = useAppStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
+  const updateFilters = useFilterStore(state => state.updateFilters)
+  const { rawData } = useInsuranceData()
 
   // 联动：根据其他筛选条件提取唯一的保险类型
-  const recordsForInsuranceType = filterRecordsWithExclusions(
+  const recordsForInsuranceType = DataService.filter(
     rawData,
     filters,
     ['insuranceTypes']
@@ -34,7 +35,7 @@ export function ProductFilter() {
     .map(type => ({ label: type, value: type }))
 
   // 联动：根据其他筛选条件提取唯一的业务类型（仅显示CANONICAL集合中存在且数据中实际出现的值）
-  const recordsForBusinessType = filterRecordsWithExclusions(rawData, filters, [
+  const recordsForBusinessType = DataService.filter(rawData, filters, [
     'businessTypes',
   ])
   const presentBusinessTypes = new Set<string>(
@@ -49,7 +50,7 @@ export function ProductFilter() {
     .map(type => ({ label: type, value: type }))
 
   // 联动：根据其他筛选条件提取唯一的险别组合
-  const recordsForCoverageType = filterRecordsWithExclusions(rawData, filters, [
+  const recordsForCoverageType = DataService.filter(rawData, filters, [
     'coverageTypes',
   ])
   const presentCoverageTypes = new Set<string>(

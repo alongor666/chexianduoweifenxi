@@ -15,9 +15,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { useAppStore } from '@/store/use-app-store'
-import { useFilteredData } from '@/hooks/use-filtered-data'
-import { useKPI } from '@/hooks/use-kpi'
+import { useFilterStore } from '@/store/domains/filterStore'
+import { useInsuranceData } from '@/hooks/domains/useInsuranceData'
+import { useKPICalculation } from '@/hooks/domains/useKPICalculation'
 import {
   exportToCSV,
   exportKPISummary,
@@ -25,6 +25,9 @@ import {
 } from '@/lib/export/csv-exporter'
 import { exportChartAsImage } from '@/lib/export/chart-exporter'
 import { useState } from 'react'
+import { logger } from '@/lib/logger'
+
+const log = logger.create('DataExport')
 
 /**
  * 数据导出组件
@@ -32,10 +35,9 @@ import { useState } from 'react'
  */
 export function DataExport() {
   const [open, setOpen] = useState(false)
-  const rawData = useAppStore(state => state.rawData)
-  const filters = useAppStore(state => state.filters)
-  const filteredData = useFilteredData()
-  const kpiData = useKPI()
+  const filters = useFilterStore(state => state.filters)
+  const { rawData, filteredData } = useInsuranceData()
+  const { currentKpi } = useKPICalculation()
 
   // 检查是否有数据
   const hasData = rawData.length > 0
@@ -68,7 +70,7 @@ export function DataExport() {
    * 导出KPI汇总
    */
   const handleExportKPI = () => {
-    if (kpiData) {
+    if (currentKpi) {
       const exportFilterState = {
         policyYear: filters.years,
         weekNumber: filters.weeks,
@@ -76,16 +78,16 @@ export function DataExport() {
       }
       // 将 KPIResult 转换为 KPISummarySnapshot
       const kpiSummary = {
-        maturedMarginRate: kpiData.contribution_margin_ratio,
-        premiumAchievementRate: kpiData.premium_progress,
-        maturedClaimRate: kpiData.loss_ratio,
-        expenseRate: kpiData.expense_ratio,
-        maturityRate: kpiData.maturity_ratio,
-        maturedClaimFrequency: kpiData.matured_claim_ratio,
-        variableCostRate: kpiData.variable_cost_ratio,
-        autonomyCoefficient: kpiData.autonomy_coefficient,
-        signedPremium: kpiData.signed_premium,
-        maturedPremium: kpiData.matured_premium
+        maturedMarginRate: currentKpi.contribution_margin_ratio,
+        premiumAchievementRate: currentKpi.premium_progress,
+        maturedClaimRate: currentKpi.loss_ratio,
+        expenseRate: currentKpi.expense_ratio,
+        maturityRate: currentKpi.maturity_ratio,
+        maturedClaimFrequency: currentKpi.matured_claim_ratio,
+        variableCostRate: currentKpi.variable_cost_ratio,
+        autonomyCoefficient: currentKpi.autonomy_coefficient,
+        signedPremium: currentKpi.signed_premium,
+        maturedPremium: currentKpi.matured_premium
       }
       exportKPISummary(kpiSummary, exportFilterState)
     }
@@ -112,7 +114,7 @@ export function DataExport() {
 
       // 不关闭对话框，方便用户导出多个图表
     } catch (error) {
-      console.error('图表导出失败:', error)
+      log.error('图表导出失败', error)
       alert('图表导出失败，请重试')
     }
   }

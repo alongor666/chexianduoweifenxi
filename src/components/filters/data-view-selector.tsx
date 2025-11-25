@@ -1,8 +1,10 @@
 'use client'
 
-import { useAppStore } from '@/store/use-app-store'
 import { useFilterStore } from '@/store/domains/filterStore'
 import { cn } from '@/lib/utils'
+import { logger } from '@/lib/logger'
+
+const log = logger.create('DataViewSelector')
 
 export type DataViewType = 'current' | 'increment'
 
@@ -11,27 +13,12 @@ export type DataViewType = 'current' | 'increment'
  * 支持年累计和周增量两种数据类型
  */
 export function DataViewSelector() {
-  const { filters, updateFilters } = useAppStore()
-  const { setDataViewType } = useFilterStore()
-  const value = filters.dataViewType
-
-  const options = [
-    {
-      id: 'current' as const,
-      label: '年累计',
-    },
-    {
-      id: 'increment' as const,
-      label: '周增量',
-    },
-  ]
+  const dataViewType = useFilterStore(state => state.filters.dataViewType)
+  const setDataViewType = useFilterStore(state => state.setDataViewType)
 
   const handleDataViewTypeChange = (type: 'current' | 'increment') => {
-    // 同时更新新旧两个Store的状态，确保数据同步
-    updateFilters({ dataViewType: type })
     setDataViewType(type)
-    
-    console.log(`[DataViewSelector] 切换数据视图类型: ${type}`)
+    log.debug('切换数据视图类型', { type })
   }
 
   return (
@@ -40,7 +27,7 @@ export function DataViewSelector() {
         onClick={() => handleDataViewTypeChange('current')}
         className={cn(
           'px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200',
-          filters.dataViewType === 'current'
+          dataViewType === 'current'
             ? 'bg-white text-blue-700 shadow-sm border border-blue-200'
             : 'text-slate-600 hover:text-slate-800 hover:bg-slate-50'
         )}
@@ -52,7 +39,7 @@ export function DataViewSelector() {
         onClick={() => handleDataViewTypeChange('increment')}
         className={cn(
           'px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200',
-          filters.dataViewType === 'increment'
+          dataViewType === 'increment'
             ? 'bg-white text-blue-700 shadow-sm border border-blue-200'
             : 'text-slate-600 hover:text-slate-800 hover:bg-slate-50'
         )}

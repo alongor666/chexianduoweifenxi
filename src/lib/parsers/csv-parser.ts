@@ -13,6 +13,9 @@ import type {
 import { validateRecords } from '../validations/insurance-schema'
 import { fuzzyMatch, ENUM_MAPPINGS } from './fuzzy-matcher'
 import { normalizeChineseText } from '@/lib/utils'
+import { logger } from '@/lib/logger'
+
+const log = logger.create('CSVParser')
 
 type SupportedEncoding = 'utf-8' | 'gb18030' | 'gbk' | 'gb2312'
 const FALLBACK_ENCODINGS: SupportedEncoding[] = ['gb18030', 'gbk', 'gb2312']
@@ -25,7 +28,7 @@ function decodeBufferWithEncoding(
     const decoder = new TextDecoder(encoding, { fatal: false })
     return decoder.decode(buffer)
   } catch (error) {
-    console.warn(`[CSV Parser] 当前环境不支持编码 ${encoding}`, error)
+    log.warn('当前环境不支持编码', { encoding, error })
     return null
   }
 }
@@ -97,9 +100,7 @@ async function normalizeFileEncoding(file: File): Promise<{
     return { file, encoding: 'utf-8' }
   }
 
-  console.info(
-    `[CSV Parser] 检测到可能的非 UTF-8 编码 (${bestCandidate.encoding})，开始转换...`
-  )
+  log.info('检测到可能的非 UTF-8 编码，开始转换', { encoding: bestCandidate.encoding })
 
   const fullBuffer = await file.arrayBuffer()
   const decodedText =
@@ -165,7 +166,7 @@ function transformCSVRow(
   const errors: string[] = []
 
   try {
-    console.log(`[CSV Parser] 转换第 ${rowIndex + 1} 行:`, row)
+    log.debug('转换CSV行', { rowIndex: rowIndex + 1 })
 
     const data: Partial<InsuranceRecord> = {
       // 时间维度 - 添加格式验证
@@ -314,13 +315,11 @@ function transformCSVRow(
       ),
     }
 
-    console.log(
-      `[CSV Parser] 第 ${rowIndex + 1} 行转换完成，错误数: ${errors.length}`
-    )
+    log.debug('CSV行转换完成', { rowIndex: rowIndex + 1, errorCount: errors.length })
     return { data, errors }
   } catch (error) {
     const errorMsg = `行 ${rowIndex + 1}: 数据转换失败 - ${error instanceof Error ? error.message : '未知错误'}`
-    console.error(`[CSV Parser] ${errorMsg}`, error)
+    log.error(errorMsg, error)
     errors.push(errorMsg)
     return { data: {}, errors }
   }
@@ -407,14 +406,16 @@ function parseEnum<T extends string>(
   // 3. 模糊匹配（相似度阈值60%）
   const fuzzyResult = fuzzyMatch(str, validValues, 0.6)
   if (fuzzyResult) {
-    console.log(
-      `[智能纠错] "${str}" → "${fuzzyResult.value}" (相似度: ${(fuzzyResult.score * 100).toFixed(1)}%)`
-    )
+    log.debug('智能纠错', {
+      original: str,
+      corrected: fuzzyResult.value,
+      similarity: (fuzzyResult.score * 100).toFixed(1) + '%',
+    })
     return fuzzyResult.value
   }
 
   // 4. 都失败了，返回默认值
-  console.warn(`[枚举解析警告] 无法匹配 "${str}"，使用默认值 "${defaultValue}"`)
+  log.warn('枚举解析警告：无法匹配，使用默认值', { value: str, defaultValue })
   return defaultValue
 }
 
@@ -452,14 +453,16 @@ function parseOptionalEnum<T extends string>(
   // 3. 模糊匹配（相似度阈值60%）
   const fuzzyResult = fuzzyMatch(str, validValues, 0.6)
   if (fuzzyResult) {
-    console.log(
-      `[智能纠错] "${str}" → "${fuzzyResult.value}" (相似度: ${(fuzzyResult.score * 100).toFixed(1)}%)`
-    )
+    log.debug('智能纠错', {
+      original: str,
+      corrected: fuzzyResult.value,
+      similarity: (fuzzyResult.score * 100).toFixed(1) + '%',
+    })
     return fuzzyResult.value
   }
 
   // 4. 都失败了，返回 undefined
-  console.warn(`[可选枚举解析警告] 无法匹配 "${str}"，返回 undefined`)
+  log.warn('可选枚举解析警告：无法匹配，返回 undefined', { value: str })
   return undefined
 }
 
@@ -505,9 +508,7 @@ export async function parseCSVFile(
   file: File,
   onProgress?: ProgressCallback
 ): Promise<CSVParseResult> {
-  console.log(
-    `[CSV Parser] 开始解析文件: ${file.name}, 大小: ${file.size} bytes`
-  )
+  log.info('开始解析文件', { fileName: file.name, fileSize: file.size })
   const startTime = performance.now()
   let processedRows = 0
 
@@ -515,11 +516,9 @@ export async function parseCSVFile(
   const encodingLabel = encoding !== 'utf-8' ? `${encoding}→utf-8` : 'utf-8'
 
   if (encoding !== 'utf-8') {
-    console.info(
-      `[CSV Parser] 已自动将 ${file.name} 从 ${encoding} 转换为 UTF-8 编码`
-    )
+    log.info('已自动将文件编码转换为 UTF-8', { fileName: file.name, from: encoding })
   } else {
-    console.info(`[CSV Parser] 使用 UTF-8 编码解析 ${file.name}`)
+    log.info('使用 UTF-8 编码解析', { fileName: file.name })
   }
 
   return new Promise((resolve, reject) => {
@@ -588,7 +587,7 @@ export async function parseCSVFile(
       }
     }
 
-    console.log(`[CSV Parser] 开始 Papa Parse 解析 - 优化大文件处理`)
+    log.debug('开始 Papa Parse 解析 - 优化大文件处理')
     Papa.parse<Record<string, string>>(sourceFile, {
       header: true,
       dynamicTyping: false,
@@ -598,9 +597,7 @@ export async function parseCSVFile(
       chunkSize: sourceFile.size > 50 * 1024 * 1024 ? 1024 * 256 : 1024 * 64, // 大文件使用更大的块
       chunk: (results, parser) => {
         try {
-          console.log(
-            `[CSV Parser] 处理批次数据，行数: ${results.data?.length || 0}`
-          )
+          log.debug('处理批次数据', { rowCount: results.data?.length || 0 })
 
           // 检查表头字段（仅检查一次）
           if (!headersChecked) {
@@ -613,23 +610,23 @@ export async function parseCSVFile(
               present = Object.keys(firstRow || {})
             }
 
-            console.log(
-              `[CSV Parser] 检测到表头字段 (${present?.length || 0}个):`,
-              present
-            )
-            console.log(
-              `[CSV Parser] 必需字段 (${REQUIRED_FIELDS.length}个):`,
-              REQUIRED_FIELDS
-            )
+            log.debug('检测到表头字段', {
+              fieldCount: present?.length || 0,
+              fields: present,
+            })
+            log.debug('必需字段', {
+              requiredCount: REQUIRED_FIELDS.length,
+              fields: REQUIRED_FIELDS,
+            })
 
             const missing = REQUIRED_FIELDS.filter(
               f => !(present || []).includes(f)
             )
             if (missing.length > 0) {
-              console.error(
-                `[CSV Parser] 缺失必需字段 (${missing.length}个):`,
-                missing
-              )
+              log.error('缺失必需字段', {
+                missingCount: missing.length,
+                missingFields: missing,
+              })
               parser.abort()
               reject(
                 new Error(
@@ -644,26 +641,23 @@ export async function parseCSVFile(
               f => !REQUIRED_FIELDS.includes(f)
             )
             if (extra.length > 0) {
-              console.warn(
-                `[CSV Parser] 发现额外字段 (${extra.length}个):`,
-                extra
-              )
+              log.warn('发现额外字段', {
+                extraCount: extra.length,
+                extraFields: extra,
+              })
             }
 
-            console.log(`[CSV Parser] 表头验证通过 ✓`)
+            log.debug('表头验证通过 ✓')
           }
 
           // 检查数据是否存在且为数组
           if (!results.data || !Array.isArray(results.data)) {
-            console.warn(
-              '[CSV Parser] CSV 解析批次数据为空或格式错误:',
-              results
-            )
+            log.warn('CSV 解析批次数据为空或格式错误', results)
             return
           }
 
           const batchData = results.data
-          console.log(`[CSV Parser] 开始处理 ${batchData.length} 行数据`)
+          log.debug('开始处理数据行', { rowCount: batchData.length })
 
           // 优化大数据量处理：批量处理数据行
           const BATCH_SIZE = 1000 // 每批处理1000行
@@ -690,11 +684,11 @@ export async function parseCSVFile(
 
                   // 记录前几个错误的详细信息
                   if (transformErrors.length <= 5) {
-                    console.warn(
-                      `[CSV Parser] 第 ${globalIndex + 1} 行数据转换错误:`,
-                      errors
-                    )
-                    console.warn(`[CSV Parser] 原始数据:`, row)
+                    log.warn('数据转换错误', {
+                      rowIndex: globalIndex + 1,
+                      errors,
+                      rawData: row,
+                    })
                   }
                 }
               }
@@ -718,9 +712,9 @@ export async function parseCSVFile(
             updateProgress('parsing', progress)
           }
 
-          console.log(`[CSV Parser] 批次处理完成，累计处理 ${processedRows} 行`)
+          log.debug('批次处理完成', { processedRows })
         } catch (error) {
-          console.error('[CSV Parser] CSV 解析批次处理错误:', error)
+          log.error('CSV 解析批次处理错误', error)
           parser.abort()
           reject(
             new Error(
@@ -731,20 +725,21 @@ export async function parseCSVFile(
       },
       complete: async () => {
         try {
-          console.log(`[CSV Parser] Papa Parse 完成，总行数: ${rows.length}`)
+          log.debug('Papa Parse 完成', { totalRows: rows.length })
 
           if (!rows || rows.length === 0) {
-            console.error('[CSV Parser] CSV 文件为空或没有有效数据')
+            log.error('CSV 文件为空或没有有效数据')
             reject(new Error('CSV 文件为空或没有有效数据'))
             return
           }
 
           updateProgress('validating', 85)
-          console.log(`[CSV Parser] 开始 Zod 验证`)
+          log.debug('开始 Zod 验证')
           const validationResult = validateRecords(rows)
-          console.log(
-            `[CSV Parser] Zod 验证完成，有效记录: ${validationResult.validRecords}, 无效记录: ${validationResult.invalidRecords.length}`
-          )
+          log.debug('Zod 验证完成', {
+            validRecords: validationResult.validRecords,
+            invalidRecords: validationResult.invalidRecords.length,
+          })
 
           updateProgress('transforming', 95)
           updateProgress('transforming', 100)
@@ -765,9 +760,10 @@ export async function parseCSVFile(
             })),
           ]
 
-          console.log(
-            `[CSV Parser] 解析完成，成功: ${validationResult.validRecords > 0}, 总错误: ${allErrors.length}`
-          )
+          log.info('解析完成', {
+            success: validationResult.validRecords > 0,
+            totalErrors: allErrors.length,
+          })
 
           resolve({
             success: validationResult.validRecords > 0,
@@ -785,7 +781,7 @@ export async function parseCSVFile(
             },
           })
         } catch (error) {
-          console.error('[CSV Parser] 数据验证失败:', error)
+          log.error('数据验证失败', error)
           reject(
             new Error(
               `数据验证失败: ${error instanceof Error ? error.message : '未知错误'}`
@@ -794,7 +790,7 @@ export async function parseCSVFile(
         }
       },
       error: error => {
-        console.error('[CSV Parser] Papa Parse 错误:', error)
+        log.error('Papa Parse 错误', error)
         reject(new Error(`CSV 解析失败: ${error.message || '未知错误'}`))
       },
     })
@@ -830,7 +826,7 @@ export function validateCSVFile(file: File): {
   const summaryPattern = /^\d{2}年保单\d{1,3}-\d{1,3}周变动成本汇总表\.csv$/
 
   if (!weeklyPattern.test(file.name) && !summaryPattern.test(file.name)) {
-    console.warn('文件名格式不标准，但继续处理:', file.name)
+    log.warn('文件名格式不标准，但继续处理', { fileName: file.name })
   }
 
   return { valid: true }

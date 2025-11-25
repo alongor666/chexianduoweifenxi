@@ -3,29 +3,23 @@
 import { FilterContainer } from './filter-container'
 import { MultiSelectFilter } from './multi-select-filter'
 import { WeekSelector } from './week-selector'
-import { useAppStore } from '@/store/use-app-store'
 import { useFilterStore } from '@/store/domains/filterStore'
-import { filterRecordsWithExclusions } from '@/store/use-app-store'
+import { useInsuranceData } from '@/hooks/domains/useInsuranceData'
+import { DataService } from '@/services/DataService'
 
 export function TimeFilter() {
   const filters = useFilterStore(state => state.filters)
   const updateFilters = useFilterStore(state => state.updateFilters)
-  const updateAppFilters = useAppStore(state => state.updateFilters)
-  const rawData = useAppStore(state => state.rawData)
+  const { rawData } = useInsuranceData()
 
-  // 同步更新两个store的筛选器
+  // 更新筛选器
   const handleUpdateFilters = (newFilters: any) => {
     updateFilters(newFilters)
-    updateAppFilters(newFilters)
   }
 
   // 联动：根据其他筛选条件，分别计算年度与周的可选项
-  const recordsForYears = filterRecordsWithExclusions(rawData, filters, [
-    'years',
-  ])
-  const recordsForWeeks = filterRecordsWithExclusions(rawData, filters, [
-    'weeks',
-  ])
+  const recordsForYears = DataService.filter(rawData, filters, ['years'])
+  const recordsForWeeks = DataService.filter(rawData, filters, ['weeks'])
 
   const availableYears = Array.from(
     new Set(recordsForYears.map(record => record.policy_start_year))
