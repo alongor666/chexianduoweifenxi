@@ -12,8 +12,10 @@
  */
 
 import { useState } from 'react'
-import { useAppStore } from '@/store/use-app-store'
-import { useKPI } from '@/hooks/use-kpi'
+import { useDataStore } from '@/store/domains/dataStore'
+import { useFilterStore } from '@/store/domains/filterStore'
+import { useUIStore } from '@/store/domains/uiStore'
+import { useKPICalculation } from '@/hooks/domains/useKPICalculation'
 import { exportPDFReport, PDFReportConfig } from '@/lib/export/pdf-exporter'
 import { useToast } from '@/hooks/use-toast'
 import { FileText } from 'lucide-react'
@@ -26,10 +28,10 @@ interface Props {
 }
 
 export function PDFReportExport({ className }: Props) {
-  const rawData = useAppStore(state => state.rawData)
-  const filters = useAppStore(state => state.filters)
-  const viewMode = useAppStore(state => state.viewMode)
-  const kpis = useKPI()
+  const rawData = useDataStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
+  const viewMode = useUIStore(state => state.viewMode)
+  const { currentKpi: kpis } = useKPICalculation()
   const { toast } = useToast()
 
   const [isExporting, setIsExporting] = useState(false)
