@@ -13,7 +13,7 @@ import { useToast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
 import { safeMinMax } from '@/lib/utils/array-utils'
 import { UploadResultsDetail } from './upload-results-detail'
-import { useAppStore } from '@/store/use-app-store'
+import { useDataStore } from '@/store/domains/dataStore'
 import { formatFileSize, formatTime } from '@/utils/formatters'
 
 export function FileUpload() {
@@ -36,10 +36,8 @@ export function FileUpload() {
   const { toast } = useToast()
 
   // 获取store中的数据和方法
-  const rawData = useAppStore(state => state.rawData)
-  const clearData = useAppStore(state => state.clearData)
-  const clearPersistentData = useAppStore(state => state.clearPersistentData)
-  const getStorageStats = useAppStore(state => state.getStorageStats)
+  const rawData = useDataStore(state => state.rawData)
+  const clearData = useDataStore(state => state.clearData)
   
   // 获取已有数据统计
   const existingDataStats = useMemo(() => {
@@ -222,16 +220,14 @@ export function FileUpload() {
    */
   const handleClearData = useCallback(async () => {
     try {
-      // 清除内存中的数据
-      clearData()
-      // 清除持久化存储的数据
-      await clearPersistentData()
-      
+      // 清除所有数据（包括持久化存储）
+      await clearData()
+
       toast({
         title: '数据已清除',
         description: '所有数据和上传历史已成功清除',
       })
-      
+
       setShowClearConfirm(false)
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : '清除数据失败'
@@ -241,7 +237,7 @@ export function FileUpload() {
         variant: 'destructive',
       })
     }
-  }, [clearData, clearPersistentData, toast])
+  }, [clearData, toast])
 
   // 如果正在上传，显示进度
   if (isUploading && progress) {
