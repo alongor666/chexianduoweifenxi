@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Check, ChevronDown, RotateCcw } from 'lucide-react'
-import { useAppStore } from '@/store/use-app-store'
+import { useUIStore } from '@/store/domains/uiStore'
 import { useFilterStore } from '@/store/domains/filterStore'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -27,16 +27,14 @@ interface WeekSelectorProps {
  * 根据视图模式自动切换单选/多选模式
  */
 export function WeekSelector({ availableWeeks }: WeekSelectorProps) {
-  const { viewMode } = useAppStore()
+  const viewMode = useUIStore(state => state.viewMode)
   const filters = useFilterStore(state => state.filters)
   const updateFilters = useFilterStore(state => state.updateFilters)
-  const updateAppFilters = useAppStore(state => state.updateFilters)
   const [isOpen, setIsOpen] = useState(false)
 
-  // 同步更新两个store的筛选器
+  // 更新筛选器
   const handleUpdateFilters = (newFilters: any) => {
     updateFilters(newFilters)
-    updateAppFilters(newFilters)
   }
 
   const isSingleMode = viewMode === 'single'
@@ -93,7 +91,7 @@ export function WeekSelector({ availableWeeks }: WeekSelectorProps) {
   const handleInvertSelection = () => {
     const allWeeks = availableWeeks.map(w => w.week)
     const unselected = allWeeks.filter(w => !filters.trendModeWeeks.includes(w))
-    updateFilters({
+    handleUpdateFilters({
       trendModeWeeks: unselected,
       weeks: unselected,
     })
