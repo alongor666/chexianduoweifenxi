@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
-import { useAppStore } from '@/store/use-app-store'
+import { useDataStore } from '@/store/domains/dataStore'
+import { useFilterStore } from '@/store/domains/filterStore'
 import {
   setStorageItem,
   getStorageItem,
@@ -22,10 +23,10 @@ const log = logger.create('PersistData')
  * 自动保存和恢复数据到 localStorage / IndexedDB
  */
 export function usePersistData(initialData: InsuranceRecord[] = []) {
-  const rawData = useAppStore(state => state.rawData)
-  const filters = useAppStore(state => state.filters)
-  const setRawData = useAppStore(state => state.setRawData)
-  const updateFilters = useAppStore(state => state.updateFilters)
+  const rawData = useDataStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
+  const setData = useDataStore(state => state.setData)
+  const updateFilters = useFilterStore(state => state.updateFilters)
 
   // 从 localStorage / IndexedDB 恢复数据 (仅在组件挂载时执行一次)
   useEffect(() => {
@@ -33,7 +34,7 @@ export function usePersistData(initialData: InsuranceRecord[] = []) {
 
     async function restore() {
       // 如果 store 中已有数据，则不执行任何操作
-      if (useAppStore.getState().rawData.length > 0) {
+      if (useDataStore.getState().rawData.length > 0) {
         log.debug('Store 已有数据，跳过恢复操作')
         return
       }
@@ -43,17 +44,17 @@ export function usePersistData(initialData: InsuranceRecord[] = []) {
 
       if (savedData && savedData.length > 0) {
         log.info('恢复数据 (localStorage)', { count: savedData.length })
-        setRawData(savedData)
+        await setData(savedData, false) // autoSave=false，避免循环
       } else if (isIndexedDBAvailable()) {
         const idbData = await loadRawData()
         if (!cancelled && idbData && idbData.length > 0) {
           log.info('从 IndexedDB 恢复数据', { count: idbData.length })
-          setRawData(idbData)
+          await setData(idbData, false) // autoSave=false，避免循环
         }
       } else if (initialData && initialData.length > 0) {
         // 如果本地没有数据，则使用从服务器获取的初始数据
         log.info('从服务器初始化数据', { count: initialData.length })
-        setRawData(initialData)
+        await setData(initialData, false) // autoSave=false，避免循环
       }
 
       if (savedFilters) {
@@ -66,7 +67,7 @@ export function usePersistData(initialData: InsuranceRecord[] = []) {
     return () => {
       cancelled = true
     }
-  }, [initialData, setRawData, updateFilters])
+  }, [initialData, setData, updateFilters])
 
   // 保存数据到 IndexedDB / localStorage (当数据变化时)
   useEffect(() => {
