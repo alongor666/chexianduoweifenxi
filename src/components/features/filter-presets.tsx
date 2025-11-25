@@ -8,7 +8,7 @@
 import { useState } from 'react'
 import { Save, FolderOpen, Star, Clock, Trash2, Download } from 'lucide-react'
 import { useFilterPresets, type FilterPreset } from '@/hooks/use-filter-presets'
-import { useAppStore } from '@/store/use-app-store'
+import { useFilterStore } from '@/store/domains/filterStore'
 import {
   Dialog,
   DialogContent,
@@ -20,8 +20,8 @@ import {
 import { cn } from '@/lib/utils'
 
 export function FilterPresets() {
-  const filters = useAppStore(state => state.filters)
-  const updateFilters = useAppStore(state => state.updateFilters)
+  const filters = useFilterStore(state => state.filters)
+  const updateFilters = useFilterStore(state => state.updateFilters)
   const {
     presets,
     createPreset,
