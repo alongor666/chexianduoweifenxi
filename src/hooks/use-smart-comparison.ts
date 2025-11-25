@@ -5,7 +5,9 @@
  */
 
 import { useMemo } from 'react'
-import { useAppStore } from '@/store/use-app-store'
+import { useFilterStore } from '@/store/domains/filterStore'
+import { useTargetStore } from '@/store/domains/targetStore'
+import { useDataStore } from '@/store/domains/dataStore'
 import { kpiEngine } from '@/lib/calculations/kpi-engine'
 import type { InsuranceRecord, FilterState } from '@/types/insurance'
 import { DataService } from '@/services/DataService'
@@ -108,7 +110,7 @@ export function useSmartComparison(
   const { annualTargetYuan = null, maxJumpBack = 5 } = options
 
   // 使用细粒度选择器避免对象引用导致的无限重渲染问题
-  const rawData = useAppStore(state => state.rawData)
+  const rawData = useDataStore(state => state.rawData)
   const viewMode = useAppStore(state => state.filters.viewMode)
   const dataViewType = useAppStore(state => state.filters.dataViewType)
   const singleModeWeek = useAppStore(state => state.filters.singleModeWeek)

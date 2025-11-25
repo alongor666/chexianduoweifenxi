@@ -4,7 +4,9 @@
  */
 
 import { useMemo } from 'react'
-import { useAppStore } from '@/store/use-app-store'
+import { useFilterStore } from '@/store/domains/filterStore'
+import { useTargetStore } from '@/store/domains/targetStore'
+import { useDataStore } from '@/store/domains/dataStore'
 import { kpiEngine } from '@/lib/calculations/kpi-engine'
 import type { KPIResult, InsuranceRecord } from '@/types/insurance'
 import { safeMax } from '@/lib/utils/array-utils'

@@ -4,7 +4,9 @@
  */
 
 import { useMemo, useRef } from 'react'
-import { useAppStore } from '@/store/use-app-store'
+import { useFilterStore } from '@/store/domains/filterStore'
+import { useTargetStore } from '@/store/domains/targetStore'
+import { useDataStore } from '@/store/domains/dataStore'
 import { calculateKPIs } from '@/lib/calculations/kpi-engine'
 import type { InsuranceRecord, FilterState } from '@/types/insurance'
 import { logger } from '@/lib/logger'
@@ -224,8 +226,8 @@ export function useKPITrend(
 ) {
   const { weeks = 12, useFilteredData = true } = options
 
-  const rawData = useAppStore(state => state.rawData)
-  const filters = useAppStore(state => state.filters)
+  const rawData = useDataStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
 
   // 使用 ref 来存储上一次的计算结果，避免不必要的重新计算
   const lastResultRef = useRef<{ key: string; data: (number | null)[] } | null>(null)
@@ -291,8 +293,8 @@ export function useMultipleKPITrends(
   } = {}
 ) {
   const { weeks = 12, useFilteredData = true } = options
-  const rawData = useAppStore(state => state.rawData)
-  const filters = useAppStore(state => state.filters)
+  const rawData = useDataStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
 
   const trends = useMemo(() => {
     const result: Record<string, number[]> = {}
