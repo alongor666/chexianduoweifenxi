@@ -2,25 +2,23 @@
 
 import { FilterContainer } from './filter-container'
 import { MultiSelectFilter } from './multi-select-filter'
-import { useAppStore } from '@/store/use-app-store'
 import { useFilterStore } from '@/store/domains/filterStore'
-import { filterRecordsWithExclusions } from '@/store/use-app-store'
+import { useInsuranceData } from '@/hooks/domains/useInsuranceData'
+import { DataService } from '@/services/DataService'
 import { normalizeChineseText } from '@/lib/utils'
 
 export function OrganizationFilter() {
   const filters = useFilterStore(state => state.filters)
   const updateFilters = useFilterStore(state => state.updateFilters)
-  const updateAppFilters = useAppStore(state => state.updateFilters)
-  const rawData = useAppStore(state => state.rawData)
+  const { rawData } = useInsuranceData()
 
-  // 同步更新两个store的筛选器
+  // 更新筛选器
   const handleUpdateFilters = (newFilters: any) => {
     updateFilters(newFilters)
-    updateAppFilters(newFilters)
   }
 
   // 联动：根据其他筛选条件提取唯一的机构（规范化去重）
-  const recordsForOrganizations = filterRecordsWithExclusions(
+  const recordsForOrganizations = DataService.filter(
     rawData,
     filters,
     ['organizations']
