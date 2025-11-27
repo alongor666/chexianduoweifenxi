@@ -6,6 +6,9 @@
 import type { InsuranceRecord } from '@/types/insurance'
 import type { FileUploadResult, BatchUploadResult } from '@/hooks/use-file-upload'
 import { safeMin, safeMax } from '@/lib/utils/array-utils'
+import { logger } from '@/lib/logger'
+
+const log = logger.create('DataPersistence')
 
 /**
  * 周次信息
@@ -121,10 +124,10 @@ export async function saveDataToStorage(data: InsuranceRecord[]): Promise<void> 
 
     localStorage.setItem(STORAGE_KEYS.DATA, JSON.stringify(data))
     localStorage.setItem(STORAGE_KEYS.STORAGE_INFO, JSON.stringify(storageInfo))
-    
-    console.log(`[Data Persistence] 数据已保存到本地存储，共 ${data.length} 条记录`)
+
+    log.info('数据已保存到本地存储', { recordCount: data.length, dataHash })
   } catch (error) {
-    console.error('[Data Persistence] 保存数据失败:', error)
+    log.error('保存数据失败', error)
     throw new Error('保存数据到本地存储失败')
   }
 }
@@ -138,10 +141,10 @@ export function loadDataFromStorage(): InsuranceRecord[] | null {
     if (!dataStr) return null
 
     const data = JSON.parse(dataStr) as InsuranceRecord[]
-    console.log(`[Data Persistence] 从本地存储加载数据，共 ${data.length} 条记录`)
+    log.info('从本地存储加载数据', { recordCount: data.length })
     return data
   } catch (error) {
-    console.error('[Data Persistence] 加载数据失败:', error)
+    log.error('加载数据失败', error)
     return null
   }
 }
@@ -156,7 +159,7 @@ export function getStorageInfo(): DataStorageInfo | null {
 
     return JSON.parse(infoStr) as DataStorageInfo
   } catch (error) {
-    console.error('[Data Persistence] 获取存储信息失败:', error)
+    log.error('获取存储信息失败', error)
     return null
   }
 }
@@ -169,9 +172,9 @@ export function clearStoredData(): void {
     localStorage.removeItem(STORAGE_KEYS.DATA)
     localStorage.removeItem(STORAGE_KEYS.STORAGE_INFO)
     localStorage.removeItem(STORAGE_KEYS.UPLOAD_HISTORY)
-    console.log('[Data Persistence] 已清除所有存储的数据')
+    log.info('已清除所有存储的数据')
   } catch (error) {
-    console.error('[Data Persistence] 清除数据失败:', error)
+    log.error('清除数据失败', error)
     throw new Error('清除存储数据失败')
   }
 }
@@ -186,7 +189,7 @@ export function getUploadHistory(): UploadHistoryRecord[] {
 
     return JSON.parse(historyStr) as UploadHistoryRecord[]
   } catch (error) {
-    console.error('[Data Persistence] 获取上传历史失败:', error)
+    log.error('获取上传历史失败', error)
     return []
   }
 }
@@ -237,9 +240,9 @@ export async function addUploadHistory(
     }
 
     localStorage.setItem(STORAGE_KEYS.UPLOAD_HISTORY, JSON.stringify(history))
-    console.log(`[Data Persistence] 已添加上传历史记录: ${record.id}`)
+    log.info('已添加上传历史记录', { recordId: record.id })
   } catch (error) {
-    console.error('[Data Persistence] 添加上传历史失败:', error)
+    log.error('添加上传历史失败', error)
   }
 }
 
@@ -268,7 +271,7 @@ export async function checkFileExists(file: File): Promise<{
 
     return { exists: false }
   } catch (error) {
-    console.error('[Data Persistence] 检查文件是否存在失败:', error)
+    log.error('检查文件是否存在失败', error)
     return { exists: false }
   }
 }
