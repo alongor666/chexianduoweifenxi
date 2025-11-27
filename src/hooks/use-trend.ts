@@ -7,7 +7,8 @@
 'use client'
 
 import { useMemo } from 'react'
-import { useAppStore, useFilteredData } from '@/store/use-app-store'
+import { useFilterStore, useTargetStore } from '@/store/domains'
+import { useFilteredData } from '@/hooks/use-filtered-data'
 import type { InsuranceRecord } from '@/types/insurance'
 import { kpiEngine } from '@/lib/calculations/kpi-engine'
 import { normalizeChineseText } from '@/lib/utils'
@@ -50,9 +51,9 @@ function sortYearWeekKeys(keys: string[]): string[] {
 
 export function useTrendData(): TrendPoint[] {
   const filtered = useFilteredData()
-  const filters = useAppStore(state => state.filters)
+  const filters = useFilterStore(state => state.filters)
   const dataViewType = filters.dataViewType
-  const premiumTargets = useAppStore(state => state.premiumTargets)
+  const premiumTargets = useTargetStore(state => state.premiumTargets)
 
   const targetForScope = useMemo(() => {
     if (!premiumTargets) return null

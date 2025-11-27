@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import { useAppStore } from '@/store/use-app-store'
+import { useDataStore, useTargetStore } from '@/store/domains'
 import { normalizeChineseText } from '@/lib/utils'
 import type { TargetDimensionKey } from '@/types/insurance'
 import {
@@ -10,9 +10,9 @@ import {
 type DimensionOptions = Record<TargetDimensionKey, string[]>
 
 export function usePremiumTargets() {
-  const rawData = useAppStore(state => state.rawData)
-  const premiumTargets = useAppStore(state => state.premiumTargets)
-  const loadPremiumTargets = useAppStore(state => state.loadPremiumTargets)
+  const rawData = useDataStore(state => state.rawData)
+  const premiumTargets = useTargetStore(state => state.premiumTargets)
+  const loadPremiumTargets = useTargetStore(state => state.loadPremiumTargets)
 
   useEffect(() => {
     loadPremiumTargets()

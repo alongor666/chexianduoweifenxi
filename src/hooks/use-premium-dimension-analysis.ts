@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useAppStore } from '@/store/use-app-store'
+import { useDataStore, useFilterStore } from '@/store/domains'
 import type { InsuranceRecord } from '@/types/insurance'
 import { useFilteredData, applyFilters } from './use-filtered-data'
 import { buildPreviousFilters } from './utils/filter-helpers'
@@ -135,8 +135,8 @@ export function usePremiumDimensionAnalysis(
   previousMap: Map<string, PremiumDimensionItem>
 } {
   const filteredData = useFilteredData()
-  const rawData = useAppStore(state => state.rawData)
-  const filters = useAppStore(state => state.filters)
+  const rawData = useDataStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
 
   const previousFilters = useMemo(
     () => buildPreviousFilters(filters),

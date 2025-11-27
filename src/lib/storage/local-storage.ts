@@ -3,6 +3,9 @@
  * 提供类型安全的本地存储功能,支持数据过期和大小限制
  */
 
+import { logger } from '@/lib/logger'
+
+const log = logger.create('LocalStorage')
 const STORAGE_PREFIX = 'insurance_analytics_'
 const MAX_STORAGE_SIZE = 500 * 1024 * 1024 // 提升到500MB支持大数据量存储
 
@@ -79,7 +82,7 @@ function clearExpiredData(): void {
   keysToRemove.forEach(key => localStorage.removeItem(key))
 
   if (keysToRemove.length > 0) {
-    console.log(`[Storage] 清理了 ${keysToRemove.length} 个过期项`)
+    log.debug('清理过期项', { count: keysToRemove.length })
   }
 }
 
@@ -146,7 +149,7 @@ export function getStorageItem<T>(key: string): T | null {
 
     return item.value
   } catch (e) {
-    console.error(`[Storage] 读取失败:`, key, e)
+    log.error('读取失败', { key, error: e })
     return null
   }
 }
@@ -175,7 +178,7 @@ export function clearAllStorage(): void {
   }
 
   keysToRemove.forEach(key => localStorage.removeItem(key))
-  console.log(`[Storage] 已清空 ${keysToRemove.length} 个存储项`)
+  log.info('已清空存储项', { count: keysToRemove.length })
 }
 
 /**
@@ -256,9 +259,10 @@ export function compressLargeData<T>(data: T[], maxItems: number = 50000): T[] {
       ...middlePart,
       ...backPart,
     ]
-    console.warn(
-      `[Storage] 大数据集分层压缩: ${data.length} → ${compressed.length} (保留关键数据段)`
-    )
+    log.warn('大数据集分层压缩', {
+      original: data.length,
+      compressed: compressed.length
+    })
     return compressed
   }
 
@@ -269,9 +273,11 @@ export function compressLargeData<T>(data: T[], maxItems: number = 50000): T[] {
     compressed.push(data[i])
   }
 
-  console.warn(
-    `[Storage] 数据已压缩: ${data.length} → ${compressed.length} (采样率: ${step})`
-  )
+  log.warn('数据已压缩', {
+    original: data.length,
+    compressed: compressed.length,
+    samplingRate: step
+  })
   return compressed
 }
 

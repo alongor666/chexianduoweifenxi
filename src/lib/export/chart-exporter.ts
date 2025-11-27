@@ -8,6 +8,9 @@
  */
 
 import html2canvas from 'html2canvas'
+import { logger } from '@/lib/logger'
+
+const log = logger.create('ChartExporter')
 
 export interface ChartExportOptions {
   /**
@@ -111,7 +114,7 @@ export async function exportChartAsImage(
       quality
     )
   } catch (error) {
-    console.error('图表导出失败:', error)
+    log.error('图表导出失败', error)
     throw error
   }
 }
@@ -202,7 +205,7 @@ export async function exportMultipleChartsAsImage(
       quality
     )
   } catch (error) {
-    console.error('多图表导出失败:', error)
+    log.error('多图表导出失败', error)
     throw error
   }
 }

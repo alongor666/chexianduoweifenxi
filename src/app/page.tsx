@@ -7,6 +7,9 @@ import { DataService } from '@/services/DataService'
 import { DashboardClient } from '@/components/dashboard-client'
 import { getDataSource } from '@/lib/supabase/client'
 import type { InsuranceRecord } from '@/types/insurance'
+import { logger } from '@/lib/logger'
+
+const log = logger.create('HomePage')
 
 export default async function HomePage() {
   let initialData: InsuranceRecord[] = []
@@ -15,16 +18,16 @@ export default async function HomePage() {
   // 仅在使用 Supabase 数据源时尝试从服务器端获取数据
   if (dataSource === 'supabase') {
     try {
-      console.log('[HomePage] 尝试从 Supabase 获取初始数据...')
+      log.info('尝试从 Supabase 获取初始数据')
       initialData = await DataService.fetchAllData()
-      console.log(`[HomePage] 成功获取 ${initialData.length} 条初始数据`)
+      log.info('成功获取初始数据', { recordCount: initialData.length })
     } catch (e) {
-      console.warn('[HomePage] Supabase 数据获取失败，降级到本地模式:', e)
+      log.warn('Supabase 数据获取失败，降级到本地模式', e)
       // 不显示错误页面，而是继续加载应用，让用户使用本地上传功能
       initialData = []
     }
   } else {
-    console.log('[HomePage] 当前使用本地数据模式')
+    log.info('当前使用本地数据模式')
   }
 
   // 渲染客户端组件，并将初始数据作为 prop 传递
