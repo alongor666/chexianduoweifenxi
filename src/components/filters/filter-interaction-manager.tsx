@@ -3,6 +3,9 @@
 import { useEffect, useCallback } from 'react'
 import { useAppStore } from '@/store/use-app-store'
 import type { FilterState } from '@/types/insurance'
+import { logger } from '@/lib/logger'
+
+const log = logger.create('FilterInteractionManager')
 
 const areArraysEqual = (a: ReadonlyArray<number>, b: ReadonlyArray<number>) =>
   a.length === b.length && a.every((value, index) => value === b[index])
@@ -258,7 +261,7 @@ export function FilterInteractionManager() {
     // 这里可以添加用户提示逻辑
     // 例如：当切换到"周增量"模式时，提示用户需要选择多周数据
     if (filters.dataViewType === 'increment' && filters.weeks.length < 2) {
-      console.log('提示：周增量分析建议选择多个周期以获得更好的分析效果')
+      log.info('周增量分析建议', { message: '建议选择多个周期以获得更好的分析效果', weekCount: filters.weeks.length })
     }
   }, [filters.dataViewType, filters.weeks.length])
 
@@ -343,7 +346,7 @@ export function useFilterPersistence() {
         updateFilters(parsedFilters)
       }
     } catch (error) {
-      console.warn('Failed to restore filter state from localStorage:', error)
+      log.warn('从 localStorage 恢复筛选器状态失败', error)
     }
   }, [updateFilters])
 }
