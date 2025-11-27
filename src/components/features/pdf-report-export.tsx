@@ -12,7 +12,7 @@
  */
 
 import { useState } from 'react'
-import { useAppStore } from '@/store/use-app-store'
+import { useDataStore, useFilterStore } from '@/store/domains'
 import { useKPI } from '@/hooks/use-kpi'
 import { exportPDFReport, PDFReportConfig } from '@/lib/export/pdf-exporter'
 import { useToast } from '@/hooks/use-toast'
@@ -26,9 +26,9 @@ interface Props {
 }
 
 export function PDFReportExport({ className }: Props) {
-  const rawData = useAppStore(state => state.rawData)
-  const filters = useAppStore(state => state.filters)
-  const viewMode = useAppStore(state => state.viewMode)
+  const rawData = useDataStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
+  const viewMode = useFilterStore(state => state.viewMode)
   const kpis = useKPI()
   const { toast } = useToast()
 
