@@ -5,7 +5,7 @@
  */
 
 import { useMemo } from 'react'
-import { useAppStore } from '@/store/use-app-store'
+import { useDataStore, useFilterStore } from '@/store/domains'
 import { kpiEngine } from '@/lib/calculations/kpi-engine'
 import type { InsuranceRecord, FilterState } from '@/types/insurance'
 import { DataService } from '@/services/DataService'
@@ -107,56 +107,12 @@ export function useSmartComparison(
 ) {
   const { annualTargetYuan = null, maxJumpBack = 5 } = options
 
-  // 使用细粒度选择器避免对象引用导致的无限重渲染问题
-  const rawData = useAppStore(state => state.rawData)
-  const viewMode = useAppStore(state => state.filters.viewMode)
-  const dataViewType = useAppStore(state => state.filters.dataViewType)
-  const singleModeWeek = useAppStore(state => state.filters.singleModeWeek)
-  const years = useAppStore(state => state.filters.years)
-  const weeks = useAppStore(state => state.filters.weeks)
-  const organizations = useAppStore(state => state.filters.organizations)
-  const insuranceTypes = useAppStore(state => state.filters.insuranceTypes)
-  const businessTypes = useAppStore(state => state.filters.businessTypes)
-  const coverageTypes = useAppStore(state => state.filters.coverageTypes)
-  const customerCategories = useAppStore(state => state.filters.customerCategories)
-  const vehicleGrades = useAppStore(state => state.filters.vehicleGrades)
-  const terminalSources = useAppStore(state => state.filters.terminalSources)
-  const isNewEnergy = useAppStore(state => state.filters.isNewEnergy)
-  const renewalStatuses = useAppStore(state => state.filters.renewalStatuses)
+  // 从新的领域Store获取数据
+  const rawData = useDataStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
 
-  // 重建 filters 对象供内部函数使用
-  const filters = useMemo((): FilterState => ({
-    viewMode,
-    singleModeWeek,
-    dataViewType: dataViewType || 'current',
-    trendModeWeeks: [],
-    years,
-    weeks,
-    organizations,
-    insuranceTypes,
-    businessTypes,
-    coverageTypes,
-    customerCategories,
-    vehicleGrades,
-    terminalSources,
-    isNewEnergy,
-    renewalStatuses,
-  }), [
-    viewMode,
-    singleModeWeek,
-    dataViewType,
-    years,
-    weeks,
-    organizations,
-    insuranceTypes,
-    businessTypes,
-    coverageTypes,
-    customerCategories,
-    vehicleGrades,
-    terminalSources,
-    isNewEnergy,
-    renewalStatuses,
-  ])
+  // 解构常用字段
+  const { viewMode, singleModeWeek, dataViewType, years } = filters
 
   // 使用 DataService.filter() 统一过滤逻辑
   const filteredData = useMemo(() => {
@@ -246,7 +202,7 @@ export function useSmartComparison(
       compareKpi,
       previousWeekNumber,
     }
-  }, [filteredData, rawData, filters, annualTargetYuan, maxJumpBack, viewMode, singleModeWeek, dataViewType, years])
+  }, [filteredData, rawData, filters, annualTargetYuan, maxJumpBack])
 
   return comparison
 }
