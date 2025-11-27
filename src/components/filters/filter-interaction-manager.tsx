@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useCallback } from 'react'
-import { useAppStore } from '@/store/use-app-store'
+import { useDataStore, useFilterStore } from '@/store/domains'
 import type { FilterState } from '@/types/insurance'
 import { logger } from '@/lib/logger'
 
@@ -15,9 +15,9 @@ const areArraysEqual = (a: ReadonlyArray<number>, b: ReadonlyArray<number>) =>
  * 负责处理筛选器之间的级联响应、状态保持和智能默认值
  */
 export function FilterInteractionManager() {
-  const filters = useAppStore(state => state.filters)
-  const updateFilters = useAppStore(state => state.updateFilters)
-  const rawData = useAppStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
+  const updateFilters = useFilterStore(state => state.updateFilters)
+  const rawData = useDataStore(state => state.rawData)
 
   /**
    * 智能默认值设置
@@ -308,8 +308,8 @@ export function FilterInteractionManager() {
  * 将筛选器状态保存到localStorage，页面刷新后恢复
  */
 export function useFilterPersistence() {
-  const filters = useAppStore(state => state.filters)
-  const updateFilters = useAppStore(state => state.updateFilters)
+  const filters = useFilterStore(state => state.filters)
+  const updateFilters = useFilterStore(state => state.updateFilters)
 
   // 保存筛选器状态到localStorage
   useEffect(() => {
