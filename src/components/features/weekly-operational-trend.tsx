@@ -8,6 +8,9 @@ import { applyFilters } from '@/hooks/use-filtered-data'
 import { formatNumber, formatPercent } from '@/utils/formatters'
 import { useAppStore } from '@/store/use-app-store'
 import type { FilterState, InsuranceRecord } from '@/types/insurance'
+import { logger } from '@/lib/logger'
+
+const log = logger.create('WeeklyOperationalTrend')
 import {
   LOSS_RISK_THRESHOLD,
   type ChartDataPoint,
@@ -437,7 +440,7 @@ export const WeeklyOperationalTrend = React.memo(function WeeklyOperationalTrend
    * 处理风险点点击事件
    */
   const handlePointClick = (point: ChartDataPoint) => {
-    console.log('🔍 下钻分析：', point)
+    log.debug('下钻分析', { point })
     setSelectedPoint(point)
 
     // TODO: 集成下钻逻辑
