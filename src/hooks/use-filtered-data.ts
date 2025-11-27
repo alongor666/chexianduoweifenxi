@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useAppStore } from '@/store/use-app-store'
+import { useDataStore, useFilterStore } from '@/store/domains'
 import type { InsuranceRecord, FilterState } from '@/types/insurance'
 import { DataService } from '@/services/DataService'
 
@@ -24,8 +24,8 @@ export function applyFilters(
  * 根据当前的筛选条件过滤原始数据
  */
 export function useFilteredData(): InsuranceRecord[] {
-  const rawData = useAppStore(state => state.rawData)
-  const filters = useAppStore(state => state.filters)
+  const rawData = useDataStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
 
   return useMemo(() => DataService.filter(rawData, filters), [rawData, filters])
 }
