@@ -12,6 +12,9 @@ import {
   IPersistenceAdapter,
   PersistenceError,
 } from '../interfaces/IPersistenceAdapter'
+import { logger } from '@/lib/logger'
+
+const log = logger.create('LocalStorageAdapter')
 
 export class LocalStorageAdapter implements IPersistenceAdapter {
   private readonly prefix: string
@@ -37,7 +40,7 @@ export class LocalStorageAdapter implements IPersistenceAdapter {
       const serialized = JSON.stringify(data)
       localStorage.setItem(fullKey, serialized)
 
-      console.log(`[LocalStorage] 已保存数据: ${key} (${this.formatSize(serialized.length)})`)
+      log.debug('已保存数据', { key, size: this.formatSize(serialized.length) })
     } catch (error) {
       if (error instanceof Error) {
         // 检查是否是存储空间不足
@@ -80,10 +83,10 @@ export class LocalStorageAdapter implements IPersistenceAdapter {
       }
 
       const data = JSON.parse(serialized) as T
-      console.log(`[LocalStorage] 已加载数据: ${key}`)
+      log.debug('已加载数据', { key })
       return data
     } catch (error) {
-      console.error(`[LocalStorage] 加载数据失败: ${key}`, error)
+      log.error('加载数据失败', { key, error })
       // 数据损坏时返回 null 而不是抛出异常，让调用方决定如何处理
       return null
     }
@@ -95,7 +98,7 @@ export class LocalStorageAdapter implements IPersistenceAdapter {
   async remove(key: string): Promise<void> {
     const fullKey = this.getFullKey(key)
     localStorage.removeItem(fullKey)
-    console.log(`[LocalStorage] 已删除数据: ${key}`)
+    log.debug('已删除数据', { key })
   }
 
   /**
@@ -114,7 +117,7 @@ export class LocalStorageAdapter implements IPersistenceAdapter {
 
     // 删除所有找到的键
     keysToRemove.forEach(key => localStorage.removeItem(key))
-    console.log(`[LocalStorage] 已清空所有数据 (共 ${keysToRemove.length} 项)`)
+    log.info('已清空所有数据', { count: keysToRemove.length })
   }
 
   /**
