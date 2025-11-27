@@ -14,7 +14,7 @@ import {
   type CSVParseResult,
   type ProgressCallback,
 } from '@/lib/parsers/csv-parser'
-import { useAppStore } from '@/store/use-app-store'
+import { useDataStore } from '@/store/domains'
 import {
   extractWeeksFromRecords,
   analyzeWeekConflicts,
@@ -146,8 +146,11 @@ export function useFileUpload() {
   const [validationOptions, setValidationOptions] =
     useState<FileValidationOptions>(DEFAULT_VALIDATION_OPTIONS)
 
-  const { setRawData, appendRawData, setError, setLoading } = useAppStore()
-  const rawData = useAppStore(state => state.rawData)
+  const setData = useDataStore(state => state.setData)
+  const appendData = useDataStore(state => state.appendData)
+  const setError = useDataStore(state => state.setError)
+  const setLoading = useDataStore(state => state.setLoading)
+  const rawData = useDataStore(state => state.rawData)
 
   /**
    * 验证单个文件
@@ -449,10 +452,10 @@ export function useFileUpload() {
 
               if (currentRawData.length === 0) {
                 // 首次上传，直接设置
-                setRawData(filteredData)
+                await setData(filteredData)
               } else {
                 // 后续上传，追加数据
-                appendRawData(filteredData)
+                await appendData(filteredData)
               }
 
               // 同步更新本地快照，保证同批次后续文件基于最新数据进行冲突检测
@@ -578,7 +581,7 @@ export function useFileUpload() {
         }, 3000)
       }
     },
-    [uploadSingleFile, validateFiles, setRawData, appendRawData, rawData, setError, setLoading]
+    [uploadSingleFile, validateFiles, setData, appendData, rawData, setError, setLoading]
   )
 
   /**
