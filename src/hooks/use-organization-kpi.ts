@@ -4,9 +4,10 @@
  */
 
 import { useMemo } from 'react'
-import { useAppStore } from '@/store/use-app-store'
+import { useDataStore, useFilterStore, useTargetStore } from '@/store/domains'
+import { DataService } from '@/services/DataService'
 import { kpiEngine } from '@/lib/calculations/kpi-engine'
-import type { KPIResult, InsuranceRecord } from '@/types/insurance'
+import type { KPIResult, InsuranceRecord, FilterState } from '@/types/insurance'
 import { safeMax } from '@/lib/utils/array-utils'
 
 /**
@@ -17,104 +18,17 @@ import { safeMax } from '@/lib/utils/array-utils'
 export function useOrganizationKPI(
   organizationName: string
 ): KPIResult | null {
-  const rawData = useAppStore((state) => state.rawData)
-  const filters = useAppStore((state) => state.filters)
-  const premiumTargets = useAppStore((state) => state.premiumTargets)
+  const rawData = useDataStore((state) => state.rawData)
+  const filters = useFilterStore((state) => state.filters)
+  const premiumTargets = useTargetStore((state) => state.premiumTargets)
 
   const kpiResult = useMemo(() => {
-    // 筛选该机构的数据，同时应用其他筛选条件（除了机构筛选）
-    const orgData = rawData.filter((record: InsuranceRecord) => {
-      // 机构筛选 - 仅该机构
-      if (record.third_level_organization !== organizationName) {
-        return false
-      }
-
-      // 应用年份筛选
-      if (
-        filters.years.length > 0 &&
-        !filters.years.includes(record.policy_start_year)
-      ) {
-        return false
-      }
-
-      // 应用周次筛选（单周模式）
-      if (
-        filters.viewMode === 'single' &&
-        filters.singleModeWeek !== null &&
-        record.week_number !== filters.singleModeWeek
-      ) {
-        return false
-      }
-
-      // 趋势模式不需要额外的周次筛选，直接使用所有数据
-
-      // 应用保险类型筛选
-      if (
-        filters.insuranceTypes.length > 0 &&
-        !filters.insuranceTypes.includes(record.insurance_type)
-      ) {
-        return false
-      }
-
-      // 应用业务类型筛选
-      if (
-        filters.businessTypes.length > 0 &&
-        !filters.businessTypes.includes(record.business_type_category)
-      ) {
-        return false
-      }
-
-      // 应用承保类型筛选
-      if (
-        filters.coverageTypes.length > 0 &&
-        !filters.coverageTypes.includes(record.coverage_type)
-      ) {
-        return false
-      }
-
-      // 应用客户分类筛选
-      if (
-        filters.customerCategories.length > 0 &&
-        !filters.customerCategories.includes(record.customer_category_3)
-      ) {
-        return false
-      }
-
-      // 应用车级筛选
-      if (
-        filters.vehicleGrades.length > 0 &&
-        record.vehicle_insurance_grade &&
-        !filters.vehicleGrades.includes(record.vehicle_insurance_grade)
-      ) {
-        return false
-      }
-
-      // 应用终端来源筛选
-      if (
-        filters.terminalSources.length > 0 &&
-        !filters.terminalSources.includes(record.terminal_source)
-      ) {
-        return false
-      }
-
-      // 应用新能源筛选
-      if (
-        filters.isNewEnergy !== null &&
-        record.is_new_energy_vehicle !== filters.isNewEnergy
-      ) {
-        return false
-      }
-
-      // 应用续保状态筛选
-      if (
-        filters.renewalStatuses.length > 0 &&
-        !filters.renewalStatuses.includes(record.renewal_status)
-      ) {
-        return false
-      }
-
-      return true
-    })
+    // 使用 DataService.filter() 统一过滤逻辑，仅筛选该机构
+    const orgFilters: FilterState = {
+      ...filters,
+      organizations: [organizationName],
+    }
+    const orgData = DataService.filter(rawData, orgFilters)
 
     // 如果没有数据，返回null
     if (orgData.length === 0) {
@@ -143,22 +57,7 @@ export function useOrganizationKPI(
       currentWeekNumber: currentWeek ?? undefined,
       year: currentYear,
     })
-  }, [
-    rawData,
-    organizationName,
-    filters.years,
-    filters.viewMode,
-    filters.singleModeWeek,
-    filters.insuranceTypes,
-    filters.businessTypes,
-    filters.coverageTypes,
-    filters.customerCategories,
-    filters.vehicleGrades,
-    filters.terminalSources,
-    filters.isNewEnergy,
-    filters.renewalStatuses,
-    premiumTargets,
-  ])
+  }, [rawData, organizationName, filters, premiumTargets])
 
   return kpiResult
 }
@@ -171,9 +70,9 @@ export function useOrganizationKPI(
 export function useMultipleOrganizationKPIs(
   organizationNames: string[]
 ): Map<string, KPIResult | null> {
-  const rawData = useAppStore((state) => state.rawData)
-  const filters = useAppStore((state) => state.filters)
-  const premiumTargets = useAppStore((state) => state.premiumTargets)
+  const rawData = useDataStore((state) => state.rawData)
+  const filters = useFilterStore((state) => state.filters)
+  const premiumTargets = useTargetStore((state) => state.premiumTargets)
 
   const kpiMap = useMemo(() => {
     const resultMap = new Map<string, KPIResult | null>()
@@ -190,90 +89,12 @@ export function useMultipleOrganizationKPIs(
 
     // 为每个机构计算KPI
     organizationNames.forEach((orgName) => {
-      // 筛选该机构的数据
-      const orgData = rawData.filter((record: InsuranceRecord) => {
-        // 机构筛选
-        if (record.third_level_organization !== orgName) {
-          return false
-        }
-
-        // 应用其他筛选条件（同上）
-        if (
-          filters.years.length > 0 &&
-          !filters.years.includes(record.policy_start_year)
-        ) {
-          return false
-        }
-
-        if (
-          filters.viewMode === 'single' &&
-          filters.singleModeWeek !== null &&
-          record.week_number !== filters.singleModeWeek
-        ) {
-          return false
-        }
-
-        // 趋势模式不需要额外的周次筛选，直接使用所有数据
-
-        if (
-          filters.insuranceTypes.length > 0 &&
-          !filters.insuranceTypes.includes(record.insurance_type)
-        ) {
-          return false
-        }
-
-        if (
-          filters.businessTypes.length > 0 &&
-          !filters.businessTypes.includes(record.business_type_category)
-        ) {
-          return false
-        }
-
-        if (
-          filters.coverageTypes.length > 0 &&
-          !filters.coverageTypes.includes(record.coverage_type)
-        ) {
-          return false
-        }
-
-        if (
-          filters.customerCategories.length > 0 &&
-          !filters.customerCategories.includes(record.customer_category_3)
-        ) {
-          return false
-        }
-
-        if (
-          filters.vehicleGrades.length > 0 &&
-          record.vehicle_insurance_grade &&
-          !filters.vehicleGrades.includes(record.vehicle_insurance_grade)
-        ) {
-          return false
-        }
-
-        if (
-          filters.terminalSources.length > 0 &&
-          !filters.terminalSources.includes(record.terminal_source)
-        ) {
-          return false
-        }
-
-        if (
-          filters.isNewEnergy !== null &&
-          record.is_new_energy_vehicle !== filters.isNewEnergy
-        ) {
-          return false
-        }
-
-        if (
-          filters.renewalStatuses.length > 0 &&
-          !filters.renewalStatuses.includes(record.renewal_status)
-        ) {
-          return false
-        }
-
-        return true
-      })
+      // 使用 DataService.filter() 统一过滤逻辑，仅筛选该机构
+      const orgFilters: FilterState = {
+        ...filters,
+        organizations: [orgName],
+      }
+      const orgData = DataService.filter(rawData, orgFilters)
 
       // 如果没有数据，设置为null
       if (orgData.length === 0) {
@@ -297,22 +118,7 @@ export function useMultipleOrganizationKPIs(
     })
 
     return resultMap
-  }, [
-    rawData,
-    organizationNames,
-    filters.years,
-    filters.viewMode,
-    filters.singleModeWeek,
-    filters.insuranceTypes,
-    filters.businessTypes,
-    filters.coverageTypes,
-    filters.customerCategories,
-    filters.vehicleGrades,
-    filters.terminalSources,
-    filters.isNewEnergy,
-    filters.renewalStatuses,
-    premiumTargets,
-  ])
+  }, [rawData, organizationNames, filters, premiumTargets])
 
   return kpiMap
 }

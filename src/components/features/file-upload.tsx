@@ -13,7 +13,8 @@ import { useToast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
 import { safeMinMax } from '@/lib/utils/array-utils'
 import { UploadResultsDetail } from './upload-results-detail'
-import { useAppStore } from '@/store/use-app-store'
+import { useDataStore } from '@/store/domains'
+import { persistenceService } from '@/services/PersistenceService'
 import { formatFileSize, formatTime } from '@/utils/formatters'
 
 export function FileUpload() {
@@ -36,10 +37,19 @@ export function FileUpload() {
   const { toast } = useToast()
 
   // 获取store中的数据和方法
-  const rawData = useAppStore(state => state.rawData)
-  const clearData = useAppStore(state => state.clearData)
-  const clearPersistentData = useAppStore(state => state.clearPersistentData)
-  const getStorageStats = useAppStore(state => state.getStorageStats)
+  const rawData = useDataStore(state => state.rawData)
+  const clearData = useDataStore(state => state.clearData)
+
+  // 清除持久化数据
+  const clearPersistentData = useCallback(async () => {
+    await persistenceService.clearAll()
+    await clearData(false) // clearData但不清除storage（因为已经清除了）
+  }, [clearData])
+
+  // 获取存储统计信息
+  const getStorageStats = useCallback(async () => {
+    return await persistenceService.getStorageInfo()
+  }, [])
   
   // 获取已有数据统计
   const existingDataStats = useMemo(() => {

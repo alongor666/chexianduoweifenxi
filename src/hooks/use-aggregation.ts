@@ -6,8 +6,9 @@
 'use client'
 
 import { useMemo } from 'react'
-import { useAppStore, useFilteredData } from '@/store/use-app-store'
-import type { InsuranceRecord } from '@/types/insurance'
+import { useDataStore, useFilterStore } from '@/store/domains'
+import { DataService } from '@/services/DataService'
+import type { InsuranceRecord, FilterState } from '@/types/insurance'
 
 export interface StructurePoint {
   key: string
@@ -67,8 +68,8 @@ function calculateIncrement<T extends string>(
  * 获取前一周的数据（应用相同的筛选条件，但周次为前一周）
  */
 function usePreviousWeekData(): InsuranceRecord[] {
-  const rawData = useAppStore(state => state.rawData)
-  const filters = useAppStore(state => state.filters)
+  const rawData = useDataStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
 
   return useMemo(() => {
     const currentWeek =
@@ -78,84 +79,21 @@ function usePreviousWeekData(): InsuranceRecord[] {
 
     const previousWeek = currentWeek - 1
 
-    return rawData.filter((record: InsuranceRecord) => {
-      // 前一周的数据
-      if (record.week_number !== previousWeek) {
-        return false
-      }
+    // 使用 DataService.filter() 统一过滤逻辑
+    const previousWeekFilters: FilterState = {
+      ...filters,
+      weeks: [previousWeek],
+    }
 
-      // 应用其他筛选条件
-      if (
-        filters.years.length > 0 &&
-        !filters.years.includes(record.policy_start_year)
-      ) {
-        return false
-      }
-      if (
-        filters.organizations.length > 0 &&
-        !filters.organizations.includes(record.third_level_organization)
-      ) {
-        return false
-      }
-      if (
-        filters.insuranceTypes.length > 0 &&
-        !filters.insuranceTypes.includes(record.insurance_type)
-      ) {
-        return false
-      }
-      if (
-        filters.businessTypes.length > 0 &&
-        !filters.businessTypes.includes(record.business_type_category)
-      ) {
-        return false
-      }
-      if (
-        filters.coverageTypes.length > 0 &&
-        !filters.coverageTypes.includes(record.coverage_type)
-      ) {
-        return false
-      }
-      if (
-        filters.customerCategories.length > 0 &&
-        !filters.customerCategories.includes(record.customer_category_3)
-      ) {
-        return false
-      }
-      if (
-        filters.vehicleGrades.length > 0 &&
-        record.vehicle_insurance_grade &&
-        !filters.vehicleGrades.includes(record.vehicle_insurance_grade)
-      ) {
-        return false
-      }
-      if (
-        filters.terminalSources.length > 0 &&
-        !filters.terminalSources.includes(record.terminal_source)
-      ) {
-        return false
-      }
-      if (
-        filters.isNewEnergy !== null &&
-        record.is_new_energy_vehicle !== filters.isNewEnergy
-      ) {
-        return false
-      }
-      if (
-        filters.renewalStatuses.length > 0 &&
-        !filters.renewalStatuses.includes(record.renewal_status)
-      ) {
-        return false
-      }
-
-      return true
-    })
+    return DataService.filter(rawData, previousWeekFilters)
   }, [rawData, filters])
 }
 
 export function useOrganizationStructure(topN = 12): StructurePoint[] {
-  const filtered = useFilteredData()
+  const rawData = useDataStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
+  const filtered = useMemo(() => DataService.filter(rawData, filters), [rawData, filters])
   const previousWeekData = usePreviousWeekData()
-  const filters = useAppStore(state => state.filters)
   const dataViewType = filters.dataViewType
 
   return useMemo(() => {
@@ -190,9 +128,10 @@ export function useOrganizationStructure(topN = 12): StructurePoint[] {
 }
 
 export function useProductStructure(topN = 12): StructurePoint[] {
-  const filtered = useFilteredData()
+  const rawData = useDataStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
+  const filtered = useMemo(() => DataService.filter(rawData, filters), [rawData, filters])
   const previousWeekData = usePreviousWeekData()
-  const filters = useAppStore(state => state.filters)
   const dataViewType = filters.dataViewType
 
   return useMemo(() => {
@@ -227,9 +166,10 @@ export function useProductStructure(topN = 12): StructurePoint[] {
 }
 
 export function useCustomerDistribution(topN = 10): PiePoint[] {
-  const filtered = useFilteredData()
+  const rawData = useDataStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
+  const filtered = useMemo(() => DataService.filter(rawData, filters), [rawData, filters])
   const previousWeekData = usePreviousWeekData()
-  const filters = useAppStore(state => state.filters)
   const dataViewType = filters.dataViewType
 
   return useMemo(() => {
@@ -267,9 +207,10 @@ export function useCustomerDistribution(topN = 10): PiePoint[] {
 }
 
 export function useChannelDistribution(topN = 10): PiePoint[] {
-  const filtered = useFilteredData()
+  const rawData = useDataStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
+  const filtered = useMemo(() => DataService.filter(rawData, filters), [rawData, filters])
   const previousWeekData = usePreviousWeekData()
-  const filters = useAppStore(state => state.filters)
   const dataViewType = filters.dataViewType
 
   return useMemo(() => {

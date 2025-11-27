@@ -5,7 +5,7 @@
  */
 
 import { useMemo } from 'react'
-import { useAppStore, useFilteredData } from '@/store/use-app-store'
+import { useDataStore, useFilterStore, useTargetStore } from '@/store/domains'
 import { kpiEngine } from '@/lib/calculations/kpi-engine'
 import type { KPIResult, InsuranceRecord, FilterState } from '@/types/insurance'
 import { normalizeChineseText } from '@/lib/utils'
@@ -17,23 +17,31 @@ import { DataService } from '@/services/DataService'
  * @returns KPI 计算结果
  */
 export function useKPI(): KPIResult | null {
-  const filteredData = useFilteredData()
-  const rawData = useAppStore(state => state.rawData)
+  // 从新的领域Store获取数据
+  const rawData = useDataStore(state => state.rawData)
+  const filters = useFilterStore(state => state.filters)
+  const premiumTargets = useTargetStore(state => state.premiumTargets)
+
   // 使用细粒度选择器避免对象引用问题
-  const businessTypes = useAppStore(state => state.filters.businessTypes)
-  const organizations = useAppStore(state => state.filters.organizations)
-  const customerCategories = useAppStore(state => state.filters.customerCategories)
-  const insuranceTypes = useAppStore(state => state.filters.insuranceTypes)
-  const years = useAppStore(state => state.filters.years)
-  const coverageTypes = useAppStore(state => state.filters.coverageTypes)
-  const vehicleGrades = useAppStore(state => state.filters.vehicleGrades)
-  const terminalSources = useAppStore(state => state.filters.terminalSources)
-  const isNewEnergy = useAppStore(state => state.filters.isNewEnergy)
-  const renewalStatuses = useAppStore(state => state.filters.renewalStatuses)
-  const viewMode = useAppStore(state => state.filters.viewMode)
-  const singleModeWeek = useAppStore(state => state.filters.singleModeWeek)
-  const dataViewType = useAppStore(state => state.filters.dataViewType)
-  const premiumTargets = useAppStore(state => state.premiumTargets)
+  const businessTypes = filters.businessTypes
+  const organizations = filters.organizations
+  const customerCategories = filters.customerCategories
+  const insuranceTypes = filters.insuranceTypes
+  const years = filters.years
+  const coverageTypes = filters.coverageTypes
+  const vehicleGrades = filters.vehicleGrades
+  const terminalSources = filters.terminalSources
+  const isNewEnergy = filters.isNewEnergy
+  const renewalStatuses = filters.renewalStatuses
+  const viewMode = filters.viewMode
+  const singleModeWeek = filters.singleModeWeek
+  const dataViewType = filters.dataViewType
+
+  // 计算筛选后的数据
+  const filteredData = useMemo(
+    () => DataService.filter(rawData, filters),
+    [rawData, filters]
+  )
 
   const currentTargetYuan = useMemo(() => {
     if (!premiumTargets) return null
@@ -166,18 +174,7 @@ export function useKPI(): KPIResult | null {
   }, [
     filteredData,
     rawData,
-    viewMode,
-    singleModeWeek,
-    years,
-    organizations,
-    insuranceTypes,
-    businessTypes,
-    coverageTypes,
-    customerCategories,
-    vehicleGrades,
-    terminalSources,
-    isNewEnergy,
-    renewalStatuses,
+    filters,
     dataViewType,
     currentTargetYuan,
   ])
