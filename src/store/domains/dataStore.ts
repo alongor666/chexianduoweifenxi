@@ -11,9 +11,6 @@ import { devtools } from 'zustand/middleware'
 import type { InsuranceRecord } from '@/types/insurance'
 import { DataService } from '@/services/DataService'
 import { persistenceService } from '@/services/PersistenceService'
-import { logger } from '@/lib/logger'
-
-const log = logger.create('DataStore')
 
 interface DataStore {
   // ==================== 状态 ====================
@@ -137,7 +134,7 @@ export const useDataStore = create<DataStore>()(
             await get().saveToStorage()
           }
 
-          log.info('数据已设置', { recordCount: normalizedData.length })
+          console.log(`[DataStore] 数据已设置，共 ${normalizedData.length} 条记录`)
         } catch (error) {
           const err = error instanceof Error ? error : new Error('设置数据失败')
           set({ error: err }, false, 'setData:error')
@@ -167,11 +164,9 @@ export const useDataStore = create<DataStore>()(
             await get().saveToStorage()
           }
 
-          log.info('数据已追加', {
-            previousCount: currentData.length,
-            newCount: normalizedNewData.length,
-            totalCount: mergedData.length,
-          })
+          console.log(
+            `[DataStore] 数据已追加，原有 ${currentData.length} 条，新增 ${normalizedNewData.length} 条，去重后共 ${mergedData.length} 条`
+          )
         } catch (error) {
           const err = error instanceof Error ? error : new Error('追加数据失败')
           set({ error: err }, false, 'appendData:error')
@@ -193,7 +188,7 @@ export const useDataStore = create<DataStore>()(
           await persistenceService.clearAll()
         }
 
-        log.info('数据已清空', { clearedStorage: clearStorage })
+        console.log('[DataStore] 数据已清空')
       },
 
       loadFromStorage: async () => {
@@ -205,15 +200,15 @@ export const useDataStore = create<DataStore>()(
           if (data && data.length > 0) {
             // 不自动保存，因为数据本来就是从存储加载的
             await get().setData(data, false)
-            log.info('从本地存储加载数据成功', { recordCount: data.length })
+            console.log('[DataStore] 从本地存储加载数据成功')
           } else {
-            log.info('本地存储中没有数据')
+            console.log('[DataStore] 本地存储中没有数据')
           }
         } catch (error) {
           const err =
             error instanceof Error ? error : new Error('从本地存储加载数据失败')
           set({ error: err }, false, 'loadFromStorage:error')
-          log.error('加载数据失败', error)
+          console.error('[DataStore] 加载数据失败:', error)
         } finally {
           set({ isLoading: false }, false, 'loadFromStorage:end')
         }
@@ -223,9 +218,9 @@ export const useDataStore = create<DataStore>()(
         try {
           const { rawData } = get()
           await persistenceService.saveRawData(rawData)
-          log.info('数据已保存到本地存储', { recordCount: rawData.length })
+          console.log('[DataStore] 数据已保存到本地存储')
         } catch (error) {
-          log.error('保存数据到本地存储失败', error)
+          console.error('[DataStore] 保存数据到本地存储失败:', error)
           throw error
         }
       },

@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useDataStore } from '@/store/domains/dataStore'
-import { useFilterStore } from '@/store/domains/filterStore'
+import { useAppStore } from '@/store/use-app-store'
 import {
   setStorageItem,
   getStorageItem,
@@ -14,19 +13,16 @@ import {
   isIndexedDBAvailable,
 } from '@/lib/storage/indexed-db'
 import type { InsuranceRecord, FilterState } from '@/types/insurance'
-import { logger } from '@/lib/logger'
-
-const log = logger.create('PersistData')
 
 /**
  * 数据持久化 Hook
  * 自动保存和恢复数据到 localStorage / IndexedDB
  */
 export function usePersistData(initialData: InsuranceRecord[] = []) {
-  const rawData = useDataStore(state => state.rawData)
-  const filters = useFilterStore(state => state.filters)
-  const setData = useDataStore(state => state.setData)
-  const updateFilters = useFilterStore(state => state.updateFilters)
+  const rawData = useAppStore(state => state.rawData)
+  const filters = useAppStore(state => state.filters)
+  const setRawData = useAppStore(state => state.setRawData)
+  const updateFilters = useAppStore(state => state.updateFilters)
 
   // 从 localStorage / IndexedDB 恢复数据 (仅在组件挂载时执行一次)
   useEffect(() => {
@@ -34,8 +30,8 @@ export function usePersistData(initialData: InsuranceRecord[] = []) {
 
     async function restore() {
       // 如果 store 中已有数据，则不执行任何操作
-      if (useDataStore.getState().rawData.length > 0) {
-        log.debug('Store 已有数据，跳过恢复操作')
+      if (useAppStore.getState().rawData.length > 0) {
+        console.log('[Persist] Store 已有数据，跳过恢复操作。')
         return
       }
 
@@ -43,22 +39,24 @@ export function usePersistData(initialData: InsuranceRecord[] = []) {
       const savedFilters = getStorageItem<FilterState>(StorageKeys.FILTERS)
 
       if (savedData && savedData.length > 0) {
-        log.info('恢复数据 (localStorage)', { count: savedData.length })
-        await setData(savedData, false) // autoSave=false，避免循环
+        console.log(
+          `[Persist] 恢复了 ${savedData.length} 条数据 (localStorage)`
+        )
+        setRawData(savedData)
       } else if (isIndexedDBAvailable()) {
         const idbData = await loadRawData()
         if (!cancelled && idbData && idbData.length > 0) {
-          log.info('从 IndexedDB 恢复数据', { count: idbData.length })
-          await setData(idbData, false) // autoSave=false，避免循环
+          console.log(`[Persist] 从 IndexedDB 恢复了 ${idbData.length} 条数据`)
+          setRawData(idbData)
         }
       } else if (initialData && initialData.length > 0) {
         // 如果本地没有数据，则使用从服务器获取的初始数据
-        log.info('从服务器初始化数据', { count: initialData.length })
-        await setData(initialData, false) // autoSave=false，避免循环
+        console.log(`[Persist] 从服务器初始了 ${initialData.length} 条数据`)
+        setRawData(initialData)
       }
 
       if (savedFilters) {
-        log.debug('恢复筛选条件')
+        console.log(`[Persist] 恢复筛选条件`)
         updateFilters(savedFilters)
       }
     }
@@ -67,7 +65,7 @@ export function usePersistData(initialData: InsuranceRecord[] = []) {
     return () => {
       cancelled = true
     }
-  }, [initialData, setData, updateFilters])
+  }, [initialData, setRawData, updateFilters])
 
   // 保存数据到 IndexedDB / localStorage (当数据变化时)
   useEffect(() => {
@@ -76,9 +74,9 @@ export function usePersistData(initialData: InsuranceRecord[] = []) {
       if (isIndexedDBAvailable()) {
         saveRawData(rawData).then(res => {
           if (res.success) {
-            log.debug('IndexedDB 已保存数据', { count: rawData.length })
+            console.log(`[Persist] IndexedDB 已保存 ${rawData.length} 条数据`)
           } else {
-            log.warn('IndexedDB 保存失败', { error: res.error })
+            console.warn(`[Persist] IndexedDB 保存失败: ${res.error}`)
           }
         })
       }
@@ -95,23 +93,22 @@ export function usePersistData(initialData: InsuranceRecord[] = []) {
         )
 
         if (!result.success) {
-          log.warn('localStorage 保存失败', { error: result.error })
+          console.warn(`[Persist] localStorage 保存失败: ${result.error}`)
         } else {
-          log.debug('localStorage 已保存数据', { count: rawData.length })
+          console.log(`[Persist] localStorage 已保存 ${rawData.length} 条数据`)
         }
       } else {
         // 数据量过大，清除 localStorage 中的旧数据，仅依赖 IndexedDB
         removeStorageItem(StorageKeys.RAW_DATA)
-        log.info('数据量超过 localStorage 限制，仅使用 IndexedDB 存储', {
-          count: rawData.length,
-          limit: MAX_RECORDS_FOR_LOCALSTORAGE,
-        })
+        console.log(
+          `[Persist] 数据量 (${rawData.length} 条) 超过 localStorage 限制，仅使用 IndexedDB 存储`
+        )
       }
     } else {
       // 如果数据被清空,也清空缓存
       removeStorageItem(StorageKeys.RAW_DATA)
       clearRawData()
-      log.debug('已清空缓存数据')
+      console.log('[Persist] 已清空缓存数据')
     }
   }, [rawData])
 
@@ -129,7 +126,7 @@ export function usePersistData(initialData: InsuranceRecord[] = []) {
           filters,
           7 * 24 * 60 * 60 * 1000 // 7天过期
         )
-        log.debug('已保存筛选条件')
+        console.log('[Persist] 已保存筛选条件')
       }
     }
   }, [filters])
@@ -145,7 +142,7 @@ export function usePersistData(initialData: InsuranceRecord[] = []) {
       removeStorageItem(StorageKeys.RAW_DATA)
       removeStorageItem(StorageKeys.FILTERS)
       clearRawData()
-      log.info('已清除所有持久化数据')
+      console.log('[Persist] 已清除所有持久化数据')
     },
   }
 }

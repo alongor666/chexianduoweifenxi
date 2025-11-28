@@ -4,12 +4,10 @@
  */
 
 import { useMemo, useRef } from 'react'
-import { useDataStore, useFilterStore } from '@/store/domains'
+import { useAppStore } from '@/store/use-app-store'
 import { calculateKPIs } from '@/lib/calculations/kpi-engine'
 import type { InsuranceRecord, FilterState } from '@/types/insurance'
-import { logger } from '@/lib/logger'
-
-const log = logger.create('KPITrend')
+import { getBusinessTypeCode } from '@/constants/dimensions'
 
 /**
  * KPI趋势数据点
@@ -117,7 +115,7 @@ function calculateKPITrend(
       const value = kpi[kpiKey]
       trendData[i] = typeof value === 'number' ? value : null
     } catch (error) {
-      log.warn('计算KPI时出错', { weekKey, error })
+      console.warn(`计算第 ${weekKey} 周的KPI时出错:`, error)
       trendData[i] = null
     }
   }
@@ -165,9 +163,12 @@ function applyFilters(
       return false
     }
 
-    // 业务类型筛选
-    if (bizTypesSet && !bizTypesSet.has(record.business_type_category)) {
-      return false
+    // 业务类型筛选（代码端为英文代码，记录转换后比对）
+    if (bizTypesSet) {
+      const code = getBusinessTypeCode(record.business_type_category)
+      if (!bizTypesSet.has(code)) {
+        return false
+      }
     }
 
     // 险别筛选
@@ -224,8 +225,8 @@ export function useKPITrend(
 ) {
   const { weeks = 12, useFilteredData = true } = options
 
-  const rawData = useDataStore(state => state.rawData)
-  const filters = useFilterStore(state => state.filters)
+  const rawData = useAppStore(state => state.rawData)
+  const filters = useAppStore(state => state.filters)
 
   // 使用 ref 来存储上一次的计算结果，避免不必要的重新计算
   const lastResultRef = useRef<{ key: string; data: (number | null)[] } | null>(null)
@@ -291,8 +292,8 @@ export function useMultipleKPITrends(
   } = {}
 ) {
   const { weeks = 12, useFilteredData = true } = options
-  const rawData = useDataStore(state => state.rawData)
-  const filters = useFilterStore(state => state.filters)
+  const rawData = useAppStore(state => state.rawData)
+  const filters = useAppStore(state => state.filters)
 
   const trends = useMemo(() => {
     const result: Record<string, number[]> = {}

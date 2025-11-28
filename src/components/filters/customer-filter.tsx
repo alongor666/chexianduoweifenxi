@@ -2,23 +2,22 @@
 
 import { FilterContainer } from './filter-container'
 import { MultiSelectFilter } from './multi-select-filter'
-import { useFilterStore } from '@/store/domains/filterStore'
-import { useInsuranceData } from '@/hooks/domains/useInsuranceData'
-import { DataService } from '@/services/DataService'
+import { useAppStore } from '@/store/use-app-store'
+import { filterRecordsWithExclusions } from '@/store/use-app-store'
 import type { VehicleInsuranceGrade } from '@/types/insurance'
-import { normalizeChineseText } from '@/lib/utils'
+import { normalizeChineseText } from '@/domain/rules/data-normalization'
 import {
   CANONICAL_RENEWAL_STATUSES,
   CANONICAL_CUSTOMER_CATEGORIES,
 } from '@/constants/dimensions'
 
 export function CustomerFilter() {
-  const filters = useFilterStore(state => state.filters)
-  const updateFilters = useFilterStore(state => state.updateFilters)
-  const { rawData } = useInsuranceData()
+  const filters = useAppStore(state => state.filters)
+  const updateFilters = useAppStore(state => state.updateFilters)
+  const rawData = useAppStore(state => state.rawData)
 
   // 联动：根据其他筛选条件提取唯一的客户分类（仅显示CANONICAL集合中存在且数据中实际出现的值）
-  const recordsForCustomerCategory = DataService.filter(
+  const recordsForCustomerCategory = filterRecordsWithExclusions(
     rawData,
     filters,
     ['customerCategories']
@@ -35,7 +34,7 @@ export function CustomerFilter() {
     .map(cat => ({ label: cat, value: cat }))
 
   // 联动：根据其他筛选条件提取唯一的车险评级
-  const recordsForVehicleGrades = DataService.filter(
+  const recordsForVehicleGrades = filterRecordsWithExclusions(
     rawData,
     filters,
     ['vehicleGrades']
@@ -56,7 +55,7 @@ export function CustomerFilter() {
     .map(grade => ({ label: grade, value: grade }))
 
   // 联动：根据其他筛选条件提取唯一的新续转状态
-  const recordsForRenewalStatuses = DataService.filter(
+  const recordsForRenewalStatuses = filterRecordsWithExclusions(
     rawData,
     filters,
     ['renewalStatuses']

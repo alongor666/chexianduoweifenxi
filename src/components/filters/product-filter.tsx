@@ -2,23 +2,25 @@
 
 import { FilterContainer } from './filter-container'
 import { MultiSelectFilter } from './multi-select-filter'
-import { useFilterStore } from '@/store/domains/filterStore'
-import { useInsuranceData } from '@/hooks/domains/useInsuranceData'
-import { DataService } from '@/services/DataService'
-import { normalizeChineseText } from '@/lib/utils'
+import { useAppStore } from '@/store/use-app-store'
+import { filterRecordsWithExclusions } from '@/store/use-app-store'
+import { normalizeChineseText } from '@/domain/rules/data-normalization'
 import {
   CANONICAL_INSURANCE_TYPES,
   CANONICAL_COVERAGE_TYPES,
   CANONICAL_BUSINESS_TYPES,
+  getBusinessTypeCode,
+  CANONICAL_BUSINESS_CODES,
+  getBusinessTypeShortLabelByCode,
 } from '@/constants/dimensions'
 
 export function ProductFilter() {
-  const filters = useFilterStore(state => state.filters)
-  const updateFilters = useFilterStore(state => state.updateFilters)
-  const { rawData } = useInsuranceData()
+  const filters = useAppStore(state => state.filters)
+  const updateFilters = useAppStore(state => state.updateFilters)
+  const rawData = useAppStore(state => state.rawData)
 
   // 联动：根据其他筛选条件提取唯一的保险类型
-  const recordsForInsuranceType = DataService.filter(
+  const recordsForInsuranceType = filterRecordsWithExclusions(
     rawData,
     filters,
     ['insuranceTypes']
@@ -35,22 +37,20 @@ export function ProductFilter() {
     .map(type => ({ label: type, value: type }))
 
   // 联动：根据其他筛选条件提取唯一的业务类型（仅显示CANONICAL集合中存在且数据中实际出现的值）
-  const recordsForBusinessType = DataService.filter(rawData, filters, [
+  const recordsForBusinessType = filterRecordsWithExclusions(rawData, filters, [
     'businessTypes',
   ])
-  const presentBusinessTypes = new Set<string>(
+  const presentBusinessCodes = new Set<string>(
     recordsForBusinessType
-      .map(record => normalizeChineseText(record.business_type_category))
+      .map(record => getBusinessTypeCode(record.business_type_category))
       .filter((v): v is string => Boolean(v))
   )
-  const availableBusinessTypes = CANONICAL_BUSINESS_TYPES.filter(type =>
-    presentBusinessTypes.has(type)
-  )
-    .sort((a, b) => a.localeCompare(b, 'zh-CN'))
-    .map(type => ({ label: type, value: type }))
+  const availableBusinessTypes = CANONICAL_BUSINESS_CODES.filter(code =>
+    presentBusinessCodes.has(code)
+  ).map(code => ({ label: getBusinessTypeShortLabelByCode(code), value: code }))
 
   // 联动：根据其他筛选条件提取唯一的险别组合
-  const recordsForCoverageType = DataService.filter(rawData, filters, [
+  const recordsForCoverageType = filterRecordsWithExclusions(rawData, filters, [
     'coverageTypes',
   ])
   const presentCoverageTypes = new Set<string>(

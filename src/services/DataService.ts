@@ -15,11 +15,9 @@
  */
 
 import type { InsuranceRecord, FilterState } from '@/types/insurance'
-import { normalizeChineseText } from '@/lib/utils'
+import { getBusinessTypeCode } from '@/constants/dimensions'
+import { normalizeChineseText } from '@/domain/rules/data-normalization'
 import { supabase, isSupabaseEnabled, getDataSource } from '@/lib/supabase/client'
-import { logger } from '@/lib/logger'
-
-const log = logger.create('DataService')
 
 export class DataService {
   /**
@@ -31,32 +29,32 @@ export class DataService {
     const dataSource = getDataSource()
 
     if (dataSource === 'local' || !isSupabaseEnabled) {
-      log.info('当前使用本地数据模式，不从数据库获取数据')
+      console.log('[DataService] 当前使用本地数据模式，不从数据库获取数据')
       return []
     }
 
-    log.info('开始从 Supabase 数据库获取所有记录...')
+    console.log('[DataService] 开始从 Supabase 数据库获取所有记录...')
 
     try {
       if (!supabase) {
-        log.warn('Supabase 客户端未初始化')
+        console.warn('[DataService] Supabase 客户端未初始化')
         return []
       }
 
       const { data, error } = await supabase.from('fact_insurance_cost').select('*')
 
       if (error) {
-        log.error('数据库查询失败', error)
+        console.error('[DataService] 数据库查询失败:', error)
         throw new Error(`数据库查询失败: ${error.message}`)
       }
 
-      log.info('成功从 Supabase 获取记录', { count: data.length })
+      console.log(`[DataService] 成功从 Supabase 获取 ${data.length} 条记录。`)
 
       // 将从数据库蛇形命名法（snake_case）返回的数据映射到驼峰式命名法（camelCase）的类型，如果需要的话
       // 在当前场景下，两边命名一致，因此直接断言类型
       return data as InsuranceRecord[]
     } catch (error) {
-      log.error('获取数据失败', error)
+      console.error('[DataService] 获取数据失败:', error)
       // 不抛出错误，而是返回空数组，让应用降级到本地模式
       return []
     }
@@ -125,12 +123,12 @@ export class DataService {
       if (!excluded.has('businessTypes')) {
         if (
           filters.businessTypes &&
-          filters.businessTypes.length > 0 &&
-          !filters.businessTypes.includes(
-            normalizeChineseText(record.business_type_category)
-          )
+          filters.businessTypes.length > 0
         ) {
-          return false
+          const code = getBusinessTypeCode(record.business_type_category)
+          if (!filters.businessTypes.includes(code)) {
+            return false
+          }
         }
       }
 

@@ -4,9 +4,7 @@
  */
 
 import type { InsuranceRecord } from '@/types/insurance'
-import { logger } from '@/lib/logger'
 
-const log = logger.create('IndexedDB')
 const DB_NAME = 'insurance_analytics_db'
 const DB_VERSION = 1
 const RAW_STORE = 'raw_data_store'
@@ -56,7 +54,7 @@ export async function saveRawData(
     return { success: true }
   } catch (error) {
     const msg = error instanceof Error ? error.message : '未知错误'
-    log.warn('保存原始数据失败', { error: msg })
+    console.warn('[IndexedDB] 保存原始数据失败:', msg)
     return { success: false, error: msg }
   }
 }
@@ -80,7 +78,7 @@ export async function loadRawData(): Promise<InsuranceRecord[] | null> {
     return result
   } catch (error) {
     const msg = error instanceof Error ? error.message : '未知错误'
-    log.warn('读取原始数据失败', { error: msg })
+    console.warn('[IndexedDB] 读取原始数据失败:', msg)
     return null
   }
 }
@@ -99,6 +97,6 @@ export async function clearRawData(): Promise<void> {
     db.close()
   } catch (error) {
     const msg = error instanceof Error ? error.message : '未知错误'
-    log.warn('清除原始数据失败', { error: msg })
+    console.warn('[IndexedDB] 清除原始数据失败:', msg)
   }
 }

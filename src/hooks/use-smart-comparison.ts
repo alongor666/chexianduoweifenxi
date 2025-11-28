@@ -5,24 +5,102 @@
  */
 
 import { useMemo } from 'react'
-import { useDataStore, useFilterStore } from '@/store/domains'
+import { getBusinessTypeCode } from '@/constants/dimensions'
+import { useAppStore } from '@/store/use-app-store'
 import { kpiEngine } from '@/lib/calculations/kpi-engine'
 import type { InsuranceRecord, FilterState } from '@/types/insurance'
-import { DataService } from '@/services/DataService'
-import { logger } from '@/lib/logger'
-
-const log = logger.create('SmartComparison')
 
 /**
  * 应用筛选条件（除了周次）
- * @deprecated 使用 DataService.filter() 替代
  */
 function applyFiltersExceptWeek(
   data: InsuranceRecord[],
   filters: FilterState
 ): InsuranceRecord[] {
-  // 统一使用 DataService.filter()，排除 weeks 字段
-  return DataService.filter(data, filters, ['weeks'])
+  return data.filter(record => {
+    // 年度筛选
+    if (
+      filters.years.length > 0 &&
+      !filters.years.includes(record.policy_start_year)
+    ) {
+      return false
+    }
+
+    // 机构筛选
+    if (
+      filters.organizations.length > 0 &&
+      !filters.organizations.includes(record.third_level_organization)
+    ) {
+      return false
+    }
+
+    // 险种筛选
+    if (
+      filters.insuranceTypes.length > 0 &&
+      !filters.insuranceTypes.includes(record.insurance_type)
+    ) {
+      return false
+    }
+
+    // 业务类型筛选
+    if (
+      filters.businessTypes.length > 0 &&
+      !filters.businessTypes.includes(record.business_type_category)
+    ) {
+      return false
+    }
+
+    // 险别筛选
+    if (
+      filters.coverageTypes.length > 0 &&
+      !filters.coverageTypes.includes(record.coverage_type)
+    ) {
+      return false
+    }
+
+    // 客户分类筛选
+    if (
+      filters.customerCategories.length > 0 &&
+      !filters.customerCategories.includes(record.customer_category_3)
+    ) {
+      return false
+    }
+
+    // 车险评级筛选
+    if (
+      filters.vehicleGrades.length > 0 &&
+      record.vehicle_insurance_grade &&
+      !filters.vehicleGrades.includes(record.vehicle_insurance_grade)
+    ) {
+      return false
+    }
+
+    // 终端来源筛选
+    if (
+      filters.terminalSources.length > 0 &&
+      !filters.terminalSources.includes(record.terminal_source)
+    ) {
+      return false
+    }
+
+    // 新能源车筛选
+    if (
+      filters.isNewEnergy !== null &&
+      record.is_new_energy_vehicle !== filters.isNewEnergy
+    ) {
+      return false
+    }
+
+    // 续保状态筛选
+    if (
+      filters.renewalStatuses.length > 0 &&
+      !filters.renewalStatuses.includes(record.renewal_status)
+    ) {
+      return false
+    }
+
+    return true
+  })
 }
 
 /**
@@ -64,12 +142,9 @@ function findPreviousWeekWithData(
   // 检查是否在允许的跳跃范围内
   const jumpDistance = currentWeek - previousWeek
   if (jumpDistance > maxJumpBack) {
-    log.warn('前一周距离当前周超过最大跳跃范围，跳过环比', {
-      previousWeek,
-      currentWeek,
-      maxJumpBack,
-      jumpDistance,
-    })
+    console.warn(
+      `[useSmartComparison] 前一周 ${previousWeek} 距离当前周 ${currentWeek} 超过最大跳跃范围 ${maxJumpBack}，跳过环比`
+    )
     return null
   }
 
@@ -78,11 +153,9 @@ function findPreviousWeekWithData(
   )
 
   if (weekData.length > 0) {
-    log.debug('找到前一周数据', {
-      previousWeek,
-      recordCount: weekData.length,
-      currentWeek,
-    })
+    console.log(
+      `[useSmartComparison] 找到前一周数据：第 ${previousWeek} 周（${weekData.length} 条记录），当前周：第 ${currentWeek} 周`
+    )
     return weekData
   }
 
@@ -107,17 +180,139 @@ export function useSmartComparison(
 ) {
   const { annualTargetYuan = null, maxJumpBack = 5 } = options
 
-  // 从新的领域Store获取数据
-  const rawData = useDataStore(state => state.rawData)
-  const filters = useFilterStore(state => state.filters)
+  // 使用细粒度选择器避免对象引用导致的无限重渲染问题
+  const rawData = useAppStore(state => state.rawData)
+  const viewMode = useAppStore(state => state.filters.viewMode)
+  const dataViewType = useAppStore(state => state.filters.dataViewType)
+  const singleModeWeek = useAppStore(state => state.filters.singleModeWeek)
+  const years = useAppStore(state => state.filters.years)
+  const weeks = useAppStore(state => state.filters.weeks)
+  const organizations = useAppStore(state => state.filters.organizations)
+  const insuranceTypes = useAppStore(state => state.filters.insuranceTypes)
+  const businessTypes = useAppStore(state => state.filters.businessTypes)
+  const coverageTypes = useAppStore(state => state.filters.coverageTypes)
+  const customerCategories = useAppStore(state => state.filters.customerCategories)
+  const vehicleGrades = useAppStore(state => state.filters.vehicleGrades)
+  const terminalSources = useAppStore(state => state.filters.terminalSources)
+  const isNewEnergy = useAppStore(state => state.filters.isNewEnergy)
+  const renewalStatuses = useAppStore(state => state.filters.renewalStatuses)
 
-  // 解构常用字段
-  const { viewMode, singleModeWeek, dataViewType, years } = filters
-
-  // 使用 DataService.filter() 统一过滤逻辑
+  // 重建 filters 对象供内部函数使用
+  const filters = useMemo(() => ({
+    viewMode,
+    singleModeWeek,
+    years,
+    weeks,
+    organizations,
+    insuranceTypes,
+    businessTypes,
+    coverageTypes,
+    customerCategories,
+    vehicleGrades,
+    terminalSources,
+    isNewEnergy,
+    renewalStatuses,
+  }), [
+    viewMode,
+    singleModeWeek,
+    years,
+    weeks,
+    organizations,
+    insuranceTypes,
+    businessTypes,
+    coverageTypes,
+    customerCategories,
+    vehicleGrades,
+    terminalSources,
+    isNewEnergy,
+    renewalStatuses,
+  ])
   const filteredData = useMemo(() => {
-    return DataService.filter(rawData, filters)
-  }, [rawData, filters])
+    return rawData.filter(record => {
+      if (
+        years.length > 0 &&
+        !years.includes(record.policy_start_year)
+      ) {
+        return false
+      }
+      if (
+        weeks.length > 0 &&
+        !weeks.includes(record.week_number)
+      ) {
+        return false
+      }
+      if (
+        organizations.length > 0 &&
+        !organizations.includes(record.third_level_organization)
+      ) {
+        return false
+      }
+      if (
+        insuranceTypes.length > 0 &&
+        !insuranceTypes.includes(record.insurance_type)
+      ) {
+        return false
+      }
+      if (businessTypes.length > 0) {
+        // 代码端统一使用英文代码进行比对
+        const btCode = getBusinessTypeCode(record.business_type_category)
+        if (!businessTypes.includes(btCode)) {
+          return false
+        }
+      }
+      if (
+        coverageTypes.length > 0 &&
+        !coverageTypes.includes(record.coverage_type)
+      ) {
+        return false
+      }
+      if (
+        customerCategories.length > 0 &&
+        !customerCategories.includes(record.customer_category_3)
+      ) {
+        return false
+      }
+      if (
+        vehicleGrades.length > 0 &&
+        record.vehicle_insurance_grade &&
+        !vehicleGrades.includes(record.vehicle_insurance_grade)
+      ) {
+        return false
+      }
+      if (
+        terminalSources.length > 0 &&
+        !terminalSources.includes(record.terminal_source)
+      ) {
+        return false
+      }
+      if (
+        isNewEnergy !== null &&
+        record.is_new_energy_vehicle !== isNewEnergy
+      ) {
+        return false
+      }
+      if (
+        renewalStatuses.length > 0 &&
+        !renewalStatuses.includes(record.renewal_status)
+      ) {
+        return false
+      }
+      return true
+    })
+  }, [
+    rawData,
+    years,
+    weeks,
+    organizations,
+    insuranceTypes,
+    businessTypes,
+    coverageTypes,
+    customerCategories,
+    vehicleGrades,
+    terminalSources,
+    isNewEnergy,
+    renewalStatuses,
+  ])
 
   const comparison = useMemo(() => {
     // 性能监控：记录计算开始时间
@@ -139,10 +334,9 @@ export function useSmartComparison(
           ? filteredData.reduce((max, r) => Math.max(max, r.week_number), 0)
           : 1 // 默认为第1周
 
-    log.debug('开始计算环比数据', {
-      currentWeek,
-      dataCount: filteredData.length,
-    })
+    console.log(
+      `[useSmartComparison] 开始计算环比数据，当前周: ${currentWeek}，数据量: ${filteredData.length} 条`
+    )
 
     // 获取当前年份
     const currentYear =
@@ -168,7 +362,7 @@ export function useSmartComparison(
 
     if (!previousWeekData || previousWeekData.length === 0) {
       const elapsed = performance.now() - startTime
-      log.debug('计算完成（无环比数据）', { elapsed: elapsed.toFixed(2) + 'ms' })
+      console.log(`[useSmartComparison] 计算完成（无环比数据），耗时: ${elapsed.toFixed(2)}ms`)
       return {
         currentKpi,
         compareKpi: null,
@@ -191,18 +385,16 @@ export function useSmartComparison(
     })
 
     const elapsed = performance.now() - startTime
-    log.debug('计算完成', {
-      currentWeek,
-      compareWeek: previousWeekNumber,
-      elapsed: elapsed.toFixed(2) + 'ms',
-    })
+    console.log(
+      `[useSmartComparison] 计算完成，当前周: ${currentWeek}，对比周: ${previousWeekNumber}，耗时: ${elapsed.toFixed(2)}ms`
+    )
 
     return {
       currentKpi,
       compareKpi,
       previousWeekNumber,
     }
-  }, [filteredData, rawData, filters, annualTargetYuan, maxJumpBack])
+  }, [filteredData, rawData, filters, annualTargetYuan, maxJumpBack, viewMode, singleModeWeek, dataViewType, years])
 
   return comparison
 }

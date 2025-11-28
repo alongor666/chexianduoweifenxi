@@ -2,10 +2,10 @@
 
 import { Building2, X } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
-import { useFilterStore } from '@/store/domains/filterStore'
-import { useInsuranceData } from '@/hooks/domains/useInsuranceData'
-import { DataService } from '@/services/DataService'
-import { cn, normalizeChineseText } from '@/lib/utils'
+import { useAppStore } from '@/store/use-app-store'
+import { filterRecordsWithExclusions } from '@/store/use-app-store'
+import { cn } from '@/lib/utils'
+import { normalizeChineseText } from '@/domain/rules/data-normalization'
 
 /**
  * 紧凑版机构筛选器（用于全局筛选区）
@@ -16,12 +16,12 @@ export function CompactOrganizationFilter() {
   const [searchTerm, setSearchTerm] = useState('')
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const filters = useFilterStore(state => state.filters)
-  const updateFilters = useFilterStore(state => state.updateFilters)
-  const { rawData } = useInsuranceData()
+  const filters = useAppStore(state => state.filters)
+  const updateFilters = useAppStore(state => state.updateFilters)
+  const rawData = useAppStore(state => state.rawData)
 
   // 联动：根据其他筛选条件提取唯一的机构（规范化去重）
-  const recordsForOrganizations = DataService.filter(
+  const recordsForOrganizations = filterRecordsWithExclusions(
     rawData,
     filters,
     ['organizations']

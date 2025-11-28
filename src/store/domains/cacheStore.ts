@@ -9,9 +9,6 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import type { KPIResult } from '@/types/insurance'
-import { logger } from '@/lib/logger'
-
-const log = logger.create('CacheStore')
 
 interface CacheStore {
   // ==================== 状态 ====================
@@ -130,7 +127,7 @@ export const useCacheStore = create<CacheStore>()(
           false,
           'setKPICache'
         )
-        log.debug('缓存已设置', { key })
+        console.log(`[CacheStore] 缓存已设置: ${key}`)
       },
 
       getKPICache: key => {
@@ -139,10 +136,10 @@ export const useCacheStore = create<CacheStore>()(
 
         if (result) {
           get().recordCacheHit()
-          log.debug('缓存命中', { key })
+          console.log(`[CacheStore] 缓存命中: ${key}`)
         } else {
           get().recordCacheMiss()
-          log.debug('缓存未命中', { key })
+          console.log(`[CacheStore] 缓存未命中: ${key}`)
         }
 
         return result
@@ -164,7 +161,7 @@ export const useCacheStore = create<CacheStore>()(
           false,
           'deleteKPICache'
         )
-        log.debug('缓存已删除', { key })
+        console.log(`[CacheStore] 缓存已删除: ${key}`)
       },
 
       clearKPICache: () => {
@@ -175,7 +172,7 @@ export const useCacheStore = create<CacheStore>()(
           false,
           'clearKPICache'
         )
-        log.info('KPI缓存已清空')
+        console.log('[CacheStore] KPI缓存已清空')
       },
 
       clearAll: () => {
@@ -188,7 +185,7 @@ export const useCacheStore = create<CacheStore>()(
           false,
           'clearAll'
         )
-        log.info('所有缓存和统计数据已清空')
+        console.log('[CacheStore] 所有缓存和统计数据已清空')
       },
 
       // ==================== 计算属性 ====================

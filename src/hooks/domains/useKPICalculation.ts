@@ -19,11 +19,11 @@
 import { useMemo } from 'react'
 import { useDataStore } from '@/store/domains/dataStore'
 import { useFilterStore } from '@/store/domains/filterStore'
-import { useTargetStore } from '@/store/domains/targetStore'
+import { useAppStore } from '@/store/use-app-store' // 临时：目标数据还在旧Store
 import { KPIService } from '@/services/KPIService'
 import { DataService } from '@/services/DataService'
 import type { KPIResult } from '@/types/insurance'
-import { normalizeChineseText } from '@/lib/utils'
+import { normalizeChineseText } from '@/domain/rules/data-normalization'
 import { safeMax } from '@/lib/utils/array-utils'
 
 /**
@@ -34,8 +34,8 @@ export function useKPICalculation() {
   const filters = useFilterStore(state => state.filters)
   const isLoading = useDataStore(state => state.isLoading)
 
-  // 目标数据从 TargetStore 获取
-  const premiumTargets = useTargetStore(state => state.premiumTargets)
+  // 临时：从旧Store获取目标数据，待后续迁移到TargetStore
+  const premiumTargets = useAppStore(state => state.premiumTargets)
 
   // 过滤数据
   const filteredData = useMemo(
@@ -140,7 +140,7 @@ export function useKPICalculation() {
 export function useSmartKPIComparison() {
   const rawData = useDataStore(state => state.rawData)
   const filters = useFilterStore(state => state.filters)
-  const premiumTargets = useTargetStore(state => state.premiumTargets)
+  const premiumTargets = useAppStore(state => state.premiumTargets)
 
   const currentWeek = filters.singleModeWeek
   const annualTarget = premiumTargets?.overall

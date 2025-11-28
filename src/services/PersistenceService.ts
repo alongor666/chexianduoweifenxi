@@ -18,9 +18,6 @@ import type { InsuranceRecord } from '@/types/insurance'
 import type { IPersistenceAdapter } from './interfaces/IPersistenceAdapter'
 import { LocalStorageAdapter } from './adapters/LocalStorageAdapter'
 import type { BatchUploadResult } from '@/hooks/use-file-upload'
-import { logger } from '@/lib/logger'
-
-const log = logger.create('PersistenceService')
 
 /**
  * 存储键名常量
@@ -95,9 +92,9 @@ export class PersistenceService {
       await this.adapter.save(STORAGE_KEYS.RAW_DATA, data)
       await this.adapter.save(STORAGE_KEYS.STORAGE_INFO, storageInfo)
 
-      log.info('数据已保存', { recordCount: data.length, dataHash })
+      console.log(`[PersistenceService] 数据已保存，共 ${data.length} 条记录`)
     } catch (error) {
-      log.error('保存数据失败', error)
+      console.error('[PersistenceService] 保存数据失败:', error)
       throw error
     }
   }
@@ -110,12 +107,12 @@ export class PersistenceService {
       const data = await this.adapter.load<InsuranceRecord[]>(STORAGE_KEYS.RAW_DATA)
 
       if (data) {
-        log.info('加载数据成功', { recordCount: data.length })
+        console.log(`[PersistenceService] 加载数据成功，共 ${data.length} 条记录`)
       }
 
       return data
     } catch (error) {
-      log.error('加载数据失败', error)
+      console.error('[PersistenceService] 加载数据失败:', error)
       return null
     }
   }
@@ -179,9 +176,9 @@ export class PersistenceService {
       }
 
       await this.adapter.save(STORAGE_KEYS.UPLOAD_HISTORY, history)
-      log.info('已添加上传历史记录', { recordId: record.id })
+      console.log(`[PersistenceService] 已添加上传历史记录: ${record.id}`)
     } catch (error) {
-      log.error('添加上传历史失败', error)
+      console.error('[PersistenceService] 添加上传历史失败:', error)
     }
   }
 
@@ -222,7 +219,7 @@ export class PersistenceService {
 
       return { exists: false }
     } catch (error) {
-      log.error('检查文件是否存在失败', error)
+      console.error('[PersistenceService] 检查文件是否存在失败:', error)
       return { exists: false }
     }
   }
@@ -262,7 +259,7 @@ export class PersistenceService {
    */
   async clearAll(): Promise<void> {
     await this.adapter.clear()
-    log.info('已清空所有存储数据')
+    console.log('[PersistenceService] 已清空所有存储数据')
   }
 
   /**

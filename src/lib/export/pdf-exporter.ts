@@ -12,10 +12,7 @@
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 import { KPIResult, FilterState } from '@/types/insurance'
-import { formatCurrency, formatNumber, formatPercent } from '@/utils/formatters'
-import { logger } from '@/lib/logger'
-
-const log = logger.create('PDFExporter')
+import { formatCurrency, formatNumber, formatPercent } from '@/utils/format'
 
 export interface PDFReportConfig {
   title: string // 报告标题
@@ -220,7 +217,7 @@ export async function exportPDFReport(
     for (const elementId of config.chartElements) {
       const element = document.getElementById(elementId)
       if (!element) {
-        log.warn('图表元素未找到', { elementId })
+        console.warn(`Chart element not found: ${elementId}`)
         continue
       }
 
@@ -255,7 +252,7 @@ export async function exportPDFReport(
         pdf.addImage(imgData, 'PNG', margin, yPosition, imgWidth, imgHeight)
         yPosition += imgHeight + 10
       } catch (error) {
-        log.error('导出图表失败', { elementId, error })
+        console.error(`Failed to export chart ${elementId}:`, error)
       }
     }
   }

@@ -18,6 +18,7 @@
 
 import { useCallback } from 'react'
 import { useFilterStore } from '@/store/domains/filterStore'
+import { useAppStore } from '@/store/use-app-store'
 import { safeMax } from '@/lib/utils/array-utils'
 import type { FilterState } from '@/types/insurance'
 
@@ -34,17 +35,22 @@ export function useFiltering() {
     state => state.getActiveFilterCount
   )
   const isFilterActive = useFilterStore(state => state.isFilterActive)
+  const appUpdateFilters = useAppStore(state => state.updateFilters)
+  const appResetFilters = useAppStore(state => state.resetFilters)
+  const appSetViewMode = useAppStore(state => state.setViewMode)
 
   const updateFilters = useCallback(
     (nextFilters: Partial<FilterState>) => {
       filterUpdateFilters(nextFilters)
+      appUpdateFilters(nextFilters)
     },
-    [filterUpdateFilters]
+    [filterUpdateFilters, appUpdateFilters]
   )
 
   const resetFilters = useCallback(() => {
     filterResetFilters()
-  }, [filterResetFilters])
+    appResetFilters()
+  }, [filterResetFilters, appResetFilters])
 
   const setViewMode = useCallback(
     (mode: 'single' | 'trend') => {
@@ -196,7 +202,8 @@ export function useFilterPresets() {
 
   const resetFilters = useCallback(() => {
     filterResetFilters()
-  }, [filterResetFilters])
+    appResetFilters()
+  }, [filterResetFilters, appResetFilters])
 
   // 预设1：查看最近一周
   const viewLatestWeek = useCallback(() => {

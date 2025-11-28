@@ -2,10 +2,8 @@
 
 import React, { useState, useEffect } from 'react'
 import { Clock, FileText, CheckCircle, XCircle, AlertCircle, Eye, EyeOff, Calendar } from 'lucide-react'
-import { getUploadHistory, UploadHistoryRecord } from '@/lib/storage/data-persistence'
-import { logger } from '@/lib/logger'
-
-const log = logger.create('UploadHistory')
+import { useAppStore } from '@/store/use-app-store'
+import { UploadHistoryRecord } from '@/lib/storage/data-persistence'
 
 /**
  * 格式化文件大小
@@ -78,14 +76,16 @@ export function UploadHistory() {
   const [isVisible, setIsVisible] = useState(false)
   const [loading, setLoading] = useState(false)
 
+  const getUploadHistoryRecords = useAppStore(state => state.getUploadHistoryRecords)
+
   // 加载上传历史
   const loadHistory = async () => {
     setLoading(true)
     try {
-      const records = getUploadHistory()
+      const records = await getUploadHistoryRecords()
       setHistory(records.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())) // 按时间倒序
     } catch (error) {
-      log.error('加载上传历史失败', error)
+      console.error('加载上传历史失败:', error)
     } finally {
       setLoading(false)
     }

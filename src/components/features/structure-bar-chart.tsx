@@ -12,7 +12,8 @@ import {
   Cell,
 } from 'recharts'
 import { useFilteredData } from '@/store/use-app-store'
-import { formatNumber } from '@/utils/formatters'
+import { getBusinessTypeCode, getBusinessTypeShortLabelByCode } from '@/constants/dimensions'
+import { formatNumber } from '@/utils/format'
 import type { InsuranceRecord } from '@/types/insurance'
 import { getContributionMarginHexColor } from '@/utils/color-scale'
 
@@ -58,7 +59,7 @@ function aggregateByDimension(
     let key: string
     switch (dimension) {
       case 'business_type':
-        key = record.business_type_category || '未知'
+        key = getBusinessTypeCode(record.business_type_category || '')
         break
       case 'organization':
         key = record.third_level_organization || '未知'
@@ -80,7 +81,7 @@ function aggregateByDimension(
 
   return Array.from(map.entries()).map(([key, value]) => ({
     key,
-    label: key,
+    label: dimension === 'business_type' ? getBusinessTypeShortLabelByCode(key as any) : key,
     signed_premium_10k: value.signed / 10000,
     matured_premium_10k: value.matured / 10000,
     policy_count: value.count,

@@ -6,7 +6,7 @@ import {
   formatPercent,
   formatCurrency,
   getContributionMarginColor,
-} from '@/utils/formatters'
+} from '@/utils/format'
 import type { KPIResult } from '@/types/insurance'
 
 export interface CompactKPIDashboardProps {

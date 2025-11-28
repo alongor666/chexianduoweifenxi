@@ -18,7 +18,7 @@ import {
   fitTrend,
   type TrendFittingOptions,
 } from '@/lib/analytics/trend-fitting'
-import { formatNumber } from '@/utils/formatters'
+import { formatNumber } from '@/utils/format'
 
 interface ForecastPanelProps {
   className?: string

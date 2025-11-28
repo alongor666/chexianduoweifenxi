@@ -13,11 +13,30 @@ import { useToast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
 import { safeMinMax } from '@/lib/utils/array-utils'
 import { UploadResultsDetail } from './upload-results-detail'
-import { useDataStore } from '@/store/domains'
-import { persistenceService } from '@/services/PersistenceService'
-import { formatFileSize, formatTime } from '@/utils/formatters'
+import { useAppStore } from '@/store/use-app-store'
+
+/**
+ * 格式化文件大小
+ */
+const formatFileSize = (bytes: number): string => {
+  if (bytes === 0) return '0 B'
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+}
+
+/**
+ * 格式化时间
+ */
+const formatTime = (ms: number): string => {
+  if (ms < 1000) return `${Math.round(ms)}ms`
+  if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`
+  return `${Math.floor(ms / 60000)}m ${Math.floor((ms % 60000) / 1000)}s`
+}
 
 export function FileUpload() {
+  const [mounted, setMounted] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [parallelMode, setParallelMode] = useState(true) // 默认启用并行模式
@@ -37,19 +56,10 @@ export function FileUpload() {
   const { toast } = useToast()
 
   // 获取store中的数据和方法
-  const rawData = useDataStore(state => state.rawData)
-  const clearData = useDataStore(state => state.clearData)
-
-  // 清除持久化数据
-  const clearPersistentData = useCallback(async () => {
-    await persistenceService.clearAll()
-    await clearData(false) // clearData但不清除storage（因为已经清除了）
-  }, [clearData])
-
-  // 获取存储统计信息
-  const getStorageStats = useCallback(async () => {
-    return await persistenceService.getStorageInfo()
-  }, [])
+  const rawData = useAppStore(state => state.rawData)
+  const clearData = useAppStore(state => state.clearData)
+  const clearPersistentData = useAppStore(state => state.clearPersistentData)
+  const getStorageStats = useAppStore(state => state.getStorageStats)
   
   // 获取已有数据统计
   const existingDataStats = useMemo(() => {
@@ -69,6 +79,11 @@ export function FileUpload() {
       weekRange: weeks.length > 0 ? `${minWeek}-${maxWeek}周` : '',
     }
   }, [rawData])
+
+  // 客户端挂载状态
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // 初始化验证选项
   React.useEffect(() => {
@@ -113,14 +128,15 @@ export function FileUpload() {
 
       if (isUploading) return
 
-      const files = Array.from(e.dataTransfer.files).filter(file =>
-        file.name.endsWith('.csv')
-      )
+      const files = Array.from(e.dataTransfer.files).filter(file => {
+        const name = file.name.toLowerCase()
+        return name.endsWith('.csv') || name.endsWith('.duckdb') || name.endsWith('.db')
+      })
 
       if (files.length === 0) {
         toast({
           title: '文件格式错误',
-          description: '请上传 CSV 格式的文件',
+          description: '请上传 CSV 或 DuckDB 格式的文件',
           variant: 'destructive',
         })
         return
@@ -319,27 +335,43 @@ export function FileUpload() {
           </h3>
 
           <div className="space-y-3 max-h-60 overflow-y-auto">
-            {selectedFiles.map((file, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg"
-              >
-                <FileText className="h-5 w-5 text-slate-400" />
-                <div className="flex-1 min-w-0">
-                  <div className="font-medium truncate">{file.name}</div>
-                  <div className="text-sm text-slate-500">
-                    {formatFileSize(file.size)}
-                  </div>
-                </div>
-                <button
-                  onClick={() => removeFile(index)}
-                  className="p-1 hover:bg-slate-200 rounded transition-colors"
-                  disabled={isUploading}
+            {selectedFiles.map((file, index) => {
+              const extension = file.name.split('.').pop()?.toLowerCase()
+              const isDuckDB = extension === 'duckdb' || extension === 'db'
+
+              return (
+                <div
+                  key={index}
+                  className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg"
                 >
-                  <X className="h-4 w-4 text-slate-400" />
-                </button>
-              </div>
-            ))}
+                  {isDuckDB ? (
+                    <Database className="h-5 w-5 text-blue-500" />
+                  ) : (
+                    <FileText className="h-5 w-5 text-slate-400" />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium truncate">
+                      {file.name}
+                      {isDuckDB && (
+                        <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">
+                          DuckDB
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-sm text-slate-500">
+                      {formatFileSize(file.size)}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => removeFile(index)}
+                    className="p-1 hover:bg-slate-200 rounded transition-colors"
+                    disabled={isUploading}
+                  >
+                    <X className="h-4 w-4 text-slate-400" />
+                  </button>
+                </div>
+              )
+            })}
           </div>
 
           {/* 并行模式开关 */}
@@ -393,8 +425,8 @@ export function FileUpload() {
   // 默认上传界面
   return (
     <div className="space-y-4">
-      {/* 已有数据提示 */}
-      {existingDataStats && (
+      {/* 已有数据提示 - 仅在客户端挂载后显示，避免hydration错误 */}
+      {mounted && existingDataStats && (
         <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
           <div className="flex items-center gap-3">
             <Database className="h-5 w-5 text-green-600" />
@@ -449,21 +481,21 @@ export function FileUpload() {
         </div>
 
         <h2 className="text-2xl font-semibold text-slate-800 mb-2">
-          {isDragging ? '松开以上传文件' : '上传 CSV 数据文件'}
+          {isDragging ? '松开以上传文件' : '上传数据文件'}
         </h2>
 
         <p className="text-slate-600 mb-8 max-w-md">
           拖拽文件到此处，或点击下方按钮选择文件
           <br />
           <span className="text-sm text-slate-500">
-            支持批量上传，文件名格式不再强制要求
+            支持 CSV 和 DuckDB 格式 | 支持批量上传
           </span>
         </p>
 
         <label className="cursor-pointer">
           <input
             type="file"
-            accept=".csv"
+            accept=".csv,.duckdb,.db"
             multiple
             className="hidden"
             onChange={handleFileSelect}
@@ -476,7 +508,7 @@ export function FileUpload() {
         </label>
 
         <p className="text-xs text-slate-500 mt-6">
-          最大文件大小：200MB | 支持多文件上传 | 仅支持 CSV 格式 |
+          最大文件大小：200MB | 支持多文件上传 | 支持 CSV 和 DuckDB 格式 |
           支持百万行数据导入
         </p>
         </div>

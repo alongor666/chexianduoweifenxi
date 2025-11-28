@@ -4,9 +4,6 @@
  */
 import { NextResponse } from 'next/server'
 import type { InsuranceRecord } from '@/types/insurance'
-import { logger } from '@/lib/logger'
-
-const log = logger.create('API:IngestFile')
 
 export async function POST(request: Request) {
   try {
@@ -20,14 +17,14 @@ export async function POST(request: Request) {
       )
     }
 
-    log.info('收到数据，准备处理', { recordCount: data.length })
+    console.log(`[API /api/ingest-file] 收到 ${data.length} 条记录，准备处理...`)
 
     // --- 在此调用 DataService ---
     // 这是一个占位符。在未来的步骤中，我们将在这里集成 DataService
-    // 以执行"按周覆盖"的去重策略并写入 PostgreSQL 数据库。
-    const processedRecords = data.length
+    // 以执行“按周覆盖”的去重策略并写入 PostgreSQL 数据库。
+    const processedRecords = data.length 
 
-    log.info('数据处理成功', { processedRecords })
+    console.log(`[API /api/ingest-file] 成功处理 ${processedRecords} 条记录。`)
 
     return NextResponse.json({
       message: '数据归档成功',
@@ -36,7 +33,7 @@ export async function POST(request: Request) {
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : '服务器内部错误'
-    log.error('数据处理失败', error)
+    console.error('[API /api/ingest-file] 处理失败:', error)
     return NextResponse.json({ message: errorMessage }, { status: 500 })
   }
 }

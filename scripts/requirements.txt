@@ -1,0 +1,6 @@
+# Python 依赖包
+# 用于 CSV 转 DuckDB 脚本
+
+duckdb>=0.10.0
+pandas>=2.0.0  # 用于读取和处理 CSV/Excel 文件
+openpyxl>=3.1.0  # pandas 读取 .xlsx 文件所需的依赖

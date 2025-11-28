@@ -14,10 +14,7 @@ import type {
   TargetVersionSnapshot,
 } from '@/types/insurance'
 import { TARGET_DIMENSIONS } from '@/types/insurance'
-import { normalizeChineseText } from '@/lib/utils'
-import { logger } from '@/lib/logger'
-
-const log = logger.create('TargetStore')
+import { normalizeChineseText } from '@/domain/rules/data-normalization'
 
 interface TargetStore {
   // ==================== 状态 ====================
@@ -320,7 +317,7 @@ export const useTargetStore = create<TargetStore>()(
 
           set({ premiumTargets: nextTargets }, false, 'setPremiumTargets')
 
-          log.info('保费目标已更新')
+          console.log('[TargetStore] 保费目标已更新')
         },
 
         updateOverallTarget: overall => {
@@ -428,7 +425,7 @@ export const useTargetStore = create<TargetStore>()(
             'saveTargetVersion'
           )
 
-          log.info('版本已保存', { label })
+          console.log(`[TargetStore] 版本已保存: ${label}`)
         },
 
         restoreTargetVersion: (dimension, versionId) => {
@@ -437,7 +434,7 @@ export const useTargetStore = create<TargetStore>()(
           const version = dimensionData.versions?.find(v => v.id === versionId)
 
           if (!version) {
-            log.warn('版本不存在', { versionId })
+            console.warn(`[TargetStore] 版本不存在: ${versionId}`)
             return
           }
 
@@ -466,7 +463,7 @@ export const useTargetStore = create<TargetStore>()(
             'restoreTargetVersion'
           )
 
-          log.info('版本已恢复', { versionLabel: version.label })
+          console.log(`[TargetStore] 版本已恢复: ${version.label}`)
         },
 
         deleteTargetVersion: (dimension, versionId) => {
@@ -494,7 +491,7 @@ export const useTargetStore = create<TargetStore>()(
             'deleteTargetVersion'
           )
 
-          log.info('版本已删除', { versionId })
+          console.log(`[TargetStore] 版本已删除: ${versionId}`)
         },
 
         setTargetYear: year => {
@@ -522,7 +519,7 @@ export const useTargetStore = create<TargetStore>()(
             false,
             'clearAllTargets'
           )
-          log.info('所有目标已清空')
+          console.log('[TargetStore] 所有目标已清空')
         },
 
         loadFromStorage: () => {
@@ -536,10 +533,10 @@ export const useTargetStore = create<TargetStore>()(
               const parsed = JSON.parse(stored) as Partial<PremiumTargets>
               const upgraded = upgradePremiumTargets(parsed)
               set({ premiumTargets: upgraded }, false, 'loadFromStorage')
-              log.info('从本地存储加载目标数据成功')
+              console.log('[TargetStore] 从本地存储加载目标数据成功')
             }
           } catch (error) {
-            log.warn('读取保费目标数据失败，已回退默认值', error)
+            console.warn('[TargetStore] 读取保费目标数据失败，已回退默认值', error)
           }
         },
 

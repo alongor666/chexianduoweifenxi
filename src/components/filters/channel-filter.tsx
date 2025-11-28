@@ -2,19 +2,19 @@
 
 import { FilterContainer } from './filter-container'
 import { MultiSelectFilter } from './multi-select-filter'
-import { useFilterStore } from '@/store/domains/filterStore'
-import { useInsuranceData } from '@/hooks/domains/useInsuranceData'
-import { DataService } from '@/services/DataService'
-import { normalizeChineseText, cn } from '@/lib/utils'
+import { useAppStore } from '@/store/use-app-store'
+import { filterRecordsWithExclusions } from '@/store/use-app-store'
+import { normalizeChineseText } from '@/domain/rules/data-normalization'
+import { cn } from '@/lib/utils'
 import { CANONICAL_TERMINAL_SOURCES } from '@/constants/dimensions'
 
 export function ChannelFilter() {
-  const filters = useFilterStore(state => state.filters)
-  const updateFilters = useFilterStore(state => state.updateFilters)
-  const { rawData } = useInsuranceData()
+  const filters = useAppStore(state => state.filters)
+  const updateFilters = useAppStore(state => state.updateFilters)
+  const rawData = useAppStore(state => state.rawData)
 
   // 联动：根据其他筛选条件提取唯一的终端来源
-  const recordsForTerminalSource = DataService.filter(
+  const recordsForTerminalSource = filterRecordsWithExclusions(
     rawData,
     filters,
     ['terminalSources']

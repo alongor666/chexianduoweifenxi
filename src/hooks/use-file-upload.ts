@@ -14,7 +14,7 @@ import {
   type CSVParseResult,
   type ProgressCallback,
 } from '@/lib/parsers/csv-parser'
-import { useDataStore } from '@/store/domains'
+import { useAppStore } from '@/store/use-app-store'
 import {
   extractWeeksFromRecords,
   analyzeWeekConflicts,
@@ -22,9 +22,6 @@ import {
   formatWeekRange,
   type WeekInfo,
 } from '@/lib/storage/data-persistence'
-import { logger } from '@/lib/logger'
-
-const log = logger.create('FileUpload')
 
 /**
  * 上传状态
@@ -131,8 +128,7 @@ const showNotification = (
   type: 'success' | 'warning' | 'error',
   message: string
 ) => {
-  const logFn = type === 'error' ? log.error : type === 'warning' ? log.warn : log.info
-  logFn(message)
+  console.log(`[${type.toUpperCase()}] ${message}`)
   // 这里可以集成实际的通知系统
 }
 
@@ -146,11 +142,8 @@ export function useFileUpload() {
   const [validationOptions, setValidationOptions] =
     useState<FileValidationOptions>(DEFAULT_VALIDATION_OPTIONS)
 
-  const setData = useDataStore(state => state.setData)
-  const appendData = useDataStore(state => state.appendData)
-  const setError = useDataStore(state => state.setError)
-  const setLoading = useDataStore(state => state.setLoading)
-  const rawData = useDataStore(state => state.rawData)
+  const { setRawData, appendRawData, setError, setLoading } = useAppStore()
+  const rawData = useAppStore(state => state.rawData)
 
   /**
    * 验证单个文件
@@ -179,7 +172,9 @@ export function useFileUpload() {
         const namePattern = /^保险数据_\d{4}年\d{1,2}月.*\.csv$/i
         if (!namePattern.test(file.name)) {
           // 仅显示警告，不阻止上传
-          log.warn('文件名建议格式: 保险数据_YYYY年M月_描述.csv', { fileName: file.name })
+          console.warn(
+            `文件名建议格式: 保险数据_YYYY年M月_描述.csv，当前: ${file.name}`
+          )
         }
       }
 
@@ -307,11 +302,10 @@ export function useFileUpload() {
    */
   const uploadFiles = useCallback(
     async (files: File[], parallel = true): Promise<BatchUploadResult> => {
-      log.info('开始上传文件', {
-        fileCount: files.length,
-        mode: parallel ? '并行' : '顺序',
-        fileNames: files.map(f => f.name),
-      })
+      console.log(
+        `[File Upload] 开始上传 ${files.length} 个文件（${parallel ? '并行' : '顺序'}模式）:`,
+        files.map(f => f.name)
+      )
       const batchStartTime = performance.now()
 
       try {
@@ -322,13 +316,13 @@ export function useFileUpload() {
         let currentRawData = rawData
 
         // 验证文件
-        log.debug('开始文件验证')
+        console.log(`[File Upload] 开始文件验证`)
         const validation = validateFiles(files)
         if (!validation.valid) {
-          log.error('文件验证失败', { errors: validation.errors })
+          console.error(`[File Upload] 文件验证失败:`, validation.errors)
           throw new Error(`文件验证失败:\n${validation.errors.join('\n')}`)
         }
-        log.debug('文件验证通过')
+        console.log(`[File Upload] 文件验证通过`)
 
         let results: FileUploadResult[] = []
         let totalRecords = 0
@@ -337,7 +331,7 @@ export function useFileUpload() {
 
         // 并行处理模式
         if (parallel && files.length > 1) {
-          log.debug('使用并行处理模式')
+          console.log(`[File Upload] 使用并行处理模式`)
           setStatus('parsing')
 
           // 使用Promise.all并行处理所有文件
@@ -346,17 +340,15 @@ export function useFileUpload() {
           )
 
           results = await Promise.all(uploadPromises)
-          log.debug('所有文件并行处理完成')
+          console.log(`[File Upload] 所有文件并行处理完成`)
         } else {
           // 顺序处理模式（向后兼容）
-          log.debug('使用顺序处理模式')
+          console.log(`[File Upload] 使用顺序处理模式`)
           for (let i = 0; i < files.length; i++) {
             const file = files[i]
-            log.debug('处理文件', {
-              current: i + 1,
-              total: files.length,
-              fileName: file.name,
-            })
+            console.log(
+              `[File Upload] 处理文件 ${i + 1}/${files.length}: ${file.name}`
+            )
 
             setStatus('parsing')
             const result = await uploadSingleFile(file, i, files.length)
@@ -369,8 +361,7 @@ export function useFileUpload() {
 
         // 统计结果并处理周次去重
         for (const result of results) {
-          log.debug('文件处理完成', {
-            fileName: result.file.name,
+          console.log(`[File Upload] 文件 ${result.file.name} 处理完成:`, {
             success: result.success,
             error: result.error,
             uploadTime: result.uploadTime,
@@ -380,37 +371,25 @@ export function useFileUpload() {
           if (result.success && result.result) {
             // 1. 检测文件中包含的周次
             const detectedWeeks = extractWeeksFromRecords(result.result.data)
-            log.debug('检测到周次', {
-              fileName: result.file.name,
-              weekCount: detectedWeeks.length,
-              weeks: detectedWeeks.map(w => `${w.year}年第${w.weekNumber}周`).join(', '),
-            })
+            console.log(`[File Upload] 文件 ${result.file.name} 检测到 ${detectedWeeks.length} 个周次:`,
+              detectedWeeks.map(w => `${w.year}年第${w.weekNumber}周`).join(', ')
+            )
 
             // 2. 分析周次冲突
             const { newWeeks, conflictWeeks } = analyzeWeekConflicts(detectedWeeks, currentRawData)
-            log.debug('周次分析', {
-              newWeekCount: newWeeks.length,
-              conflictWeekCount: conflictWeeks.length,
-            })
+            console.log(`[File Upload] 周次分析: 新周次 ${newWeeks.length} 个, 冲突周次 ${conflictWeeks.length} 个`)
 
             if (newWeeks.length > 0) {
-              log.debug('新周次', {
-                weeks: newWeeks.map(w => `${w.year}年第${w.weekNumber}周`).join(', '),
-              })
+              console.log(`[File Upload] 新周次:`, newWeeks.map(w => `${w.year}年第${w.weekNumber}周`).join(', '))
             }
 
             if (conflictWeeks.length > 0) {
-              log.debug('冲突周次(将跳过)', {
-                weeks: conflictWeeks.map(w => `${w.year}年第${w.weekNumber}周`).join(', '),
-              })
+              console.log(`[File Upload] 冲突周次(将跳过):`, conflictWeeks.map(w => `${w.year}年第${w.weekNumber}周`).join(', '))
             }
 
             // 3. 过滤数据，只保留新周次的记录
             const filteredData = filterRecordsByNewWeeks(result.result.data, newWeeks)
-            log.debug('过滤后保留记录', {
-              filteredCount: filteredData.length,
-              originalCount: result.result.data.length,
-            })
+            console.log(`[File Upload] 过滤后保留 ${filteredData.length} 条记录 (原始 ${result.result.data.length} 条)`)
 
             // 4. 生成周次导入结果
             const weekResults: WeekImportResult[] = []
@@ -448,14 +427,14 @@ export function useFileUpload() {
 
             // 5. 添加过滤后的数据到存储
             if (filteredData.length > 0) {
-              log.info('添加有效记录到存储', { count: filteredData.length })
+              console.log(`[File Upload] 添加 ${filteredData.length} 条有效记录到存储`)
 
               if (currentRawData.length === 0) {
                 // 首次上传，直接设置
-                await setData(filteredData)
+                setRawData(filteredData)
               } else {
                 // 后续上传，追加数据
-                await appendData(filteredData)
+                appendRawData(filteredData)
               }
 
               // 同步更新本地快照，保证同批次后续文件基于最新数据进行冲突检测
@@ -464,7 +443,7 @@ export function useFileUpload() {
               // 统计实际导入的记录数
               validRecords += filteredData.length
             } else {
-              log.warn('所有周次都已存在，跳过导入', { fileName: result.file.name })
+              console.warn(`[File Upload] 文件 ${result.file.name} 的所有周次都已存在，跳过导入`)
             }
 
             // 统计总记录数（包括被跳过的）
@@ -477,7 +456,7 @@ export function useFileUpload() {
               invalidRecords += result.result.stats.invalidRows
             }
 
-            log.warn('没有有效数据可添加', { fileName: result.file.name })
+            console.warn(`[File Upload] 文件 ${result.file.name} 没有有效数据可添加`)
           }
         }
 
@@ -521,18 +500,18 @@ export function useFileUpload() {
           errorCount: invalidRecords,
         })
 
-        log.info('批量上传完成统计', {
-          totalFiles: files.length,
-          successCount,
-          failureCount,
-          totalRecords,
-          validRecords,
-          invalidRecords,
-          totalTime: Math.round(totalTime) + 'ms',
-          weekAnalysis: batchResult.weekAnalysis ? {
-            totalWeeks: batchResult.weekAnalysis.totalWeeks,
-            newWeeks: batchResult.weekAnalysis.newWeeks,
-            skippedWeeks: batchResult.weekAnalysis.skippedWeeks,
+        console.log(`[File Upload] 批量上传完成统计:`, {
+          总文件数: files.length,
+          成功文件数: successCount,
+          失败文件数: failureCount,
+          总记录数: totalRecords,
+          有效记录数: validRecords,
+          无效记录数: invalidRecords,
+          总耗时: Math.round(totalTime) + 'ms',
+          周次分析: batchResult.weekAnalysis ? {
+            总周次数: batchResult.weekAnalysis.totalWeeks,
+            新导入周次: batchResult.weekAnalysis.newWeeks,
+            跳过周次: batchResult.weekAnalysis.skippedWeeks,
           } : '无周次信息',
         })
 
@@ -558,7 +537,7 @@ export function useFileUpload() {
           )
         } else {
           setStatus('error')
-          log.error('所有文件上传失败')
+          console.error('[File Upload] 所有文件上传失败')
           showNotification('error', '所有文件上传失败')
         }
 
@@ -566,7 +545,7 @@ export function useFileUpload() {
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : '批量上传失败'
-        log.error('批量上传过程中发生错误', error)
+        console.error('[File Upload] 批量上传过程中发生错误:', error)
         setError(new Error(errorMessage))
         setStatus('error')
         showNotification('error', errorMessage)
@@ -574,14 +553,14 @@ export function useFileUpload() {
         throw error
       } finally {
         setLoading(false)
-        log.debug('上传流程结束')
+        console.log('[File Upload] 上传流程结束')
         // 3秒后清除进度信息
         setTimeout(() => {
           setProgress(null)
         }, 3000)
       }
     },
-    [uploadSingleFile, validateFiles, setData, appendData, rawData, setError, setLoading]
+    [uploadSingleFile, validateFiles, setRawData, appendRawData, rawData, setError, setLoading]
   )
 
   /**

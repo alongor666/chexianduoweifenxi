@@ -13,8 +13,8 @@ import { WeekSelector } from '@/components/filters/week-selector'
 import { useGoalStore } from '@/store/goalStore'
 import { useInsuranceData } from '@/hooks/domains/useInsuranceData'
 import { useFiltering } from '@/hooks/domains/useFiltering'
-import { normalizeChineseText } from '@/lib/utils'
-import { formatNumber } from '@/utils/formatters'
+import { normalizeChineseText } from '@/domain/rules/data-normalization'
+import { formatNumber } from '@/utils/format'
 import { formatAchievementRate } from '@/utils/goalCalculator'
 
 export default function TargetsPage() {

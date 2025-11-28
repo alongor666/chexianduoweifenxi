@@ -16,7 +16,8 @@ import type {
   TargetVersionSnapshot,
 } from '@/types/insurance'
 import { TARGET_DIMENSIONS } from '@/types/insurance'
-import { normalizeChineseText } from '@/lib/utils'
+import { normalizeChineseText } from '@/domain/rules/data-normalization'
+import { getBusinessTypeCode } from '@/constants/dimensions'
 import {
   saveDataToStorage,
   loadDataFromStorage,
@@ -28,8 +29,6 @@ import {
 } from '@/lib/storage/data-persistence'
 // 导入新架构的 Store 以实现数据同步
 import { useDataStore } from '@/store/domains/dataStore'
-// 导入数据服务
-import { DataService } from '@/services/DataService'
 
 const PREMIUM_TARGET_STORAGE_KEY = 'insurDashPremiumTargets'
 
@@ -715,8 +714,6 @@ export const useAppStore = create<AppState>()(
 
 /**
  * 选择器：获取过滤后的数据
- *
- * @deprecated 建议使用 hooks/use-filtered-data.ts 中的 useFilteredData
  */
 export const useFilteredData = () => {
   const rawData = useAppStore(state => state.rawData)
@@ -732,34 +729,117 @@ export const useFilteredData = () => {
   const terminalSources = useAppStore(state => state.filters.terminalSources)
   const isNewEnergy = useAppStore(state => state.filters.isNewEnergy)
   const renewalStatuses = useAppStore(state => state.filters.renewalStatuses)
-  const viewMode = useAppStore(state => state.filters.viewMode)
-  const singleModeWeek = useAppStore(state => state.filters.singleModeWeek)
-  const dataViewType = useAppStore(state => state.filters.dataViewType)
-  const trendModeWeeks = useAppStore(state => state.filters.trendModeWeeks)
 
   // 应用筛选逻辑（memo 化，避免不必要重算）
-  // 统一使用 DataService.filter() 实现
   return useMemo(
-    () => {
-      const filters: FilterState = {
-        years,
-        weeks,
-        organizations,
-        insuranceTypes,
-        businessTypes,
-        coverageTypes,
-        customerCategories,
-        vehicleGrades,
-        terminalSources,
-        isNewEnergy,
-        renewalStatuses,
-        viewMode,
-        singleModeWeek,
-        dataViewType,
-        trendModeWeeks,
-      }
-      return DataService.filter(rawData, filters)
-    },
+    () =>
+      rawData.filter(record => {
+        const filters = {
+          years,
+          weeks,
+          organizations,
+          insuranceTypes,
+          businessTypes,
+          coverageTypes,
+          customerCategories,
+          vehicleGrades,
+          terminalSources,
+          isNewEnergy,
+          renewalStatuses,
+        }
+        // 时间筛选
+        if (
+          filters.years.length > 0 &&
+          !filters.years.includes(record.policy_start_year)
+        ) {
+          return false
+        }
+
+        if (
+          filters.weeks.length > 0 &&
+          !filters.weeks.includes(record.week_number)
+        ) {
+          return false
+        }
+
+        // 空间筛选
+        if (
+          filters.organizations.length > 0 &&
+          !filters.organizations.includes(
+            normalizeChineseText(record.third_level_organization)
+          )
+        ) {
+          return false
+        }
+
+        // 产品筛选
+        if (
+          filters.insuranceTypes.length > 0 &&
+          !filters.insuranceTypes.includes(record.insurance_type)
+        ) {
+          return false
+        }
+
+        if (filters.businessTypes.length > 0) {
+          const code = getBusinessTypeCode(record.business_type_category)
+          if (!filters.businessTypes.includes(code)) {
+            return false
+          }
+        }
+
+        if (
+          filters.coverageTypes.length > 0 &&
+          !filters.coverageTypes.includes(record.coverage_type)
+        ) {
+          return false
+        }
+
+        // 客户筛选
+        if (
+          filters.customerCategories.length > 0 &&
+          !filters.customerCategories.includes(
+            normalizeChineseText(record.customer_category_3)
+          )
+        ) {
+          return false
+        }
+
+        if (filters.vehicleGrades.length > 0) {
+          // 如果记录有车险评级，则检查是否在过滤器范围内
+          // 如果记录没有车险评级（空值），则不过滤（允许显示）
+          if (
+            record.vehicle_insurance_grade &&
+            !filters.vehicleGrades.includes(record.vehicle_insurance_grade)
+          ) {
+            return false
+          }
+        }
+
+        // 渠道筛选
+        if (
+          filters.terminalSources.length > 0 &&
+          !filters.terminalSources.includes(
+            normalizeChineseText(record.terminal_source)
+          )
+        ) {
+          return false
+        }
+
+        if (filters.isNewEnergy !== null) {
+          if (record.is_new_energy_vehicle !== filters.isNewEnergy) {
+            return false
+          }
+        }
+
+        if (
+          filters.renewalStatuses.length > 0 &&
+          !filters.renewalStatuses.includes(record.renewal_status)
+        ) {
+          return false
+        }
+
+        return true
+      }),
     [
       rawData,
       years,
@@ -773,26 +853,136 @@ export const useFilteredData = () => {
       terminalSources,
       isNewEnergy,
       renewalStatuses,
-      viewMode,
-      singleModeWeek,
-      dataViewType,
-      trendModeWeeks,
     ]
   )
 }
 
 /**
  * 通用筛选函数：根据当前筛选条件过滤数据，支持排除某些筛选键（用于筛选器联动选项计算）
- *
- * @deprecated 建议直接使用 DataService.filter()，此函数仅为保持向后兼容
  */
 export function filterRecordsWithExclusions(
   rawData: InsuranceRecord[],
   filters: FilterState,
   excludeKeys: Array<keyof FilterState> = []
 ) {
-  // 统一使用 DataService.filter() 实现
-  return DataService.filter(rawData, filters, excludeKeys)
+  const excluded = new Set<keyof FilterState>(excludeKeys)
+
+  return rawData.filter(record => {
+    // 时间筛选
+    if (!excluded.has('years')) {
+      if (
+        filters.years.length > 0 &&
+        !filters.years.includes(record.policy_start_year)
+      ) {
+        return false
+      }
+    }
+
+    if (!excluded.has('weeks')) {
+      if (
+        filters.weeks.length > 0 &&
+        !filters.weeks.includes(record.week_number)
+      ) {
+        return false
+      }
+    }
+
+    // 空间筛选
+    if (!excluded.has('organizations')) {
+      if (
+        filters.organizations.length > 0 &&
+        !filters.organizations.includes(
+          normalizeChineseText(record.third_level_organization)
+        )
+      ) {
+        return false
+      }
+    }
+
+    // 产品筛选
+    if (!excluded.has('insuranceTypes')) {
+      if (
+        filters.insuranceTypes.length > 0 &&
+        !filters.insuranceTypes.includes(record.insurance_type)
+      ) {
+        return false
+      }
+    }
+
+    if (!excluded.has('businessTypes')) {
+      if (filters.businessTypes.length > 0) {
+        const code = getBusinessTypeCode(record.business_type_category)
+        if (!filters.businessTypes.includes(code)) {
+          return false
+        }
+      }
+    }
+
+    if (!excluded.has('coverageTypes')) {
+      if (
+        filters.coverageTypes.length > 0 &&
+        !filters.coverageTypes.includes(record.coverage_type)
+      ) {
+        return false
+      }
+    }
+
+    // 客户筛选
+    if (!excluded.has('customerCategories')) {
+      if (
+        filters.customerCategories.length > 0 &&
+        !filters.customerCategories.includes(
+          normalizeChineseText(record.customer_category_3)
+        )
+      ) {
+        return false
+      }
+    }
+
+    if (!excluded.has('vehicleGrades')) {
+      if (filters.vehicleGrades.length > 0) {
+        // 如果记录有车险评级，则检查是否在过滤器范围内
+        // 如果记录没有车险评级（空值），则不过滤（允许显示）
+        if (
+          record.vehicle_insurance_grade &&
+          !filters.vehicleGrades.includes(record.vehicle_insurance_grade)
+        ) {
+          return false
+        }
+      }
+    }
+
+    // 渠道筛选
+    if (!excluded.has('terminalSources')) {
+      if (
+        filters.terminalSources.length > 0 &&
+        !filters.terminalSources.includes(
+          normalizeChineseText(record.terminal_source)
+        )
+      ) {
+        return false
+      }
+    }
+
+    if (!excluded.has('isNewEnergy')) {
+      if (filters.isNewEnergy !== null) {
+        if (record.is_new_energy_vehicle !== filters.isNewEnergy) {
+          return false
+        }
+      }
+    }
+
+    if (!excluded.has('renewalStatuses')) {
+      if (
+        filters.renewalStatuses.length > 0 &&
+        !filters.renewalStatuses.includes(record.renewal_status)
+      ) {
+        return false
+      }
+    }
+
+    return true
+  })
 }
 
 /**

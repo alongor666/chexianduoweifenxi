@@ -12,23 +12,20 @@
  */
 
 import { useState } from 'react'
-import { useDataStore, useFilterStore } from '@/store/domains'
+import { useAppStore } from '@/store/use-app-store'
 import { useKPI } from '@/hooks/use-kpi'
 import { exportPDFReport, PDFReportConfig } from '@/lib/export/pdf-exporter'
 import { useToast } from '@/hooks/use-toast'
 import { FileText } from 'lucide-react'
-import { logger } from '@/lib/logger'
-
-const log = logger.create('PDFReportExport')
 
 interface Props {
   className?: string
 }
 
 export function PDFReportExport({ className }: Props) {
-  const rawData = useDataStore(state => state.rawData)
-  const filters = useFilterStore(state => state.filters)
-  const viewMode = useFilterStore(state => state.viewMode)
+  const rawData = useAppStore(state => state.rawData)
+  const filters = useAppStore(state => state.filters)
+  const viewMode = useAppStore(state => state.viewMode)
   const kpis = useKPI()
   const { toast } = useToast()
 
@@ -100,7 +97,7 @@ export function PDFReportExport({ className }: Props) {
         description: `PDF报告已成功生成并下载`,
       })
     } catch (error) {
-      log.error('PDF export failed', error)
+      console.error('PDF export failed:', error)
       toast({
         title: '导出失败',
         description: error instanceof Error ? error.message : '未知错误',

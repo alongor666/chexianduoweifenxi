@@ -30,7 +30,8 @@ import {
 import type { TooltipProps } from 'recharts'
 import { useFilteredData } from '@/hooks/use-filtered-data'
 import { InsuranceRecord } from '@/types/insurance'
-import { formatNumber, formatPercent } from '@/utils/formatters'
+import { formatNumber, formatPercent } from '@/utils/format'
+import { getBusinessTypeCode, getBusinessTypeShortLabelByCode } from '@/constants/dimensions'
 
 // 颜色配置 - 按客户类型
 const CUSTOMER_COLORS: Record<string, string> = {
@@ -42,13 +43,23 @@ const CUSTOMER_COLORS: Record<string, string> = {
 
 // 颜色配置 - 按业务类型
 const BUSINESS_COLORS: Record<string, string> = {
-  非营业客车新车: '#3b82f6',
-  非营业客车旧车非过户: '#10b981',
-  非营业客车旧车过户车: '#f59e0b',
-  营业货车新车: '#ef4444',
-  营业货车旧车: '#8b5cf6',
-  网约车: '#ec4899',
-  其他: '#6b7280',
+  '非营客-新': '#3b82f6',
+  '非营客-旧': '#10b981',
+  '非营客-过户': '#f59e0b',
+  '非营货-<1t': '#8b5cf6',
+  '非营货-1–2t': '#6366f1',
+  '营货-<2t': '#ef4444',
+  '营货-2–9t': '#f97316',
+  '营货-9–10t': '#f59e0b',
+  '营货-≥10t普': '#22c55e',
+  '营货-≥10t牵': '#0ea5e9',
+  '营货-≥10t卸': '#14b8a6',
+  '营货-≥10t特': '#a855f7',
+  '营货-其他': '#6b7280',
+  '摩托': '#64748b',
+  '营客-出租': '#d946ef',
+  '营客-网约': '#ec4899',
+  '其他': '#6b7280',
 }
 
 type ColorByType = 'customer' | 'business'
@@ -80,7 +91,10 @@ export function CustomerSegmentationBubble({ className }: Props) {
     const groups = new Map<string, InsuranceRecord[]>()
 
     filteredData.forEach(record => {
-      const key = record[groupKey] || '其他'
+      const key =
+        colorBy === 'customer'
+          ? (record[groupKey] as string) || '其他'
+          : getBusinessTypeCode((record[groupKey] as string) || '')
       if (!groups.has(key)) {
         groups.set(key, [])
       }
@@ -118,7 +132,11 @@ export function CustomerSegmentationBubble({ className }: Props) {
       // 获取颜色
       const colorMap =
         colorBy === 'customer' ? CUSTOMER_COLORS : BUSINESS_COLORS
-      const color = colorMap[groupName] || colorMap['其他']
+      const colorKey =
+        colorBy === 'customer'
+          ? (groupName as string)
+          : getBusinessTypeShortLabelByCode(groupName as any)
+      const color = colorMap[colorKey] || colorMap['其他']
 
       // 客户群分类逻辑
       let segment: BubbleDataPoint['segment'] = 'normal'
@@ -137,7 +155,10 @@ export function CustomerSegmentationBubble({ className }: Props) {
       }
 
       results.push({
-        name: groupName,
+        name:
+          colorBy === 'business'
+            ? getBusinessTypeShortLabelByCode(groupName as any)
+            : (groupName as string),
         averagePremium,
         lossRatio,
         policyCount: totalPolicyCount,

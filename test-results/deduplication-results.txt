@@ -1,0 +1,138 @@
+开始数据去重处理...
+
+
+============================================================
+处理文件: 测试数据2024.csv
+============================================================
+正在读取文件: /Users/xuechenglong/Desktop/felouPRD/insurance-analytics/test/测试数据2024.csv
+成功解析 16967 条记录
+
+=== 分析重复模式: 测试数据2024.csv ===
+重复组分析:
+  总重复组数: 72
+  数值指标完全相同: 0 组
+  数值指标部分相同: 65 组
+  数值指标完全不同: 7 组
+
+--- 策略: aggregate ---
+
+=== 执行去重策略: aggregate ===
+去重前记录数: 16967
+去重后记录数: 16893
+删除记录数: 74
+
+=== 验证去重结果 ===
+原始数据记录数: 16967
+去重后记录数: 16893
+唯一维度组合数: 16893
+剩余重复记录数: 0
+去重成功率: 100%
+
+=== 导出去重数据到: /Users/xuechenglong/Desktop/felouPRD/insurance-analytics/test/测试数据2024_deduplicated_aggregate.csv ===
+成功导出 16893 条记录
+✅ 策略 aggregate 成功完成去重
+
+--- 策略: keepFirst ---
+
+=== 执行去重策略: keepFirst ===
+去重前记录数: 16967
+去重后记录数: 16893
+删除记录数: 74
+
+=== 验证去重结果 ===
+原始数据记录数: 16967
+去重后记录数: 16893
+唯一维度组合数: 16893
+剩余重复记录数: 0
+去重成功率: 100%
+
+=== 导出去重数据到: /Users/xuechenglong/Desktop/felouPRD/insurance-analytics/test/测试数据2024_deduplicated_keepFirst.csv ===
+成功导出 16893 条记录
+✅ 策略 keepFirst 成功完成去重
+
+--- 策略: keepMax ---
+
+=== 执行去重策略: keepMax ===
+去重前记录数: 16967
+去重后记录数: 16893
+删除记录数: 74
+
+=== 验证去重结果 ===
+原始数据记录数: 16967
+去重后记录数: 16893
+唯一维度组合数: 16893
+剩余重复记录数: 0
+去重成功率: 100%
+
+=== 导出去重数据到: /Users/xuechenglong/Desktop/felouPRD/insurance-analytics/test/测试数据2024_deduplicated_keepMax.csv ===
+成功导出 16893 条记录
+✅ 策略 keepMax 成功完成去重
+
+============================================================
+处理文件: 测试数据2025.csv
+============================================================
+正在读取文件: /Users/xuechenglong/Desktop/felouPRD/insurance-analytics/test/测试数据2025.csv
+成功解析 14182 条记录
+
+=== 分析重复模式: 测试数据2025.csv ===
+重复组分析:
+  总重复组数: 21
+  数值指标完全相同: 0 组
+  数值指标部分相同: 15 组
+  数值指标完全不同: 6 组
+
+--- 策略: aggregate ---
+
+=== 执行去重策略: aggregate ===
+去重前记录数: 14182
+去重后记录数: 14161
+删除记录数: 21
+
+=== 验证去重结果 ===
+原始数据记录数: 14182
+去重后记录数: 14161
+唯一维度组合数: 14161
+剩余重复记录数: 0
+去重成功率: 100%
+
+=== 导出去重数据到: /Users/xuechenglong/Desktop/felouPRD/insurance-analytics/test/测试数据2025_deduplicated_aggregate.csv ===
+成功导出 14161 条记录
+✅ 策略 aggregate 成功完成去重
+
+--- 策略: keepFirst ---
+
+=== 执行去重策略: keepFirst ===
+去重前记录数: 14182
+去重后记录数: 14161
+删除记录数: 21
+
+=== 验证去重结果 ===
+原始数据记录数: 14182
+去重后记录数: 14161
+唯一维度组合数: 14161
+剩余重复记录数: 0
+去重成功率: 100%
+
+=== 导出去重数据到: /Users/xuechenglong/Desktop/felouPRD/insurance-analytics/test/测试数据2025_deduplicated_keepFirst.csv ===
+成功导出 14161 条记录
+✅ 策略 keepFirst 成功完成去重
+
+--- 策略: keepMax ---
+
+=== 执行去重策略: keepMax ===
+去重前记录数: 14182
+去重后记录数: 14161
+删除记录数: 21
+
+=== 验证去重结果 ===
+原始数据记录数: 14182
+去重后记录数: 14161
+唯一维度组合数: 14161
+剩余重复记录数: 0
+去重成功率: 100%
+
+=== 导出去重数据到: /Users/xuechenglong/Desktop/felouPRD/insurance-analytics/test/测试数据2025_deduplicated_keepMax.csv ===
+成功导出 14161 条记录
+✅ 策略 keepMax 成功完成去重
+
+数据去重处理完成！

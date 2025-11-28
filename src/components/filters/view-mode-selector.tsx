@@ -1,7 +1,7 @@
 'use client'
 
 import { BarChart3, TrendingUp } from 'lucide-react'
-import { useUIStore } from '@/store/domains/uiStore'
+import { useAppStore } from '@/store/use-app-store'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 /**
@@ -10,8 +10,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
  * 用于页面顶部标题右侧
  */
 export function ViewModeSelector() {
-  const viewMode = useUIStore(state => state.viewMode)
-  const setViewMode = useUIStore(state => state.setViewMode)
+  const { viewMode, setViewMode } = useAppStore()
 
   return (
     <Tabs

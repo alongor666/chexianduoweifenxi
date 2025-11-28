@@ -9,15 +9,18 @@ import { DataViewSelector } from '@/components/filters/data-view-selector'
 import { CompactTimeFilter } from '@/components/filters/compact-time-filter'
 import { CompactOrganizationFilter } from '@/components/filters/compact-organization-filter'
 import { FilterPanel } from '@/components/filters/filter-panel'
+import { useAppStore } from '@/store/use-app-store'
 import { useFilterStore } from '@/store/domains/filterStore'
 import { Button } from '@/components/ui/button'
 
 export function FilterManagementPanel() {
+  const resetAppFilters = useAppStore(state => state.resetFilters)
   const resetFilters = useFilterStore(state => state.resetFilters)
 
-  // 重置筛选器
+  // 同步重置两个store的筛选器
   const handleResetFilters = () => {
     resetFilters()
+    resetAppFilters()
   }
 
   return (

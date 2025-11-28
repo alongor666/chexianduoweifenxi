@@ -2,8 +2,8 @@
 
 import { Calendar, X, ToggleLeft, ToggleRight } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
-import { useInsuranceData } from '@/hooks/domains/useInsuranceData'
-import { DataService } from '@/services/DataService'
+import { useAppStore } from '@/store/use-app-store'
+import { filterRecordsWithExclusions } from '@/store/use-app-store'
 import { cn } from '@/lib/utils'
 import { useFiltering } from '@/hooks/domains/useFiltering'
 
@@ -20,7 +20,7 @@ export function CompactTimeFilter({ mode }: CompactTimeFilterProps) {
   const containerRef = useRef<HTMLDivElement>(null)
 
   const { filters, updateFilters, switchViewMode } = useFiltering()
-  const { rawData } = useInsuranceData()
+  const rawData = useAppStore(state => state.rawData)
 
   // 切换单选/多选模式
   const handleToggleMultiSelect = () => {
@@ -45,8 +45,12 @@ export function CompactTimeFilter({ mode }: CompactTimeFilterProps) {
   }, [isFlexibleMode, filters.viewMode, switchViewMode])
 
   // 联动：根据其他筛选条件，分别计算年度与周的可选项
-  const recordsForYears = DataService.filter(rawData, filters, ['years'])
-  const recordsForWeeks = DataService.filter(rawData, filters, ['weeks'])
+  const recordsForYears = filterRecordsWithExclusions(rawData, filters, [
+    'years',
+  ])
+  const recordsForWeeks = filterRecordsWithExclusions(rawData, filters, [
+    'weeks',
+  ])
 
   const availableYears = Array.from(
     new Set(recordsForYears.map(record => record.policy_start_year))

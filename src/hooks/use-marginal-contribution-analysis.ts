@@ -7,10 +7,10 @@
 'use client'
 
 import { useMemo } from 'react'
-import { useDataStore, useFilterStore } from '@/store/domains'
-import { useFilteredData } from '@/hooks/use-filtered-data'
+import { useAppStore, useFilteredData } from '@/store/use-app-store'
 import type { InsuranceRecord } from '@/types/insurance'
 import { kpiEngine } from '@/lib/calculations/kpi-engine'
+import { getBusinessTypeCode, getBusinessTypeShortLabelByCode } from '@/constants/dimensions'
 
 /**
  * 边贡分析数据项
@@ -41,8 +41,8 @@ export interface MarginalContributionItem {
  * 获取前一周的数据（应用相同的筛选条件，但周次为前一周）
  */
 function usePreviousWeekData(): InsuranceRecord[] {
-  const rawData = useDataStore(state => state.rawData)
-  const filters = useFilterStore(state => state.filters)
+  const rawData = useAppStore(state => state.rawData)
+  const filters = useAppStore(state => state.filters)
 
   return useMemo(() => {
     const currentWeek =
@@ -77,11 +77,11 @@ function usePreviousWeekData(): InsuranceRecord[] {
       ) {
         return false
       }
-      if (
-        filters.businessTypes.length > 0 &&
-        !filters.businessTypes.includes(record.business_type_category)
-      ) {
-        return false
+      if (filters.businessTypes.length > 0) {
+        const btCode = getBusinessTypeCode(record.business_type_category)
+        if (!filters.businessTypes.includes(btCode)) {
+          return false
+        }
       }
       if (
         filters.coverageTypes.length > 0 &&
@@ -132,7 +132,7 @@ function usePreviousWeekData(): InsuranceRecord[] {
 export function useMarginalContributionAnalysis(): MarginalContributionItem[] {
   const filteredData = useFilteredData()
   const previousWeekData = usePreviousWeekData()
-  const filters = useFilterStore(state => state.filters)
+  const filters = useAppStore(state => state.filters)
   const dataViewType = filters.dataViewType
 
   return useMemo(() => {
@@ -143,7 +143,7 @@ export function useMarginalContributionAnalysis(): MarginalContributionItem[] {
     // 按业务类型分组当前周数据
     const currentGrouped = new Map<string, InsuranceRecord[]>()
     filteredData.forEach(record => {
-      const key = record.business_type_category || '未知'
+      const key = getBusinessTypeCode(record.business_type_category || '')
       if (!currentGrouped.has(key)) {
         currentGrouped.set(key, [])
       }
@@ -154,7 +154,7 @@ export function useMarginalContributionAnalysis(): MarginalContributionItem[] {
     const previousGrouped = new Map<string, InsuranceRecord[]>()
     if (dataViewType === 'increment' && previousWeekData.length > 0) {
       previousWeekData.forEach(record => {
-        const key = record.business_type_category || '未知'
+        const key = getBusinessTypeCode(record.business_type_category || '')
         if (!previousGrouped.has(key)) {
           previousGrouped.set(key, [])
         }
@@ -184,7 +184,7 @@ export function useMarginalContributionAnalysis(): MarginalContributionItem[] {
 
       items.push({
         key,
-        label: key,
+        label: getBusinessTypeShortLabelByCode(key as any),
         contributionMarginRatio: currentKPI.contribution_margin_ratio,
         variableCostRatio: currentKPI.variable_cost_ratio,
         contributionMarginAmount: currentKPI.contribution_margin_amount,

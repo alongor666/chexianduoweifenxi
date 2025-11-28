@@ -2,7 +2,7 @@
 
 import { Calendar, Clock, Info } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useDataStore, useFilterStore } from '@/store/domains'
+import { useAppStore } from '@/store/use-app-store'
 import { useMemo } from 'react'
 import { getWeekEndDate, getDaysFromYearStart } from '@/lib/utils/date-utils'
 import { safeMax } from '@/lib/utils/array-utils'
@@ -70,10 +70,10 @@ export function TimeProgressIndicator({
   className,
   compact = false,
 }: TimeProgressIndicatorProps) {
-  const rawData = useDataStore(state => state.rawData)
-  const viewMode = useFilterStore(state => state.filters.viewMode)
-  const singleModeWeek = useFilterStore(state => state.filters.singleModeWeek)
-  const filterYears = useFilterStore(state => state.filters.years)
+  const rawData = useAppStore(state => state.rawData)
+  const viewMode = useAppStore(state => state.filters.viewMode)
+  const singleModeWeek = useAppStore(state => state.filters.singleModeWeek)
+  const filterYears = useAppStore(state => state.filters.years)
 
   // 计算当前的截止日期和时间进度
   const timeProgress = useMemo(() => {

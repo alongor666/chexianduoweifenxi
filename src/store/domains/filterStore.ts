@@ -9,7 +9,7 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import type { FilterState } from '@/types/insurance'
-import { normalizeChineseText } from '@/lib/utils'
+import { normalizeChineseText } from '@/domain/rules/data-normalization'
 
 interface FilterStore {
   // ==================== 状态 ====================
@@ -99,9 +99,9 @@ export const useFilterStore = create<FilterStore>()(
                 insuranceTypes: (
                   newFilters.insuranceTypes ?? state.filters.insuranceTypes
                 ).map(normalizeChineseText),
-                businessTypes: (
-                  newFilters.businessTypes ?? state.filters.businessTypes
-                ).map(normalizeChineseText),
+                // 业务类型使用英文代码，不做中文规范化
+                businessTypes:
+                  newFilters.businessTypes ?? state.filters.businessTypes,
                 coverageTypes: (
                   newFilters.coverageTypes ?? state.filters.coverageTypes
                 ).map(normalizeChineseText),

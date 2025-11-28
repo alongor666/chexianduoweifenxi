@@ -1,11 +1,8 @@
 'use client'
 
 import { useEffect, useCallback } from 'react'
-import { useDataStore, useFilterStore } from '@/store/domains'
+import { useAppStore } from '@/store/use-app-store'
 import type { FilterState } from '@/types/insurance'
-import { logger } from '@/lib/logger'
-
-const log = logger.create('FilterInteractionManager')
 
 const areArraysEqual = (a: ReadonlyArray<number>, b: ReadonlyArray<number>) =>
   a.length === b.length && a.every((value, index) => value === b[index])
@@ -15,9 +12,9 @@ const areArraysEqual = (a: ReadonlyArray<number>, b: ReadonlyArray<number>) =>
  * 负责处理筛选器之间的级联响应、状态保持和智能默认值
  */
 export function FilterInteractionManager() {
-  const filters = useFilterStore(state => state.filters)
-  const updateFilters = useFilterStore(state => state.updateFilters)
-  const rawData = useDataStore(state => state.rawData)
+  const filters = useAppStore(state => state.filters)
+  const updateFilters = useAppStore(state => state.updateFilters)
+  const rawData = useAppStore(state => state.rawData)
 
   /**
    * 智能默认值设置
@@ -261,7 +258,7 @@ export function FilterInteractionManager() {
     // 这里可以添加用户提示逻辑
     // 例如：当切换到"周增量"模式时，提示用户需要选择多周数据
     if (filters.dataViewType === 'increment' && filters.weeks.length < 2) {
-      log.info('周增量分析建议', { message: '建议选择多个周期以获得更好的分析效果', weekCount: filters.weeks.length })
+      console.log('提示：周增量分析建议选择多个周期以获得更好的分析效果')
     }
   }, [filters.dataViewType, filters.weeks.length])
 
@@ -308,8 +305,8 @@ export function FilterInteractionManager() {
  * 将筛选器状态保存到localStorage，页面刷新后恢复
  */
 export function useFilterPersistence() {
-  const filters = useFilterStore(state => state.filters)
-  const updateFilters = useFilterStore(state => state.updateFilters)
+  const filters = useAppStore(state => state.filters)
+  const updateFilters = useAppStore(state => state.updateFilters)
 
   // 保存筛选器状态到localStorage
   useEffect(() => {
@@ -346,7 +343,7 @@ export function useFilterPersistence() {
         updateFilters(parsedFilters)
       }
     } catch (error) {
-      log.warn('从 localStorage 恢复筛选器状态失败', error)
+      console.warn('Failed to restore filter state from localStorage:', error)
     }
   }, [updateFilters])
 }
