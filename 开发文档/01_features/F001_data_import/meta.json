@@ -1,0 +1,29 @@
+{
+  "id": "F001",
+  "name": "数据上传与解析模块",
+  "status": "partial",
+  "priority": "P0",
+  "completeness": 80,
+  "version": "v2.1.0",
+  "last_updated": "2025-10-20",
+  "last_verified": "2025-10-20",
+  "core_files": [
+    "src/components/features/file-upload.tsx",
+    "src/lib/parsers/csv-parser.ts",
+    "src/lib/validations/insurance-schema.ts",
+    "src/hooks/use-file-upload.ts"
+  ],
+  "related_decisions": [
+    "ADR-002",
+    "ADR-003"
+  ],
+  "related_issues": [
+    "ISSUE-001",
+    "ISSUE-003"
+  ],
+  "tags": [
+    "数据处理",
+    "用户交互",
+    "P0"
+  ]
+}

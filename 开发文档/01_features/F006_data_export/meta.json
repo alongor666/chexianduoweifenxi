@@ -1,0 +1,24 @@
+{
+  "id": "F006",
+  "name": "数据导出与分享模块",
+  "status": "partial",
+  "priority": "P2",
+  "completeness": 70,
+  "version": "v1.1.0",
+  "last_updated": "2025-10-20",
+  "last_verified": "2025-10-20",
+  "core_files": [
+    "src/components/features/data-export.tsx",
+    "src/lib/export/csv-exporter.ts",
+    "src/lib/export/chart-exporter.ts",
+    "src/lib/export/pdf-exporter.ts",
+    "src/components/features/pdf-report-export.tsx"
+  ],
+  "related_decisions": [],
+  "related_issues": [],
+  "tags": [
+    "数据导出",
+    "用户体验",
+    "P2"
+  ]
+}

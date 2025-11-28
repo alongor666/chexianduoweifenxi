@@ -1,0 +1,28 @@
+node_modules
+
+# DuckDB 数据库文件(本地测试用,不提交到仓库)
+*.duckdb
+*.duckdb.wal
+*.db
+
+# Python 虚拟环境
+venv/
+__pycache__/
+*.pyc
+
+# 实际数据文件(敏感数据)
+实际数据/*.csv
+实际数据/*.duckdb
+
+# 开发环境配置
+.env.local
+.env.development.local
+
+# IDE
+.vscode/
+.idea/
+
+# 构建产物
+.next/
+out/
+dist/

@@ -1,0 +1,83 @@
+# Cursor AI Rules - 车险分析平台架构规则
+
+## 🎯 项目状态
+
+**当前任务**：Clean Architecture + FSD 架构重构（第 1 周）
+**阅读文档**：先读 `PROJECT_STATUS.md` 了解当前状态
+
+---
+
+## 🚨 核心规则（不可违反）
+
+### 1. 依赖方向法则（最高优先级）
+
+```
+依赖只能从外向内：Infrastructure → Application → Domain
+
+✅ 允许：
+- Infrastructure 层可以导入 Application 层
+- Application 层可以导入 Domain 层
+
+❌ 禁止：
+- Domain 层不能导入 React
+- Domain 层不能导入 API 客户端
+- Application 层不能导入 UI 组件
+```
+
+**自动检查**：
+```bash
+# 如果有输出 = 违反规则
+grep -r "from 'react'" src/domain/
+```
+
+---
+
+### 2. 单一职责原则
+
+- 文件 < 300 行
+- 函数 < 50 行
+- 能用一句话描述职责（不能用"和"）
+
+---
+
+### 3. DRY 原则
+
+- 复制粘贴 > 3 行 → 必须提取
+- 相同逻辑 > 2 次 → 必须抽象
+
+---
+
+## 📁 目录结构
+
+```
+src/
+├── domain/           ← 纯 TypeScript（无框架依赖）
+├── application/      ← 用例编排
+├── infrastructure/   ← 技术实现
+├── features/         ← 功能切片
+└── shared/           ← 共享资源
+```
+
+---
+
+## 🤖 生成代码前必须回答
+
+1. 这段代码属于哪一层？
+2. 会依赖哪些模块？（确保依赖方向正确）
+3. 能用一句话描述职责吗？
+
+---
+
+## ✅ 生成代码后必须自检
+
+- [ ] 依赖方向正确
+- [ ] 文件 < 300 行
+- [ ] 函数 < 50 行
+- [ ] 命名清晰（kebab-case/PascalCase/camelCase）
+- [ ] 有必要的注释
+
+---
+
+## 📖 完整文档
+
+详见：`开发文档/ARCHITECTURE_RULES.md`
