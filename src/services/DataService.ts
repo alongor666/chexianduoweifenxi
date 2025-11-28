@@ -170,6 +170,45 @@ export class DataService {
         }
       }
 
+      if (!excluded.has('highwayRiskGrades')) {
+        if (filters.highwayRiskGrades && filters.highwayRiskGrades.length > 0) {
+          // 如果记录有高速风险等级，则检查是否在过滤器范围内
+          // 如果记录没有高速风险等级（空值），则不过滤（允许显示）
+          if (
+            record.highway_risk_grade &&
+            !filters.highwayRiskGrades.includes(record.highway_risk_grade)
+          ) {
+            return false
+          }
+        }
+      }
+
+      if (!excluded.has('smallTruckScores')) {
+        if (filters.smallTruckScores && filters.smallTruckScores.length > 0) {
+          // 如果记录有小型货车评分，则检查是否在过滤器范围内
+          // 如果记录没有小型货车评分（空值），则不过滤（允许显示）
+          if (
+            record.small_truck_score &&
+            !filters.smallTruckScores.includes(record.small_truck_score)
+          ) {
+            return false
+          }
+        }
+      }
+
+      if (!excluded.has('largeTruckScores')) {
+        if (filters.largeTruckScores && filters.largeTruckScores.length > 0) {
+          // 如果记录有大型货车评分，则检查是否在过滤器范围内
+          // 如果记录没有大型货车评分（空值），则不过滤（允许显示）
+          if (
+            record.large_truck_score &&
+            !filters.largeTruckScores.includes(record.large_truck_score)
+          ) {
+            return false
+          }
+        }
+      }
+
       // 渠道筛选
       if (!excluded.has('terminalSources')) {
         if (
@@ -444,6 +483,9 @@ export class DataService {
       coverageTypes: [],
       customerCategories: [],
       vehicleGrades: [],
+      highwayRiskGrades: [],
+      smallTruckScores: [],
+      largeTruckScores: [],
       terminalSources: [],
       isNewEnergy: null,
       renewalStatuses: [],

@@ -300,6 +300,9 @@ export interface FilterState {
   // 客户筛选
   customerCategories: string[] // 客户分类
   vehicleGrades: string[] // 车险评级
+  highwayRiskGrades: string[] // 高速风险等级
+  smallTruckScores: string[] // 小型货车评分
+  largeTruckScores: string[] // 大型货车评分
 
   // 其他筛选
   terminalSources: string[]
