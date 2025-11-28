@@ -77,7 +77,16 @@ export const STATIC_QUICK_FILTERS: QuickFilter[] = [
     label: '异地',
     icon: '🌏',
     description: '成都以外机构',
-    organizations: ['宜宾', '武侯', '泸州', '德阳', '乐山', '资阳', '自贡', '达州'],
+    organizations: [
+      '宜宾',
+      '武侯',
+      '泸州',
+      '德阳',
+      '乐山',
+      '资阳',
+      '自贡',
+      '达州',
+    ],
   },
 ]
 
@@ -118,9 +127,7 @@ export function canAddMoreOrganizations(currentCount: number): boolean {
  * @param organizations 机构列表
  * @returns 验证结果
  */
-export function validateOrganizationSelection(
-  organizations: string[]
-): {
+export function validateOrganizationSelection(organizations: string[]): {
   valid: boolean
   error?: string
 } {
@@ -140,7 +147,7 @@ export function validateOrganizationSelection(
 
   // 验证机构名称是否有效
   const invalidOrgs = organizations.filter(
-    (org) => !ALL_ORGANIZATIONS.includes(org as OrganizationName)
+    org => !ALL_ORGANIZATIONS.includes(org as OrganizationName)
   )
   if (invalidOrgs.length > 0) {
     return {

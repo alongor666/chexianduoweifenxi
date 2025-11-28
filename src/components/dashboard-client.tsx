@@ -3,18 +3,12 @@
 import { Database, HardDrive, Cloud } from 'lucide-react'
 import { FileUpload } from '@/components/features/file-upload'
 import { FullKPIDashboard } from '@/components/features/full-kpi-dashboard'
-import { TimeProgressIndicator } from '@/components/features/time-progress-indicator'
-import { TrendChart } from '@/components/features/trend-chart'
 import { WeeklyOperationalTrend } from '@/components/features/weekly-operational-trend'
-import { PremiumAnalysisBarChart } from '@/components/features/structure-bar-chart'
-import { ClaimAnalysisBarChart } from '@/components/features/claim-analysis-bar-chart'
-import { DistributionPieChart } from '@/components/features/distribution-pie-chart'
 import { ComparisonAnalysisPanel } from '@/components/features/comparison-analysis'
 import { MultiChartTabs } from '@/components/features/multi-chart-tabs'
 import { CustomerSegmentationBubble } from '@/components/features/customer-segmentation-bubble'
 import { ExpenseHeatmap } from '@/components/features/expense-heatmap'
 import { ThematicAnalysis } from '@/components/features/thematic-analysis'
-import { FilterPanel } from '@/components/filters/filter-panel'
 import {
   FilterInteractionManager,
   useFilterPersistence,
@@ -30,22 +24,11 @@ import { useSmartComparison } from '@/hooks/use-smart-comparison'
 import { useState, useEffect, useMemo } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
   AnalysisTabs,
   type AnalysisTabValue,
 } from '@/components/layout/analysis-tabs'
 import { PredictionManagerPanel } from '@/components/features/prediction-manager'
 import { DataManagementPanel } from '@/components/features/data-management-panel'
-import { FilterManagementPanel } from '@/components/features/filter-management-panel'
 import type { InsuranceRecord } from '@/types/insurance'
 
 interface DashboardClientProps {
@@ -61,9 +44,10 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
   const premiumTargetsOverall = premiumTargets?.overall
 
   // 判断数据来源
-  const dataSource = typeof window !== 'undefined'
-    ? (process.env.NEXT_PUBLIC_DATA_SOURCE || 'local')
-    : 'local'
+  const dataSource =
+    typeof window !== 'undefined'
+      ? process.env.NEXT_PUBLIC_DATA_SOURCE || 'local'
+      : 'local'
   const isSupabaseMode = dataSource === 'supabase' && initialData.length > 0
 
   // 使用智能环比数据（优化参数以避免无限重渲染）
@@ -73,8 +57,9 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
     }),
     [premiumTargetsOverall]
   )
-  const { currentKpi, compareKpi, previousWeekNumber } =
-    useSmartComparison(smartComparisonOptions)
+  const { currentKpi, compareKpi, previousWeekNumber } = useSmartComparison(
+    smartComparisonOptions
+  )
 
   const [mounted, setMounted] = useState(false)
   const router = useRouter()
@@ -181,12 +166,16 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
                     {isSupabaseMode ? (
                       <>
                         <Cloud className="w-3.5 h-3.5 text-green-600" />
-                        <span className="text-xs font-medium text-green-700">Supabase</span>
+                        <span className="text-xs font-medium text-green-700">
+                          Supabase
+                        </span>
                       </>
                     ) : (
                       <>
                         <HardDrive className="w-3.5 h-3.5 text-blue-600" />
-                        <span className="text-xs font-medium text-blue-700">本地模式</span>
+                        <span className="text-xs font-medium text-blue-700">
+                          本地模式
+                        </span>
                       </>
                     )}
                   </div>

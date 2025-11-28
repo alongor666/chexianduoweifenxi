@@ -26,7 +26,10 @@ interface GoalStore extends GoalState {
   setAchievedMap: (achieved: Record<string, number>) => void
   updateAchievedValue: (bizType: string, value: number) => void
   switchVersion: (versionId: string) => void
-  createTunedVersion: (rows: GoalCsvRow[], importedAt?: Date) => {
+  createTunedVersion: (
+    rows: GoalCsvRow[],
+    importedAt?: Date
+  ) => {
     versionId: string
   }
   exportVersionCsv: (versionId: string) => string
@@ -60,20 +63,28 @@ const SUB_BUSINESS_TARGETS: Array<{ bizType: string; annualTarget: number }> = [
 ]
 
 // 计算车险整体目标（所有子业务类型的汇总）
-const calculateOverallTarget = (subTargets: Array<{ bizType: string; annualTarget: number }>) => {
+const calculateOverallTarget = (
+  subTargets: Array<{ bizType: string; annualTarget: number }>
+) => {
   return subTargets.reduce((sum, target) => sum + target.annualTarget, 0)
 }
 
-// 业务类型的初始目标（仅包含子业务类型，车险整体通过计算得出）
+// 业务类型的初始目标（包含车险整体和所有子业务类型）
 const INITIAL_TARGETS: Array<{ bizType: string; annualTarget: number }> = [
+  {
+    bizType: '车险整体',
+    annualTarget: calculateOverallTarget(SUB_BUSINESS_TARGETS),
+  },
   ...SUB_BUSINESS_TARGETS,
 ]
 
 // 为不同维度生成初始目标数据
-const generateDimensionTargets = (dimension: DimensionType): Array<{ bizType: string; annualTarget: number }> => {
+const generateDimensionTargets = (
+  dimension: DimensionType
+): Array<{ bizType: string; annualTarget: number }> => {
   const items = getDimensionItemsStatic(dimension)
   const baseTarget = 1000 // 基础目标值
-  
+
   return items.map(item => ({
     bizType: item,
     annualTarget: baseTarget,
@@ -98,9 +109,14 @@ const getDimensionItemsStatic = (dimension: DimensionType): string[] => {
 
 const INITIAL_VERSION_ID = `${BASE_YEAR}-年初目标`
 
-const createInitialVersion = (dimension: DimensionType = 'businessType'): GoalVersion => {
-  const targets = dimension === 'businessType' ? INITIAL_TARGETS : generateDimensionTargets(dimension)
-  
+const createInitialVersion = (
+  dimension: DimensionType = 'businessType'
+): GoalVersion => {
+  const targets =
+    dimension === 'businessType'
+      ? INITIAL_TARGETS
+      : generateDimensionTargets(dimension)
+
   return {
     id: INITIAL_VERSION_ID,
     type: 'INIT',
@@ -114,7 +130,9 @@ const createInitialVersion = (dimension: DimensionType = 'businessType'): GoalVe
   }
 }
 
-const buildInitialAchievedMap = (version: GoalVersion): Record<string, number> => {
+const buildInitialAchievedMap = (
+  version: GoalVersion
+): Record<string, number> => {
   const achievedMap: Record<string, number> = {}
   version.rows.forEach(row => {
     achievedMap[row.bizType] = 0
@@ -124,13 +142,16 @@ const buildInitialAchievedMap = (version: GoalVersion): Record<string, number> =
 
 const createInitialState = (): GoalState => {
   const initialVersion = createInitialVersion('businessType')
-  
+
   // 为所有维度创建初始数据
-  const dimensionData: Record<DimensionType, {
-    versions: GoalVersion[]
-    currentVersionId: string
-    achievedMap: Record<string, number>
-  }> = {
+  const dimensionData: Record<
+    DimensionType,
+    {
+      versions: GoalVersion[]
+      currentVersionId: string
+      achievedMap: Record<string, number>
+    }
+  > = {
     businessType: {
       versions: [initialVersion],
       currentVersionId: INITIAL_VERSION_ID,
@@ -139,17 +160,23 @@ const createInitialState = (): GoalState => {
     thirdLevelOrganization: {
       versions: [createInitialVersion('thirdLevelOrganization')],
       currentVersionId: INITIAL_VERSION_ID,
-      achievedMap: buildInitialAchievedMap(createInitialVersion('thirdLevelOrganization')),
+      achievedMap: buildInitialAchievedMap(
+        createInitialVersion('thirdLevelOrganization')
+      ),
     },
     customerCategory: {
       versions: [createInitialVersion('customerCategory')],
       currentVersionId: INITIAL_VERSION_ID,
-      achievedMap: buildInitialAchievedMap(createInitialVersion('customerCategory')),
+      achievedMap: buildInitialAchievedMap(
+        createInitialVersion('customerCategory')
+      ),
     },
     insuranceType: {
       versions: [createInitialVersion('insuranceType')],
       currentVersionId: INITIAL_VERSION_ID,
-      achievedMap: buildInitialAchievedMap(createInitialVersion('insuranceType')),
+      achievedMap: buildInitialAchievedMap(
+        createInitialVersion('insuranceType')
+      ),
     },
   }
 
@@ -181,11 +208,14 @@ const cloneSnapshot = (snapshot: GoalSnapshot): GoalSnapshot => ({
         })),
       },
     ])
-  ) as Record<DimensionType, {
-    versions: GoalVersion[]
-    currentVersionId: string
-    achievedMap: Record<string, number>
-  }>,
+  ) as Record<
+    DimensionType,
+    {
+      versions: GoalVersion[]
+      currentVersionId: string
+      achievedMap: Record<string, number>
+    }
+  >,
 })
 
 const buildSnapshot = (state: GoalState): GoalSnapshot => ({
@@ -206,14 +236,21 @@ const buildSnapshot = (state: GoalState): GoalSnapshot => ({
         })),
       },
     ])
-  ) as Record<DimensionType, {
-    versions: GoalVersion[]
-    currentVersionId: string
-    achievedMap: Record<string, number>
-  }>,
+  ) as Record<
+    DimensionType,
+    {
+      versions: GoalVersion[]
+      currentVersionId: string
+      achievedMap: Record<string, number>
+    }
+  >,
 })
 
-const generateVersionName = (existing: GoalVersion[], baseYear: number, importedAt: Date): string => {
+const generateVersionName = (
+  existing: GoalVersion[],
+  baseYear: number,
+  importedAt: Date
+): string => {
   const dateLabel = `${importedAt.getFullYear()}${`${importedAt.getMonth() + 1}`.padStart(2, '0')}${`${importedAt.getDate()}`.padStart(2, '0')}`
   const baseName = `${baseYear}-微调目标-${dateLabel}`
   let candidate = baseName
@@ -228,7 +265,8 @@ const generateVersionName = (existing: GoalVersion[], baseYear: number, imported
 const serializeVersionToCsv = (version: GoalVersion): string => {
   const lines = ['业务类型,年度目标（万）']
   version.rows.forEach(row => {
-    const value = version.type === 'INIT' ? row.annualTargetInit : row.annualTargetTuned
+    const value =
+      version.type === 'INIT' ? row.annualTargetInit : row.annualTargetTuned
     lines.push(`${row.bizType},${value}`)
   })
   return `${lines.join('\n')}\n`
@@ -290,18 +328,24 @@ export const useGoalStore = create<GoalStore>()(
 
     createTunedVersion: (rows, importedAt = new Date()) => {
       const state = get()
-      const initVersion = state.versions.find(version => version.type === 'INIT')
+      const initVersion = state.versions.find(
+        version => version.type === 'INIT'
+      )
       if (!initVersion) {
         throw new Error('缺少年初目标版本，无法创建微调目标')
       }
 
-      const importedMap = new Map(rows.map(row => [row.bizType, row.annualTarget]))
+      const importedMap = new Map(
+        rows.map(row => [row.bizType, row.annualTarget])
+      )
       const missingBizTypes = initVersion.rows
         .filter(row => !importedMap.has(row.bizType))
         .map(row => row.bizType)
 
       if (missingBizTypes.length > 0) {
-        throw new Error(`导入失败，缺少以下业务类型：${missingBizTypes.join('、')}`)
+        throw new Error(
+          `导入失败，缺少以下业务类型：${missingBizTypes.join('、')}`
+        )
       }
 
       // 计算子业务类型的目标总和
@@ -322,12 +366,18 @@ export const useGoalStore = create<GoalStore>()(
         return {
           bizType: row.bizType,
           annualTargetInit: row.annualTargetInit,
-          annualTargetTuned: updatedRow ? updatedRow.annualTarget : row.annualTargetTuned,
+          annualTargetTuned: updatedRow
+            ? updatedRow.annualTarget
+            : row.annualTargetTuned,
         }
       })
 
       const snapshot = buildSnapshot(state)
-      const versionId = generateVersionName(state.versions, state.baseYear, importedAt)
+      const versionId = generateVersionName(
+        state.versions,
+        state.baseYear,
+        importedAt
+      )
 
       const newVersion: GoalVersion = {
         id: versionId,

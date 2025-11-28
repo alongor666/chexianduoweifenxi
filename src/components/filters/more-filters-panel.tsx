@@ -32,9 +32,7 @@ export function MoreFiltersPanel() {
 
   // 获取终端来源选项（使用 Canonical 并按数据出现过滤）
   const getTerminalSourceOptions = () => {
-    const filtered = DataService.filter(rawData, filters, [
-      'terminalSources',
-    ])
+    const filtered = DataService.filter(rawData, filters, ['terminalSources'])
     const present = new Set(
       filtered
         .map(record => normalizeChineseText(record.terminal_source))

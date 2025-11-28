@@ -73,7 +73,7 @@ export function exportToCSV(
         fieldOrder.forEach(field => {
           ordered[field] = record[field as keyof InsuranceRecord]
         })
-        return ordered as InsuranceRecord
+        return ordered as unknown as InsuranceRecord
       })
     }
 
@@ -85,7 +85,7 @@ export function exportToCSV(
           const newKey = fieldLabels[key] || key
           labeled[newKey] = value
         })
-        return labeled as InsuranceRecord
+        return labeled as unknown as InsuranceRecord
       })
     }
 

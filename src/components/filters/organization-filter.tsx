@@ -18,11 +18,9 @@ export function OrganizationFilter() {
   }
 
   // 联动：根据其他筛选条件提取唯一的机构（规范化去重）
-  const recordsForOrganizations = DataService.filter(
-    rawData,
-    filters,
-    ['organizations']
-  )
+  const recordsForOrganizations = DataService.filter(rawData, filters, [
+    'organizations',
+  ])
   const availableOrganizations = Array.from(
     new Set(
       recordsForOrganizations.map(record =>

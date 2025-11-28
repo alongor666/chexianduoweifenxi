@@ -14,9 +14,7 @@ import {
 } from '@/components/ui/card'
 import { DualProgress } from '@/components/ui/dual-progress'
 import { cn } from '@/lib/utils'
-import {
-  getDynamicColorByPremiumProgress,
-} from '@/utils/color-scale'
+import { getDynamicColorByPremiumProgress } from '@/utils/color-scale'
 import { formatNumber } from '@/utils/formatters'
 
 interface TimeProgressAnalysisCardProps {

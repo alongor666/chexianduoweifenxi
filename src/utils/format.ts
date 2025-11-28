@@ -8,11 +8,7 @@
  */
 
 // 重新导出所有格式化函数以保持向后兼容
-export {
-  formatNumber,
-  formatInteger,
-  formatDecimal,
-} from './formatters/number'
+export { formatNumber, formatInteger, formatDecimal } from './formatters/number'
 
 export {
   formatCurrency,
@@ -21,10 +17,7 @@ export {
   type CurrencyUnit,
 } from './formatters/currency'
 
-export {
-  formatPercent,
-  formatPercentFromDecimal,
-} from './formatters/percent'
+export { formatPercent, formatPercentFromDecimal } from './formatters/percent'
 
 export {
   formatChange,
@@ -32,20 +25,11 @@ export {
   type FormattedChange,
 } from './formatters/change'
 
-export {
-  formatFileSize,
-} from './formatters/file-size'
+export { formatFileSize } from './formatters/file-size'
 
-export {
-  formatTime,
-  formatDateTime,
-  formatDate,
-} from './formatters/time'
+export { formatTime, formatDateTime, formatDate } from './formatters/time'
 
-export {
-  formatWeekRange,
-  formatWeek,
-} from './formatters/week'
+export { formatWeekRange, formatWeek } from './formatters/week'
 
 /**
  * 根据满期边际贡献率获取颜色

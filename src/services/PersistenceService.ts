@@ -107,7 +107,9 @@ export class PersistenceService {
    */
   async loadRawData(): Promise<InsuranceRecord[] | null> {
     try {
-      const data = await this.adapter.load<InsuranceRecord[]>(STORAGE_KEYS.RAW_DATA)
+      const data = await this.adapter.load<InsuranceRecord[]>(
+        STORAGE_KEYS.RAW_DATA
+      )
 
       if (data) {
         log.info('加载数据成功', { recordCount: data.length })

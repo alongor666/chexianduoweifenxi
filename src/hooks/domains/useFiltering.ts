@@ -49,17 +49,15 @@ export function useFiltering() {
   const setViewMode = useCallback(
     (mode: 'single' | 'trend') => {
       filterSetViewMode(mode)
-      appSetViewMode(mode)
     },
-    [filterSetViewMode, appSetViewMode]
+    [filterSetViewMode]
   )
 
   const setDataViewType = useCallback(
     (type: FilterState['dataViewType']) => {
       filterSetDataViewType(type)
-      appUpdateFilters({ dataViewType: type })
     },
-    [filterSetDataViewType, appUpdateFilters]
+    [filterSetDataViewType]
   )
 
   // 便捷方法：设置年份筛选
@@ -183,15 +181,12 @@ export function useFiltering() {
 export function useFilterPresets() {
   const filterUpdateFilters = useFilterStore(state => state.updateFilters)
   const filterResetFilters = useFilterStore(state => state.resetFilters)
-  const appUpdateFilters = useAppStore(state => state.updateFilters)
-  const appResetFilters = useAppStore(state => state.resetFilters)
 
   const updateFilters = useCallback(
     (nextFilters: Partial<FilterState>) => {
       filterUpdateFilters(nextFilters)
-      appUpdateFilters(nextFilters)
     },
-    [filterUpdateFilters, appUpdateFilters]
+    [filterUpdateFilters]
   )
 
   const resetFilters = useCallback(() => {

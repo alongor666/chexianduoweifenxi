@@ -9,7 +9,6 @@ import { devtools } from 'zustand/middleware'
 import type {
   InsuranceRecord,
   FilterState,
-  HierarchicalFilterState,
   KPIResult,
   PremiumTargets,
   DimensionTargetMap,
@@ -87,7 +86,7 @@ function normalizeVersionSnapshots(
         createdAt: version.createdAt || new Date().toISOString(),
         overall: normalizeTargetValue(version.overall),
         entries: normalizeTargetEntries(version.entries),
-        note: version.note,
+        ...(version.note !== undefined && { note: version.note }),
       }
     })
     .filter((snapshot): snapshot is TargetVersionSnapshot => snapshot !== null)
@@ -160,7 +159,7 @@ function loadPremiumTargetsFromStorage(): PremiumTargets {
 /**
  * 应用状态接口
  */
-interface AppState {
+export interface AppState {
   // ============= 数据状态 =============
   rawData: InsuranceRecord[]
   isLoading: boolean
@@ -169,7 +168,6 @@ interface AppState {
 
   // ============= 筛选状态 =============
   filters: FilterState // 向后兼容的扁平筛选状态
-  hierarchicalFilters: HierarchicalFilterState // 新增：分层筛选状态
 
   // ============= 计算缓存 =============
   computedKPIs: Map<string, KPIResult>
@@ -197,7 +195,9 @@ interface AppState {
   loadDataFromPersistentStorage: () => void
   clearPersistentData: () => void
   getStorageStats: () => ReturnType<typeof getDataStats>
-  checkFileForDuplicates: (file: File) => Promise<{ exists: boolean; uploadRecord?: any; fileInfo?: any }>
+  checkFileForDuplicates: (
+    file: File
+  ) => Promise<{ exists: boolean; uploadRecord?: any; fileInfo?: any }>
   addToUploadHistory: (batchResult: any, files: File[]) => Promise<void>
   getUploadHistoryRecords: () => any[]
 
@@ -205,17 +205,6 @@ interface AppState {
   updateFilters: (filters: Partial<FilterState>) => void
   resetFilters: () => void
   setViewMode: (mode: 'single' | 'trend') => void
-
-  // 新增：分层筛选操作
-  updateGlobalFilters: (filters: Partial<FilterState>) => void
-  updateTabFilters: (
-    tab: HierarchicalFilterState['activeTab'],
-    filters: Partial<FilterState>
-  ) => void
-  setActiveTab: (tab: HierarchicalFilterState['activeTab']) => void
-  getMergedFilters: () => FilterState // 合并全局和当前Tab筛选
-  resetGlobalFilters: () => void
-  resetTabFilters: (tab?: HierarchicalFilterState['activeTab']) => void
 
   // 目标管理
   setPremiumTargets: (targets: PremiumTargets) => void
@@ -257,7 +246,7 @@ const defaultFilters: FilterState = {
  */
 export const useAppStore = create<AppState>()(
   devtools(
-    set => ({
+    (set): AppState => ({
       // ============= 数据状态 =============
       rawData: [],
       isLoading: false,
@@ -288,9 +277,12 @@ export const useAppStore = create<AppState>()(
             }))
 
             // 同步数据到新架构的 DataStore（使用 setData 方法，不自动保存避免重复）
-            useDataStore.getState().setData(normalizedData, false).catch(err => {
-              console.error('[AppStore] 同步数据到 DataStore 失败:', err)
-            })
+            useDataStore
+              .getState()
+              .setData(normalizedData, false)
+              .catch(err => {
+                console.error('[AppStore] 同步数据到 DataStore 失败:', err)
+              })
 
             // 自动初始化筛选条件：设置最新周次为默认选中周次
             const weekNumbers = Array.from(
@@ -358,9 +350,12 @@ export const useAppStore = create<AppState>()(
             const mergedData = [...state.rawData, ...uniqueNewData]
 
             // 同步数据到新架构的 DataStore（追加模式，不自动保存避免重复）
-            useDataStore.getState().appendData(uniqueNewData, false).catch(err => {
-              console.error('[AppStore] 同步追加数据到 DataStore 失败:', err)
-            })
+            useDataStore
+              .getState()
+              .appendData(uniqueNewData, false)
+              .catch(err => {
+                console.error('[AppStore] 同步追加数据到 DataStore 失败:', err)
+              })
 
             // 更新周次筛选：如果有新周次，自动选中最新周次
             const weekNumbers = Array.from(
@@ -665,7 +660,9 @@ export const useAppStore = create<AppState>()(
             {
               rawData: data.map(r => ({
                 ...r,
-                customer_category_3: normalizeChineseText(r.customer_category_3),
+                customer_category_3: normalizeChineseText(
+                  r.customer_category_3
+                ),
                 business_type_category: normalizeChineseText(
                   r.business_type_category
                 ),
@@ -727,7 +724,9 @@ export const useFilteredData = () => {
   const insuranceTypes = useAppStore(state => state.filters.insuranceTypes)
   const businessTypes = useAppStore(state => state.filters.businessTypes)
   const coverageTypes = useAppStore(state => state.filters.coverageTypes)
-  const customerCategories = useAppStore(state => state.filters.customerCategories)
+  const customerCategories = useAppStore(
+    state => state.filters.customerCategories
+  )
   const vehicleGrades = useAppStore(state => state.filters.vehicleGrades)
   const terminalSources = useAppStore(state => state.filters.terminalSources)
   const isNewEnergy = useAppStore(state => state.filters.isNewEnergy)
@@ -739,29 +738,8 @@ export const useFilteredData = () => {
 
   // 应用筛选逻辑（memo 化，避免不必要重算）
   // 统一使用 DataService.filter() 实现
-  return useMemo(
-    () => {
-      const filters: FilterState = {
-        years,
-        weeks,
-        organizations,
-        insuranceTypes,
-        businessTypes,
-        coverageTypes,
-        customerCategories,
-        vehicleGrades,
-        terminalSources,
-        isNewEnergy,
-        renewalStatuses,
-        viewMode,
-        singleModeWeek,
-        dataViewType,
-        trendModeWeeks,
-      }
-      return DataService.filter(rawData, filters)
-    },
-    [
-      rawData,
+  return useMemo(() => {
+    const filters: FilterState = {
       years,
       weeks,
       organizations,
@@ -777,8 +755,26 @@ export const useFilteredData = () => {
       singleModeWeek,
       dataViewType,
       trendModeWeeks,
-    ]
-  )
+    }
+    return DataService.filter(rawData, filters)
+  }, [
+    rawData,
+    years,
+    weeks,
+    organizations,
+    insuranceTypes,
+    businessTypes,
+    coverageTypes,
+    customerCategories,
+    vehicleGrades,
+    terminalSources,
+    isNewEnergy,
+    renewalStatuses,
+    viewMode,
+    singleModeWeek,
+    dataViewType,
+    trendModeWeeks,
+  ])
 }
 
 /**

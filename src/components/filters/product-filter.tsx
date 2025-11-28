@@ -18,11 +18,9 @@ export function ProductFilter() {
   const { rawData } = useInsuranceData()
 
   // 联动：根据其他筛选条件提取唯一的保险类型
-  const recordsForInsuranceType = DataService.filter(
-    rawData,
-    filters,
-    ['insuranceTypes']
-  )
+  const recordsForInsuranceType = DataService.filter(rawData, filters, [
+    'insuranceTypes',
+  ])
   const presentInsuranceTypes = new Set<string>(
     recordsForInsuranceType
       .map(record => String(record.insurance_type))

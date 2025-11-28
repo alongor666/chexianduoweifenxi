@@ -3,7 +3,10 @@
 import { useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
-import { AnalysisTabs, type AnalysisTabValue } from '@/components/layout/analysis-tabs'
+import {
+  AnalysisTabs,
+  type AnalysisTabValue,
+} from '@/components/layout/analysis-tabs'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { TargetsDataTable } from '@/components/targets-data-table'
@@ -47,17 +50,17 @@ export default function TargetsPage() {
       .map(week => ({
         label: `W${week}`,
         value: `${week}`,
-        week
+        week,
       }))
   }, [rawData])
 
   // 基于选定周数据计算已达成值
   const achievedWanMap = useMemo(() => {
     const aggregatedYuan = new Map<string, number>()
-    
+
     // 只使用选定周的数据
     const selectedWeek = filters.singleModeWeek
-    const filteredData = selectedWeek 
+    const filteredData = selectedWeek
       ? rawData.filter(record => record.week_number === selectedWeek)
       : []
 
@@ -85,11 +88,13 @@ export default function TargetsPage() {
   }, [achievedWanMap, setAchievedMap])
 
   const totalInitial = useMemo(
-    () => initialVersion.rows.reduce((sum, row) => sum + row.annualTargetInit, 0),
+    () =>
+      initialVersion.rows.reduce((sum, row) => sum + row.annualTargetInit, 0),
     [initialVersion]
   )
   const totalTuned = useMemo(
-    () => currentVersion.rows.reduce((sum, row) => sum + row.annualTargetTuned, 0),
+    () =>
+      currentVersion.rows.reduce((sum, row) => sum + row.annualTargetTuned, 0),
     [currentVersion]
   )
   const totalAchieved = useMemo(
@@ -97,8 +102,10 @@ export default function TargetsPage() {
     [achievedMap]
   )
 
-  const initialAchievementRate = totalInitial > 0 ? totalAchieved / totalInitial : null
-  const tunedAchievementRate = totalTuned > 0 ? totalAchieved / totalTuned : null
+  const initialAchievementRate =
+    totalInitial > 0 ? totalAchieved / totalInitial : null
+  const tunedAchievementRate =
+    totalTuned > 0 ? totalAchieved / totalTuned : null
 
   const navigateByTab = (tab: AnalysisTabValue) => {
     if (tab === 'targets') return

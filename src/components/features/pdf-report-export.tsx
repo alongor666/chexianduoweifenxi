@@ -28,7 +28,7 @@ interface Props {
 export function PDFReportExport({ className }: Props) {
   const rawData = useDataStore(state => state.rawData)
   const filters = useFilterStore(state => state.filters)
-  const viewMode = useFilterStore(state => state.viewMode)
+  const viewMode = useFilterStore(state => state.filters.viewMode)
   const kpis = useKPI()
   const { toast } = useToast()
 

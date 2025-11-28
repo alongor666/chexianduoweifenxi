@@ -8,9 +8,9 @@ import { test, expect } from '@playwright/test'
 test.describe('新架构 - 数据管理', () => {
   test('应正确加载和过滤数据', async () => {
     // 导入新架构模块
-    const { useDataStore } = await import('../../src/store/domains/dataStore')
-    const { useFilterStore } = await import('../../src/store/domains/filterStore')
-    const { DataService } = await import('../../src/services/DataService')
+    const { useDataStore } = await import('@/store/domains/dataStore')
+    const { useFilterStore } = await import('@/store/domains/filterStore')
+    const { DataService } = await import('@/services/DataService')
 
     // 准备测试数据
     const mockData = [
@@ -53,19 +53,25 @@ test.describe('新架构 - 数据管理', () => {
 
     // 2. 测试筛选功能
     useFilterStore.getState().updateFilters({ years: [2024] })
-    const filteredData = DataService.filter(mockData, useFilterStore.getState().filters)
+    const filteredData = DataService.filter(
+      mockData,
+      useFilterStore.getState().filters
+    )
     expect(filteredData).toHaveLength(2)
 
     // 3. 测试筛选器重置
     useFilterStore.getState().resetFilters()
-    const allData = DataService.filter(mockData, useFilterStore.getState().filters)
+    const allData = DataService.filter(
+      mockData,
+      useFilterStore.getState().filters
+    )
     expect(allData).toHaveLength(3)
   })
 })
 
 test.describe('新架构 - KPI计算', () => {
   test('应正确计算基础KPI', async () => {
-    const { KPIService } = await import('../../src/services/KPIService')
+    const { KPIService } = await import('@/services/KPIService')
 
     const mockData = [
       {
@@ -111,7 +117,7 @@ test.describe('新架构 - KPI计算', () => {
   })
 
   test('应正确计算目标达成率', async () => {
-    const { KPIService } = await import('../../src/services/KPIService')
+    const { KPIService } = await import('@/services/KPIService')
 
     const mockData = [
       {
@@ -145,7 +151,7 @@ test.describe('新架构 - KPI计算', () => {
 
 test.describe('新架构 - 缓存管理', () => {
   test('应正确管理KPI缓存', async () => {
-    const { useCacheStore } = await import('../../src/store/domains/cacheStore')
+    const { useCacheStore } = await import('@/store/domains/cacheStore')
 
     const mockKpi = {
       signed_premium: 100,
@@ -179,7 +185,7 @@ test.describe('新架构 - 缓存管理', () => {
 
 test.describe('新架构 - UI状态管理', () => {
   test('应正确管理视图模式和面板状态', async () => {
-    const { useUIStore } = await import('../../src/store/domains/uiStore')
+    const { useUIStore } = await import('@/store/domains/uiStore')
 
     // 1. 切换视图模式
     useUIStore.getState().setCurrentView('trend')
@@ -194,17 +200,20 @@ test.describe('新架构 - UI状态管理', () => {
 
     // 3. 设置表格列可见性
     useUIStore.getState().setTableColumns(['column1', 'column2'])
-    expect(useUIStore.getState().tableConfig.visibleColumns).toEqual(['column1', 'column2'])
+    expect(useUIStore.getState().tableConfig.visibleColumns).toEqual([
+      'column1',
+      'column2',
+    ])
   })
 })
 
 test.describe('新架构 - 集成测试', () => {
   test('应支持完整的数据流程', async () => {
-    const { useDataStore } = await import('../../src/store/domains/dataStore')
-    const { useFilterStore } = await import('../../src/store/domains/filterStore')
-    const { useCacheStore } = await import('../../src/store/domains/cacheStore')
-    const { DataService } = await import('../../src/services/DataService')
-    const { KPIService } = await import('../../src/services/KPIService')
+    const { useDataStore } = await import('@/store/domains/dataStore')
+    const { useFilterStore } = await import('@/store/domains/filterStore')
+    const { useCacheStore } = await import('@/store/domains/cacheStore')
+    const { DataService } = await import('@/services/DataService')
+    const { KPIService } = await import('@/services/KPIService')
 
     // 准备测试数据
     const mockData = Array.from({ length: 100 }, (_, i) => ({
@@ -232,7 +241,10 @@ test.describe('新架构 - 集成测试', () => {
       weeks: [1, 2, 3],
     })
 
-    const filteredData = DataService.filter(mockData, useFilterStore.getState().filters)
+    const filteredData = DataService.filter(
+      mockData,
+      useFilterStore.getState().filters
+    )
     expect(filteredData.length).toBeGreaterThan(0)
 
     // 3. 计算KPI（使用缓存）

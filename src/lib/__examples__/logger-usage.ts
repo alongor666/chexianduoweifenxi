@@ -16,10 +16,10 @@ import { logger } from '@/lib/logger'
 // console.error('[DataService] 加载失败:', error)
 
 // ✅ 新代码
-const log = logger.create('DataService')
-log.info('开始加载数据...')
-log.warn('数据不完整')
-log.error('加载失败', error)
+// const log = logger.create('DataService')
+// log.info('开始加载数据...')
+// log.warn('数据不完整')
+// log.error('加载失败', error)
 
 // ============================================
 // 2. 结构化日志：传递额外数据
@@ -29,10 +29,10 @@ log.error('加载失败', error)
 // console.log(`上传成功，文件名: ${file.name}, 大小: ${file.size}`)
 
 // ✅ 新代码
-log.info('上传成功', {
-  fileName: file.name,
-  fileSize: file.size,
-})
+// log.info('上传成功', {
+//   fileName: file.name,
+//   fileSize: file.size,
+// })
 
 // ============================================
 // 3. 开发环境调试日志
@@ -44,7 +44,7 @@ log.info('上传成功', {
 // }
 
 // ✅ 新代码
-log.debug('Debug info', { data }) // 生产环境自动过滤
+// log.debug('Debug info', { data }) // 生产环境自动过滤
 
 // ============================================
 // 4. 性能测量
@@ -56,9 +56,9 @@ log.debug('Debug info', { data }) // 生产环境自动过滤
 // console.timeEnd('处理数据')
 
 // ✅ 新代码
-log.time('处理数据')
+// log.time('处理数据')
 // ... 处理逻辑
-log.timeEnd('处理数据')
+// log.timeEnd('处理数据')
 
 // ============================================
 // 5. 分组日志
@@ -71,10 +71,10 @@ log.timeEnd('处理数据')
 // console.groupEnd()
 
 // ✅ 新代码
-log.group('上传详情')
-log.info('文件1', { file: file1 })
-log.info('文件2', { file: file2 })
-log.groupEnd()
+// log.group('上传详情')
+// log.info('文件1', { file: file1 })
+// log.info('文件2', { file: file2 })
+// log.groupEnd()
 
 // ============================================
 // 6. 表格输出
@@ -84,7 +84,7 @@ log.groupEnd()
 // console.table(records)
 
 // ✅ 新代码
-log.table(records)
+// log.table(records)
 
 // ============================================
 // 完整示例：数据服务

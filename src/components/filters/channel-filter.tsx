@@ -14,11 +14,9 @@ export function ChannelFilter() {
   const { rawData } = useInsuranceData()
 
   // 联动：根据其他筛选条件提取唯一的终端来源
-  const recordsForTerminalSource = DataService.filter(
-    rawData,
-    filters,
-    ['terminalSources']
-  )
+  const recordsForTerminalSource = DataService.filter(rawData, filters, [
+    'terminalSources',
+  ])
 
   // 使用 Canonical 集合并按数据出现过滤
   const presentTerminalSources = new Set(

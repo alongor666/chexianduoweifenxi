@@ -23,7 +23,7 @@ import type {
  */
 export function calculateTrendLine(data: ChartDataPoint[]): number[] {
   const lossRatios = data
-    .map((d) => d.lossRatio)
+    .map(d => d.lossRatio)
     .filter((v): v is number => v !== null)
 
   if (lossRatios.length < 2) return []
@@ -68,7 +68,10 @@ export function formatDeltaPercentPoint(
  * @param decimals - 小数位数，默认 1
  * @returns 格式化后的字符串，如果值为 null 或 NaN 则返回 null
  */
-export function formatDeltaAmountWan(value: number | null, decimals = 1): string | null {
+export function formatDeltaAmountWan(
+  value: number | null,
+  decimals = 1
+): string | null {
   if (value === null || Number.isNaN(value)) return null
   const direction = value >= 0 ? '增加' : '减少'
   return `${direction} ${formatNumber(Math.abs(value), decimals)} 万元`
@@ -209,7 +212,10 @@ export function formatFilterList(values: string[], maxLength = 3): string {
  * @param fallback - 后备值
  * @returns 清理后的文本或后备值
  */
-export function sanitizeText(value: string | null | undefined, fallback: string): string {
+export function sanitizeText(
+  value: string | null | undefined,
+  fallback: string
+): string {
   if (value === null || value === undefined) return fallback
   const trimmed = String(value).trim()
   return trimmed.length > 0 ? trimmed : fallback
@@ -252,7 +258,10 @@ export function buildDimensionHighlights(
 ): DimensionHighlight[] {
   const map = new Map<string, DimensionAccumulator>()
 
-  const ensureAccumulator = (key: string, label: string): DimensionAccumulator => {
+  const ensureAccumulator = (
+    key: string,
+    label: string
+  ): DimensionAccumulator => {
     if (!map.has(key)) {
       map.set(key, {
         label,
@@ -267,7 +276,9 @@ export function buildDimensionHighlights(
     return map.get(key)!
   }
 
-  const getKeyAndLabel = (record: InsuranceRecord): { key: string; label: string } => {
+  const getKeyAndLabel = (
+    record: InsuranceRecord
+  ): { key: string; label: string } => {
     if (dimension === 'business') {
       const label = sanitizeText(record.business_type_category, '未标记业务')
       return { key: label, label }
@@ -321,7 +332,12 @@ export function buildDimensionHighlights(
     const previousMatured = accumulator.previousMatured
     const previousClaim = accumulator.previousClaim
 
-    if (currentMatured <= 0 && currentClaim <= 0 && previousMatured <= 0 && previousClaim <= 0) {
+    if (
+      currentMatured <= 0 &&
+      currentClaim <= 0 &&
+      previousMatured <= 0 &&
+      previousClaim <= 0
+    ) {
       return
     }
 
@@ -391,5 +407,5 @@ export function buildDimensionHighlights(
  */
 export function formatWeekList(weeks: number[]): string {
   if (weeks.length === 0) return ''
-  return weeks.map((week) => `第${week}周`).join('、')
+  return weeks.map(week => `第${week}周`).join('、')
 }

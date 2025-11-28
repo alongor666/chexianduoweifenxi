@@ -54,7 +54,11 @@ export interface IPersistenceAdapter {
 export class PersistenceError extends Error {
   constructor(
     message: string,
-    public code: 'QUOTA_EXCEEDED' | 'SERIALIZATION_ERROR' | 'STORAGE_UNAVAILABLE' | 'UNKNOWN',
+    public code:
+      | 'QUOTA_EXCEEDED'
+      | 'SERIALIZATION_ERROR'
+      | 'STORAGE_UNAVAILABLE'
+      | 'UNKNOWN',
     public originalError?: Error
   ) {
     super(message)

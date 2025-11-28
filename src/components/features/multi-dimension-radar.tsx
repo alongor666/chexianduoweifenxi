@@ -83,7 +83,7 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
   // 转换为雷达图数据
   const radarData = useMemo((): RadarDataPoint[] => {
     // 为每个维度创建数据点
-    return RADAR_DIMENSIONS.map((dim) => {
+    return RADAR_DIMENSIONS.map(dim => {
       const dataPoint: RadarDataPoint = {
         dimension: dim.shortLabel,
         fullLabel: dim.label,
@@ -96,7 +96,7 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
       }
 
       // 为每个已选机构添加评分
-      selectedOrganizations.forEach((orgName) => {
+      selectedOrganizations.forEach(orgName => {
         const kpi = selectedOrgKPIs.get(orgName)
         const scores = kpi ? convertKPIToRadarScores(kpi) : new Map()
         const scoreResult = scores.get(dim.key)
@@ -118,10 +118,10 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
   const overallScores = useMemo(() => {
     const scores: Record<string, number> = {}
 
-    selectedOrganizations.forEach((orgName) => {
+    selectedOrganizations.forEach(orgName => {
       const validScores = radarData
-        .map((d) => d[orgName] as number)
-        .filter((s) => s > 0)
+        .map(d => d[orgName] as number)
+        .filter(s => s > 0)
 
       if (validScores.length > 0) {
         scores[orgName] = Math.round(
@@ -213,7 +213,7 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
     let bestOrg = ''
     let bestScore = -1
 
-    selectedOrganizations.forEach((orgName) => {
+    selectedOrganizations.forEach(orgName => {
       const score = data[orgName] as number
       if (score > bestScore) {
         bestScore = score
@@ -260,13 +260,16 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
                 多维健康度雷达图 - 机构对比
               </h3>
               <p className="mt-1 text-xs text-slate-500">
-                综合对比{selectedOrganizations.length}个机构在5个核心维度的业务健康状况
+                综合对比{selectedOrganizations.length}
+                个机构在5个核心维度的业务健康状况
               </p>
             </div>
 
             {/* 综合排名（前3名） */}
             <div className="rounded-lg border border-slate-200 bg-white p-3">
-              <p className="mb-2 text-xs font-medium text-slate-600">综合排名</p>
+              <p className="mb-2 text-xs font-medium text-slate-600">
+                综合排名
+              </p>
               {Object.entries(overallScores)
                 .sort(([, a], [, b]) => b - a)
                 .slice(0, 3)

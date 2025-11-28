@@ -164,7 +164,8 @@ export const useFilterStore = create<FilterStore>()(
           if (filters.years && filters.years.length > 0) count++
           if (filters.weeks && filters.weeks.length > 0) count++
           if (filters.organizations && filters.organizations.length > 0) count++
-          if (filters.insuranceTypes && filters.insuranceTypes.length > 0) count++
+          if (filters.insuranceTypes && filters.insuranceTypes.length > 0)
+            count++
           if (filters.businessTypes && filters.businessTypes.length > 0) count++
           if (filters.coverageTypes && filters.coverageTypes.length > 0) count++
           if (

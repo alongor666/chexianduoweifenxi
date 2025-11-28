@@ -40,16 +40,13 @@ export function generateOperationalSummary(
     }
   }
 
-  const totalRiskWeeks = data.filter((d) => d.isRisk).length
+  const totalRiskWeeks = data.filter(d => d.isRisk).length
 
   if (mode === 'increment') {
-    const previousPoint =
-      data.length > 1 ? data[data.length - 2] : null
+    const previousPoint = data.length > 1 ? data[data.length - 2] : null
     const latestPremiumWan = formatNumber(latestPremium, 0)
     const premiumChange =
-      previousPoint != null
-        ? latestPremium - previousPoint.signedPremium
-        : null
+      previousPoint != null ? latestPremium - previousPoint.signedPremium : null
     const premiumChangeText =
       premiumChange != null
         ? `，较上周${premiumChange >= 0 ? '增加' : '下降'} ${formatNumber(
@@ -76,7 +73,7 @@ export function generateOperationalSummary(
         ? `保费周增量在${premiumDrops
             .slice(-2)
             .map(
-              (item) =>
+              item =>
                 `第${item.week}周较前一周下降 ${formatNumber(
                   Math.abs(item.diff),
                   0
@@ -85,9 +82,7 @@ export function generateOperationalSummary(
             .join('、')}，需尽快排查渠道与获客效率`
         : '保费周增量总体保持平稳'
 
-    const riskWeeks = data
-      .filter((d) => d.isRisk)
-      .map((d) => d.weekNumber)
+    const riskWeeks = data.filter(d => d.isRisk).map(d => d.weekNumber)
     const riskWeekText =
       riskWeeks.length > 0
         ? `赔付率预警集中在 ${formatWeekList(

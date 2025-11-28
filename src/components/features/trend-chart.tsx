@@ -20,7 +20,7 @@ import {
 import { TrendingUp, AlertTriangle, Settings } from 'lucide-react'
 
 import { useTrendData } from '@/hooks/use-trend'
-import { useAppStore } from '@/store/use-app-store'
+import { useAppStore, type AppState } from '@/store/use-app-store'
 import {
   detectAnomalies,
   type AnomalyDetectionOptions,
@@ -52,8 +52,8 @@ import { TrendTooltip } from './trend-chart/components/TrendTooltip'
 
 export const TrendChart = React.memo(function TrendChart() {
   const data = useTrendData()
-  const filters = useAppStore(state => state.filters)
-  const updateFilters = useAppStore(state => state.updateFilters)
+  const filters = useAppStore((state: AppState) => state.filters)
+  const updateFilters = useAppStore((state: AppState) => state.updateFilters)
 
   const [visible, setVisible] = useState<Record<SeriesKey, boolean>>({
     signed: true,
@@ -277,7 +277,11 @@ export const TrendChart = React.memo(function TrendChart() {
       })
     }
 
-    if (latestPoint && latestAnalytics?.maturedShare !== null && latestAnalytics) {
+    if (
+      latestPoint &&
+      latestAnalytics?.maturedShare !== null &&
+      latestAnalytics
+    ) {
       candidates.push({
         id: 'maturity-share',
         text: `${latestPoint.label} 满期占比 ${formatPercent(latestAnalytics.maturedShare * 100, 1)}，衡量业务兑现能力`,

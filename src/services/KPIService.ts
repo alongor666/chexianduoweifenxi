@@ -124,9 +124,10 @@ export class KPIService {
       if (weekData.length > 0) {
         const kpi = this.calculate(weekData, {
           currentWeekNumber: week,
-          year: filters.years && filters.years.length > 0
-            ? safeMax(filters.years)
-            : new Date().getFullYear(),
+          year:
+            filters.years && filters.years.length > 0
+              ? safeMax(filters.years)
+              : new Date().getFullYear(),
         })
 
         if (kpi) {
@@ -160,7 +161,11 @@ export class KPIService {
 
     // 获取上一周数据
     const previousWeek = currentWeek - 1
-    const previousWeekData = DataService.getByWeek(rawData, previousWeek, filters)
+    const previousWeekData = DataService.getByWeek(
+      rawData,
+      previousWeek,
+      filters
+    )
 
     const currentKpi = this.calculate(currentWeekData, {
       annualTargetYuan: annualTarget,
@@ -197,7 +202,7 @@ export class KPIService {
     const groups = DataService.groupBy(filteredData, dimension)
     const kpiByDimension = new Map<InsuranceRecord[K], KPIResult>()
 
-    for (const [key, records] of groups.entries()) {
+    for (const [key, records] of Array.from(groups.entries())) {
       const kpi = this.calculate(records)
       if (kpi) {
         kpiByDimension.set(key, kpi)
@@ -270,21 +275,22 @@ export class KPIService {
     averagePremiumGrowthRate: number
   } {
     const premiumGrowthRate =
-      comparisonKpi.signedPremium > 0
-        ? (currentKpi.signedPremium - comparisonKpi.signedPremium) /
-          comparisonKpi.signedPremium
+      comparisonKpi.signed_premium > 0
+        ? (currentKpi.signed_premium - comparisonKpi.signed_premium) /
+          comparisonKpi.signed_premium
         : 0
 
     const policyCountGrowthRate =
-      comparisonKpi.policyCount > 0
-        ? (currentKpi.policyCount - comparisonKpi.policyCount) /
-          comparisonKpi.policyCount
+      comparisonKpi.policy_count > 0
+        ? (currentKpi.policy_count - comparisonKpi.policy_count) /
+          comparisonKpi.policy_count
         : 0
 
     const averagePremiumGrowthRate =
-      comparisonKpi.averagePremium > 0
-        ? (currentKpi.averagePremium - comparisonKpi.averagePremium) /
-          comparisonKpi.averagePremium
+      comparisonKpi.average_premium && comparisonKpi.average_premium > 0 &&
+      currentKpi.average_premium
+        ? (currentKpi.average_premium - comparisonKpi.average_premium) /
+          comparisonKpi.average_premium
         : 0
 
     return {

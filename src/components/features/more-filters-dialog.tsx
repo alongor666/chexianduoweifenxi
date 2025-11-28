@@ -49,7 +49,7 @@ export function MoreFiltersDialog() {
               </Button>
             </div>
           </DialogHeader>
-          
+
           <div className="mt-6">
             <FilterPanel />
           </div>

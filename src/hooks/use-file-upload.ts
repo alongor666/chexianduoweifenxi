@@ -14,7 +14,7 @@ import {
   type CSVParseResult,
   type ProgressCallback,
 } from '@/lib/parsers/csv-parser'
-import { useAppStore } from '@/store/use-app-store'
+import { useAppStore, type AppState } from '@/store/use-app-store'
 import {
   extractWeeksFromRecords,
   analyzeWeekConflicts,
@@ -131,7 +131,8 @@ const showNotification = (
   type: 'success' | 'warning' | 'error',
   message: string
 ) => {
-  const logFn = type === 'error' ? log.error : type === 'warning' ? log.warn : log.info
+  const logFn =
+    type === 'error' ? log.error : type === 'warning' ? log.warn : log.info
   logFn(message)
   // 这里可以集成实际的通知系统
 }
@@ -147,7 +148,7 @@ export function useFileUpload() {
     useState<FileValidationOptions>(DEFAULT_VALIDATION_OPTIONS)
 
   const { setRawData, appendRawData, setError, setLoading } = useAppStore()
-  const rawData = useAppStore(state => state.rawData)
+  const rawData = useAppStore((state: AppState) => state.rawData)
 
   /**
    * 验证单个文件
@@ -176,7 +177,9 @@ export function useFileUpload() {
         const namePattern = /^保险数据_\d{4}年\d{1,2}月.*\.csv$/i
         if (!namePattern.test(file.name)) {
           // 仅显示警告，不阻止上传
-          log.warn('文件名建议格式: 保险数据_YYYY年M月_描述.csv', { fileName: file.name })
+          log.warn('文件名建议格式: 保险数据_YYYY年M月_描述.csv', {
+            fileName: file.name,
+          })
         }
       }
 
@@ -380,11 +383,16 @@ export function useFileUpload() {
             log.debug('检测到周次', {
               fileName: result.file.name,
               weekCount: detectedWeeks.length,
-              weeks: detectedWeeks.map(w => `${w.year}年第${w.weekNumber}周`).join(', '),
+              weeks: detectedWeeks
+                .map(w => `${w.year}年第${w.weekNumber}周`)
+                .join(', '),
             })
 
             // 2. 分析周次冲突
-            const { newWeeks, conflictWeeks } = analyzeWeekConflicts(detectedWeeks, currentRawData)
+            const { newWeeks, conflictWeeks } = analyzeWeekConflicts(
+              detectedWeeks,
+              currentRawData
+            )
             log.debug('周次分析', {
               newWeekCount: newWeeks.length,
               conflictWeekCount: conflictWeeks.length,
@@ -392,18 +400,25 @@ export function useFileUpload() {
 
             if (newWeeks.length > 0) {
               log.debug('新周次', {
-                weeks: newWeeks.map(w => `${w.year}年第${w.weekNumber}周`).join(', '),
+                weeks: newWeeks
+                  .map(w => `${w.year}年第${w.weekNumber}周`)
+                  .join(', '),
               })
             }
 
             if (conflictWeeks.length > 0) {
               log.debug('冲突周次(将跳过)', {
-                weeks: conflictWeeks.map(w => `${w.year}年第${w.weekNumber}周`).join(', '),
+                weeks: conflictWeeks
+                  .map(w => `${w.year}年第${w.weekNumber}周`)
+                  .join(', '),
               })
             }
 
             // 3. 过滤数据，只保留新周次的记录
-            const filteredData = filterRecordsByNewWeeks(result.result.data, newWeeks)
+            const filteredData = filterRecordsByNewWeeks(
+              result.result.data,
+              newWeeks
+            )
             log.debug('过滤后保留记录', {
               filteredCount: filteredData.length,
               originalCount: result.result.data.length,
@@ -461,7 +476,9 @@ export function useFileUpload() {
               // 统计实际导入的记录数
               validRecords += filteredData.length
             } else {
-              log.warn('所有周次都已存在，跳过导入', { fileName: result.file.name })
+              log.warn('所有周次都已存在，跳过导入', {
+                fileName: result.file.name,
+              })
             }
 
             // 统计总记录数（包括被跳过的）
@@ -483,7 +500,9 @@ export function useFileUpload() {
         const failureCount = results.length - successCount
 
         // 计算周次分析汇总
-        const successfulWeeks = allWeekResults.filter(w => w.status === 'success')
+        const successfulWeeks = allWeekResults.filter(
+          w => w.status === 'success'
+        )
         const skippedWeeks = allWeekResults.filter(w => w.status === 'skipped')
 
         const batchResult: BatchUploadResult = {
@@ -495,12 +514,15 @@ export function useFileUpload() {
           totalRecords,
           validRecords,
           invalidRecords,
-          weekAnalysis: allWeekResults.length > 0 ? {
-            totalWeeks: allWeekResults.length,
-            newWeeks: successfulWeeks.length,
-            skippedWeeks: skippedWeeks.length,
-            weekResults: allWeekResults,
-          } : undefined,
+          weekAnalysis:
+            allWeekResults.length > 0
+              ? {
+                  totalWeeks: allWeekResults.length,
+                  newWeeks: successfulWeeks.length,
+                  skippedWeeks: skippedWeeks.length,
+                  weekResults: allWeekResults,
+                }
+              : undefined,
         }
 
         setBatchResult(batchResult)
@@ -526,11 +548,13 @@ export function useFileUpload() {
           validRecords,
           invalidRecords,
           totalTime: Math.round(totalTime) + 'ms',
-          weekAnalysis: batchResult.weekAnalysis ? {
-            totalWeeks: batchResult.weekAnalysis.totalWeeks,
-            newWeeks: batchResult.weekAnalysis.newWeeks,
-            skippedWeeks: batchResult.weekAnalysis.skippedWeeks,
-          } : '无周次信息',
+          weekAnalysis: batchResult.weekAnalysis
+            ? {
+                totalWeeks: batchResult.weekAnalysis.totalWeeks,
+                newWeeks: batchResult.weekAnalysis.newWeeks,
+                skippedWeeks: batchResult.weekAnalysis.skippedWeeks,
+              }
+            : '无周次信息',
         })
 
         // 显示结果通知
@@ -578,7 +602,15 @@ export function useFileUpload() {
         }, 3000)
       }
     },
-    [uploadSingleFile, validateFiles, setRawData, appendRawData, rawData, setError, setLoading]
+    [
+      uploadSingleFile,
+      validateFiles,
+      setRawData,
+      appendRawData,
+      rawData,
+      setError,
+      setLoading,
+    ]
   )
 
   /**

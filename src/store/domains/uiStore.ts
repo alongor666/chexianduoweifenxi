@@ -267,7 +267,11 @@ export const useUIStore = create<UIStore>()(
         },
 
         setSelectedOrganizations: orgs => {
-          set({ selectedOrganizations: orgs }, false, 'setSelectedOrganizations')
+          set(
+            { selectedOrganizations: orgs },
+            false,
+            'setSelectedOrganizations'
+          )
         },
 
         addSelectedOrganization: org => {
@@ -293,7 +297,11 @@ export const useUIStore = create<UIStore>()(
         },
 
         clearSelectedOrganizations: () => {
-          set({ selectedOrganizations: [] }, false, 'clearSelectedOrganizations')
+          set(
+            { selectedOrganizations: [] },
+            false,
+            'clearSelectedOrganizations'
+          )
         },
 
         toggleSidebar: () => {
@@ -317,7 +325,11 @@ export const useUIStore = create<UIStore>()(
         },
 
         setFilterPanelExpanded: expanded => {
-          set({ filterPanelExpanded: expanded }, false, 'setFilterPanelExpanded')
+          set(
+            { filterPanelExpanded: expanded },
+            false,
+            'setFilterPanelExpanded'
+          )
         },
 
         updateTableConfig: config => {

@@ -62,12 +62,14 @@ export function createWeeklyTrendChartOption(
     return '' // 其他周不显示标签
   })
 
-  const signedPremiums = displayData.map((d) => d.signedPremium)
-  const lossRatios = displayData.map((d) => d.lossRatio)
+  const signedPremiums = displayData.map(d => d.signedPremium)
+  const lossRatios = displayData.map(d => d.lossRatio)
 
   // 分离风险点和正常点
   const normalPoints = displayData
-    .map((d, i) => (!d.isRisk && d.lossRatio !== null ? [i, d.lossRatio] : null))
+    .map((d, i) =>
+      !d.isRisk && d.lossRatio !== null ? [i, d.lossRatio] : null
+    )
     .filter((v): v is [number, number] => v !== null)
 
   const riskPoints = displayData
@@ -227,7 +229,10 @@ export function createWeeklyTrendChartOption(
         type: 'slider',
         show: true,
         xAxisIndex: 0,
-        start: displayData.length > 26 ? ((displayData.length - 26) / displayData.length) * 100 : 0,
+        start:
+          displayData.length > 26
+            ? ((displayData.length - 26) / displayData.length) * 100
+            : 0,
         end: 100,
         height: 20,
         bottom: '5%',
@@ -239,7 +244,10 @@ export function createWeeklyTrendChartOption(
       {
         type: 'inside',
         xAxisIndex: 0,
-        start: displayData.length > 26 ? ((displayData.length - 26) / displayData.length) * 100 : 0,
+        start:
+          displayData.length > 26
+            ? ((displayData.length - 26) / displayData.length) * 100
+            : 0,
         end: 100,
       },
     ],

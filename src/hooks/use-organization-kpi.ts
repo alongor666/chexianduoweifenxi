@@ -4,7 +4,7 @@
  */
 
 import { useMemo } from 'react'
-import { useAppStore } from '@/store/use-app-store'
+import { useAppStore, type AppState } from '@/store/use-app-store'
 import { kpiEngine } from '@/lib/calculations/kpi-engine'
 import type { KPIResult, InsuranceRecord } from '@/types/insurance'
 import { safeMax } from '@/lib/utils/array-utils'
@@ -14,12 +14,10 @@ import { safeMax } from '@/lib/utils/array-utils'
  * @param organizationName 机构名称
  * @returns KPI计算结果
  */
-export function useOrganizationKPI(
-  organizationName: string
-): KPIResult | null {
-  const rawData = useAppStore((state) => state.rawData)
-  const filters = useAppStore((state) => state.filters)
-  const premiumTargets = useAppStore((state) => state.premiumTargets)
+export function useOrganizationKPI(organizationName: string): KPIResult | null {
+  const rawData = useAppStore((state: AppState) => state.rawData)
+  const filters = useAppStore((state: AppState) => state.filters)
+  const premiumTargets = useAppStore((state: AppState) => state.premiumTargets)
 
   const kpiResult = useMemo(() => {
     // 筛选该机构的数据，同时应用其他筛选条件（除了机构筛选）
@@ -122,9 +120,10 @@ export function useOrganizationKPI(
     }
 
     // 获取该机构的目标值
-    const orgTarget = premiumTargets?.dimensions.thirdLevelOrganization.entries[
-      organizationName
-    ]
+    const orgTarget =
+      premiumTargets?.dimensions.thirdLevelOrganization.entries[
+        organizationName
+      ]
 
     // 计算当前年份
     const currentYear =
@@ -171,9 +170,9 @@ export function useOrganizationKPI(
 export function useMultipleOrganizationKPIs(
   organizationNames: string[]
 ): Map<string, KPIResult | null> {
-  const rawData = useAppStore((state) => state.rawData)
-  const filters = useAppStore((state) => state.filters)
-  const premiumTargets = useAppStore((state) => state.premiumTargets)
+  const rawData = useAppStore((state: AppState) => state.rawData)
+  const filters = useAppStore((state: AppState) => state.filters)
+  const premiumTargets = useAppStore((state: AppState) => state.premiumTargets)
 
   const kpiMap = useMemo(() => {
     const resultMap = new Map<string, KPIResult | null>()
@@ -189,7 +188,7 @@ export function useMultipleOrganizationKPIs(
       filters.viewMode === 'single' ? filters.singleModeWeek : null
 
     // 为每个机构计算KPI
-    organizationNames.forEach((orgName) => {
+    organizationNames.forEach(orgName => {
       // 筛选该机构的数据
       const orgData = rawData.filter((record: InsuranceRecord) => {
         // 机构筛选
@@ -282,8 +281,8 @@ export function useMultipleOrganizationKPIs(
       }
 
       // 获取该机构的目标值
-      const orgTarget = premiumTargets?.dimensions.thirdLevelOrganization
-        .entries[orgName]
+      const orgTarget =
+        premiumTargets?.dimensions.thirdLevelOrganization.entries[orgName]
 
       // 计算KPI
       const kpi = kpiEngine.calculate(orgData, {

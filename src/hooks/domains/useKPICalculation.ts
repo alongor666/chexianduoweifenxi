@@ -204,9 +204,9 @@ export function useKPITrend(weekRange: number[]) {
 /**
  * 按维度分组的KPI计算Hook
  */
-export function useKPIByDimension<K extends keyof import('@/types/insurance').InsuranceRecord>(
-  dimension: K
-) {
+export function useKPIByDimension<
+  K extends keyof import('@/types/insurance').InsuranceRecord,
+>(dimension: K) {
   const rawData = useDataStore(state => state.rawData)
   const filters = useFilterStore(state => state.filters)
 

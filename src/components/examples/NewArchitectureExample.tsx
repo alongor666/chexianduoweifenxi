@@ -24,8 +24,7 @@ import { Button } from '@/components/ui/button'
  */
 export function NewArchitectureExample() {
   // 1. 使用聚合Hooks获取数据和状态
-  const { filteredData, stats, hasData, filterPercentage, isLoading } =
-    useInsuranceData()
+  const { stats, hasData, filterPercentage, isLoading } = useInsuranceData()
 
   const { currentKpi } = useKPICalculation()
 
@@ -218,9 +217,13 @@ export function NewArchitectureExample() {
           <CardTitle className="text-blue-900">🎯 新架构优势</CardTitle>
         </CardHeader>
         <CardContent className="text-sm text-blue-800 space-y-2">
-          <p>✅ <strong>组件简洁</strong>：只有 {/* 计算组件行数 */}约100行，专注展示逻辑</p>
           <p>
-            ✅ <strong>逻辑复用</strong>：DataService、KPIService 可在任何地方调用
+            ✅ <strong>组件简洁</strong>：只有 {/* 计算组件行数 */}
+            约100行，专注展示逻辑
+          </p>
+          <p>
+            ✅ <strong>逻辑复用</strong>：DataService、KPIService
+            可在任何地方调用
           </p>
           <p>
             ✅ <strong>易于测试</strong>：Service层是纯函数，可独立测试

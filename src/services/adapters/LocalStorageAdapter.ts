@@ -53,7 +53,10 @@ export class LocalStorageAdapter implements IPersistenceAdapter {
         }
 
         // 序列化错误（可能包含循环引用或不可序列化的对象）
-        if (error.message.includes('circular') || error.message.includes('serialize')) {
+        if (
+          error.message.includes('circular') ||
+          error.message.includes('serialize')
+        ) {
           throw new PersistenceError(
             `数据序列化失败: ${key}`,
             'SERIALIZATION_ERROR',

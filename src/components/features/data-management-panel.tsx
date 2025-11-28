@@ -15,7 +15,9 @@ import { usePersistData } from '@/hooks/use-persist-data'
 import { Database, Download, Trash2, Filter } from 'lucide-react'
 
 export function DataManagementPanel() {
-  const [activeSubTab, setActiveSubTab] = useState<'upload' | 'export'>('upload')
+  const [activeSubTab, setActiveSubTab] = useState<'upload' | 'export'>(
+    'upload'
+  )
   const { clearPersistedData } = usePersistData()
   const rawData = useDataStore(state => state.rawData)
 
@@ -36,9 +38,7 @@ export function DataManagementPanel() {
           <Database className="w-6 h-6 text-blue-600" />
           <div>
             <h2 className="text-xl font-semibold text-slate-800">导入导出</h2>
-            <p className="text-sm text-slate-600 mt-1">
-              管理数据导入和导出
-            </p>
+            <p className="text-sm text-slate-600 mt-1">管理数据导入和导出</p>
           </div>
         </div>
 
@@ -58,7 +58,10 @@ export function DataManagementPanel() {
 
       {/* 主内容区 - 子标签页 */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <Tabs value={activeSubTab} onValueChange={(v) => setActiveSubTab(v as 'upload' | 'export')}>
+        <Tabs
+          value={activeSubTab}
+          onValueChange={v => setActiveSubTab(v as 'upload' | 'export')}
+        >
           <div className="border-b border-slate-200 px-6 pt-4">
             <TabsList className="bg-slate-100">
               <TabsTrigger value="upload" className="gap-2">
@@ -69,7 +72,6 @@ export function DataManagementPanel() {
                 <Download className="w-4 h-4" />
                 导出数据
               </TabsTrigger>
-
             </TabsList>
           </div>
 
@@ -82,9 +84,12 @@ export function DataManagementPanel() {
               <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h3 className="text-lg font-semibold text-slate-800">导出结构化数据</h3>
+                    <h3 className="text-lg font-semibold text-slate-800">
+                      导出结构化数据
+                    </h3>
                     <p className="mt-2 text-sm text-slate-600">
-                      将当前工作区的数据按需导出为 CSV 文件，支持全部数据或筛选结果。
+                      将当前工作区的数据按需导出为 CSV
+                      文件，支持全部数据或筛选结果。
                     </p>
                   </div>
                   <div className="shrink-0">
@@ -96,7 +101,9 @@ export function DataManagementPanel() {
               <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h3 className="text-lg font-semibold text-slate-800">导出可视化报告</h3>
+                    <h3 className="text-lg font-semibold text-slate-800">
+                      导出可视化报告
+                    </h3>
                     <p className="mt-2 text-sm text-slate-600">
                       一键生成 PDF 报告，包含看板指标和核心图表，便于团队共享。
                     </p>
@@ -106,8 +113,6 @@ export function DataManagementPanel() {
               </div>
             </div>
           </TabsContent>
-
-
         </Tabs>
       </div>
     </div>

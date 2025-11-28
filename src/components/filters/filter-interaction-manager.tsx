@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useCallback } from 'react'
-import { useAppStore } from '@/store/use-app-store'
-import type { FilterState } from '@/types/insurance'
+import { useAppStore, type AppState } from '@/store/use-app-store'
+import type { FilterState, InsuranceRecord } from '@/types/insurance'
 import { logger } from '@/lib/logger'
 
 const log = logger.create('FilterInteractionManager')
@@ -15,9 +15,9 @@ const areArraysEqual = (a: ReadonlyArray<number>, b: ReadonlyArray<number>) =>
  * 负责处理筛选器之间的级联响应、状态保持和智能默认值
  */
 export function FilterInteractionManager() {
-  const filters = useAppStore(state => state.filters)
-  const updateFilters = useAppStore(state => state.updateFilters)
-  const rawData = useAppStore(state => state.rawData)
+  const filters = useAppStore((state: AppState) => state.filters)
+  const updateFilters = useAppStore((state: AppState) => state.updateFilters)
+  const rawData = useAppStore((state: AppState) => state.rawData)
 
   /**
    * 智能默认值设置
@@ -27,9 +27,9 @@ export function FilterInteractionManager() {
     if (!rawData || rawData.length === 0) return
 
     // 获取数据中的年份范围
-    const years = Array.from(
-      new Set(rawData.map(record => record.policy_start_year))
-    ).sort()
+    const years = (Array.from(
+      new Set(rawData.map((record: InsuranceRecord) => record.policy_start_year))
+    ) as number[]).sort()
     const currentYear = new Date().getFullYear()
 
     // 默认选择当前年份或最新年份
@@ -39,9 +39,9 @@ export function FilterInteractionManager() {
 
     // 获取该年份的周范围
     const weeksInYear = rawData
-      .filter(record => record.policy_start_year === defaultYear)
-      .map(record => record.week_number)
-    const maxWeek = weeksInYear.reduce((max, week) => Math.max(max, week), 0)
+      .filter((record: InsuranceRecord) => record.policy_start_year === defaultYear)
+      .map((record: InsuranceRecord) => record.week_number)
+    const maxWeek = weeksInYear.reduce((max: number, week: number) => Math.max(max, week), 0)
 
     const defaultSingleWeek = maxWeek > 0 ? maxWeek : null
     const defaultTrendWeeks =
@@ -99,7 +99,7 @@ export function FilterInteractionManager() {
         const currentWeeks = filters.weeks
         if (currentWeeks.length > 0) {
           nextSingleWeek = currentWeeks.reduce(
-            (max, week) => Math.max(max, week),
+            (max: number, week: number) => Math.max(max, week),
             0
           )
         } else if (filters.trendModeWeeks.length > 0) {
@@ -107,15 +107,15 @@ export function FilterInteractionManager() {
             filters.trendModeWeeks[filters.trendModeWeeks.length - 1]
         } else {
           const relevantWeeks = rawData
-            .filter(record =>
+            .filter((record: InsuranceRecord) =>
               filters.years.length > 0
                 ? filters.years.includes(record.policy_start_year)
                 : true
             )
-            .map(record => record.week_number)
+            .map((record: InsuranceRecord) => record.week_number)
           if (relevantWeeks.length > 0) {
             nextSingleWeek = relevantWeeks.reduce(
-              (max, week) => Math.max(max, week),
+              (max: number, week: number) => Math.max(max, week),
               0
             )
           }
@@ -140,7 +140,7 @@ export function FilterInteractionManager() {
       }
     } else if (filters.viewMode === 'trend') {
       const relevantWeeksSet = new Set<number>()
-      rawData.forEach(record => {
+      rawData.forEach((record: InsuranceRecord) => {
         if (
           filters.years.length === 0 ||
           filters.years.includes(record.policy_start_year)
@@ -148,15 +148,15 @@ export function FilterInteractionManager() {
           relevantWeeksSet.add(record.week_number)
         }
       })
-      const sortedWeeks = Array.from(relevantWeeksSet).sort((a, b) => a - b)
+      const sortedWeeks = Array.from(relevantWeeksSet).sort((a: number, b: number) => a - b)
 
       if (sortedWeeks.length === 0) {
         return
       }
 
       let nextTrendWeeks = filters.trendModeWeeks
-        .filter(week => sortedWeeks.includes(week))
-        .sort((a, b) => a - b)
+        .filter((week: number) => sortedWeeks.includes(week))
+        .sort((a: number, b: number) => a - b)
 
       if (nextTrendWeeks.length === 0) {
         nextTrendWeeks = [...sortedWeeks]
@@ -195,13 +195,13 @@ export function FilterInteractionManager() {
 
     // 获取选中年份的所有有效周
     const availableWeeks = new Set<number>()
-    rawData.forEach(record => {
+    rawData.forEach((record: InsuranceRecord) => {
       if (filters.years.includes(record.policy_start_year)) {
         availableWeeks.add(record.week_number)
       }
     })
 
-    const validWeeks = Array.from(availableWeeks).sort((a, b) => a - b)
+    const validWeeks = Array.from(availableWeeks).sort((a: number, b: number) => a - b)
     const latestWeek =
       validWeeks.length > 0 ? validWeeks[validWeeks.length - 1] : null
 
@@ -211,7 +211,7 @@ export function FilterInteractionManager() {
         ? filters.singleModeWeek
         : latestWeek
 
-    let nextTrendWeeks = filters.trendModeWeeks.filter(week =>
+    let nextTrendWeeks = filters.trendModeWeeks.filter((week: number) =>
       validWeeks.includes(week)
     )
 
@@ -261,7 +261,10 @@ export function FilterInteractionManager() {
     // 这里可以添加用户提示逻辑
     // 例如：当切换到"周增量"模式时，提示用户需要选择多周数据
     if (filters.dataViewType === 'increment' && filters.weeks.length < 2) {
-      log.info('周增量分析建议', { message: '建议选择多个周期以获得更好的分析效果', weekCount: filters.weeks.length })
+      log.info('周增量分析建议', {
+        message: '建议选择多个周期以获得更好的分析效果',
+        weekCount: filters.weeks.length,
+      })
     }
   }, [filters.dataViewType, filters.weeks.length])
 
@@ -308,8 +311,8 @@ export function FilterInteractionManager() {
  * 将筛选器状态保存到localStorage，页面刷新后恢复
  */
 export function useFilterPersistence() {
-  const filters = useAppStore(state => state.filters)
-  const updateFilters = useAppStore(state => state.updateFilters)
+  const filters = useAppStore((state: AppState) => state.filters)
+  const updateFilters = useAppStore((state: AppState) => state.updateFilters)
 
   // 保存筛选器状态到localStorage
   useEffect(() => {

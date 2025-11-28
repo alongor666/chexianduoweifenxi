@@ -54,7 +54,6 @@ export type ProgressCallback = (progress: {
   errorCount?: number // 错误计数
 }) => void
 
-
 /**
  * 解析 CSV 文件 - 优化版
  * @param file CSV 文件对象
@@ -73,7 +72,10 @@ export async function parseCSVFile(
   const encodingLabel = encoding !== 'utf-8' ? `${encoding}→utf-8` : 'utf-8'
 
   if (encoding !== 'utf-8') {
-    log.info('已自动将文件编码转换为 UTF-8', { fileName: file.name, from: encoding })
+    log.info('已自动将文件编码转换为 UTF-8', {
+      fileName: file.name,
+      from: encoding,
+    })
   } else {
     log.info('使用 UTF-8 编码解析', { fileName: file.name })
   }

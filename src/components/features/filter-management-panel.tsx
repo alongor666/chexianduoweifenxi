@@ -50,7 +50,9 @@ export function FilterManagementPanel() {
         <div className="flex items-center gap-6 flex-wrap">
           {/* 数据视图类型 */}
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-slate-600 whitespace-nowrap">数据类型:</span>
+            <span className="text-sm font-medium text-slate-600 whitespace-nowrap">
+              数据类型:
+            </span>
             <DataViewSelector />
           </div>
 
@@ -59,7 +61,9 @@ export function FilterManagementPanel() {
 
           {/* 周序号筛选 */}
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-slate-600 whitespace-nowrap">周序号:</span>
+            <span className="text-sm font-medium text-slate-600 whitespace-nowrap">
+              周序号:
+            </span>
             <CompactTimeFilter mode="flexible" />
           </div>
 
@@ -68,7 +72,9 @@ export function FilterManagementPanel() {
 
           {/* 机构筛选 */}
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-slate-600 whitespace-nowrap">机构:</span>
+            <span className="text-sm font-medium text-slate-600 whitespace-nowrap">
+              机构:
+            </span>
             <CompactOrganizationFilter />
           </div>
         </div>
@@ -76,7 +82,9 @@ export function FilterManagementPanel() {
 
       {/* 详细筛选面板 */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-        <h3 className="text-sm font-semibold text-slate-700 mb-4">业务维度筛选</h3>
+        <h3 className="text-sm font-semibold text-slate-700 mb-4">
+          业务维度筛选
+        </h3>
         <FilterPanel />
       </div>
     </div>

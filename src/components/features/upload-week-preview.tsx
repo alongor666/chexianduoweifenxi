@@ -41,11 +41,13 @@ const formatWeekList = (weeks: WeekInfo[]): string => {
     const weekNumbers = sorted.map(w => w.weekNumber)
     return `${years[0]}年第${weekNumbers.join(', ')}周`
   } else {
-    return years.map(year => {
-      const yearWeeks = sorted.filter(w => w.year === year)
-      const weekNumbers = yearWeeks.map(w => w.weekNumber)
-      return `${year}年第${weekNumbers.join(', ')}周`
-    }).join('; ')
+    return years
+      .map(year => {
+        const yearWeeks = sorted.filter(w => w.year === year)
+        const weekNumbers = yearWeeks.map(w => w.weekNumber)
+        return `${year}年第${weekNumbers.join(', ')}周`
+      })
+      .join('; ')
   }
 }
 
@@ -55,8 +57,14 @@ export function UploadWeekPreview({
   onCancel,
 }: UploadWeekPreviewProps) {
   // 计算总体统计
-  const totalNewWeeks = filesPreviews.reduce((sum, f) => sum + f.newWeeks.length, 0)
-  const totalConflictWeeks = filesPreviews.reduce((sum, f) => sum + f.conflictWeeks.length, 0)
+  const totalNewWeeks = filesPreviews.reduce(
+    (sum, f) => sum + f.newWeeks.length,
+    0
+  )
+  const totalConflictWeeks = filesPreviews.reduce(
+    (sum, f) => sum + f.conflictWeeks.length,
+    0
+  )
   const totalRecords = filesPreviews.reduce(
     (sum, f) => sum + f.detectedWeeks.reduce((s, w) => s + w.recordCount, 0),
     0
@@ -79,9 +87,12 @@ export function UploadWeekPreview({
               <Calendar className="w-6 h-6 text-blue-600" />
             </div>
             <div>
-              <h2 className="text-2xl font-semibold text-slate-800">导入预览</h2>
+              <h2 className="text-2xl font-semibold text-slate-800">
+                导入预览
+              </h2>
               <p className="text-sm text-slate-600 mt-1">
-                检测到 {filesPreviews.length} 个文件，共 {totalNewWeeks + totalConflictWeeks} 个周次
+                检测到 {filesPreviews.length} 个文件，共{' '}
+                {totalNewWeeks + totalConflictWeeks} 个周次
               </p>
             </div>
           </div>
@@ -99,12 +110,16 @@ export function UploadWeekPreview({
 
             <div className="bg-green-50 p-4 rounded-lg border border-green-200">
               <div className="text-sm text-green-700 mb-1">新导入周次</div>
-              <div className="text-2xl font-semibold text-green-600">{totalNewWeeks}</div>
+              <div className="text-2xl font-semibold text-green-600">
+                {totalNewWeeks}
+              </div>
             </div>
 
             <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
               <div className="text-sm text-yellow-700 mb-1">跳过周次</div>
-              <div className="text-2xl font-semibold text-yellow-600">{totalConflictWeeks}</div>
+              <div className="text-2xl font-semibold text-yellow-600">
+                {totalConflictWeeks}
+              </div>
             </div>
 
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
@@ -153,7 +168,11 @@ export function UploadWeekPreview({
                           {formatWeekList(preview.newWeeks)}
                         </div>
                         <div className="text-xs text-green-600 mt-1">
-                          约 {preview.newWeeks.reduce((sum, w) => sum + w.recordCount, 0).toLocaleString()} 条记录
+                          约{' '}
+                          {preview.newWeeks
+                            .reduce((sum, w) => sum + w.recordCount, 0)
+                            .toLocaleString()}{' '}
+                          条记录
                         </div>
                       </div>
                     </div>
@@ -185,9 +204,12 @@ export function UploadWeekPreview({
             <div className="flex items-start gap-3">
               <AlertTriangle className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
               <div className="flex-1">
-                <div className="text-sm font-medium text-yellow-900">检测到周次冲突</div>
+                <div className="text-sm font-medium text-yellow-900">
+                  检测到周次冲突
+                </div>
                 <div className="text-sm text-yellow-700 mt-1">
-                  {totalConflictWeeks} 个周次的数据已存在，这些周次将被自动跳过，只导入新周次的数据。
+                  {totalConflictWeeks}{' '}
+                  个周次的数据已存在，这些周次将被自动跳过，只导入新周次的数据。
                 </div>
               </div>
             </div>

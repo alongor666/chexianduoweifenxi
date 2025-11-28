@@ -6,7 +6,12 @@ import { Download, UploadCloud } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { useToast } from '@/hooks/use-toast'
 import { parseGoalCsvFile } from '@/utils/csvParser'
 import { useGoalStore, KNOWN_BUSINESS_TYPES } from '@/store/goalStore'
@@ -24,7 +29,9 @@ export function GoalImportExport() {
   const [ignoredUnknownCount, setIgnoredUnknownCount] = useState(0)
 
   const createTunedVersion = useGoalStore(state => state.createTunedVersion)
-  const exportCurrentVersionCsv = useGoalStore(state => state.exportCurrentVersionCsv)
+  const exportCurrentVersionCsv = useGoalStore(
+    state => state.exportCurrentVersionCsv
+  )
   const getCurrentVersion = useGoalStore(state => state.getCurrentVersion)
   const baseYear = useGoalStore(state => state.baseYear)
 
@@ -41,10 +48,13 @@ export function GoalImportExport() {
 
       const file = acceptedFiles[0]
       try {
-        const { rows, ignoredUnknownCount: ignored } = await parseGoalCsvFile(file, {
-          knownBusinessTypes: KNOWN_BUSINESS_TYPES,
-          unknownBusinessStrategy: 'block',
-        })
+        const { rows, ignoredUnknownCount: ignored } = await parseGoalCsvFile(
+          file,
+          {
+            knownBusinessTypes: KNOWN_BUSINESS_TYPES,
+            unknownBusinessStrategy: 'block',
+          }
+        )
 
         const { versionId } = createTunedVersion(rows || [])
         setIgnoredUnknownCount(ignored || 0)
@@ -76,13 +86,14 @@ export function GoalImportExport() {
     [createTunedVersion, toast]
   )
 
-  const { getRootProps, getInputProps, isDragActive, fileRejections } = useDropzone({
-    onDrop,
-    multiple: false,
-    accept: {
-      'text/csv': ['.csv'],
-    },
-  })
+  const { getRootProps, getInputProps, isDragActive, fileRejections } =
+    useDropzone({
+      onDrop,
+      multiple: false,
+      accept: {
+        'text/csv': ['.csv'],
+      },
+    })
 
   const rejectionAlert = useMemo(() => {
     if (fileRejections.length === 0) {
@@ -91,7 +102,9 @@ export function GoalImportExport() {
     return (
       <Alert variant="destructive" className="mt-3">
         <AlertTitle>文件格式错误</AlertTitle>
-        <AlertDescription>仅支持 CSV（逗号分隔值）文件，请重新选择</AlertDescription>
+        <AlertDescription>
+          仅支持 CSV（逗号分隔值）文件，请重新选择
+        </AlertDescription>
       </Alert>
     )
   }, [fileRejections])
@@ -142,8 +155,13 @@ export function GoalImportExport() {
             })}
           >
             <input {...getInputProps()} aria-label="上传 CSV 文件" />
-            <UploadCloud className="mb-3 h-8 w-8 text-primary" aria-hidden="true" />
-            <p className="text-sm font-medium">拖拽或点击上传 CSV（逗号分隔值）文件</p>
+            <UploadCloud
+              className="mb-3 h-8 w-8 text-primary"
+              aria-hidden="true"
+            />
+            <p className="text-sm font-medium">
+              拖拽或点击上传 CSV（逗号分隔值）文件
+            </p>
             <p className="mt-1 text-xs text-muted-foreground">
               模板列：业务类型、年度目标（万）。导入后仅更新微调目标版本。
             </p>
@@ -164,7 +182,12 @@ export function GoalImportExport() {
             <div className="text-xs text-muted-foreground">
               年度：{baseYear} ｜ 年初目标固定，不支持覆盖。
             </div>
-            <Button type="button" variant="outline" onClick={handleExport} className="gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleExport}
+              className="gap-2"
+            >
               <Download className="h-4 w-4" aria-hidden="true" />
               导出当前版本
             </Button>
@@ -180,9 +203,17 @@ export function GoalImportExport() {
           <div className="max-h-72 overflow-y-auto pr-1">
             <ul className="space-y-2 text-sm leading-relaxed">
               {issues.map((issue, index) => (
-                <li key={`${issue.type}-${issue.rowIndex ?? index}`} className="rounded-md bg-muted px-3 py-2">
-                  <span className="font-medium">{index + 1}.</span> {issue.message}
-                  {issue.rowIndex ? <span className="text-xs text-muted-foreground">（第 {issue.rowIndex} 行）</span> : null}
+                <li
+                  key={`${issue.type}-${issue.rowIndex ?? index}`}
+                  className="rounded-md bg-muted px-3 py-2"
+                >
+                  <span className="font-medium">{index + 1}.</span>{' '}
+                  {issue.message}
+                  {issue.rowIndex ? (
+                    <span className="text-xs text-muted-foreground">
+                      （第 {issue.rowIndex} 行）
+                    </span>
+                  ) : null}
                 </li>
               ))}
             </ul>

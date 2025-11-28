@@ -156,7 +156,7 @@ export function createXAxisConfig(
   return {
     ...XAXIS_PRESETS[preset],
     ...overrides,
-  }
+  } as Partial<XAXisComponentOption>
 }
 
 /**
@@ -172,5 +172,5 @@ export function createYAxisConfig(
   return {
     ...YAXIS_PRESETS[preset],
     ...overrides,
-  }
+  } as Partial<YAXisComponentOption>
 }

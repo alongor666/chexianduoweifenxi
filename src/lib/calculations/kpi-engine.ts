@@ -518,8 +518,10 @@ export class KPIEngine {
 
       // 【时间进度】使用增量数据
       premium_progress: incrementResult.premium_progress,
-      premium_time_progress_achievement_rate: incrementResult.premium_time_progress_achievement_rate,
-      policy_count_time_progress_achievement_rate: incrementResult.policy_count_time_progress_achievement_rate,
+      premium_time_progress_achievement_rate:
+        incrementResult.premium_time_progress_achievement_rate,
+      policy_count_time_progress_achievement_rate:
+        incrementResult.policy_count_time_progress_achievement_rate,
 
       // 【年度目标】
       annual_premium_target: incrementResult.annual_premium_target,

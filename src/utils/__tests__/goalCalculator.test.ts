@@ -21,8 +21,8 @@ describe('goalCalculator', () => {
 
   it('calculates metrics with over achievement', () => {
     const metrics = calculateGoalMetrics(sampleRow, 500)
-    expect(metrics.initialGap).toBe(-20)
-    expect(metrics.tunedGap).toBe(40)
+    expect(metrics.initialGap).toBe(-20) // 100 - 120 = -20 (超额完成)
+    expect(metrics.tunedGap).toBe(-40) // 80 - 120 = -40 (超额完成)
     expect(metrics.initialAchievementRate).toBeCloseTo(1.2)
     expect(metrics.tunedAchievementRate).toBeCloseTo(1.5)
   })

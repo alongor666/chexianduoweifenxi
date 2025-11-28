@@ -6,7 +6,7 @@
 'use client'
 
 import { useMemo } from 'react'
-import { useAppStore, useFilteredData } from '@/store/use-app-store'
+import { useAppStore, useFilteredData, type AppState } from '@/store/use-app-store'
 import type { InsuranceRecord } from '@/types/insurance'
 
 export interface StructurePoint {
@@ -67,8 +67,8 @@ function calculateIncrement<T extends string>(
  * 获取前一周的数据（应用相同的筛选条件，但周次为前一周）
  */
 function usePreviousWeekData(): InsuranceRecord[] {
-  const rawData = useAppStore(state => state.rawData)
-  const filters = useAppStore(state => state.filters)
+  const rawData = useAppStore((state: AppState) => state.rawData)
+  const filters = useAppStore((state: AppState) => state.filters)
 
   return useMemo(() => {
     const currentWeek =
@@ -155,7 +155,7 @@ function usePreviousWeekData(): InsuranceRecord[] {
 export function useOrganizationStructure(topN = 12): StructurePoint[] {
   const filtered = useFilteredData()
   const previousWeekData = usePreviousWeekData()
-  const filters = useAppStore(state => state.filters)
+  const filters = useAppStore((state: AppState) => state.filters)
   const dataViewType = filters.dataViewType
 
   return useMemo(() => {
@@ -192,7 +192,7 @@ export function useOrganizationStructure(topN = 12): StructurePoint[] {
 export function useProductStructure(topN = 12): StructurePoint[] {
   const filtered = useFilteredData()
   const previousWeekData = usePreviousWeekData()
-  const filters = useAppStore(state => state.filters)
+  const filters = useAppStore((state: AppState) => state.filters)
   const dataViewType = filters.dataViewType
 
   return useMemo(() => {
@@ -229,7 +229,7 @@ export function useProductStructure(topN = 12): StructurePoint[] {
 export function useCustomerDistribution(topN = 10): PiePoint[] {
   const filtered = useFilteredData()
   const previousWeekData = usePreviousWeekData()
-  const filters = useAppStore(state => state.filters)
+  const filters = useAppStore((state: AppState) => state.filters)
   const dataViewType = filters.dataViewType
 
   return useMemo(() => {
@@ -269,7 +269,7 @@ export function useCustomerDistribution(topN = 10): PiePoint[] {
 export function useChannelDistribution(topN = 10): PiePoint[] {
   const filtered = useFilteredData()
   const previousWeekData = usePreviousWeekData()
-  const filters = useAppStore(state => state.filters)
+  const filters = useAppStore((state: AppState) => state.filters)
   const dataViewType = filters.dataViewType
 
   return useMemo(() => {

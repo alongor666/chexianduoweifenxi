@@ -5,7 +5,7 @@
  */
 
 import { useMemo } from 'react'
-import { useAppStore, useFilteredData } from '@/store/use-app-store'
+import { useAppStore, useFilteredData, type AppState } from '@/store/use-app-store'
 import { kpiEngine } from '@/lib/calculations/kpi-engine'
 import type { KPIResult, InsuranceRecord, FilterState } from '@/types/insurance'
 import { normalizeChineseText } from '@/lib/utils'
@@ -18,22 +18,24 @@ import { DataService } from '@/services/DataService'
  */
 export function useKPI(): KPIResult | null {
   const filteredData = useFilteredData()
-  const rawData = useAppStore(state => state.rawData)
+  const rawData = useAppStore((state: AppState) => state.rawData)
   // 使用细粒度选择器避免对象引用问题
-  const businessTypes = useAppStore(state => state.filters.businessTypes)
-  const organizations = useAppStore(state => state.filters.organizations)
-  const customerCategories = useAppStore(state => state.filters.customerCategories)
-  const insuranceTypes = useAppStore(state => state.filters.insuranceTypes)
-  const years = useAppStore(state => state.filters.years)
-  const coverageTypes = useAppStore(state => state.filters.coverageTypes)
-  const vehicleGrades = useAppStore(state => state.filters.vehicleGrades)
-  const terminalSources = useAppStore(state => state.filters.terminalSources)
-  const isNewEnergy = useAppStore(state => state.filters.isNewEnergy)
-  const renewalStatuses = useAppStore(state => state.filters.renewalStatuses)
-  const viewMode = useAppStore(state => state.filters.viewMode)
-  const singleModeWeek = useAppStore(state => state.filters.singleModeWeek)
-  const dataViewType = useAppStore(state => state.filters.dataViewType)
-  const premiumTargets = useAppStore(state => state.premiumTargets)
+  const businessTypes = useAppStore((state: AppState) => state.filters.businessTypes)
+  const organizations = useAppStore((state: AppState) => state.filters.organizations)
+  const customerCategories = useAppStore(
+    (state: AppState) => state.filters.customerCategories
+  )
+  const insuranceTypes = useAppStore((state: AppState) => state.filters.insuranceTypes)
+  const years = useAppStore((state: AppState) => state.filters.years)
+  const coverageTypes = useAppStore((state: AppState) => state.filters.coverageTypes)
+  const vehicleGrades = useAppStore((state: AppState) => state.filters.vehicleGrades)
+  const terminalSources = useAppStore((state: AppState) => state.filters.terminalSources)
+  const isNewEnergy = useAppStore((state: AppState) => state.filters.isNewEnergy)
+  const renewalStatuses = useAppStore((state: AppState) => state.filters.renewalStatuses)
+  const viewMode = useAppStore((state: AppState) => state.filters.viewMode)
+  const singleModeWeek = useAppStore((state: AppState) => state.filters.singleModeWeek)
+  const dataViewType = useAppStore((state: AppState) => state.filters.dataViewType)
+  const premiumTargets = useAppStore((state: AppState) => state.premiumTargets)
 
   const currentTargetYuan = useMemo(() => {
     if (!premiumTargets) return null
@@ -42,7 +44,7 @@ export function useKPI(): KPIResult | null {
 
     // 1. 业务类型目标
     if (businessTypes.length > 0) {
-      const sum = businessTypes.reduce((acc, type) => {
+      const sum = businessTypes.reduce((acc: number, type: string) => {
         const normalized = normalizeChineseText(type)
         return (
           acc +
@@ -54,7 +56,7 @@ export function useKPI(): KPIResult | null {
 
     // 2. 三级机构目标
     if (organizations.length > 0) {
-      const sum = organizations.reduce((acc, org) => {
+      const sum = organizations.reduce((acc: number, org: string) => {
         const normalized = normalizeChineseText(org)
         return (
           acc +
@@ -68,7 +70,7 @@ export function useKPI(): KPIResult | null {
 
     // 3. 客户分类目标
     if (customerCategories.length > 0) {
-      const sum = customerCategories.reduce((acc, category) => {
+      const sum = customerCategories.reduce((acc: number, category: string) => {
         const normalized = normalizeChineseText(category)
         return (
           acc +
@@ -80,7 +82,7 @@ export function useKPI(): KPIResult | null {
 
     // 4. 保险类型目标
     if (insuranceTypes.length > 0) {
-      const sum = insuranceTypes.reduce((acc, type) => {
+      const sum = insuranceTypes.reduce((acc: number, type: string) => {
         const normalized = normalizeChineseText(type)
         return (
           acc +
@@ -92,7 +94,13 @@ export function useKPI(): KPIResult | null {
 
     // 5. 总体目标
     return premiumTargets.overall > 0 ? premiumTargets.overall : null
-  }, [businessTypes, organizations, customerCategories, insuranceTypes, premiumTargets])
+  }, [
+    businessTypes,
+    organizations,
+    customerCategories,
+    insuranceTypes,
+    premiumTargets,
+  ])
 
   const kpiResult = useMemo(() => {
     if (filteredData.length === 0) {
@@ -116,12 +124,9 @@ export function useKPI(): KPIResult | null {
     }
 
     // 获取当前选择的周次和年份
-    const currentWeek =
-      viewMode === 'single' ? singleModeWeek : null
+    const currentWeek = viewMode === 'single' ? singleModeWeek : null
     const currentYear =
-      years.length > 0
-        ? safeMax(years)
-        : new Date().getFullYear()
+      years.length > 0 ? safeMax(years) : new Date().getFullYear()
 
     // 当周值模式：直接计算
     if (dataViewType === 'current') {

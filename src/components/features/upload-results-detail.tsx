@@ -388,7 +388,9 @@ export function UploadResultsDetail({
             <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
               <Calendar className="w-5 h-5 text-blue-600" />
             </div>
-            <h4 className="text-lg font-semibold text-slate-800">周次导入统计</h4>
+            <h4 className="text-lg font-semibold text-slate-800">
+              周次导入统计
+            </h4>
           </div>
 
           {/* 周次统计卡片 */}
@@ -424,33 +426,39 @@ export function UploadResultsDetail({
           {/* 周次详细列表 */}
           {batchResult.weekAnalysis.weekResults.length > 0 && (
             <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4">
-              <h5 className="text-sm font-medium text-slate-700 mb-3">周次详情</h5>
+              <h5 className="text-sm font-medium text-slate-700 mb-3">
+                周次详情
+              </h5>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                {batchResult.weekAnalysis.weekResults.map((weekResult, index) => (
-                  <div
-                    key={index}
-                    className={cn(
-                      'px-3 py-2 rounded-md text-sm font-medium flex items-center justify-between',
-                      weekResult.status === 'success' &&
-                        'bg-green-100 text-green-700 border border-green-200',
-                      weekResult.status === 'skipped' &&
-                        'bg-yellow-100 text-yellow-700 border border-yellow-200',
-                      weekResult.status === 'failed' &&
-                        'bg-red-100 text-red-700 border border-red-200'
-                    )}
-                  >
-                    <span>
-                      {weekResult.year}年第{weekResult.weekNumber}周
-                    </span>
-                    {weekResult.status === 'success' && (
-                      <CheckCircle2 className="w-3 h-3" />
-                    )}
-                    {weekResult.status === 'skipped' && (
-                      <AlertTriangle className="w-3 h-3" />
-                    )}
-                    {weekResult.status === 'failed' && <XCircle className="w-3 h-3" />}
-                  </div>
-                ))}
+                {batchResult.weekAnalysis.weekResults.map(
+                  (weekResult, index) => (
+                    <div
+                      key={index}
+                      className={cn(
+                        'px-3 py-2 rounded-md text-sm font-medium flex items-center justify-between',
+                        weekResult.status === 'success' &&
+                          'bg-green-100 text-green-700 border border-green-200',
+                        weekResult.status === 'skipped' &&
+                          'bg-yellow-100 text-yellow-700 border border-yellow-200',
+                        weekResult.status === 'failed' &&
+                          'bg-red-100 text-red-700 border border-red-200'
+                      )}
+                    >
+                      <span>
+                        {weekResult.year}年第{weekResult.weekNumber}周
+                      </span>
+                      {weekResult.status === 'success' && (
+                        <CheckCircle2 className="w-3 h-3" />
+                      )}
+                      {weekResult.status === 'skipped' && (
+                        <AlertTriangle className="w-3 h-3" />
+                      )}
+                      {weekResult.status === 'failed' && (
+                        <XCircle className="w-3 h-3" />
+                      )}
+                    </div>
+                  )
+                )}
               </div>
 
               {/* 跳过原因说明 */}
@@ -683,41 +691,48 @@ export function UploadResultsDetail({
                       </div>
 
                       {/* 周次信息 */}
-                      {result.weekInfo && result.weekInfo.detectedWeeks.length > 0 && (
-                        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Calendar className="w-4 h-4 text-blue-600" />
-                            <h6 className="text-sm font-medium text-blue-900">
-                              周次信息
-                            </h6>
+                      {result.weekInfo &&
+                        result.weekInfo.detectedWeeks.length > 0 && (
+                          <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Calendar className="w-4 h-4 text-blue-600" />
+                              <h6 className="text-sm font-medium text-blue-900">
+                                周次信息
+                              </h6>
+                            </div>
+                            <div className="space-y-2 text-sm">
+                              {result.weekInfo.newWeeks.length > 0 && (
+                                <div className="flex items-center gap-2">
+                                  <CheckCircle2 className="w-3 h-3 text-green-600" />
+                                  <span className="text-green-700">
+                                    新导入 {result.weekInfo.newWeeks.length}{' '}
+                                    个周次：
+                                    {result.weekInfo.newWeeks
+                                      .map(
+                                        w => `${w.year}年第${w.weekNumber}周`
+                                      )
+                                      .join('、')}
+                                  </span>
+                                </div>
+                              )}
+                              {result.weekInfo.conflictWeeks.length > 0 && (
+                                <div className="flex items-center gap-2">
+                                  <AlertTriangle className="w-3 h-3 text-yellow-600" />
+                                  <span className="text-yellow-700">
+                                    跳过 {result.weekInfo.conflictWeeks.length}{' '}
+                                    个周次：
+                                    {result.weekInfo.conflictWeeks
+                                      .map(
+                                        w => `${w.year}年第${w.weekNumber}周`
+                                      )
+                                      .join('、')}
+                                    （已存在）
+                                  </span>
+                                </div>
+                              )}
+                            </div>
                           </div>
-                          <div className="space-y-2 text-sm">
-                            {result.weekInfo.newWeeks.length > 0 && (
-                              <div className="flex items-center gap-2">
-                                <CheckCircle2 className="w-3 h-3 text-green-600" />
-                                <span className="text-green-700">
-                                  新导入 {result.weekInfo.newWeeks.length} 个周次：
-                                  {result.weekInfo.newWeeks
-                                    .map(w => `${w.year}年第${w.weekNumber}周`)
-                                    .join('、')}
-                                </span>
-                              </div>
-                            )}
-                            {result.weekInfo.conflictWeeks.length > 0 && (
-                              <div className="flex items-center gap-2">
-                                <AlertTriangle className="w-3 h-3 text-yellow-600" />
-                                <span className="text-yellow-700">
-                                  跳过 {result.weekInfo.conflictWeeks.length} 个周次：
-                                  {result.weekInfo.conflictWeeks
-                                    .map(w => `${w.year}年第${w.weekNumber}周`)
-                                    .join('、')}
-                                  （已存在）
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )}
+                        )}
 
                       {result.result.errors &&
                         result.result.errors.length > 0 && (

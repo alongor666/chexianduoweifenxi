@@ -42,7 +42,10 @@ function validateHeader(fields: string[] | undefined): CsvIssue[] {
 /**
  * 解析 CSV（逗号分隔值）字符串
  */
-export function parseGoalCsv(content: string, options: GoalCsvParseOptions): GoalCsvParseResult {
+export function parseGoalCsv(
+  content: string,
+  options: GoalCsvParseOptions
+): GoalCsvParseResult {
   const parseResult = Papa.parse<Record<string, string>>(content, {
     header: true,
     skipEmptyLines: true,
@@ -115,7 +118,7 @@ export function parseGoalCsv(content: string, options: GoalCsvParseOptions): Goa
     }
 
     const { knownBusinessTypes, unknownBusinessStrategy = 'block' } = options
-    if (!knownBusinessTypes.includes(rawBizType)) {
+    if (knownBusinessTypes && !knownBusinessTypes.includes(rawBizType)) {
       if (unknownBusinessStrategy === 'ignore') {
         ignoredUnknownCount += 1
         return
@@ -140,6 +143,9 @@ export function parseGoalCsv(content: string, options: GoalCsvParseOptions): Goa
   }
 
   return {
+    success: true,
+    data: rows,
+    issues: [],
     rows,
     ignoredUnknownCount,
   }

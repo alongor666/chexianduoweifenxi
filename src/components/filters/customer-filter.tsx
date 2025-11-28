@@ -18,11 +18,9 @@ export function CustomerFilter() {
   const { rawData } = useInsuranceData()
 
   // 联动：根据其他筛选条件提取唯一的客户分类（仅显示CANONICAL集合中存在且数据中实际出现的值）
-  const recordsForCustomerCategory = DataService.filter(
-    rawData,
-    filters,
-    ['customerCategories']
-  )
+  const recordsForCustomerCategory = DataService.filter(rawData, filters, [
+    'customerCategories',
+  ])
   const presentCustomerCategories = new Set<string>(
     recordsForCustomerCategory
       .map(record => normalizeChineseText(record.customer_category_3))
@@ -35,11 +33,9 @@ export function CustomerFilter() {
     .map(cat => ({ label: cat, value: cat }))
 
   // 联动：根据其他筛选条件提取唯一的车险评级
-  const recordsForVehicleGrades = DataService.filter(
-    rawData,
-    filters,
-    ['vehicleGrades']
-  )
+  const recordsForVehicleGrades = DataService.filter(rawData, filters, [
+    'vehicleGrades',
+  ])
   const availableVehicleGrades = recordsForVehicleGrades
     .map(record => record.vehicle_insurance_grade)
     .filter(
@@ -56,11 +52,9 @@ export function CustomerFilter() {
     .map(grade => ({ label: grade, value: grade }))
 
   // 联动：根据其他筛选条件提取唯一的新续转状态
-  const recordsForRenewalStatuses = DataService.filter(
-    rawData,
-    filters,
-    ['renewalStatuses']
-  )
+  const recordsForRenewalStatuses = DataService.filter(rawData, filters, [
+    'renewalStatuses',
+  ])
   const availableRenewalStatuses = (() => {
     const present = new Set<string>(
       recordsForRenewalStatuses

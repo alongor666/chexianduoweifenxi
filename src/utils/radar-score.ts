@@ -406,10 +406,12 @@ export const RADAR_DIMENSIONS: RadarDimension[] = [
 /**
  * 批量转换 KPI 数据为雷达图评分
  */
-export function convertKPIToRadarScores(kpiData: any): Map<string, RadarScoreResult | null> {
+export function convertKPIToRadarScores(
+  kpiData: any
+): Map<string, RadarScoreResult | null> {
   const scores = new Map<string, RadarScoreResult | null>()
 
-  RADAR_DIMENSIONS.forEach((dim) => {
+  RADAR_DIMENSIONS.forEach(dim => {
     const rawValue = kpiData?.[dim.key]
     const scoreResult = dim.converter(rawValue)
     scores.set(dim.key, scoreResult)

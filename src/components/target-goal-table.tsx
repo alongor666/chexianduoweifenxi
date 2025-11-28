@@ -58,7 +58,9 @@ export function TargetGoalTable() {
     )
 
     const displayRows = currentVersion.rows.map(row => {
-      const initRow = initialVersion.rows.find(item => item.bizType === row.bizType)
+      const initRow = initialVersion.rows.find(
+        item => item.bizType === row.bizType
+      )
       const achieved = achievedMap[row.bizType] ?? 0
       const annualTargetInit = initRow?.annualTargetInit ?? row.annualTargetInit
       return buildGoalDisplayRow(
@@ -135,62 +137,87 @@ export function TargetGoalTable() {
     <TooltipProvider delayDuration={200}>
       <div className="mt-6 overflow-hidden rounded-lg border">
         <table className="min-w-full table-fixed">
-        <thead className="bg-muted/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
-          <tr>
-            {columns.map(column => {
-              if (column.key === 'shareOfTotal' && !showShareColumn) {
-                return null
-              }
-              const isActive = sortState.key === column.key
-              return (
-                <th
-                  key={column.key}
-                  className="cursor-pointer px-4 py-3"
-                  onClick={() => handleSort(column.key)}
-                  aria-sort={isActive ? (sortState.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
-                >
-                  <span className={cn('flex items-center gap-1 font-semibold', isActive && 'text-primary')}>
-                    {column.label}
-                    {isActive ? (sortState.direction === 'asc' ? '↑' : '↓') : null}
-                  </span>
-                </th>
-              )
-            })}
-          </tr>
-        </thead>
-        <tbody className="bg-background text-sm">
-          {sortedRows.map(row => (
-            <tr key={row.bizType} className="border-t">
-              <td className="px-4 py-3 font-medium">{row.bizType}</td>
-              <td className="px-4 py-3 text-right">{row.annualTargetInit.toLocaleString('zh-Hans-CN')}</td>
-              <td className="px-4 py-3 text-right">{row.annualTargetTuned.toLocaleString('zh-Hans-CN')}</td>
-              <td className="px-4 py-3 text-right">{(row.achieved || 0).toLocaleString('zh-Hans-CN')}</td>
-              <td className="px-4 py-3 text-right">{renderRateCell(row.initialAchievementRate)}</td>
-              <td className="px-4 py-3 text-right">{renderRateCell(row.tunedAchievementRate)}</td>
-              <td
-                className={cn(
-                  'px-4 py-3 text-right',
-                  isNegativeGap(row.initialGap) ? 'text-red-500' : undefined
-                )}
-              >
-                {formatGapValue(row.initialGap)}
-              </td>
-              <td
-                className={cn(
-                  'px-4 py-3 text-right',
-                  isNegativeGap(row.tunedGap) ? 'text-red-500' : undefined
-                )}
-              >
-                {formatGapValue(row.tunedGap)}
-              </td>
-              {showShareColumn ? (
-                <td className="px-4 py-3 text-right">
-                  {formatShareOfTotal(row.shareOfTotal)}
-                </td>
-              ) : null}
+          <thead className="bg-muted/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
+            <tr>
+              {columns.map(column => {
+                if (column.key === 'shareOfTotal' && !showShareColumn) {
+                  return null
+                }
+                const isActive = sortState.key === column.key
+                return (
+                  <th
+                    key={column.key}
+                    className="cursor-pointer px-4 py-3"
+                    onClick={() => handleSort(column.key)}
+                    aria-sort={
+                      isActive
+                        ? sortState.direction === 'asc'
+                          ? 'ascending'
+                          : 'descending'
+                        : 'none'
+                    }
+                  >
+                    <span
+                      className={cn(
+                        'flex items-center gap-1 font-semibold',
+                        isActive && 'text-primary'
+                      )}
+                    >
+                      {column.label}
+                      {isActive
+                        ? sortState.direction === 'asc'
+                          ? '↑'
+                          : '↓'
+                        : null}
+                    </span>
+                  </th>
+                )
+              })}
             </tr>
-          ))}
-        </tbody>
+          </thead>
+          <tbody className="bg-background text-sm">
+            {sortedRows.map(row => (
+              <tr key={row.bizType} className="border-t">
+                <td className="px-4 py-3 font-medium">{row.bizType}</td>
+                <td className="px-4 py-3 text-right">
+                  {row.annualTargetInit.toLocaleString('zh-Hans-CN')}
+                </td>
+                <td className="px-4 py-3 text-right">
+                  {row.annualTargetTuned.toLocaleString('zh-Hans-CN')}
+                </td>
+                <td className="px-4 py-3 text-right">
+                  {(row.achieved || 0).toLocaleString('zh-Hans-CN')}
+                </td>
+                <td className="px-4 py-3 text-right">
+                  {renderRateCell(row.initialAchievementRate)}
+                </td>
+                <td className="px-4 py-3 text-right">
+                  {renderRateCell(row.tunedAchievementRate)}
+                </td>
+                <td
+                  className={cn(
+                    'px-4 py-3 text-right',
+                    isNegativeGap(row.initialGap) ? 'text-red-500' : undefined
+                  )}
+                >
+                  {formatGapValue(row.initialGap)}
+                </td>
+                <td
+                  className={cn(
+                    'px-4 py-3 text-right',
+                    isNegativeGap(row.tunedGap) ? 'text-red-500' : undefined
+                  )}
+                >
+                  {formatGapValue(row.tunedGap)}
+                </td>
+                {showShareColumn ? (
+                  <td className="px-4 py-3 text-right">
+                    {formatShareOfTotal(row.shareOfTotal)}
+                  </td>
+                ) : null}
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
     </TooltipProvider>

@@ -16,7 +16,11 @@
 
 import type { InsuranceRecord, FilterState } from '@/types/insurance'
 import { normalizeChineseText } from '@/lib/utils'
-import { supabase, isSupabaseEnabled, getDataSource } from '@/lib/supabase/client'
+import {
+  supabase,
+  isSupabaseEnabled,
+  getDataSource,
+} from '@/lib/supabase/client'
 import { logger } from '@/lib/logger'
 
 const log = logger.create('DataService')
@@ -43,7 +47,9 @@ export class DataService {
         return []
       }
 
-      const { data, error } = await supabase.from('fact_insurance_cost').select('*')
+      const { data, error } = await supabase
+        .from('fact_insurance_cost')
+        .select('*')
 
       if (error) {
         log.error('数据库查询失败', error)
@@ -328,15 +334,12 @@ export class DataService {
       }
     }
 
-    const totalPremium = data.reduce(
-      (sum, r) => sum + r.signed_premium_yuan,
-      0
-    )
+    const totalPremium = data.reduce((sum, r) => sum + r.signed_premium_yuan, 0)
     const totalPolicyCount = data.reduce((sum, r) => sum + r.policy_count, 0)
 
-    const uniqueWeeks = Array.from(
-      new Set(data.map(r => r.week_number))
-    ).sort((a, b) => a - b)
+    const uniqueWeeks = Array.from(new Set(data.map(r => r.week_number))).sort(
+      (a, b) => a - b
+    )
 
     const uniqueOrganizations = Array.from(
       new Set(data.map(r => normalizeChineseText(r.third_level_organization)))
@@ -367,8 +370,12 @@ export class DataService {
     return data.map(record => ({
       ...record,
       customer_category_3: normalizeChineseText(record.customer_category_3),
-      business_type_category: normalizeChineseText(record.business_type_category),
-      third_level_organization: normalizeChineseText(record.third_level_organization),
+      business_type_category: normalizeChineseText(
+        record.business_type_category
+      ),
+      third_level_organization: normalizeChineseText(
+        record.third_level_organization
+      ),
       terminal_source: normalizeChineseText(record.terminal_source),
     }))
   }

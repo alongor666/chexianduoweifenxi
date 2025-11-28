@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { useAppStore } from '@/store/use-app-store'
+import { useAppStore, type AppState } from '@/store/use-app-store'
 import { useFilteredData } from '@/hooks/use-filtered-data'
 import { usePremiumDimensionAnalysis } from '@/hooks/use-premium-dimension-analysis'
 import { useLossDimensionAnalysis } from '@/hooks/use-loss-dimension-analysis'
@@ -66,7 +66,7 @@ function yuanToWan(value: number): number {
 
 export function PredictionManagerPanel() {
   const filteredData = useFilteredData()
-  const filters = useAppStore(state => state.filters)
+  const filters = useAppStore((state: AppState) => state.filters)
 
   const { items: premiumItems } = usePremiumDimensionAnalysis(
     'business_type_category',

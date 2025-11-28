@@ -261,7 +261,7 @@ export function compressLargeData<T>(data: T[], maxItems: number = 50000): T[] {
     ]
     log.warn('大数据集分层压缩', {
       original: data.length,
-      compressed: compressed.length
+      compressed: compressed.length,
     })
     return compressed
   }
@@ -276,7 +276,7 @@ export function compressLargeData<T>(data: T[], maxItems: number = 50000): T[] {
   log.warn('数据已压缩', {
     original: data.length,
     compressed: compressed.length,
-    samplingRate: step
+    samplingRate: step,
   })
   return compressed
 }

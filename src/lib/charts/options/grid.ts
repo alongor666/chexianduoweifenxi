@@ -46,7 +46,7 @@ export const GRID_PRESETS = {
 
   /** 双Y轴网格配置 */
   dualAxis: {
-    left: '5%',  // 左侧留空间给左Y轴
+    left: '5%', // 左侧留空间给左Y轴
     right: '8%', // 右侧留空间给右Y轴
     bottom: '15%',
     top: '15%',

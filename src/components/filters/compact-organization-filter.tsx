@@ -21,11 +21,9 @@ export function CompactOrganizationFilter() {
   const { rawData } = useInsuranceData()
 
   // 联动：根据其他筛选条件提取唯一的机构（规范化去重）
-  const recordsForOrganizations = DataService.filter(
-    rawData,
-    filters,
-    ['organizations']
-  )
+  const recordsForOrganizations = DataService.filter(rawData, filters, [
+    'organizations',
+  ])
   const availableOrganizations = Array.from(
     new Set(
       recordsForOrganizations.map(record =>
@@ -112,7 +110,8 @@ export function CompactOrganizationFilter() {
           'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1',
           'shadow-sm hover:shadow-md',
           isOpen && 'bg-slate-100 border-slate-400',
-          filters.organizations.length > 0 && 'border-blue-300 bg-blue-50 text-blue-700'
+          filters.organizations.length > 0 &&
+            'border-blue-300 bg-blue-50 text-blue-700'
         )}
       >
         <Building2 className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />

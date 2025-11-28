@@ -6,15 +6,24 @@
 'use client'
 
 import React, { useState, useCallback, useMemo } from 'react'
-import { Upload, FileText, X, RefreshCw, Database, Trash2, AlertTriangle } from 'lucide-react'
+import {
+  Upload,
+  FileText,
+  X,
+  RefreshCw,
+  Database,
+  Trash2,
+  AlertTriangle,
+} from 'lucide-react'
 import { useFileUpload } from '@/hooks/use-file-upload'
 import { Progress } from '@/components/ui/progress'
 import { useToast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
 import { safeMinMax } from '@/lib/utils/array-utils'
 import { UploadResultsDetail } from './upload-results-detail'
-import { useAppStore } from '@/store/use-app-store'
+import { useAppStore, type AppState } from '@/store/use-app-store'
 import { formatFileSize, formatTime } from '@/utils/formatters'
+import type { InsuranceRecord } from '@/types/insurance'
 
 export function FileUpload() {
   const [isDragging, setIsDragging] = useState(false)
@@ -36,21 +45,24 @@ export function FileUpload() {
   const { toast } = useToast()
 
   // 获取store中的数据和方法
-  const rawData = useAppStore(state => state.rawData)
-  const clearData = useAppStore(state => state.clearData)
-  const clearPersistentData = useAppStore(state => state.clearPersistentData)
-  const getStorageStats = useAppStore(state => state.getStorageStats)
-  
+  const rawData = useAppStore((state: AppState) => state.rawData)
+  const clearData = useAppStore((state: AppState) => state.clearData)
+  const clearPersistentData = useAppStore((state: AppState) => state.clearPersistentData)
+  const getStorageStats = useAppStore((state: AppState) => state.getStorageStats)
+
   // 获取已有数据统计
   const existingDataStats = useMemo(() => {
     if (rawData.length === 0) return null
 
-    const weeks = Array.from(new Set(rawData.map(r => r.week_number))).sort((a, b) => a - b)
-    const years = Array.from(new Set(rawData.map(r => r.policy_start_year))).sort((a, b) => a - b)
+    const weeks = (Array.from(new Set(rawData.map((r: InsuranceRecord) => r.week_number))) as number[]).sort(
+      (a, b) => a - b
+    )
+    const years = (Array.from(
+      new Set(rawData.map((r: InsuranceRecord) => r.policy_start_year))
+    ) as number[]).sort((a, b) => a - b)
 
-    const { min: minWeek, max: maxWeek } = weeks.length > 0
-      ? safeMinMax(weeks)
-      : { min: 0, max: 0 }
+    const { min: minWeek, max: maxWeek } =
+      weeks.length > 0 ? safeMinMax(weeks) : { min: 0, max: 0 }
 
     return {
       totalRecords: rawData.length,
@@ -226,15 +238,16 @@ export function FileUpload() {
       clearData()
       // 清除持久化存储的数据
       await clearPersistentData()
-      
+
       toast({
         title: '数据已清除',
         description: '所有数据和上传历史已成功清除',
       })
-      
+
       setShowClearConfirm(false)
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '清除数据失败'
+      const errorMessage =
+        error instanceof Error ? error.message : '清除数据失败'
       toast({
         title: '清除失败',
         description: errorMessage,
@@ -390,11 +403,15 @@ export function FileUpload() {
             <Database className="h-5 w-5 text-green-600" />
             <div className="flex-1">
               <p className="text-sm font-medium text-green-900">
-                已加载数据：{existingDataStats.totalRecords.toLocaleString()} 条记录
+                已加载数据：{existingDataStats.totalRecords.toLocaleString()}{' '}
+                条记录
               </p>
               <p className="text-xs text-green-700 mt-1">
-                {existingDataStats.years.join(', ')} 年 · {existingDataStats.weekRange} ·
-                <span className="font-semibold ml-1">可继续上传其他周的数据</span>
+                {existingDataStats.years.join(', ')} 年 ·{' '}
+                {existingDataStats.weekRange} ·
+                <span className="font-semibold ml-1">
+                  可继续上传其他周的数据
+                </span>
               </p>
             </div>
             <button
@@ -422,53 +439,53 @@ export function FileUpload() {
         onDrop={handleDrop}
       >
         <div className="flex flex-col items-center text-center">
-        <div className="mb-6">
-          <div
-            className={cn(
-              'rounded-full p-6 transition-all duration-300',
-              isDragging ? 'bg-blue-100 scale-110' : 'bg-slate-100'
-            )}
-          >
-            <Upload
+          <div className="mb-6">
+            <div
               className={cn(
-                'w-16 h-16',
-                isDragging ? 'text-blue-600' : 'text-slate-400'
+                'rounded-full p-6 transition-all duration-300',
+                isDragging ? 'bg-blue-100 scale-110' : 'bg-slate-100'
               )}
+            >
+              <Upload
+                className={cn(
+                  'w-16 h-16',
+                  isDragging ? 'text-blue-600' : 'text-slate-400'
+                )}
+              />
+            </div>
+          </div>
+
+          <h2 className="text-2xl font-semibold text-slate-800 mb-2">
+            {isDragging ? '松开以上传文件' : '上传 CSV 数据文件'}
+          </h2>
+
+          <p className="text-slate-600 mb-8 max-w-md">
+            拖拽文件到此处，或点击下方按钮选择文件
+            <br />
+            <span className="text-sm text-slate-500">
+              支持批量上传，文件名格式不再强制要求
+            </span>
+          </p>
+
+          <label className="cursor-pointer">
+            <input
+              type="file"
+              accept=".csv"
+              multiple
+              className="hidden"
+              onChange={handleFileSelect}
+              disabled={isUploading}
             />
-          </div>
-        </div>
+            <div className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-lg shadow-blue-500/30 flex items-center gap-2">
+              <FileText className="w-5 h-5" />
+              选择文件
+            </div>
+          </label>
 
-        <h2 className="text-2xl font-semibold text-slate-800 mb-2">
-          {isDragging ? '松开以上传文件' : '上传 CSV 数据文件'}
-        </h2>
-
-        <p className="text-slate-600 mb-8 max-w-md">
-          拖拽文件到此处，或点击下方按钮选择文件
-          <br />
-          <span className="text-sm text-slate-500">
-            支持批量上传，文件名格式不再强制要求
-          </span>
-        </p>
-
-        <label className="cursor-pointer">
-          <input
-            type="file"
-            accept=".csv"
-            multiple
-            className="hidden"
-            onChange={handleFileSelect}
-            disabled={isUploading}
-          />
-          <div className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-lg shadow-blue-500/30 flex items-center gap-2">
-            <FileText className="w-5 h-5" />
-            选择文件
-          </div>
-        </label>
-
-        <p className="text-xs text-slate-500 mt-6">
-          最大文件大小：200MB | 支持多文件上传 | 仅支持 CSV 格式 |
-          支持百万行数据导入
-        </p>
+          <p className="text-xs text-slate-500 mt-6">
+            最大文件大小：200MB | 支持多文件上传 | 仅支持 CSV 格式 |
+            支持百万行数据导入
+          </p>
         </div>
       </div>
 
@@ -478,7 +495,9 @@ export function FileUpload() {
           <div className="bg-white rounded-lg p-6 max-w-md mx-4 shadow-xl">
             <div className="flex items-center gap-3 mb-4">
               <AlertTriangle className="h-6 w-6 text-red-500" />
-              <h3 className="text-lg font-semibold text-slate-900">确认清除数据</h3>
+              <h3 className="text-lg font-semibold text-slate-900">
+                确认清除数据
+              </h3>
             </div>
             <p className="text-slate-600 mb-6">
               此操作将清除所有已上传的数据和历史记录，且无法恢复。确定要继续吗？

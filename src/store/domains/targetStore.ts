@@ -191,7 +191,7 @@ function normalizeVersionSnapshots(
         createdAt: version.createdAt || new Date().toISOString(),
         overall: normalizeTargetValue(version.overall),
         entries: normalizeTargetEntries(version.entries),
-        note: version.note,
+        ...(version.note !== undefined && { note: version.note }),
       }
     })
     .filter((snapshot): snapshot is TargetVersionSnapshot => snapshot !== null)
@@ -290,7 +290,9 @@ export const useTargetStore = create<TargetStore>()(
           TARGET_DIMENSIONS.forEach(dimensionKey => {
             const incomingDimension = targets.dimensions?.[dimensionKey]
             const fallbackEntries =
-              dimensionKey === 'businessType' ? targets.byBusinessType : undefined
+              dimensionKey === 'businessType'
+                ? targets.byBusinessType
+                : undefined
 
             const entries = normalizeTargetEntries(
               incomingDimension?.entries ?? fallbackEntries
@@ -396,7 +398,8 @@ export const useTargetStore = create<TargetStore>()(
         saveTargetVersion: (dimension, label, note) => {
           set(
             state => {
-              const currentDimension = state.premiumTargets.dimensions[dimension]
+              const currentDimension =
+                state.premiumTargets.dimensions[dimension]
               const newVersion: TargetVersionSnapshot = {
                 id: `ver-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
                 label,
@@ -597,12 +600,10 @@ export const useTargetStore = create<TargetStore>()(
           },
         },
         // 只持久化premiumTargets
-        partialize: state => ({ premiumTargets: state.premiumTargets }),
+        partialize: ((state: TargetStore) => ({ premiumTargets: state.premiumTargets })) as any,
         // 自定义合并逻辑，确保数据结构升级
         merge: (persistedState: any, currentState) => {
-          const upgraded = upgradePremiumTargets(
-            persistedState?.premiumTargets
-          )
+          const upgraded = upgradePremiumTargets(persistedState?.premiumTargets)
           return {
             ...currentState,
             premiumTargets: upgraded,

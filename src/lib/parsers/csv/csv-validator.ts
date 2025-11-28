@@ -124,7 +124,8 @@ export function validateCSVHeaders(
 
   // 检查额外字段
   const extraFields = presentFields.filter(
-    field => !REQUIRED_FIELDS.includes(field as typeof REQUIRED_FIELDS[number])
+    field =>
+      !REQUIRED_FIELDS.includes(field as (typeof REQUIRED_FIELDS)[number])
   )
 
   // 如果有缺失字段，验证失败

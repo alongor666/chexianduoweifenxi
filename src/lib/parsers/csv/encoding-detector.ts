@@ -101,7 +101,9 @@ export async function normalizeFileEncoding(file: File): Promise<{
     return { file, encoding: 'utf-8' }
   }
 
-  log.info('检测到可能的非 UTF-8 编码，开始转换', { encoding: bestCandidate.encoding })
+  log.info('检测到可能的非 UTF-8 编码，开始转换', {
+    encoding: bestCandidate.encoding,
+  })
 
   const fullBuffer = await file.arrayBuffer()
   const decodedText =
