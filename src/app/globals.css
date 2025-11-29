@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 引入微交互动画样式 */
+@import '../styles/animations.css';
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

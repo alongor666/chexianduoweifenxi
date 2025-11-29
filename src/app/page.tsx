@@ -4,7 +4,7 @@
  */
 
 import { DataService } from "@/services/DataService";
-import { DashboardClient } from "@/components/dashboard-client";
+import { DashboardClientV2 } from "@/components/dashboard/dashboard-client-v2";
 import { getDataSource } from "@/lib/supabase/client";
 import type { InsuranceRecord } from "@/types/insurance";
 import { loadAllLocalData } from "@/lib/utils/local-data-loader";
@@ -36,5 +36,5 @@ export default async function HomePage() {
 
   // 渲染客户端组件，并将初始数据作为 prop 传递
   // 即使没有初始数据，也正常渲染页面，让用户可以上传 CSV 文件
-  return <DashboardClient initialData={initialData} />;
+  return <DashboardClientV2 initialData={initialData} />;
 }
