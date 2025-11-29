@@ -26,3 +26,30 @@ __pycache__/
 .next/
 out/
 dist/
+
+# MCP服务器和工具临时数据
+.serena/
+.spec-workflow/
+
+# 测试数据文件
+test-results/*.csv
+test-results/*.xlsx
+
+# 临时分析文件
+docs/ANALYSIS_*.txt
+docs/ANALYSIS_*.md
+docs/QUICK_REFERENCE.txt
+docs/README_INSURANCE_ANALYSIS.md
+docs/VALIDATION_REPORT.md
+docs/*_analysis*.py
+docs/*_validation*.py
+docs/*_visualization*.py
+docs/package.json
+docs/package-lock.json
+
+# 临时配置文件
+业务员机构团队归属.json
+字段映射表.json
+
+# macOS
+.DS_Store
