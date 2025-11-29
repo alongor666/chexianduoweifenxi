@@ -5,13 +5,13 @@
  * @example 对比旧架构和新架构的代码差异
  */
 
-'use client'
+"use client";
 
-import { useInsuranceData } from '@/hooks/domains/useInsuranceData'
-import { useKPICalculation } from '@/hooks/domains/useKPICalculation'
-import { useFiltering } from '@/hooks/domains/useFiltering'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { useInsuranceData } from "@/hooks/domains/useInsuranceData";
+import { useKPICalculation } from "@/hooks/domains/useKPICalculation";
+import { useFiltering } from "@/hooks/domains/useFiltering";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 /**
  * 【新架构示例】简洁的KPI仪表盘
@@ -25,9 +25,9 @@ import { Button } from '@/components/ui/button'
 export function NewArchitectureExample() {
   // 1. 使用聚合Hooks获取数据和状态
   const { filteredData, stats, hasData, filterPercentage, isLoading } =
-    useInsuranceData()
+    useInsuranceData();
 
-  const { currentKpi } = useKPICalculation()
+  const { currentKpi } = useKPICalculation();
 
   const {
     filters,
@@ -36,7 +36,7 @@ export function NewArchitectureExample() {
     setSingleModeWeek,
     switchViewMode,
     viewMode,
-  } = useFiltering()
+  } = useFiltering();
 
   // 2. 渲染（纯展示逻辑）
   if (isLoading) {
@@ -46,7 +46,7 @@ export function NewArchitectureExample() {
           <p className="text-center text-slate-600">加载中...</p>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   if (!hasData) {
@@ -58,7 +58,7 @@ export function NewArchitectureExample() {
           </p>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -82,7 +82,7 @@ export function NewArchitectureExample() {
               <div className="text-2xl font-bold text-green-900">
                 {(stats.totalPremium / 10000).toLocaleString(undefined, {
                   maximumFractionDigits: 0,
-                })}{' '}
+                })}{" "}
                 万元
               </div>
             </div>
@@ -97,7 +97,7 @@ export function NewArchitectureExample() {
 
           <div className="mt-4 text-sm text-slate-600">
             <p>
-              可用周次：{stats.uniqueWeeks.join(', ')} （共{' '}
+              可用周次：{stats.uniqueWeeks.join(", ")} （共{" "}
               {stats.uniqueWeeks.length} 周）
             </p>
             <p>
@@ -121,8 +121,8 @@ export function NewArchitectureExample() {
                 <div className="text-xl font-bold">
                   {(currentKpi.signed_premium / 10000).toLocaleString(
                     undefined,
-                    { maximumFractionDigits: 0 }
-                  )}{' '}
+                    { maximumFractionDigits: 0 },
+                  )}{" "}
                   万元
                 </div>
               </div>
@@ -139,7 +139,7 @@ export function NewArchitectureExample() {
                 <div className="text-xl font-bold">
                   {(currentKpi.average_premium ?? 0).toLocaleString(undefined, {
                     maximumFractionDigits: 0,
-                  })}{' '}
+                  })}{" "}
                   元
                 </div>
               </div>
@@ -176,29 +176,29 @@ export function NewArchitectureExample() {
             <div className="flex items-center gap-4">
               <span className="text-sm text-slate-600">视图模式：</span>
               <Button
-                variant={viewMode === 'single' ? 'default' : 'outline'}
+                variant={viewMode === "single" ? "default" : "outline"}
                 size="sm"
-                onClick={() => switchViewMode('single')}
+                onClick={() => switchViewMode("single")}
               >
                 单周视图
               </Button>
               <Button
-                variant={viewMode === 'trend' ? 'default' : 'outline'}
+                variant={viewMode === "trend" ? "default" : "outline"}
                 size="sm"
-                onClick={() => switchViewMode('trend')}
+                onClick={() => switchViewMode("trend")}
               >
                 趋势视图
               </Button>
             </div>
 
-            {viewMode === 'single' && (
+            {viewMode === "single" && (
               <div className="flex items-center gap-2">
                 <span className="text-sm text-slate-600">选择周次：</span>
-                {stats.uniqueWeeks.slice(-5).map(week => (
+                {stats.uniqueWeeks.slice(-5).map((week) => (
                   <Button
                     key={week}
                     variant={
-                      filters.singleModeWeek === week ? 'default' : 'outline'
+                      filters.singleModeWeek === week ? "default" : "outline"
                     }
                     size="sm"
                     onClick={() => setSingleModeWeek(week)}
@@ -218,9 +218,13 @@ export function NewArchitectureExample() {
           <CardTitle className="text-blue-900">🎯 新架构优势</CardTitle>
         </CardHeader>
         <CardContent className="text-sm text-blue-800 space-y-2">
-          <p>✅ <strong>组件简洁</strong>：只有 {/* 计算组件行数 */}约100行，专注展示逻辑</p>
           <p>
-            ✅ <strong>逻辑复用</strong>：DataService、KPIService 可在任何地方调用
+            ✅ <strong>组件简洁</strong>：只有 {/* 计算组件行数 */}
+            约100行，专注展示逻辑
+          </p>
+          <p>
+            ✅ <strong>逻辑复用</strong>：DataService、KPIService
+            可在任何地方调用
           </p>
           <p>
             ✅ <strong>易于测试</strong>：Service层是纯函数，可独立测试
@@ -234,7 +238,7 @@ export function NewArchitectureExample() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 
 /**

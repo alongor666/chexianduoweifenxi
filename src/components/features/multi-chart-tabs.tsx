@@ -3,20 +3,20 @@
  * 将机构雷达图、保费分析图、赔付分析图、占比分析图整合到标签页中
  */
 
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { MultiDimensionRadar } from './multi-dimension-radar'
-import { PremiumAnalysisBarChart } from './structure-bar-chart'
-import { ClaimAnalysisBarChart } from './claim-analysis-bar-chart'
-import { DistributionPieChart } from './distribution-pie-chart'
+import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { MultiDimensionRadar } from "./multi-dimension-radar";
+import { PremiumAnalysisBarChart } from "./structure-bar-chart";
+import { ClaimAnalysisBarChart } from "./claim-analysis-bar-chart";
+import { DistributionPieChart } from "./distribution-pie-chart";
 
-export type MultiChartTabValue = 'radar' | 'premium' | 'claim' | 'distribution'
+export type MultiChartTabValue = "radar" | "premium" | "claim" | "distribution";
 
 interface MultiChartTabsProps {
   /** 自定义类名 */
-  className?: string
+  className?: string;
 }
 
 /**
@@ -24,30 +24,30 @@ interface MultiChartTabsProps {
  * 整合4个核心分析图表到标签页界面
  */
 export function MultiChartTabs({ className }: MultiChartTabsProps) {
-  const [activeTab, setActiveTab] = useState<MultiChartTabValue>('radar')
+  const [activeTab, setActiveTab] = useState<MultiChartTabValue>("radar");
 
   const tabItems = [
     {
-      value: 'radar' as const,
-      label: '机构雷达图',
-      description: '多机构健康度对比分析'
+      value: "radar" as const,
+      label: "机构雷达图",
+      description: "多机构健康度对比分析",
     },
     {
-      value: 'premium' as const,
-      label: '保费分析',
-      description: '保费数据多维度分析'
+      value: "premium" as const,
+      label: "保费分析",
+      description: "保费数据多维度分析",
     },
     {
-      value: 'claim' as const,
-      label: '赔付分析',
-      description: '赔付数据多维度分析'
+      value: "claim" as const,
+      label: "赔付分析",
+      description: "赔付数据多维度分析",
     },
     {
-      value: 'distribution' as const,
-      label: '占比分析',
-      description: '客户与渠道占比分析'
-    }
-  ]
+      value: "distribution" as const,
+      label: "占比分析",
+      description: "客户与渠道占比分析",
+    },
+  ];
 
   return (
     <div className={className}>
@@ -64,11 +64,11 @@ export function MultiChartTabs({ className }: MultiChartTabsProps) {
                 多维图表分析
               </h3>
               <p className="text-sm text-slate-600 mt-1">
-                {tabItems.find(item => item.value === activeTab)?.description}
+                {tabItems.find((item) => item.value === activeTab)?.description}
               </p>
             </div>
           </div>
-          
+
           <TabsList className="grid grid-cols-4 gap-2 bg-slate-100/50 p-1 rounded-lg">
             {tabItems.map((item) => (
               <TabsTrigger
@@ -128,5 +128,5 @@ export function MultiChartTabs({ className }: MultiChartTabsProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

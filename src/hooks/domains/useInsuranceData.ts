@@ -16,38 +16,35 @@
  * ```
  */
 
-import { useMemo } from 'react'
-import { useDataStore } from '@/store/domains/dataStore'
-import { useFilterStore } from '@/store/domains/filterStore'
-import { DataService } from '@/services/DataService'
+import { useMemo } from "react";
+import { useDataStore } from "@/store/domains/dataStore";
+import { useFilterStore } from "@/store/domains/filterStore";
+import { DataService } from "@/services/DataService";
 
 /**
  * 保险数据Hook - 统一数据访问接口
  */
 export function useInsuranceData() {
   // 从领域Store获取状态
-  const rawData = useDataStore(state => state.rawData)
-  const isLoading = useDataStore(state => state.isLoading)
-  const error = useDataStore(state => state.error)
-  const filters = useFilterStore(state => state.filters)
+  const rawData = useDataStore((state) => state.rawData);
+  const isLoading = useDataStore((state) => state.isLoading);
+  const error = useDataStore((state) => state.error);
+  const filters = useFilterStore((state) => state.filters);
 
   // 使用Service处理数据（纯函数，可缓存）
   const filteredData = useMemo(
     () => DataService.filter(rawData, filters),
-    [rawData, filters]
-  )
+    [rawData, filters],
+  );
 
   // 计算统计信息
   const stats = useMemo(
     () => DataService.getStatistics(filteredData),
-    [filteredData]
-  )
+    [filteredData],
+  );
 
   // 原始数据统计
-  const rawStats = useMemo(
-    () => DataService.getStatistics(rawData),
-    [rawData]
-  )
+  const rawStats = useMemo(() => DataService.getStatistics(rawData), [rawData]);
 
   return {
     // 数据
@@ -67,26 +64,26 @@ export function useInsuranceData() {
     filterPercentage:
       rawData.length > 0
         ? ((filteredData.length / rawData.length) * 100).toFixed(1)
-        : '0',
-  }
+        : "0",
+  };
 }
 
 /**
  * 按周次获取数据
  */
 export function useInsuranceDataByWeek(weekNumber: number) {
-  const rawData = useDataStore(state => state.rawData)
-  const filters = useFilterStore(state => state.filters)
+  const rawData = useDataStore((state) => state.rawData);
+  const filters = useFilterStore((state) => state.filters);
 
   const weekData = useMemo(
     () => DataService.getByWeek(rawData, weekNumber, filters),
-    [rawData, weekNumber, filters]
-  )
+    [rawData, weekNumber, filters],
+  );
 
   return {
     data: weekData,
     stats: DataService.getStatistics(weekData),
-  }
+  };
 }
 
 /**
@@ -94,37 +91,37 @@ export function useInsuranceDataByWeek(weekNumber: number) {
  */
 export function useInsuranceDataByWeekRange(
   startWeek: number,
-  endWeek: number
+  endWeek: number,
 ) {
-  const rawData = useDataStore(state => state.rawData)
-  const filters = useFilterStore(state => state.filters)
+  const rawData = useDataStore((state) => state.rawData);
+  const filters = useFilterStore((state) => state.filters);
 
   const rangeData = useMemo(
     () => DataService.getByWeekRange(rawData, [startWeek, endWeek], filters),
-    [rawData, startWeek, endWeek, filters]
-  )
+    [rawData, startWeek, endWeek, filters],
+  );
 
   return {
     data: rangeData,
     stats: DataService.getStatistics(rangeData),
-  }
+  };
 }
 
 /**
  * 按维度分组的数据
  */
-export function useInsuranceDataByDimension<K extends keyof import('@/types/insurance').InsuranceRecord>(
-  dimension: K
-) {
-  const { filteredData } = useInsuranceData()
+export function useInsuranceDataByDimension<
+  K extends keyof import("@/types/insurance").InsuranceRecord,
+>(dimension: K) {
+  const { filteredData } = useInsuranceData();
 
   const groups = useMemo(
     () => DataService.groupBy(filteredData, dimension),
-    [filteredData, dimension]
-  )
+    [filteredData, dimension],
+  );
 
   return {
     groups,
     dimensionValues: Array.from(groups.keys()),
-  }
+  };
 }

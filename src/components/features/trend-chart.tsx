@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState } from "react";
 import {
   Area,
   Brush,
@@ -16,47 +16,47 @@ import {
   XAxis,
   YAxis,
   Line,
-} from 'recharts'
+} from "recharts";
 
-import { TrendingUp, AlertTriangle, Settings } from 'lucide-react'
+import { TrendingUp, AlertTriangle, Settings } from "lucide-react";
 
-import { useTrendData } from '@/hooks/use-trend'
-import { useAppStore } from '@/store/use-app-store'
+import { useTrendData } from "@/hooks/use-trend";
+import { useAppStore } from "@/store/use-app-store";
 import {
   detectAnomalies,
   type AnomalyDetectionOptions,
-} from '@/lib/analytics/anomaly-detection'
+} from "@/lib/analytics/anomaly-detection";
 import {
   describeTrend,
   fitTrend,
   type TrendFittingOptions,
-} from '@/lib/analytics/trend-fitting'
-import { formatNumber, formatPercent } from '@/utils/format'
+} from "@/lib/analytics/trend-fitting";
+import { formatNumber, formatPercent } from "@/utils/format";
 
-const LOSS_RISK_THRESHOLD = 70
-const LOSS_ROLLING_WINDOW = 4
+const LOSS_RISK_THRESHOLD = 70;
+const LOSS_ROLLING_WINDOW = 4;
 
-type SeriesKey = 'signed' | 'matured' | 'loss'
+type SeriesKey = "signed" | "matured" | "loss";
 
 interface BrushRange {
-  startIndex?: number
-  endIndex?: number
+  startIndex?: number;
+  endIndex?: number;
 }
 
 interface PointAnalytics {
-  wowSignedRate: number | null
-  yoySignedRate: number | null
-  wowMaturedRate: number | null
-  yoyMaturedRate: number | null
-  wowLossDelta: number | null
-  yoyLossDelta: number | null
-  rollingLossAvg: number | null
-  maturedShare: number | null
+  wowSignedRate: number | null;
+  yoySignedRate: number | null;
+  wowMaturedRate: number | null;
+  yoyMaturedRate: number | null;
+  wowLossDelta: number | null;
+  yoyLossDelta: number | null;
+  rollingLossAvg: number | null;
+  maturedShare: number | null;
 }
 
 function calcRelativeChange(
   current: number | null,
-  base: number | null
+  base: number | null,
 ): number | null {
   if (
     current === null ||
@@ -65,14 +65,14 @@ function calcRelativeChange(
     Number.isNaN(base) ||
     base === 0
   ) {
-    return null
+    return null;
   }
-  return (current - base) / base
+  return (current - base) / base;
 }
 
 function calcDifference(
   current: number | null,
-  base: number | null
+  base: number | null,
 ): number | null {
   if (
     current === null ||
@@ -80,47 +80,47 @@ function calcDifference(
     Number.isNaN(current) ||
     Number.isNaN(base)
   ) {
-    return null
+    return null;
   }
-  return current - base
+  return current - base;
 }
 
 function formatDelta(
   change: number | null,
-  mode: 'relative' | 'absolutePercent',
-  digits = 1
+  mode: "relative" | "absolutePercent",
+  digits = 1,
 ): string {
-  if (change === null || Number.isNaN(change)) return '—'
-  const sign = change > 0 ? '+' : change < 0 ? '-' : ''
+  if (change === null || Number.isNaN(change)) return "—";
+  const sign = change > 0 ? "+" : change < 0 ? "-" : "";
 
-  if (mode === 'relative') {
-    return `${sign}${Math.abs(change * 100).toFixed(digits)}%`
+  if (mode === "relative") {
+    return `${sign}${Math.abs(change * 100).toFixed(digits)}%`;
   }
 
-  return `${sign}${Math.abs(change).toFixed(digits)}pp`
+  return `${sign}${Math.abs(change).toFixed(digits)}pp`;
 }
 
 function getDeltaClass(change: number | null, inverse = false): string {
   if (change === null || Number.isNaN(change) || change === 0) {
-    return 'text-slate-500'
+    return "text-slate-500";
   }
-  const isPositive = change > 0
-  const isGood = inverse ? !isPositive : isPositive
-  return isGood ? 'text-emerald-600' : 'text-rose-500'
+  const isPositive = change > 0;
+  const isGood = inverse ? !isPositive : isPositive;
+  return isGood ? "text-emerald-600" : "text-rose-500";
 }
 
 interface CustomTooltipPayload {
-  key: string
-  signed_premium_10k: number
-  matured_premium_10k: number
-  loss_ratio: number | null
-  anomalyScore?: number
-  anomalyType?: string
+  key: string;
+  signed_premium_10k: number;
+  matured_premium_10k: number;
+  loss_ratio: number | null;
+  anomalyScore?: number;
+  anomalyType?: string;
 }
 
 interface Insight {
-  id: string
-  text: string
+  id: string;
+  text: string;
 }
 
 const TrendTooltip = React.memo(function TrendTooltip({
@@ -131,18 +131,18 @@ const TrendTooltip = React.memo(function TrendTooltip({
   trendMap,
   anomalyMap,
 }: any & {
-  analyticsMap: Map<string, PointAnalytics>
-  trendMap: Map<string, number>
-  anomalyMap: Map<string, { score: number; type: string }>
+  analyticsMap: Map<string, PointAnalytics>;
+  trendMap: Map<string, number>;
+  anomalyMap: Map<string, { score: number; type: string }>;
 }) {
-  if (!active || !payload || payload.length === 0) return null
+  if (!active || !payload || payload.length === 0) return null;
 
-  const base = payload[0]?.payload as CustomTooltipPayload | undefined
-  if (!base) return null
+  const base = payload[0]?.payload as CustomTooltipPayload | undefined;
+  if (!base) return null;
 
-  const analytics = analyticsMap.get(base.key)
-  const trend = base.key ? trendMap.get(base.key) : undefined
-  const anomaly = base.key ? anomalyMap.get(base.key) : undefined
+  const analytics = analyticsMap.get(base.key);
+  const trend = base.key ? trendMap.get(base.key) : undefined;
+  const anomaly = base.key ? anomalyMap.get(base.key) : undefined;
 
   return (
     <div className="w-64 rounded-xl border border-slate-200 bg-white/95 p-3 shadow-2xl backdrop-blur">
@@ -150,7 +150,7 @@ const TrendTooltip = React.memo(function TrendTooltip({
         <span className="text-sm font-semibold text-slate-700">{label}</span>
         {anomaly && (
           <span className="rounded-md bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-700">
-            异常 {anomaly.type === 'high' ? '高波动' : '低波动'}
+            异常 {anomaly.type === "high" ? "高波动" : "低波动"}
           </span>
         )}
       </div>
@@ -173,8 +173,8 @@ const TrendTooltip = React.memo(function TrendTooltip({
           <span
             className={`font-semibold ${
               base.loss_ratio !== null && base.loss_ratio >= LOSS_RISK_THRESHOLD
-                ? 'text-rose-500'
-                : 'text-slate-800'
+                ? "text-rose-500"
+                : "text-slate-800"
             }`}
           >
             {formatPercent(base.loss_ratio, 2)}
@@ -193,13 +193,13 @@ const TrendTooltip = React.memo(function TrendTooltip({
             <div className="flex items-center justify-between">
               <span>环比签单</span>
               <span className={getDeltaClass(analytics.wowSignedRate, false)}>
-                {formatDelta(analytics.wowSignedRate, 'relative', 1)}
+                {formatDelta(analytics.wowSignedRate, "relative", 1)}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span>环比赔付率</span>
               <span className={getDeltaClass(analytics.wowLossDelta, true)}>
-                {formatDelta(analytics.wowLossDelta, 'absolutePercent', 1)}
+                {formatDelta(analytics.wowLossDelta, "absolutePercent", 1)}
               </span>
             </div>
             <div className="flex items-center justify-between">
@@ -207,7 +207,7 @@ const TrendTooltip = React.memo(function TrendTooltip({
               <span className="text-slate-700">
                 {analytics.rollingLossAvg !== null
                   ? formatPercent(analytics.rollingLossAvg, 2)
-                  : '—'}
+                  : "—"}
               </span>
             </div>
           </>
@@ -221,94 +221,94 @@ const TrendTooltip = React.memo(function TrendTooltip({
         )}
       </div>
     </div>
-  )
-})
+  );
+});
 
-TrendTooltip.displayName = 'TrendTooltip'
+TrendTooltip.displayName = "TrendTooltip";
 
 export const TrendChart = React.memo(function TrendChart() {
-  const data = useTrendData()
-  const filters = useAppStore(state => state.filters)
-  const updateFilters = useAppStore(state => state.updateFilters)
+  const data = useTrendData();
+  const filters = useAppStore((state) => state.filters);
+  const updateFilters = useAppStore((state) => state.updateFilters);
 
   const [visible, setVisible] = useState<Record<SeriesKey, boolean>>({
     signed: true,
     matured: true,
     loss: true,
-  })
+  });
 
-  const [activeSeries, setActiveSeries] = useState<SeriesKey | null>(null)
-  const [showAnomalies, setShowAnomalies] = useState(true)
-  const [showTrend, setShowTrend] = useState(true)
-  const [showSettings, setShowSettings] = useState(false)
+  const [activeSeries, setActiveSeries] = useState<SeriesKey | null>(null);
+  const [showAnomalies, setShowAnomalies] = useState(true);
+  const [showTrend, setShowTrend] = useState(true);
+  const [showSettings, setShowSettings] = useState(false);
 
   const [anomalyOptions, setAnomalyOptions] = useState<AnomalyDetectionOptions>(
     {
-      method: 'zscore',
+      method: "zscore",
       threshold: 3,
-    }
-  )
+    },
+  );
 
   const [trendOptions, setTrendOptions] = useState<TrendFittingOptions>({
-    method: 'linear',
-  })
+    method: "linear",
+  });
 
   const chronological = useMemo(() => {
-    if (!data) return []
+    if (!data) return [];
     return [...data].sort((a, b) => {
-      if (a.year !== b.year) return a.year - b.year
-      return a.week - b.week
-    })
-  }, [data])
+      if (a.year !== b.year) return a.year - b.year;
+      return a.week - b.week;
+    });
+  }, [data]);
 
   const analyticsByKey = useMemo(() => {
-    const result = new Map<string, PointAnalytics>()
-    if (chronological.length === 0) return result
+    const result = new Map<string, PointAnalytics>();
+    if (chronological.length === 0) return result;
 
-    const weekBuckets = new Map<number, Map<number, number>>() // week -> (year -> index)
+    const weekBuckets = new Map<number, Map<number, number>>(); // week -> (year -> index)
 
     chronological.forEach((point, index) => {
-      const prev = index > 0 ? chronological[index - 1] : null
+      const prev = index > 0 ? chronological[index - 1] : null;
 
       if (!weekBuckets.has(point.week)) {
-        weekBuckets.set(point.week, new Map())
+        weekBuckets.set(point.week, new Map());
       }
-      const yearlyIndexMap = weekBuckets.get(point.week)!
-      yearlyIndexMap.set(point.year, index)
+      const yearlyIndexMap = weekBuckets.get(point.week)!;
+      yearlyIndexMap.set(point.year, index);
 
-      const yoyIndex = yearlyIndexMap.get(point.year - 1)
-      const yoyPoint = yoyIndex !== undefined ? chronological[yoyIndex] : null
+      const yoyIndex = yearlyIndexMap.get(point.year - 1);
+      const yoyPoint = yoyIndex !== undefined ? chronological[yoyIndex] : null;
 
-      const windowStart = Math.max(0, index - (LOSS_ROLLING_WINDOW - 1))
-      const rollingWindow = chronological.slice(windowStart, index + 1)
+      const windowStart = Math.max(0, index - (LOSS_ROLLING_WINDOW - 1));
+      const rollingWindow = chronological.slice(windowStart, index + 1);
       const rollingLossValues = rollingWindow
-        .map(item => item.loss_ratio)
-        .filter((value): value is number => value !== null)
+        .map((item) => item.loss_ratio)
+        .filter((value): value is number => value !== null);
 
       result.set(point.key, {
         wowSignedRate: calcRelativeChange(
           point.signed_premium_10k,
-          prev?.signed_premium_10k ?? null
+          prev?.signed_premium_10k ?? null,
         ),
         yoySignedRate: calcRelativeChange(
           point.signed_premium_10k,
-          yoyPoint?.signed_premium_10k ?? null
+          yoyPoint?.signed_premium_10k ?? null,
         ),
         wowMaturedRate: calcRelativeChange(
           point.matured_premium_10k,
-          prev?.matured_premium_10k ?? null
+          prev?.matured_premium_10k ?? null,
         ),
         yoyMaturedRate: calcRelativeChange(
           point.matured_premium_10k,
-          yoyPoint?.matured_premium_10k ?? null
+          yoyPoint?.matured_premium_10k ?? null,
         ),
         wowLossDelta: calcDifference(
           point.loss_ratio,
-          prev?.loss_ratio ?? null
+          prev?.loss_ratio ?? null,
         ),
         yoyLossDelta: calcDifference(
           point.loss_ratio,
-          yoyPoint?.loss_ratio ?? null
+          yoyPoint?.loss_ratio ?? null,
         ),
         rollingLossAvg:
           rollingLossValues.length > 0
@@ -319,216 +319,220 @@ export const TrendChart = React.memo(function TrendChart() {
           point.signed_premium_10k > 0
             ? point.matured_premium_10k / point.signed_premium_10k
             : null,
-      })
-    })
+      });
+    });
 
-    return result
-  }, [chronological])
+    return result;
+  }, [chronological]);
 
   const lossStats = useMemo(() => {
     if (chronological.length === 0) {
-      return { average: null as number | null, max: 0 }
+      return { average: null as number | null, max: 0 };
     }
 
-    let sum = 0
-    let count = 0
-    let max = 0
+    let sum = 0;
+    let count = 0;
+    let max = 0;
 
     for (const point of chronological) {
       if (point.loss_ratio !== null) {
-        sum += point.loss_ratio
-        count += 1
-        if (point.loss_ratio > max) max = point.loss_ratio
+        sum += point.loss_ratio;
+        count += 1;
+        if (point.loss_ratio > max) max = point.loss_ratio;
       }
     }
 
     return {
       average: count > 0 ? sum / count : null,
       max,
-    }
-  }, [chronological])
+    };
+  }, [chronological]);
 
   const latestPoint =
-    chronological.length > 0 ? chronological[chronological.length - 1] : null
+    chronological.length > 0 ? chronological[chronological.length - 1] : null;
   const latestAnalytics = latestPoint
     ? (analyticsByKey.get(latestPoint.key) ?? null)
-    : null
+    : null;
 
   const anomalyAnalysis = useMemo(() => {
-    if (!data || data.length === 0 || !showAnomalies) return null
+    if (!data || data.length === 0 || !showAnomalies) return null;
 
     const lossRatioData = data
-      .map(d => d.loss_ratio)
-      .filter((value): value is number => value !== null)
-    if (lossRatioData.length === 0) return null
+      .map((d) => d.loss_ratio)
+      .filter((value): value is number => value !== null);
+    if (lossRatioData.length === 0) return null;
 
-    const anomalies = detectAnomalies(lossRatioData, anomalyOptions)
-    const anomalyPoints = anomalies.map(anomaly => ({
+    const anomalies = detectAnomalies(lossRatioData, anomalyOptions);
+    const anomalyPoints = anomalies.map((anomaly) => ({
       ...data[anomaly.index],
       anomalyScore: anomaly.score,
       anomalyType: anomaly.type,
-    }))
+    }));
 
-    return { anomalies, anomalyPoints }
-  }, [data, showAnomalies, anomalyOptions])
+    return { anomalies, anomalyPoints };
+  }, [data, showAnomalies, anomalyOptions]);
 
   const anomalyMap = useMemo(() => {
-    const map = new Map<string, { score: number; type: string }>()
-    if (!anomalyAnalysis) return map
+    const map = new Map<string, { score: number; type: string }>();
+    if (!anomalyAnalysis) return map;
     for (const point of anomalyAnalysis.anomalyPoints) {
       map.set(point.key, {
         score: point.anomalyScore ?? 0,
-        type: point.anomalyType ?? 'unknown',
-      })
+        type: point.anomalyType ?? "unknown",
+      });
     }
-    return map
-  }, [anomalyAnalysis])
+    return map;
+  }, [anomalyAnalysis]);
 
   const trendAnalysis = useMemo(() => {
-    if (!data || data.length === 0 || !showTrend) return null
+    if (!data || data.length === 0 || !showTrend) return null;
 
     const lossRatioData = data
-      .map(d => d.loss_ratio)
-      .filter((value): value is number => value !== null)
-    if (lossRatioData.length === 0) return null
+      .map((d) => d.loss_ratio)
+      .filter((value): value is number => value !== null);
+    if (lossRatioData.length === 0) return null;
 
-    const trendResult = fitTrend(lossRatioData, trendOptions)
+    const trendResult = fitTrend(lossRatioData, trendOptions);
     const trendData = trendResult.trendPoints.map((point, index) => ({
       key: data[index]?.key,
       label: data[index]?.label,
       year: data[index]?.year,
       week: data[index]?.week,
       trend_loss_ratio: point.value,
-    }))
+    }));
 
-    const description = describeTrend(trendResult)
+    const description = describeTrend(trendResult);
 
-    return { trendResult, trendData, description }
-  }, [data, showTrend, trendOptions])
+    return { trendResult, trendData, description };
+  }, [data, showTrend, trendOptions]);
 
   const trendMap = useMemo(() => {
-    const map = new Map<string, number>()
-    if (!trendAnalysis) return map
+    const map = new Map<string, number>();
+    if (!trendAnalysis) return map;
     for (const item of trendAnalysis.trendData) {
-      if (item.key) map.set(item.key, item.trend_loss_ratio)
+      if (item.key) map.set(item.key, item.trend_loss_ratio);
     }
-    return map
-  }, [trendAnalysis])
+    return map;
+  }, [trendAnalysis]);
 
   const insights: Insight[] = useMemo(() => {
-    if (chronological.length === 0) return []
+    if (chronological.length === 0) return [];
 
-    const candidates: Insight[] = []
+    const candidates: Insight[] = [];
 
     const bestSigned = chronological.reduce((acc, curr) =>
-      curr.signed_premium_10k > acc.signed_premium_10k ? curr : acc
-    )
+      curr.signed_premium_10k > acc.signed_premium_10k ? curr : acc,
+    );
     candidates.push({
-      id: 'peak-signed',
+      id: "peak-signed",
       text: `签单峰值出现在 ${bestSigned.label}，达到 ${formatNumber(bestSigned.signed_premium_10k, 1)} 万`,
-    })
+    });
 
     const riskWeeks = chronological.filter(
-      point =>
-        point.loss_ratio !== null && point.loss_ratio >= LOSS_RISK_THRESHOLD
-    )
+      (point) =>
+        point.loss_ratio !== null && point.loss_ratio >= LOSS_RISK_THRESHOLD,
+    );
     if (riskWeeks.length > 0) {
       candidates.push({
-        id: 'risk-weeks',
+        id: "risk-weeks",
         text: `赔付率 ≥ ${formatPercent(LOSS_RISK_THRESHOLD, 0)} 的高风险周次累计 ${riskWeeks.length} 个`,
-      })
+      });
     }
 
     if (latestPoint && latestAnalytics) {
       candidates.push({
-        id: 'latest-loss',
-        text: `${latestPoint.label} 赔付率为 ${formatPercent(latestPoint.loss_ratio, 1)}，环比变化 ${formatDelta(latestAnalytics.wowLossDelta, 'absolutePercent', 1)}`,
-      })
+        id: "latest-loss",
+        text: `${latestPoint.label} 赔付率为 ${formatPercent(latestPoint.loss_ratio, 1)}，环比变化 ${formatDelta(latestAnalytics.wowLossDelta, "absolutePercent", 1)}`,
+      });
     }
 
     if (anomalyAnalysis && anomalyAnalysis.anomalies.length > 0) {
       candidates.push({
-        id: 'anomaly',
+        id: "anomaly",
         text: `智能检测识别到 ${anomalyAnalysis.anomalies.length} 个异常波动点，请关注原因`,
-      })
+      });
     }
 
-    if (latestPoint && latestAnalytics?.maturedShare !== null && latestAnalytics) {
+    if (
+      latestPoint &&
+      latestAnalytics?.maturedShare !== null &&
+      latestAnalytics
+    ) {
       candidates.push({
-        id: 'maturity-share',
+        id: "maturity-share",
         text: `${latestPoint.label} 满期占比 ${formatPercent(latestAnalytics.maturedShare * 100, 1)}，衡量业务兑现能力`,
-      })
+      });
     }
 
-    return candidates.slice(0, 3)
-  }, [chronological, latestPoint, latestAnalytics, anomalyAnalysis])
+    return candidates.slice(0, 3);
+  }, [chronological, latestPoint, latestAnalytics, anomalyAnalysis]);
 
   const legendHandlers = useMemo(
     () => ({
       onClick: (payload: any) => {
-        const name = payload?.value ?? ''
-        const key: SeriesKey = name.includes('签单')
-          ? 'signed'
-          : name.includes('满期')
-            ? 'matured'
-            : 'loss'
-        setVisible(v => ({ ...v, [key]: !v[key] }))
+        const name = payload?.value ?? "";
+        const key: SeriesKey = name.includes("签单")
+          ? "signed"
+          : name.includes("满期")
+            ? "matured"
+            : "loss";
+        setVisible((v) => ({ ...v, [key]: !v[key] }));
       },
       onMouseEnter: (payload: any) => {
-        const name = payload?.value ?? ''
-        const key: SeriesKey = name.includes('签单')
-          ? 'signed'
-          : name.includes('满期')
-            ? 'matured'
-            : 'loss'
-        setActiveSeries(key)
+        const name = payload?.value ?? "";
+        const key: SeriesKey = name.includes("签单")
+          ? "signed"
+          : name.includes("满期")
+            ? "matured"
+            : "loss";
+        setActiveSeries(key);
       },
       onMouseLeave: () => setActiveSeries(null),
     }),
-    []
-  )
+    [],
+  );
 
-  if (!data || data.length === 0) return null
+  if (!data || data.length === 0) return null;
 
   const headlineCards = [
     {
-      id: 'signed',
-      label: '签单保费',
+      id: "signed",
+      label: "签单保费",
       value:
         latestPoint !== null
           ? formatNumber(latestPoint.signed_premium_10k, 1)
-          : '—',
-      unit: '万',
+          : "—",
+      unit: "万",
       wow: latestAnalytics?.wowSignedRate ?? null,
       yoy: latestAnalytics?.yoySignedRate ?? null,
-      mode: 'relative' as const,
+      mode: "relative" as const,
       inverse: false,
     },
     {
-      id: 'matured',
-      label: '满期保费',
+      id: "matured",
+      label: "满期保费",
       value:
         latestPoint !== null
           ? formatNumber(latestPoint.matured_premium_10k, 1)
-          : '—',
-      unit: '万',
+          : "—",
+      unit: "万",
       wow: latestAnalytics?.wowMaturedRate ?? null,
       yoy: latestAnalytics?.yoyMaturedRate ?? null,
-      mode: 'relative' as const,
+      mode: "relative" as const,
       inverse: false,
     },
     {
-      id: 'loss',
-      label: '赔付率',
+      id: "loss",
+      label: "赔付率",
       value:
-        latestPoint !== null ? formatPercent(latestPoint.loss_ratio, 1) : '—',
-      unit: '',
+        latestPoint !== null ? formatPercent(latestPoint.loss_ratio, 1) : "—",
+      unit: "",
       wow: latestAnalytics?.wowLossDelta ?? null,
       yoy: latestAnalytics?.yoyLossDelta ?? null,
-      mode: 'absolutePercent' as const,
+      mode: "absolutePercent" as const,
       inverse: true,
     },
-  ]
+  ];
 
   return (
     <div
@@ -543,8 +547,8 @@ export const TrendChart = React.memo(function TrendChart() {
           </p>
           {latestPoint && (
             <p className="mt-1 text-xs text-slate-500">
-              最新数据：{latestPoint.label} · 签单{' '}
-              {formatNumber(latestPoint.signed_premium_10k, 1)} 万 · 赔付率{' '}
+              最新数据：{latestPoint.label} · 签单{" "}
+              {formatNumber(latestPoint.signed_premium_10k, 1)} 万 · 赔付率{" "}
               {formatPercent(latestPoint.loss_ratio, 1)}
             </p>
           )}
@@ -580,14 +584,14 @@ export const TrendChart = React.memo(function TrendChart() {
       </div>
 
       <div className="mb-4 grid gap-3 sm:grid-cols-3">
-        {headlineCards.map(card => (
+        {headlineCards.map((card) => (
           <div
             key={card.id}
             className="rounded-xl border border-slate-100 bg-gradient-to-br from-slate-50 to-white p-4"
           >
             <div className="flex items-center justify-between text-xs text-slate-500">
               <span>{card.label}</span>
-              {lossStats.average !== null && card.id === 'loss' && (
+              {lossStats.average !== null && card.id === "loss" && (
                 <span>均值 {formatPercent(lossStats.average, 1)}</span>
               )}
             </div>
@@ -619,7 +623,7 @@ export const TrendChart = React.memo(function TrendChart() {
 
       {insights.length > 0 && (
         <div className="mb-4 flex flex-wrap gap-2">
-          {insights.map(insight => (
+          {insights.map((insight) => (
             <span
               key={insight.id}
               className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 shadow-sm"
@@ -637,7 +641,7 @@ export const TrendChart = React.memo(function TrendChart() {
               <input
                 type="checkbox"
                 checked={showAnomalies}
-                onChange={e => setShowAnomalies(e.target.checked)}
+                onChange={(e) => setShowAnomalies(e.target.checked)}
                 className="rounded"
               />
               显示异常点
@@ -646,7 +650,7 @@ export const TrendChart = React.memo(function TrendChart() {
               <input
                 type="checkbox"
                 checked={showTrend}
-                onChange={e => setShowTrend(e.target.checked)}
+                onChange={(e) => setShowTrend(e.target.checked)}
                 className="rounded"
               />
               显示趋势线
@@ -660,10 +664,10 @@ export const TrendChart = React.memo(function TrendChart() {
               </label>
               <select
                 value={anomalyOptions.method}
-                onChange={e =>
+                onChange={(e) =>
                   setAnomalyOptions({
                     ...anomalyOptions,
-                    method: e.target.value as 'zscore' | 'iqr' | 'mad',
+                    method: e.target.value as "zscore" | "iqr" | "mad",
                   })
                 }
                 className="w-full rounded border border-slate-300 px-2 py-1 text-sm"
@@ -680,13 +684,13 @@ export const TrendChart = React.memo(function TrendChart() {
               </label>
               <select
                 value={trendOptions.method}
-                onChange={e =>
+                onChange={(e) =>
                   setTrendOptions({
                     ...trendOptions,
                     method: e.target.value as
-                      | 'linear'
-                      | 'movingAverage'
-                      | 'exponential',
+                      | "linear"
+                      | "movingAverage"
+                      | "exponential",
                   })
                 }
                 className="w-full rounded border border-slate-300 px-2 py-1 text-sm"
@@ -732,8 +736,8 @@ export const TrendChart = React.memo(function TrendChart() {
               yAxisId="left"
               width={70}
               tick={{ fontSize: 12 }}
-              tickFormatter={value => formatNumber(value, 0)}
-              domain={['auto', 'auto']}
+              tickFormatter={(value) => formatNumber(value, 0)}
+              domain={["auto", "auto"]}
               allowDataOverflow={false}
             />
             <YAxis
@@ -741,8 +745,8 @@ export const TrendChart = React.memo(function TrendChart() {
               orientation="right"
               width={70}
               tick={{ fontSize: 12 }}
-              tickFormatter={value => formatPercent(value, 0)}
-              domain={['auto', 'auto']}
+              tickFormatter={(value) => formatPercent(value, 0)}
+              domain={["auto", "auto"]}
               allowDataOverflow={false}
             />
 
@@ -764,9 +768,9 @@ export const TrendChart = React.memo(function TrendChart() {
                 stroke="#6366f1"
                 strokeDasharray="4 4"
                 label={{
-                  value: '平均赔付率',
-                  position: 'insideTopRight',
-                  fill: '#4f46e5',
+                  value: "平均赔付率",
+                  position: "insideTopRight",
+                  fill: "#4f46e5",
                   fontSize: 11,
                 }}
               />
@@ -794,10 +798,10 @@ export const TrendChart = React.memo(function TrendChart() {
               dataKey="signed_premium_10k"
               name="签单保费(万)"
               stroke="#1d4ed8"
-              strokeWidth={activeSeries === 'signed' ? 3 : 2}
+              strokeWidth={activeSeries === "signed" ? 3 : 2}
               fill="url(#signedGradient)"
               fillOpacity={
-                activeSeries && activeSeries !== 'signed' ? 0.15 : 0.35
+                activeSeries && activeSeries !== "signed" ? 0.15 : 0.35
               }
               isAnimationActive={false}
               hide={!visible.signed}
@@ -809,10 +813,10 @@ export const TrendChart = React.memo(function TrendChart() {
               dataKey="matured_premium_10k"
               name="满期保费(万)"
               stroke="#0ea5e9"
-              strokeWidth={activeSeries === 'matured' ? 3 : 2}
+              strokeWidth={activeSeries === "matured" ? 3 : 2}
               fill="url(#maturedGradient)"
               fillOpacity={
-                activeSeries && activeSeries !== 'matured' ? 0.15 : 0.35
+                activeSeries && activeSeries !== "matured" ? 0.15 : 0.35
               }
               isAnimationActive={false}
               hide={!visible.matured}
@@ -824,8 +828,8 @@ export const TrendChart = React.memo(function TrendChart() {
               dataKey="loss_ratio"
               name="赔付率(%)"
               stroke="#ef4444"
-              strokeWidth={activeSeries === 'loss' ? 3 : 2}
-              strokeOpacity={activeSeries && activeSeries !== 'loss' ? 0.35 : 1}
+              strokeWidth={activeSeries === "loss" ? 3 : 2}
+              strokeOpacity={activeSeries && activeSeries !== "loss" ? 0.35 : 1}
               dot={false}
               isAnimationActive={false}
               hide={!visible.loss}
@@ -859,7 +863,7 @@ export const TrendChart = React.memo(function TrendChart() {
                   <circle
                     key={`anomaly-${index}`}
                     r={6}
-                    fill={entry.anomalyType === 'high' ? '#ef4444' : '#f59e0b'}
+                    fill={entry.anomalyType === "high" ? "#ef4444" : "#f59e0b"}
                     stroke="#fff"
                     strokeWidth={2}
                   />
@@ -873,33 +877,33 @@ export const TrendChart = React.memo(function TrendChart() {
               stroke="#94a3b8"
               travellerWidth={8}
               onChange={(range?: BrushRange) => {
-                const start = Math.max(0, Number(range?.startIndex ?? 0))
+                const start = Math.max(0, Number(range?.startIndex ?? 0));
                 const end = Math.min(
                   data.length - 1,
-                  Number(range?.endIndex ?? data.length - 1)
-                )
-                if (end < start) return
+                  Number(range?.endIndex ?? data.length - 1),
+                );
+                if (end < start) return;
                 if (filters.years && filters.years.length === 1) {
-                  const weeks = data.slice(start, end + 1).map(d => d.week)
+                  const weeks = data.slice(start, end + 1).map((d) => d.week);
                   const minW = weeks.reduce(
                     (min, week) => Math.min(min, week),
-                    Infinity
-                  )
+                    Infinity,
+                  );
                   const maxW = weeks.reduce(
                     (max, week) => Math.max(max, week),
-                    -Infinity
-                  )
+                    -Infinity,
+                  );
                   if (start === 0 && end === data.length - 1) {
-                    updateFilters({ trendModeWeeks: [], weeks: [] })
+                    updateFilters({ trendModeWeeks: [], weeks: [] });
                   } else {
-                    const rangeWeeks: number[] = []
+                    const rangeWeeks: number[] = [];
                     for (let week = minW; week <= maxW; week++) {
-                      rangeWeeks.push(week)
+                      rangeWeeks.push(week);
                     }
                     updateFilters({
                       trendModeWeeks: rangeWeeks,
                       weeks: rangeWeeks,
-                    })
+                    });
                   }
                 }
               }}
@@ -908,5 +912,5 @@ export const TrendChart = React.memo(function TrendChart() {
         </ResponsiveContainer>
       </div>
     </div>
-  )
-})
+  );
+});

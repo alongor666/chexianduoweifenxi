@@ -2,26 +2,26 @@
  * 筛选器管理面板 - 优化后的筛选器布局,在一行展示
  */
 
-'use client'
+"use client";
 
-import { SlidersHorizontal, RotateCcw } from 'lucide-react'
-import { DataViewSelector } from '@/components/filters/data-view-selector'
-import { CompactTimeFilter } from '@/components/filters/compact-time-filter'
-import { CompactOrganizationFilter } from '@/components/filters/compact-organization-filter'
-import { FilterPanel } from '@/components/filters/filter-panel'
-import { useAppStore } from '@/store/use-app-store'
-import { useFilterStore } from '@/store/domains/filterStore'
-import { Button } from '@/components/ui/button'
+import { SlidersHorizontal, RotateCcw } from "lucide-react";
+import { DataViewSelector } from "@/components/filters/data-view-selector";
+import { CompactTimeFilter } from "@/components/filters/compact-time-filter";
+import { CompactOrganizationFilter } from "@/components/filters/compact-organization-filter";
+import { FilterPanel } from "@/components/filters/filter-panel";
+import { useAppStore } from "@/store/use-app-store";
+import { useFilterStore } from "@/store/domains/filterStore";
+import { Button } from "@/components/ui/button";
 
 export function FilterManagementPanel() {
-  const resetAppFilters = useAppStore(state => state.resetFilters)
-  const resetFilters = useFilterStore(state => state.resetFilters)
+  const resetAppFilters = useAppStore((state) => state.resetFilters);
+  const resetFilters = useFilterStore((state) => state.resetFilters);
 
   // 同步重置两个store的筛选器
   const handleResetFilters = () => {
-    resetFilters()
-    resetAppFilters()
-  }
+    resetFilters();
+    resetAppFilters();
+  };
 
   return (
     <div className="space-y-6">
@@ -53,7 +53,9 @@ export function FilterManagementPanel() {
         <div className="flex items-center gap-6 flex-wrap">
           {/* 数据视图类型 */}
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-slate-600 whitespace-nowrap">数据类型:</span>
+            <span className="text-sm font-medium text-slate-600 whitespace-nowrap">
+              数据类型:
+            </span>
             <DataViewSelector />
           </div>
 
@@ -62,7 +64,9 @@ export function FilterManagementPanel() {
 
           {/* 周序号筛选 */}
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-slate-600 whitespace-nowrap">周序号:</span>
+            <span className="text-sm font-medium text-slate-600 whitespace-nowrap">
+              周序号:
+            </span>
             <CompactTimeFilter mode="flexible" />
           </div>
 
@@ -71,7 +75,9 @@ export function FilterManagementPanel() {
 
           {/* 机构筛选 */}
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-slate-600 whitespace-nowrap">机构:</span>
+            <span className="text-sm font-medium text-slate-600 whitespace-nowrap">
+              机构:
+            </span>
             <CompactOrganizationFilter />
           </div>
         </div>
@@ -79,9 +85,11 @@ export function FilterManagementPanel() {
 
       {/* 详细筛选面板 */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-        <h3 className="text-sm font-semibold text-slate-700 mb-4">业务维度筛选</h3>
+        <h3 className="text-sm font-semibold text-slate-700 mb-4">
+          业务维度筛选
+        </h3>
         <FilterPanel />
       </div>
     </div>
-  )
+  );
 }

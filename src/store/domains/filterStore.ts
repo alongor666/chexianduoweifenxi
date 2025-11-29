@@ -6,59 +6,59 @@
  * @migration 从 use-app-store.ts 拆分出筛选管理部分
  */
 
-import { create } from 'zustand'
-import { devtools, persist } from 'zustand/middleware'
-import type { FilterState } from '@/types/insurance'
-import { normalizeChineseText } from '@/lib/utils'
+import { create } from "zustand";
+import { devtools, persist } from "zustand/middleware";
+import type { FilterState } from "@/types/insurance";
+import { normalizeChineseText } from "@/lib/utils";
 
 interface FilterStore {
   // ==================== 状态 ====================
   /**
    * 当前筛选条件
    */
-  filters: FilterState
+  filters: FilterState;
 
   // ==================== 操作方法 ====================
 
   /**
    * 更新筛选条件（部分更新）
    */
-  updateFilters: (filters: Partial<FilterState>) => void
+  updateFilters: (filters: Partial<FilterState>) => void;
 
   /**
    * 重置筛选条件
    */
-  resetFilters: () => void
+  resetFilters: () => void;
 
   /**
    * 设置视图模式
    */
-  setViewMode: (mode: 'single' | 'trend') => void
+  setViewMode: (mode: "single" | "trend") => void;
 
   /**
    * 设置数据视图类型
    */
-  setDataViewType: (type: 'current' | 'increment') => void
+  setDataViewType: (type: "current" | "increment") => void;
 
   // ==================== 计算属性 ====================
 
   /**
    * 获取激活的筛选器数量
    */
-  getActiveFilterCount: () => number
+  getActiveFilterCount: () => number;
 
   /**
    * 检查特定筛选器是否激活
    */
-  isFilterActive: (key: keyof FilterState) => boolean
+  isFilterActive: (key: keyof FilterState) => boolean;
 }
 
 /**
  * 默认筛选器状态
  */
 const defaultFilters: FilterState = {
-  viewMode: 'single',
-  dataViewType: 'current',
+  viewMode: "single",
+  dataViewType: "current",
   years: [],
   weeks: [],
   singleModeWeek: null,
@@ -75,7 +75,7 @@ const defaultFilters: FilterState = {
   terminalSources: [],
   isNewEnergy: null,
   renewalStatuses: [],
-}
+};
 
 /**
  * 创建筛选 Store
@@ -89,140 +89,166 @@ export const useFilterStore = create<FilterStore>()(
 
         // ==================== 操作方法 ====================
 
-        updateFilters: newFilters => {
+        updateFilters: (newFilters) => {
           set(
-            state => ({
+            (state) => ({
               filters: {
                 ...state.filters,
                 ...newFilters,
                 // 规范化中文文本
                 organizations: (
-                  newFilters.organizations ?? state.filters.organizations
+                  newFilters.organizations ??
+                  state.filters.organizations ??
+                  []
                 ).map(normalizeChineseText),
                 insuranceTypes: (
-                  newFilters.insuranceTypes ?? state.filters.insuranceTypes
+                  newFilters.insuranceTypes ??
+                  state.filters.insuranceTypes ??
+                  []
                 ).map(normalizeChineseText),
                 businessTypes: (
-                  newFilters.businessTypes ?? state.filters.businessTypes
+                  newFilters.businessTypes ??
+                  state.filters.businessTypes ??
+                  []
                 ).map(normalizeChineseText),
                 coverageTypes: (
-                  newFilters.coverageTypes ?? state.filters.coverageTypes
+                  newFilters.coverageTypes ??
+                  state.filters.coverageTypes ??
+                  []
                 ).map(normalizeChineseText),
                 customerCategories: (
                   newFilters.customerCategories ??
-                  state.filters.customerCategories
+                  state.filters.customerCategories ??
+                  []
                 ).map(normalizeChineseText),
                 vehicleGrades: (
-                  newFilters.vehicleGrades ?? state.filters.vehicleGrades
+                  newFilters.vehicleGrades ??
+                  state.filters.vehicleGrades ??
+                  []
                 ).map(normalizeChineseText),
                 highwayRiskGrades: (
-                  newFilters.highwayRiskGrades ?? state.filters.highwayRiskGrades
+                  newFilters.highwayRiskGrades ??
+                  state.filters.highwayRiskGrades ??
+                  []
                 ).map(normalizeChineseText),
                 smallTruckScores: (
-                  newFilters.smallTruckScores ?? state.filters.smallTruckScores
+                  newFilters.smallTruckScores ??
+                  state.filters.smallTruckScores ??
+                  []
                 ).map(normalizeChineseText),
                 largeTruckScores: (
-                  newFilters.largeTruckScores ?? state.filters.largeTruckScores
+                  newFilters.largeTruckScores ??
+                  state.filters.largeTruckScores ??
+                  []
                 ).map(normalizeChineseText),
                 renewalStatuses: (
-                  newFilters.renewalStatuses ?? state.filters.renewalStatuses
+                  newFilters.renewalStatuses ??
+                  state.filters.renewalStatuses ??
+                  []
                 ).map(normalizeChineseText),
                 terminalSources: (
-                  newFilters.terminalSources ?? state.filters.terminalSources
+                  newFilters.terminalSources ??
+                  state.filters.terminalSources ??
+                  []
                 ).map(normalizeChineseText),
               },
             }),
             false,
-            'updateFilters'
-          )
+            "updateFilters",
+          );
         },
 
         resetFilters: () => {
-          set({ filters: defaultFilters }, false, 'resetFilters')
+          set({ filters: defaultFilters }, false, "resetFilters");
         },
 
-        setViewMode: mode => {
+        setViewMode: (mode) => {
           set(
-            state => ({
+            (state) => ({
               filters: {
                 ...state.filters,
                 viewMode: mode,
               },
             }),
             false,
-            'setViewMode'
-          )
+            "setViewMode",
+          );
         },
 
-        setDataViewType: type => {
+        setDataViewType: (type) => {
           set(
-            state => ({
+            (state) => ({
               filters: {
                 ...state.filters,
                 dataViewType: type,
               },
             }),
             false,
-            'setDataViewType'
-          )
+            "setDataViewType",
+          );
         },
 
         // ==================== 计算属性 ====================
 
         getActiveFilterCount: () => {
-          const { filters } = get()
-          let count = 0
+          const { filters } = get();
+          let count = 0;
 
-          if (filters.years && filters.years.length > 0) count++
-          if (filters.weeks && filters.weeks.length > 0) count++
-          if (filters.organizations && filters.organizations.length > 0) count++
-          if (filters.insuranceTypes && filters.insuranceTypes.length > 0) count++
-          if (filters.businessTypes && filters.businessTypes.length > 0) count++
-          if (filters.coverageTypes && filters.coverageTypes.length > 0) count++
+          if (filters.years && filters.years.length > 0) count++;
+          if (filters.weeks && filters.weeks.length > 0) count++;
+          if (filters.organizations && filters.organizations.length > 0)
+            count++;
+          if (filters.insuranceTypes && filters.insuranceTypes.length > 0)
+            count++;
+          if (filters.businessTypes && filters.businessTypes.length > 0)
+            count++;
+          if (filters.coverageTypes && filters.coverageTypes.length > 0)
+            count++;
           if (
             filters.customerCategories &&
             filters.customerCategories.length > 0
           )
-            count++
-          if (filters.vehicleGrades && filters.vehicleGrades.length > 0) count++
+            count++;
+          if (filters.vehicleGrades && filters.vehicleGrades.length > 0)
+            count++;
           if (filters.highwayRiskGrades && filters.highwayRiskGrades.length > 0)
-            count++
+            count++;
           if (filters.smallTruckScores && filters.smallTruckScores.length > 0)
-            count++
+            count++;
           if (filters.largeTruckScores && filters.largeTruckScores.length > 0)
-            count++
+            count++;
           if (filters.terminalSources && filters.terminalSources.length > 0)
-            count++
-          if (filters.isNewEnergy !== null) count++
+            count++;
+          if (filters.isNewEnergy !== null) count++;
           if (filters.renewalStatuses && filters.renewalStatuses.length > 0)
-            count++
+            count++;
 
-          return count
+          return count;
         },
 
-        isFilterActive: key => {
-          const { filters } = get()
-          const value = filters[key]
+        isFilterActive: (key) => {
+          const { filters } = get();
+          const value = filters[key];
 
           if (Array.isArray(value)) {
-            return value.length > 0
+            return value.length > 0;
           }
 
-          if (key === 'isNewEnergy') {
-            return value !== null
+          if (key === "isNewEnergy") {
+            return value !== null;
           }
 
-          return false
+          return false;
         },
       }),
       {
-        name: 'filter-store',
+        name: "filter-store",
         // 只持久化筛选条件
-        partialize: state => ({ filters: state.filters }),
-      }
+        partialize: (state) => ({ filters: state.filters }),
+      },
     ),
     {
-      name: 'filter-store',
-    }
-  )
-)
+      name: "filter-store",
+    },
+  ),
+);

@@ -22,23 +22,23 @@ export function getWeekEndDate(year: number, weekNumber: number): Date {
 
   // 使用UTC避免时区问题
   // 1. 创建1月1日（UTC时间）
-  const jan1 = new Date(Date.UTC(year, 0, 1)) // 月份从0开始
+  const jan1 = new Date(Date.UTC(year, 0, 1)); // 月份从0开始
 
   // 2. 找到第1周的周六（结束日）
   // 计算1月1日是星期几：0=周日, 1=周一, ..., 6=周六
-  const jan1DayOfWeek = jan1.getUTCDay()
+  const jan1DayOfWeek = jan1.getUTCDay();
 
   // 从1月1日到本周周六还差几天
-  const daysToSaturday = jan1DayOfWeek === 6 ? 0 : (6 - jan1DayOfWeek + 7) % 7
+  const daysToSaturday = jan1DayOfWeek === 6 ? 0 : (6 - jan1DayOfWeek + 7) % 7;
 
   // 第1周结束日
-  const week1End = new Date(Date.UTC(year, 0, 1 + daysToSaturday))
+  const week1End = new Date(Date.UTC(year, 0, 1 + daysToSaturday));
 
   // 3. 第N周结束日 = 第1周结束日 + (N-1) × 7天
-  const weekEnd = new Date(week1End)
-  weekEnd.setUTCDate(week1End.getUTCDate() + (weekNumber - 1) * 7)
+  const weekEnd = new Date(week1End);
+  weekEnd.setUTCDate(week1End.getUTCDate() + (weekNumber - 1) * 7);
 
-  return weekEnd
+  return weekEnd;
 }
 
 /**
@@ -47,11 +47,11 @@ export function getWeekEndDate(year: number, weekNumber: number): Date {
  * @returns 已过天数
  */
 export function getDaysFromYearStart(date: Date): number {
-  const year = date.getUTCFullYear()
-  const yearStart = new Date(Date.UTC(year, 0, 1))
-  const diffTime = date.getTime() - yearStart.getTime()
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-  return diffDays
+  const year = date.getUTCFullYear();
+  const yearStart = new Date(Date.UTC(year, 0, 1));
+  const diffTime = date.getTime() - yearStart.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays;
 }
 
 /**
@@ -62,15 +62,15 @@ export function getDaysFromYearStart(date: Date): number {
  */
 export function getTimeProgressForWeek(
   year: number,
-  weekNumber: number
+  weekNumber: number,
 ): number {
-  const weekEndDate = getWeekEndDate(year, weekNumber)
-  const daysPassed = getDaysFromYearStart(weekEndDate)
-  return daysPassed / 365
+  const weekEndDate = getWeekEndDate(year, weekNumber);
+  const daysPassed = getDaysFromYearStart(weekEndDate);
+  return daysPassed / 365;
 }
 
 /**
  * 计算中国保险业的工作周数（扣除春节和国庆长假）
  * @returns 50周
  */
-export const WORKING_WEEKS_PER_YEAR = 50
+export const WORKING_WEEKS_PER_YEAR = 50;

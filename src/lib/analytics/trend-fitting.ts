@@ -11,12 +11,12 @@ export interface TrendPoint {
   /**
    * X轴索引
    */
-  index: number
+  index: number;
 
   /**
    * 拟合值
    */
-  value: number
+  value: number;
 }
 
 export interface TrendFittingOptions {
@@ -27,110 +27,110 @@ export interface TrendFittingOptions {
    * - movingAverage: 移动平均
    * - exponential: 指数移动平均
    */
-  method?: 'linear' | 'polynomial' | 'movingAverage' | 'exponential'
+  method?: "linear" | "polynomial" | "movingAverage" | "exponential";
 
   /**
    * 多项式阶数（仅polynomial方法使用）
    */
-  degree?: number
+  degree?: number;
 
   /**
    * 移动平均窗口大小（仅movingAverage方法使用）
    */
-  window?: number
+  window?: number;
 
   /**
    * 平滑因子（仅exponential方法使用，0-1之间）
    */
-  alpha?: number
+  alpha?: number;
 
   /**
    * 是否进行预测（向后延伸趋势线）
    */
-  predict?: boolean
+  predict?: boolean;
 
   /**
    * 预测步数
    */
-  predictSteps?: number
+  predictSteps?: number;
 }
 
 export interface TrendFittingResult {
   /**
    * 拟合的趋势点
    */
-  trendPoints: TrendPoint[]
+  trendPoints: TrendPoint[];
 
   /**
    * 预测的趋势点（如果启用预测）
    */
-  predictedPoints?: TrendPoint[]
+  predictedPoints?: TrendPoint[];
 
   /**
    * 拟合优度（R²）
    */
-  rSquared: number
+  rSquared: number;
 
   /**
    * 趋势方向
    */
-  direction: 'increasing' | 'decreasing' | 'stable'
+  direction: "increasing" | "decreasing" | "stable";
 
   /**
    * 回归系数（线性回归时）
    */
   coefficients?: {
-    slope: number
-    intercept: number
-  }
+    slope: number;
+    intercept: number;
+  };
 }
 
 /**
  * 线性回归
  */
 function linearRegression(data: number[]): {
-  slope: number
-  intercept: number
-  predict: (x: number) => number
+  slope: number;
+  intercept: number;
+  predict: (x: number) => number;
 } {
-  const n = data.length
-  let sumX = 0
-  let sumY = 0
-  let sumXY = 0
-  let sumX2 = 0
+  const n = data.length;
+  let sumX = 0;
+  let sumY = 0;
+  let sumXY = 0;
+  let sumX2 = 0;
 
   for (let i = 0; i < n; i++) {
-    sumX += i
-    sumY += data[i]
-    sumXY += i * data[i]
-    sumX2 += i * i
+    sumX += i;
+    sumY += data[i];
+    sumXY += i * data[i];
+    sumX2 += i * i;
   }
 
-  const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX)
-  const intercept = (sumY - slope * sumX) / n
+  const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+  const intercept = (sumY - slope * sumX) / n;
 
   return {
     slope,
     intercept,
     predict: (x: number) => slope * x + intercept,
-  }
+  };
 }
 
 /**
  * 计算R²（决定系数）
  */
 function calculateRSquared(actual: number[], predicted: number[]): number {
-  const mean = actual.reduce((sum, val) => sum + val, 0) / actual.length
+  const mean = actual.reduce((sum, val) => sum + val, 0) / actual.length;
 
-  let ssTot = 0 // 总平方和
-  let ssRes = 0 // 残差平方和
+  let ssTot = 0; // 总平方和
+  let ssRes = 0; // 残差平方和
 
   for (let i = 0; i < actual.length; i++) {
-    ssTot += Math.pow(actual[i] - mean, 2)
-    ssRes += Math.pow(actual[i] - predicted[i], 2)
+    ssTot += Math.pow(actual[i] - mean, 2);
+    ssRes += Math.pow(actual[i] - predicted[i], 2);
   }
 
-  return ssTot === 0 ? 1 : 1 - ssRes / ssTot
+  return ssTot === 0 ? 1 : 1 - ssRes / ssTot;
 }
 
 /**
@@ -138,41 +138,41 @@ function calculateRSquared(actual: number[], predicted: number[]): number {
  */
 function fitLinearTrend(
   data: number[],
-  options: TrendFittingOptions
+  options: TrendFittingOptions,
 ): TrendFittingResult {
-  const { predict = false, predictSteps = 0 } = options
-  const regression = linearRegression(data)
+  const { predict = false, predictSteps = 0 } = options;
+  const regression = linearRegression(data);
 
   // 生成拟合点
   const trendPoints: TrendPoint[] = data.map((_, index) => ({
     index,
     value: regression.predict(index),
-  }))
+  }));
 
   // 预测点
-  let predictedPoints: TrendPoint[] | undefined
+  let predictedPoints: TrendPoint[] | undefined;
   if (predict && predictSteps > 0) {
-    predictedPoints = []
+    predictedPoints = [];
     for (let i = 1; i <= predictSteps; i++) {
-      const index = data.length - 1 + i
+      const index = data.length - 1 + i;
       predictedPoints.push({
         index,
         value: regression.predict(index),
-      })
+      });
     }
   }
 
   // 计算R²
-  const fittedValues = trendPoints.map(p => p.value)
-  const rSquared = calculateRSquared(data, fittedValues)
+  const fittedValues = trendPoints.map((p) => p.value);
+  const rSquared = calculateRSquared(data, fittedValues);
 
   // 判断趋势方向
   const direction =
     Math.abs(regression.slope) < 0.01
-      ? 'stable'
+      ? "stable"
       : regression.slope > 0
-        ? 'increasing'
-        : 'decreasing'
+        ? "increasing"
+        : "decreasing";
 
   return {
     trendPoints,
@@ -183,7 +183,7 @@ function fitLinearTrend(
       slope: regression.slope,
       intercept: regression.intercept,
     },
-  }
+  };
 }
 
 /**
@@ -191,43 +191,43 @@ function fitLinearTrend(
  */
 function fitMovingAverage(
   data: number[],
-  options: TrendFittingOptions
+  options: TrendFittingOptions,
 ): TrendFittingResult {
-  const { window = 3 } = options
-  const trendPoints: TrendPoint[] = []
+  const { window = 3 } = options;
+  const trendPoints: TrendPoint[] = [];
 
   for (let i = 0; i < data.length; i++) {
-    const start = Math.max(0, i - Math.floor(window / 2))
-    const end = Math.min(data.length, start + window)
-    const windowData = data.slice(start, end)
+    const start = Math.max(0, i - Math.floor(window / 2));
+    const end = Math.min(data.length, start + window);
+    const windowData = data.slice(start, end);
     const avg =
-      windowData.reduce((sum, val) => sum + val, 0) / windowData.length
+      windowData.reduce((sum, val) => sum + val, 0) / windowData.length;
 
     trendPoints.push({
       index: i,
       value: avg,
-    })
+    });
   }
 
   // 计算R²
-  const fittedValues = trendPoints.map(p => p.value)
-  const rSquared = calculateRSquared(data, fittedValues)
+  const fittedValues = trendPoints.map((p) => p.value);
+  const rSquared = calculateRSquared(data, fittedValues);
 
   // 判断趋势（基于首尾值）
-  const firstValue = trendPoints[0].value
-  const lastValue = trendPoints[trendPoints.length - 1].value
+  const firstValue = trendPoints[0].value;
+  const lastValue = trendPoints[trendPoints.length - 1].value;
   const direction =
     Math.abs(lastValue - firstValue) / firstValue < 0.05
-      ? 'stable'
+      ? "stable"
       : lastValue > firstValue
-        ? 'increasing'
-        : 'decreasing'
+        ? "increasing"
+        : "decreasing";
 
   return {
     trendPoints,
     rSquared,
     direction,
-  }
+  };
 }
 
 /**
@@ -235,40 +235,40 @@ function fitMovingAverage(
  */
 function fitExponentialMovingAverage(
   data: number[],
-  options: TrendFittingOptions
+  options: TrendFittingOptions,
 ): TrendFittingResult {
-  const { alpha = 0.3 } = options
-  const trendPoints: TrendPoint[] = []
+  const { alpha = 0.3 } = options;
+  const trendPoints: TrendPoint[] = [];
 
-  let ema = data[0] // 初始值
+  let ema = data[0]; // 初始值
 
   for (let i = 0; i < data.length; i++) {
-    ema = alpha * data[i] + (1 - alpha) * ema
+    ema = alpha * data[i] + (1 - alpha) * ema;
     trendPoints.push({
       index: i,
       value: ema,
-    })
+    });
   }
 
   // 计算R²
-  const fittedValues = trendPoints.map(p => p.value)
-  const rSquared = calculateRSquared(data, fittedValues)
+  const fittedValues = trendPoints.map((p) => p.value);
+  const rSquared = calculateRSquared(data, fittedValues);
 
   // 判断趋势
-  const firstValue = trendPoints[0].value
-  const lastValue = trendPoints[trendPoints.length - 1].value
+  const firstValue = trendPoints[0].value;
+  const lastValue = trendPoints[trendPoints.length - 1].value;
   const direction =
     Math.abs(lastValue - firstValue) / firstValue < 0.05
-      ? 'stable'
+      ? "stable"
       : lastValue > firstValue
-        ? 'increasing'
-        : 'decreasing'
+        ? "increasing"
+        : "decreasing";
 
   return {
     trendPoints,
     rSquared,
     direction,
-  }
+  };
 }
 
 /**
@@ -287,33 +287,33 @@ function fitExponentialMovingAverage(
  */
 export function fitTrend(
   data: number[],
-  options: TrendFittingOptions = {}
+  options: TrendFittingOptions = {},
 ): TrendFittingResult {
-  const { method = 'linear' } = options
+  const { method = "linear" } = options;
 
   // 过滤无效数据
   const validData = data.filter(
-    val => val !== null && val !== undefined && !isNaN(val)
-  )
+    (val) => val !== null && val !== undefined && !isNaN(val),
+  );
 
   if (validData.length < 2) {
     // 数据太少，返回空结果
     return {
       trendPoints: [],
       rSquared: 0,
-      direction: 'stable',
-    }
+      direction: "stable",
+    };
   }
 
   switch (method) {
-    case 'linear':
-      return fitLinearTrend(validData, options)
-    case 'movingAverage':
-      return fitMovingAverage(validData, options)
-    case 'exponential':
-      return fitExponentialMovingAverage(validData, options)
+    case "linear":
+      return fitLinearTrend(validData, options);
+    case "movingAverage":
+      return fitMovingAverage(validData, options);
+    case "exponential":
+      return fitExponentialMovingAverage(validData, options);
     default:
-      return fitLinearTrend(validData, options)
+      return fitLinearTrend(validData, options);
   }
 }
 
@@ -322,43 +322,43 @@ export function fitTrend(
  */
 export function calculateTrendRate(result: TrendFittingResult): number | null {
   if (!result.coefficients || result.trendPoints.length === 0) {
-    return null
+    return null;
   }
 
-  const firstValue = result.trendPoints[0].value
+  const firstValue = result.trendPoints[0].value;
   if (firstValue === 0) {
-    return null
+    return null;
   }
 
   // 计算整体变化率
-  const lastValue = result.trendPoints[result.trendPoints.length - 1].value
-  return ((lastValue - firstValue) / firstValue) * 100
+  const lastValue = result.trendPoints[result.trendPoints.length - 1].value;
+  return ((lastValue - firstValue) / firstValue) * 100;
 }
 
 /**
  * 获取趋势描述
  */
 export function describeTrend(result: TrendFittingResult): string {
-  const rate = calculateTrendRate(result)
+  const rate = calculateTrendRate(result);
 
-  if (result.direction === 'stable') {
-    return '趋势平稳，无明显变化'
+  if (result.direction === "stable") {
+    return "趋势平稳，无明显变化";
   }
 
   if (rate === null) {
-    return result.direction === 'increasing' ? '呈上升趋势' : '呈下降趋势'
+    return result.direction === "increasing" ? "呈上升趋势" : "呈下降趋势";
   }
 
-  const absRate = Math.abs(rate)
-  const direction = result.direction === 'increasing' ? '上升' : '下降'
+  const absRate = Math.abs(rate);
+  const direction = result.direction === "increasing" ? "上升" : "下降";
 
   if (absRate < 5) {
-    return `略微${direction}（${rate.toFixed(1)}%）`
+    return `略微${direction}（${rate.toFixed(1)}%）`;
   } else if (absRate < 15) {
-    return `稳步${direction}（${rate.toFixed(1)}%）`
+    return `稳步${direction}（${rate.toFixed(1)}%）`;
   } else if (absRate < 30) {
-    return `显著${direction}（${rate.toFixed(1)}%）`
+    return `显著${direction}（${rate.toFixed(1)}%）`;
   } else {
-    return `快速${direction}（${rate.toFixed(1)}%）`
+    return `快速${direction}（${rate.toFixed(1)}%）`;
   }
 }

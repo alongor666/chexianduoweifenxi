@@ -1,28 +1,28 @@
-'use client'
+"use client";
 
-import { RotateCcw, Filter } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { useAppStore } from '@/store/use-app-store'
-import { useFilterStore } from '@/store/domains/filterStore'
-import { ProductFilter } from './product-filter'
-import { CustomerFilter } from './customer-filter'
-import { ChannelFilter } from './channel-filter'
-import { FilterPresets } from '@/components/features/filter-presets'
+import { RotateCcw, Filter } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAppStore } from "@/store/use-app-store";
+import { useFilterStore } from "@/store/domains/filterStore";
+import { ProductFilter } from "./product-filter";
+import { CustomerFilter } from "./customer-filter";
+import { ChannelFilter } from "./channel-filter";
+import { FilterPresets } from "@/components/features/filter-presets";
 import {
   FilterFeedback,
   FilterStats,
-} from '@/components/filters/filter-feedback'
+} from "@/components/filters/filter-feedback";
 
 export function FilterPanel() {
-  const filters = useFilterStore(state => state.filters)
-  const resetFilters = useFilterStore(state => state.resetFilters)
-  const resetAppFilters = useAppStore(state => state.resetFilters)
+  const filters = useFilterStore((state) => state.filters);
+  const resetFilters = useFilterStore((state) => state.resetFilters);
+  const resetAppFilters = useAppStore((state) => state.resetFilters);
 
   // 同步重置两个store的筛选器
   const handleResetFilters = () => {
-    resetFilters()
-    resetAppFilters()
-  }
+    resetFilters();
+    resetAppFilters();
+  };
 
   // 检查是否有任何活动的业务维度筛选器（不包括全局筛选器）
   const hasActiveFilters =
@@ -36,7 +36,7 @@ export function FilterPanel() {
     filters.largeTruckScores.length > 0 ||
     filters.renewalStatuses.length > 0 ||
     filters.terminalSources.length > 0 ||
-    filters.isNewEnergy !== null
+    filters.isNewEnergy !== null;
 
   return (
     <div className="rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-xl">
@@ -81,5 +81,5 @@ export function FilterPanel() {
         <ChannelFilter />
       </div>
     </div>
-  )
+  );
 }

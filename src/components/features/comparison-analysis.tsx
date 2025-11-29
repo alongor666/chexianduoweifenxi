@@ -1,11 +1,11 @@
-'use client'
+"use client";
 
-import { Building2, PieChart as PieChartIcon } from 'lucide-react'
+import { Building2, PieChart as PieChartIcon } from "lucide-react";
 import {
   useOrganizationComparison,
   useInsuranceTypeStructure,
-} from '@/hooks/use-comparison-analysis'
-import { formatNumber, formatPercent, formatCurrency } from '@/utils/format'
+} from "@/hooks/use-comparison-analysis";
+import { formatNumber, formatPercent, formatCurrency } from "@/utils/format";
 import {
   BarChart,
   Bar,
@@ -17,34 +17,34 @@ import {
   PieChart,
   Pie,
   Cell,
-} from 'recharts'
+} from "recharts";
 
 const COLORS = [
-  '#3b82f6',
-  '#ef4444',
-  '#10b981',
-  '#f59e0b',
-  '#8b5cf6',
-  '#ec4899',
-]
+  "#3b82f6",
+  "#ef4444",
+  "#10b981",
+  "#f59e0b",
+  "#8b5cf6",
+  "#ec4899",
+];
 
 /**
  * 机构对比分析组件
  */
 export function OrganizationComparisonChart() {
-  const comparisons = useOrganizationComparison()
+  const comparisons = useOrganizationComparison();
 
   if (comparisons.length === 0) {
-    return null
+    return null;
   }
 
   // 准备图表数据
-  const chartData = comparisons.slice(0, 10).map(item => ({
+  const chartData = comparisons.slice(0, 10).map((item) => ({
     name: item.organization,
     满期保费: item.kpi.matured_premium,
     签单保费: item.kpi.signed_premium,
     边际贡献率: item.kpi.contribution_margin_ratio || 0,
-  }))
+  }));
 
   return (
     <div className="rounded-2xl border border-white/50 bg-white/40 p-6 shadow-lg backdrop-blur-xl">
@@ -95,10 +95,10 @@ export function OrganizationComparisonChart() {
                 <td
                   className={`p-2 text-right font-semibold tabular-nums ${
                     (item.kpi.contribution_margin_ratio || 0) > 15
-                      ? 'text-green-600'
+                      ? "text-green-600"
                       : (item.kpi.contribution_margin_ratio || 0) > 10
-                        ? 'text-blue-600'
-                        : 'text-orange-600'
+                        ? "text-blue-600"
+                        : "text-orange-600"
                   }`}
                 >
                   {formatPercent(item.kpi.contribution_margin_ratio)}
@@ -134,9 +134,9 @@ export function OrganizationComparisonChart() {
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                border: '1px solid #e2e8f0',
-                borderRadius: '8px',
+                backgroundColor: "rgba(255, 255, 255, 0.95)",
+                border: "1px solid #e2e8f0",
+                borderRadius: "8px",
               }}
             />
             <Legend />
@@ -156,25 +156,25 @@ export function OrganizationComparisonChart() {
         </ResponsiveContainer>
       </div>
     </div>
-  )
+  );
 }
 
 /**
  * 险种结构分析组件
  */
 export function InsuranceTypeStructureChart() {
-  const structures = useInsuranceTypeStructure()
+  const structures = useInsuranceTypeStructure();
 
   if (structures.length === 0) {
-    return null
+    return null;
   }
 
   // 饼图数据
-  const pieData = structures.map(item => ({
+  const pieData = structures.map((item) => ({
     name: item.insuranceType,
     value: item.signedPremium,
     percentage: item.percentage,
-  }))
+  }));
 
   return (
     <div className="rounded-2xl border border-white/50 bg-white/40 p-6 shadow-lg backdrop-blur-xl">
@@ -212,9 +212,9 @@ export function InsuranceTypeStructureChart() {
               <Tooltip
                 formatter={(value: number) => formatCurrency(value)}
                 contentStyle={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '8px',
+                  backgroundColor: "rgba(255, 255, 255, 0.95)",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "8px",
                 }}
               />
             </PieChart>
@@ -267,7 +267,7 @@ export function InsuranceTypeStructureChart() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 /**
@@ -279,5 +279,5 @@ export function ComparisonAnalysisPanel() {
       <OrganizationComparisonChart />
       <InsuranceTypeStructureChart />
     </div>
-  )
+  );
 }

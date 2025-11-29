@@ -1,19 +1,19 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Filter } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { useState } from "react";
+import { Filter } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from '@/components/ui/dialog'
-import { FilterPanel } from '@/components/filters/filter-panel'
+} from "@/components/ui/dialog";
+import { FilterPanel } from "@/components/filters/filter-panel";
 
 export function MoreFiltersDialog() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   return (
     <>
@@ -44,5 +44,5 @@ export function MoreFiltersDialog() {
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }

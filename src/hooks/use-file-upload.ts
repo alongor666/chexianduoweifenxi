@@ -8,107 +8,107 @@
  * 支持批量上传、错误恢复、进度跟踪和性能优化
  */
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback } from "react";
 import {
   parseCSVFile,
   type CSVParseResult,
   type ProgressCallback,
-} from '@/lib/parsers/csv-parser'
-import { useAppStore } from '@/store/use-app-store'
+} from "@/lib/parsers/csv-parser";
+import { useAppStore } from "@/store/use-app-store";
 import {
   extractWeeksFromRecords,
   analyzeWeekConflicts,
   filterRecordsByNewWeeks,
   formatWeekRange,
   type WeekInfo,
-} from '@/lib/storage/data-persistence'
+} from "@/lib/storage/data-persistence";
 
 /**
  * 上传状态
  */
 export type UploadStatus =
-  | 'idle'
-  | 'uploading'
-  | 'parsing'
-  | 'validating'
-  | 'success'
-  | 'error'
+  | "idle"
+  | "uploading"
+  | "parsing"
+  | "validating"
+  | "success"
+  | "error";
 
 /**
  * 周次导入结果
  */
 export interface WeekImportResult {
-  weekNumber: number
-  year: number
-  status: 'success' | 'skipped' | 'failed'
-  recordCount: number
-  error?: string
-  skipReason?: string
+  weekNumber: number;
+  year: number;
+  status: "success" | "skipped" | "failed";
+  recordCount: number;
+  error?: string;
+  skipReason?: string;
 }
 
 /**
  * 文件上传结果
  */
 export interface FileUploadResult {
-  file: File
-  success: boolean
-  result?: CSVParseResult
-  error?: string
-  uploadTime: number
+  file: File;
+  success: boolean;
+  result?: CSVParseResult;
+  error?: string;
+  uploadTime: number;
   weekInfo?: {
-    detectedWeeks: WeekInfo[]
-    newWeeks: WeekInfo[]
-    conflictWeeks: WeekInfo[]
-    weekResults: WeekImportResult[]
-  }
+    detectedWeeks: WeekInfo[];
+    newWeeks: WeekInfo[];
+    conflictWeeks: WeekInfo[];
+    weekResults: WeekImportResult[];
+  };
 }
 
 /**
  * 批量上传结果
  */
 export interface BatchUploadResult {
-  totalFiles: number
-  successCount: number
-  failureCount: number
-  results: FileUploadResult[]
-  totalTime: number
-  totalRecords: number
-  validRecords: number
-  invalidRecords: number
+  totalFiles: number;
+  successCount: number;
+  failureCount: number;
+  results: FileUploadResult[];
+  totalTime: number;
+  totalRecords: number;
+  validRecords: number;
+  invalidRecords: number;
   weekAnalysis?: {
-    totalWeeks: number
-    newWeeks: number
-    skippedWeeks: number
-    weekResults: WeekImportResult[]
-  }
+    totalWeeks: number;
+    newWeeks: number;
+    skippedWeeks: number;
+    weekResults: WeekImportResult[];
+  };
 }
 
 /**
  * 上传进度信息 - 增强版
  */
 export interface UploadProgress {
-  currentFile: number
-  totalFiles: number
-  fileName: string
-  fileProgress: number
-  overallProgress: number
-  currentPhase: 'parsing' | 'validating' | 'transforming'
-  estimatedTimeRemaining?: number
-  processingSpeed?: number
-  processedRows: number
-  totalRows?: number
-  memoryUsage?: number
-  errorCount?: number
+  currentFile: number;
+  totalFiles: number;
+  fileName: string;
+  fileProgress: number;
+  overallProgress: number;
+  currentPhase: "parsing" | "validating" | "transforming";
+  estimatedTimeRemaining?: number;
+  processingSpeed?: number;
+  processedRows: number;
+  totalRows?: number;
+  memoryUsage?: number;
+  errorCount?: number;
 }
 
 /**
  * 文件验证选项
  */
 export interface FileValidationOptions {
-  maxFileSize: number // 最大文件大小（字节）
-  allowedExtensions: string[] // 允许的文件扩展名
-  maxFiles: number // 最大文件数量
-  validateFileName: boolean // 是否验证文件名格式
+  maxFileSize: number; // 最大文件大小（字节）
+  allowedExtensions: string[]; // 允许的文件扩展名
+  maxFiles: number; // 最大文件数量
+  validateFileName: boolean; // 是否验证文件名格式
 }
 
 /**
@@ -116,34 +116,36 @@ export interface FileValidationOptions {
  */
 const DEFAULT_VALIDATION_OPTIONS: FileValidationOptions = {
   maxFileSize: 50 * 1024 * 1024, // 50MB
-  allowedExtensions: ['.csv'],
+  allowedExtensions: [".csv"],
   maxFiles: 10,
   validateFileName: false, // 文件名不再是强制要求
-}
+};
 
 /**
  * 显示通知的辅助函数
  */
 const showNotification = (
-  type: 'success' | 'warning' | 'error',
-  message: string
+  type: "success" | "warning" | "error",
+  message: string,
 ) => {
-  console.log(`[${type.toUpperCase()}] ${message}`)
+  console.log(`[${type.toUpperCase()}] ${message}`);
   // 这里可以集成实际的通知系统
-}
+};
 
 /**
  * 文件上传钩子
  */
 export function useFileUpload() {
-  const [status, setStatus] = useState<UploadStatus>('idle')
-  const [progress, setProgress] = useState<UploadProgress | null>(null)
-  const [batchResult, setBatchResult] = useState<BatchUploadResult | null>(null)
+  const [status, setStatus] = useState<UploadStatus>("idle");
+  const [progress, setProgress] = useState<UploadProgress | null>(null);
+  const [batchResult, setBatchResult] = useState<BatchUploadResult | null>(
+    null,
+  );
   const [validationOptions, setValidationOptions] =
-    useState<FileValidationOptions>(DEFAULT_VALIDATION_OPTIONS)
+    useState<FileValidationOptions>(DEFAULT_VALIDATION_OPTIONS);
 
-  const { setRawData, appendRawData, setError, setLoading } = useAppStore()
-  const rawData = useAppStore(state => state.rawData)
+  const { setRawData, appendRawData, setError, setLoading } = useAppStore();
+  const rawData = useAppStore((state) => state.rawData);
 
   /**
    * 验证单个文件
@@ -155,72 +157,72 @@ export function useFileUpload() {
         return {
           valid: false,
           error: `文件大小超过限制 (${Math.round(validationOptions.maxFileSize / 1024 / 1024)}MB)`,
-        }
+        };
       }
 
       // 检查文件扩展名
-      const extension = '.' + file.name.split('.').pop()?.toLowerCase()
+      const extension = "." + file.name.split(".").pop()?.toLowerCase();
       if (!validationOptions.allowedExtensions.includes(extension)) {
         return {
           valid: false,
-          error: `不支持的文件格式，仅支持: ${validationOptions.allowedExtensions.join(', ')}`,
-        }
+          error: `不支持的文件格式，仅支持: ${validationOptions.allowedExtensions.join(", ")}`,
+        };
       }
 
       // 可选的文件名验证（不再强制）
       if (validationOptions.validateFileName) {
-        const namePattern = /^保险数据_\d{4}年\d{1,2}月.*\.csv$/i
+        const namePattern = /^保险数据_\d{4}年\d{1,2}月.*\.csv$/i;
         if (!namePattern.test(file.name)) {
           // 仅显示警告，不阻止上传
           console.warn(
-            `文件名建议格式: 保险数据_YYYY年M月_描述.csv，当前: ${file.name}`
-          )
+            `文件名建议格式: 保险数据_YYYY年M月_描述.csv，当前: ${file.name}`,
+          );
         }
       }
 
-      return { valid: true }
+      return { valid: true };
     },
-    [validationOptions]
-  )
+    [validationOptions],
+  );
 
   /**
    * 验证文件列表
    */
   const validateFiles = useCallback(
     (files: File[]): { valid: boolean; errors: string[] } => {
-      const errors: string[] = []
+      const errors: string[] = [];
 
       // 检查文件数量
       if (files.length > validationOptions.maxFiles) {
-        errors.push(`文件数量超过限制 (最多${validationOptions.maxFiles}个)`)
+        errors.push(`文件数量超过限制 (最多${validationOptions.maxFiles}个)`);
       }
 
       // 检查重复文件名
-      const fileNames = files.map(f => f.name)
+      const fileNames = files.map((f) => f.name);
       const duplicates = fileNames.filter(
-        (name, index) => fileNames.indexOf(name) !== index
-      )
+        (name, index) => fileNames.indexOf(name) !== index,
+      );
       if (duplicates.length > 0) {
         errors.push(
-          `发现重复文件: ${Array.from(new Set(duplicates)).join(', ')}`
-        )
+          `发现重复文件: ${Array.from(new Set(duplicates)).join(", ")}`,
+        );
       }
 
       // 验证每个文件
       files.forEach((file, index) => {
-        const validation = validateFile(file)
+        const validation = validateFile(file);
         if (!validation.valid) {
-          errors.push(`文件 ${index + 1} (${file.name}): ${validation.error}`)
+          errors.push(`文件 ${index + 1} (${file.name}): ${validation.error}`);
         }
-      })
+      });
 
       return {
         valid: errors.length === 0,
         errors,
-      }
+      };
     },
-    [validateFile, validationOptions]
-  )
+    [validateFile, validationOptions],
+  );
 
   /**
    * 上传单个文件
@@ -229,21 +231,21 @@ export function useFileUpload() {
     async (
       file: File,
       fileIndex: number,
-      totalFiles: number
+      totalFiles: number,
     ): Promise<FileUploadResult> => {
-      const startTime = performance.now()
+      const startTime = performance.now();
 
       try {
         // 创建进度回调 - 增强版
-        const onProgress: ProgressCallback = progressInfo => {
+        const onProgress: ProgressCallback = (progressInfo) => {
           const overallProgress =
             (fileIndex / totalFiles) * 100 +
-            (progressInfo.percentage / 100) * (100 / totalFiles)
+            (progressInfo.percentage / 100) * (100 / totalFiles);
 
           // 估算内存使用量
           const estimatedMemoryUsage = progressInfo.processedRows
             ? Math.round((progressInfo.processedRows * 26 * 50) / (1024 * 1024)) // 假设每行26个字段，每字段平均50字符
-            : undefined
+            : undefined;
 
           setProgress({
             currentFile: fileIndex + 1,
@@ -252,50 +254,51 @@ export function useFileUpload() {
             fileProgress: progressInfo.percentage,
             overallProgress: Math.min(overallProgress, 99),
             currentPhase:
-              progressInfo.currentPhase === 'parsing'
-                ? 'parsing'
-                : progressInfo.currentPhase === 'validating'
-                  ? 'validating'
-                  : 'transforming',
+              progressInfo.currentPhase === "parsing"
+                ? "parsing"
+                : progressInfo.currentPhase === "validating"
+                  ? "validating"
+                  : "transforming",
             estimatedTimeRemaining: progressInfo.estimatedTimeRemaining,
             processingSpeed:
               progressInfo.processedRows > 0
                 ? Math.round(
                     progressInfo.processedRows /
-                      ((performance.now() - startTime) / 1000)
+                      ((performance.now() - startTime) / 1000),
                   )
                 : undefined,
             processedRows: progressInfo.processedRows,
             totalRows: progressInfo.totalRows,
             memoryUsage: estimatedMemoryUsage,
             errorCount: progressInfo.errorCount || 0,
-          })
-        }
+          });
+        };
 
         // 解析文件
-        const result = await parseCSVFile(file, onProgress)
-        const uploadTime = performance.now() - startTime
+        const result = await parseCSVFile(file, onProgress);
+        const uploadTime = performance.now() - startTime;
 
         return {
           file,
           success: result.success,
           result,
           uploadTime: Math.round(uploadTime),
-        }
+        };
       } catch (error) {
-        const uploadTime = performance.now() - startTime
-        const errorMessage = error instanceof Error ? error.message : '未知错误'
+        const uploadTime = performance.now() - startTime;
+        const errorMessage =
+          error instanceof Error ? error.message : "未知错误";
 
         return {
           file,
           success: false,
           error: errorMessage,
           uploadTime: Math.round(uploadTime),
-        }
+        };
       }
     },
-    []
-  )
+    [],
+  );
 
   /**
    * 批量上传文件 - 支持并行处理
@@ -303,61 +306,61 @@ export function useFileUpload() {
   const uploadFiles = useCallback(
     async (files: File[], parallel = true): Promise<BatchUploadResult> => {
       console.log(
-        `[File Upload] 开始上传 ${files.length} 个文件（${parallel ? '并行' : '顺序'}模式）:`,
-        files.map(f => f.name)
-      )
-      const batchStartTime = performance.now()
+        `[File Upload] 开始上传 ${files.length} 个文件（${parallel ? "并行" : "顺序"}模式）:`,
+        files.map((f) => f.name),
+      );
+      const batchStartTime = performance.now();
 
       try {
-        setStatus('uploading')
-        setError(null)
-        setLoading(true)
-        setBatchResult(null)
-        let currentRawData = rawData
+        setStatus("uploading");
+        setError(null);
+        setLoading(true);
+        setBatchResult(null);
+        let currentRawData = rawData;
 
         // 验证文件
-        console.log(`[File Upload] 开始文件验证`)
-        const validation = validateFiles(files)
+        console.log(`[File Upload] 开始文件验证`);
+        const validation = validateFiles(files);
         if (!validation.valid) {
-          console.error(`[File Upload] 文件验证失败:`, validation.errors)
-          throw new Error(`文件验证失败:\n${validation.errors.join('\n')}`)
+          console.error(`[File Upload] 文件验证失败:`, validation.errors);
+          throw new Error(`文件验证失败:\n${validation.errors.join("\n")}`);
         }
-        console.log(`[File Upload] 文件验证通过`)
+        console.log(`[File Upload] 文件验证通过`);
 
-        let results: FileUploadResult[] = []
-        let totalRecords = 0
-        let validRecords = 0
-        let invalidRecords = 0
+        let results: FileUploadResult[] = [];
+        let totalRecords = 0;
+        let validRecords = 0;
+        let invalidRecords = 0;
 
         // 并行处理模式
         if (parallel && files.length > 1) {
-          console.log(`[File Upload] 使用并行处理模式`)
-          setStatus('parsing')
+          console.log(`[File Upload] 使用并行处理模式`);
+          setStatus("parsing");
 
           // 使用Promise.all并行处理所有文件
           const uploadPromises = files.map((file, index) =>
-            uploadSingleFile(file, index, files.length)
-          )
+            uploadSingleFile(file, index, files.length),
+          );
 
-          results = await Promise.all(uploadPromises)
-          console.log(`[File Upload] 所有文件并行处理完成`)
+          results = await Promise.all(uploadPromises);
+          console.log(`[File Upload] 所有文件并行处理完成`);
         } else {
           // 顺序处理模式（向后兼容）
-          console.log(`[File Upload] 使用顺序处理模式`)
+          console.log(`[File Upload] 使用顺序处理模式`);
           for (let i = 0; i < files.length; i++) {
-            const file = files[i]
+            const file = files[i];
             console.log(
-              `[File Upload] 处理文件 ${i + 1}/${files.length}: ${file.name}`
-            )
+              `[File Upload] 处理文件 ${i + 1}/${files.length}: ${file.name}`,
+            );
 
-            setStatus('parsing')
-            const result = await uploadSingleFile(file, i, files.length)
-            results.push(result)
+            setStatus("parsing");
+            const result = await uploadSingleFile(file, i, files.length);
+            results.push(result);
           }
         }
 
         // 收集所有周次导入结果
-        const allWeekResults: WeekImportResult[] = []
+        const allWeekResults: WeekImportResult[] = [];
 
         // 统计结果并处理周次去重
         for (const result of results) {
@@ -365,55 +368,78 @@ export function useFileUpload() {
             success: result.success,
             error: result.error,
             uploadTime: result.uploadTime,
-          })
+          });
 
           // 如果有成功的文件，进行周次分析和去重
           if (result.success && result.result) {
             // 1. 检测文件中包含的周次
-            const detectedWeeks = extractWeeksFromRecords(result.result.data)
-            console.log(`[File Upload] 文件 ${result.file.name} 检测到 ${detectedWeeks.length} 个周次:`,
-              detectedWeeks.map(w => `${w.year}年第${w.weekNumber}周`).join(', ')
-            )
+            const detectedWeeks = extractWeeksFromRecords(result.result.data);
+            console.log(
+              `[File Upload] 文件 ${result.file.name} 检测到 ${detectedWeeks.length} 个周次:`,
+              detectedWeeks
+                .map((w) => `${w.year}年第${w.weekNumber}周`)
+                .join(", "),
+            );
 
             // 2. 分析周次冲突
-            const { newWeeks, conflictWeeks } = analyzeWeekConflicts(detectedWeeks, currentRawData)
-            console.log(`[File Upload] 周次分析: 新周次 ${newWeeks.length} 个, 冲突周次 ${conflictWeeks.length} 个`)
+            const { newWeeks, conflictWeeks } = analyzeWeekConflicts(
+              detectedWeeks,
+              currentRawData,
+            );
+            console.log(
+              `[File Upload] 周次分析: 新周次 ${newWeeks.length} 个, 冲突周次 ${conflictWeeks.length} 个`,
+            );
 
             if (newWeeks.length > 0) {
-              console.log(`[File Upload] 新周次:`, newWeeks.map(w => `${w.year}年第${w.weekNumber}周`).join(', '))
+              console.log(
+                `[File Upload] 新周次:`,
+                newWeeks
+                  .map((w) => `${w.year}年第${w.weekNumber}周`)
+                  .join(", "),
+              );
             }
 
             if (conflictWeeks.length > 0) {
-              console.log(`[File Upload] 冲突周次(将跳过):`, conflictWeeks.map(w => `${w.year}年第${w.weekNumber}周`).join(', '))
+              console.log(
+                `[File Upload] 冲突周次(将跳过):`,
+                conflictWeeks
+                  .map((w) => `${w.year}年第${w.weekNumber}周`)
+                  .join(", "),
+              );
             }
 
             // 3. 过滤数据，只保留新周次的记录
-            const filteredData = filterRecordsByNewWeeks(result.result.data, newWeeks)
-            console.log(`[File Upload] 过滤后保留 ${filteredData.length} 条记录 (原始 ${result.result.data.length} 条)`)
+            const filteredData = filterRecordsByNewWeeks(
+              result.result.data,
+              newWeeks,
+            );
+            console.log(
+              `[File Upload] 过滤后保留 ${filteredData.length} 条记录 (原始 ${result.result.data.length} 条)`,
+            );
 
             // 4. 生成周次导入结果
-            const weekResults: WeekImportResult[] = []
+            const weekResults: WeekImportResult[] = [];
 
             // 成功导入的新周次
-            newWeeks.forEach(week => {
+            newWeeks.forEach((week) => {
               weekResults.push({
                 weekNumber: week.weekNumber,
                 year: week.year,
-                status: 'success',
+                status: "success",
                 recordCount: week.recordCount,
-              })
-            })
+              });
+            });
 
             // 跳过的冲突周次
-            conflictWeeks.forEach(week => {
+            conflictWeeks.forEach((week) => {
               weekResults.push({
                 weekNumber: week.weekNumber,
                 year: week.year,
-                status: 'skipped',
+                status: "skipped",
                 recordCount: week.recordCount,
-                skipReason: '该周次数据已存在',
-              })
-            })
+                skipReason: "该周次数据已存在",
+              });
+            });
 
             // 保存周次信息到结果中
             result.weekInfo = {
@@ -421,52 +447,62 @@ export function useFileUpload() {
               newWeeks,
               conflictWeeks,
               weekResults,
-            }
+            };
 
-            allWeekResults.push(...weekResults)
+            allWeekResults.push(...weekResults);
 
             // 5. 添加过滤后的数据到存储
             if (filteredData.length > 0) {
-              console.log(`[File Upload] 添加 ${filteredData.length} 条有效记录到存储`)
+              console.log(
+                `[File Upload] 添加 ${filteredData.length} 条有效记录到存储`,
+              );
 
               if (currentRawData.length === 0) {
                 // 首次上传，直接设置
-                setRawData(filteredData)
+                setRawData(filteredData);
               } else {
                 // 后续上传，追加数据
-                appendRawData(filteredData)
+                appendRawData(filteredData);
               }
 
               // 同步更新本地快照，保证同批次后续文件基于最新数据进行冲突检测
-              currentRawData = [...currentRawData, ...filteredData]
+              currentRawData = [...currentRawData, ...filteredData];
 
               // 统计实际导入的记录数
-              validRecords += filteredData.length
+              validRecords += filteredData.length;
             } else {
-              console.warn(`[File Upload] 文件 ${result.file.name} 的所有周次都已存在，跳过导入`)
+              console.warn(
+                `[File Upload] 文件 ${result.file.name} 的所有周次都已存在，跳过导入`,
+              );
             }
 
             // 统计总记录数（包括被跳过的）
-            totalRecords += result.result.stats.totalRows
-            invalidRecords += result.result.stats.invalidRows
+            totalRecords += result.result.stats.totalRows;
+            invalidRecords += result.result.stats.invalidRows;
           } else {
             // 失败的文件
             if (result.result) {
-              totalRecords += result.result.stats.totalRows
-              invalidRecords += result.result.stats.invalidRows
+              totalRecords += result.result.stats.totalRows;
+              invalidRecords += result.result.stats.invalidRows;
             }
 
-            console.warn(`[File Upload] 文件 ${result.file.name} 没有有效数据可添加`)
+            console.warn(
+              `[File Upload] 文件 ${result.file.name} 没有有效数据可添加`,
+            );
           }
         }
 
-        const totalTime = performance.now() - batchStartTime
-        const successCount = results.filter(r => r.success).length
-        const failureCount = results.length - successCount
+        const totalTime = performance.now() - batchStartTime;
+        const successCount = results.filter((r) => r.success).length;
+        const failureCount = results.length - successCount;
 
         // 计算周次分析汇总
-        const successfulWeeks = allWeekResults.filter(w => w.status === 'success')
-        const skippedWeeks = allWeekResults.filter(w => w.status === 'skipped')
+        const successfulWeeks = allWeekResults.filter(
+          (w) => w.status === "success",
+        );
+        const skippedWeeks = allWeekResults.filter(
+          (w) => w.status === "skipped",
+        );
 
         const batchResult: BatchUploadResult = {
           totalFiles: files.length,
@@ -477,28 +513,31 @@ export function useFileUpload() {
           totalRecords,
           validRecords,
           invalidRecords,
-          weekAnalysis: allWeekResults.length > 0 ? {
-            totalWeeks: allWeekResults.length,
-            newWeeks: successfulWeeks.length,
-            skippedWeeks: skippedWeeks.length,
-            weekResults: allWeekResults,
-          } : undefined,
-        }
+          weekAnalysis:
+            allWeekResults.length > 0
+              ? {
+                  totalWeeks: allWeekResults.length,
+                  newWeeks: successfulWeeks.length,
+                  skippedWeeks: skippedWeeks.length,
+                  weekResults: allWeekResults,
+                }
+              : undefined,
+        };
 
-        setBatchResult(batchResult)
+        setBatchResult(batchResult);
 
         // 更新最终进度
         setProgress({
           currentFile: files.length,
           totalFiles: files.length,
-          fileName: '完成',
+          fileName: "完成",
           fileProgress: 100,
           overallProgress: 100,
-          currentPhase: 'transforming',
+          currentPhase: "transforming",
           processedRows: totalRecords,
           totalRows: totalRecords,
           errorCount: invalidRecords,
-        })
+        });
 
         console.log(`[File Upload] 批量上传完成统计:`, {
           总文件数: files.length,
@@ -507,81 +546,91 @@ export function useFileUpload() {
           总记录数: totalRecords,
           有效记录数: validRecords,
           无效记录数: invalidRecords,
-          总耗时: Math.round(totalTime) + 'ms',
-          周次分析: batchResult.weekAnalysis ? {
-            总周次数: batchResult.weekAnalysis.totalWeeks,
-            新导入周次: batchResult.weekAnalysis.newWeeks,
-            跳过周次: batchResult.weekAnalysis.skippedWeeks,
-          } : '无周次信息',
-        })
+          总耗时: Math.round(totalTime) + "ms",
+          周次分析: batchResult.weekAnalysis
+            ? {
+                总周次数: batchResult.weekAnalysis.totalWeeks,
+                新导入周次: batchResult.weekAnalysis.newWeeks,
+                跳过周次: batchResult.weekAnalysis.skippedWeeks,
+              }
+            : "无周次信息",
+        });
 
         // 显示结果通知
         if (successCount === files.length) {
-          setStatus('success')
+          setStatus("success");
           if (invalidRecords > 0) {
             showNotification(
-              'warning',
-              `成功上传 ${successCount} 个文件，但存在 ${invalidRecords} 条无效记录`
-            )
+              "warning",
+              `成功上传 ${successCount} 个文件，但存在 ${invalidRecords} 条无效记录`,
+            );
           } else {
             showNotification(
-              'success',
-              `成功上传 ${successCount} 个文件，共 ${validRecords} 条有效记录`
-            )
+              "success",
+              `成功上传 ${successCount} 个文件，共 ${validRecords} 条有效记录`,
+            );
           }
         } else if (successCount > 0) {
-          setStatus('success')
+          setStatus("success");
           showNotification(
-            'warning',
-            `部分成功：${successCount}/${files.length} 个文件上传成功，${invalidRecords} 条无效记录`
-          )
+            "warning",
+            `部分成功：${successCount}/${files.length} 个文件上传成功，${invalidRecords} 条无效记录`,
+          );
         } else {
-          setStatus('error')
-          console.error('[File Upload] 所有文件上传失败')
-          showNotification('error', '所有文件上传失败')
+          setStatus("error");
+          console.error("[File Upload] 所有文件上传失败");
+          showNotification("error", "所有文件上传失败");
         }
 
-        return batchResult
+        return batchResult;
       } catch (error) {
         const errorMessage =
-          error instanceof Error ? error.message : '批量上传失败'
-        console.error('[File Upload] 批量上传过程中发生错误:', error)
-        setError(new Error(errorMessage))
-        setStatus('error')
-        showNotification('error', errorMessage)
+          error instanceof Error ? error.message : "批量上传失败";
+        console.error("[File Upload] 批量上传过程中发生错误:", error);
+        setError(new Error(errorMessage));
+        setStatus("error");
+        showNotification("error", errorMessage);
 
-        throw error
+        throw error;
       } finally {
-        setLoading(false)
-        console.log('[File Upload] 上传流程结束')
+        setLoading(false);
+        console.log("[File Upload] 上传流程结束");
         // 3秒后清除进度信息
         setTimeout(() => {
-          setProgress(null)
-        }, 3000)
+          setProgress(null);
+        }, 3000);
       }
     },
-    [uploadSingleFile, validateFiles, setRawData, appendRawData, rawData, setError, setLoading]
-  )
+    [
+      uploadSingleFile,
+      validateFiles,
+      setRawData,
+      appendRawData,
+      rawData,
+      setError,
+      setLoading,
+    ],
+  );
 
   /**
    * 重置上传状态
    */
   const resetUpload = useCallback(() => {
-    setStatus('idle')
-    setProgress(null)
-    setBatchResult(null)
-    setError(null)
-  }, [setError])
+    setStatus("idle");
+    setProgress(null);
+    setBatchResult(null);
+    setError(null);
+  }, [setError]);
 
   /**
    * 更新验证选项
    */
   const updateValidationOptions = useCallback(
     (options: Partial<FileValidationOptions>) => {
-      setValidationOptions(prev => ({ ...prev, ...options }))
+      setValidationOptions((prev) => ({ ...prev, ...options }));
     },
-    []
-  )
+    [],
+  );
 
   return {
     // 状态
@@ -599,9 +648,9 @@ export function useFileUpload() {
 
     // 计算属性
     isUploading:
-      status === 'uploading' || status === 'parsing' || status === 'validating',
-    isSuccess: status === 'success',
-    isError: status === 'error',
+      status === "uploading" || status === "parsing" || status === "validating",
+    isSuccess: status === "success",
+    isError: status === "error",
     hasResults: batchResult !== null,
-  }
+  };
 }

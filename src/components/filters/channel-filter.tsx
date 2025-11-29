@@ -1,53 +1,53 @@
-'use client'
+"use client";
 
-import { FilterContainer } from './filter-container'
-import { MultiSelectFilter } from './multi-select-filter'
-import { useAppStore } from '@/store/use-app-store'
-import { filterRecordsWithExclusions } from '@/store/use-app-store'
-import { normalizeChineseText, cn } from '@/lib/utils'
-import { CANONICAL_TERMINAL_SOURCES } from '@/constants/dimensions'
+import { FilterContainer } from "./filter-container";
+import { MultiSelectFilter } from "./multi-select-filter";
+import { useAppStore } from "@/store/use-app-store";
+import { filterRecordsWithExclusions } from "@/store/use-app-store";
+import { normalizeChineseText, cn } from "@/lib/utils";
+import { CANONICAL_TERMINAL_SOURCES } from "@/constants/dimensions";
 
 export function ChannelFilter() {
-  const filters = useAppStore(state => state.filters)
-  const updateFilters = useAppStore(state => state.updateFilters)
-  const rawData = useAppStore(state => state.rawData)
+  const filters = useAppStore((state) => state.filters);
+  const updateFilters = useAppStore((state) => state.updateFilters);
+  const rawData = useAppStore((state) => state.rawData);
 
   // 联动：根据其他筛选条件提取唯一的终端来源
   const recordsForTerminalSource = filterRecordsWithExclusions(
     rawData,
     filters,
-    ['terminalSources']
-  )
+    ["terminalSources"],
+  );
 
   // 使用 Canonical 集合并按数据出现过滤
   const presentTerminalSources = new Set(
     recordsForTerminalSource
-      .map(record => normalizeChineseText(record.terminal_source))
-      .filter((v): v is string => Boolean(v))
+      .map((record) => normalizeChineseText(record.terminal_source))
+      .filter((v): v is string => Boolean(v)),
+  );
+  const availableTerminalSources = CANONICAL_TERMINAL_SOURCES.filter((s) =>
+    presentTerminalSources.has(s),
   )
-  const availableTerminalSources = CANONICAL_TERMINAL_SOURCES.filter(s =>
-    presentTerminalSources.has(s)
-  )
-    .sort((a, b) => a.localeCompare(b, 'zh-CN'))
-    .map(s => ({ label: s, value: s }))
+    .sort((a, b) => a.localeCompare(b, "zh-CN"))
+    .map((s) => ({ label: s, value: s }));
 
   const handleTerminalSourceChange = (sources: string[]) => {
-    updateFilters({ terminalSources: sources })
-  }
+    updateFilters({ terminalSources: sources });
+  };
 
   const handleIsNewEnergyChange = (value: boolean | null) => {
-    updateFilters({ isNewEnergy: value })
-  }
+    updateFilters({ isNewEnergy: value });
+  };
 
   const handleReset = () => {
     updateFilters({
       terminalSources: [],
       isNewEnergy: null,
-    })
-  }
+    });
+  };
 
   const hasFilters =
-    filters.terminalSources.length > 0 || filters.isNewEnergy !== null
+    filters.terminalSources.length > 0 || filters.isNewEnergy !== null;
 
   return (
     <div className="rounded-2xl border-2 border-slate-200 bg-white p-5">
@@ -79,11 +79,11 @@ export function ChannelFilter() {
               <button
                 onClick={() => handleIsNewEnergyChange(null)}
                 className={cn(
-                  'px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200',
-                  'border-2 active:scale-95 whitespace-normal text-center',
+                  "px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200",
+                  "border-2 active:scale-95 whitespace-normal text-center",
                   filters.isNewEnergy === null
-                    ? 'bg-blue-500 border-blue-500 text-white shadow-lg shadow-blue-200'
-                    : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 active:bg-slate-50'
+                    ? "bg-blue-500 border-blue-500 text-white shadow-lg shadow-blue-200"
+                    : "bg-white border-slate-200 text-slate-700 hover:border-slate-300 active:bg-slate-50",
                 )}
               >
                 全部
@@ -91,11 +91,11 @@ export function ChannelFilter() {
               <button
                 onClick={() => handleIsNewEnergyChange(true)}
                 className={cn(
-                  'px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200',
-                  'border-2 active:scale-95 whitespace-normal text-center',
+                  "px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200",
+                  "border-2 active:scale-95 whitespace-normal text-center",
                   filters.isNewEnergy === true
-                    ? 'bg-blue-500 border-blue-500 text-white shadow-lg shadow-blue-200'
-                    : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 active:bg-slate-50'
+                    ? "bg-blue-500 border-blue-500 text-white shadow-lg shadow-blue-200"
+                    : "bg-white border-slate-200 text-slate-700 hover:border-slate-300 active:bg-slate-50",
                 )}
               >
                 新能源车
@@ -103,11 +103,11 @@ export function ChannelFilter() {
               <button
                 onClick={() => handleIsNewEnergyChange(false)}
                 className={cn(
-                  'px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200',
-                  'border-2 active:scale-95 whitespace-normal text-center',
+                  "px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200",
+                  "border-2 active:scale-95 whitespace-normal text-center",
                   filters.isNewEnergy === false
-                    ? 'bg-blue-500 border-blue-500 text-white shadow-lg shadow-blue-200'
-                    : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 active:bg-slate-50'
+                    ? "bg-blue-500 border-blue-500 text-white shadow-lg shadow-blue-200"
+                    : "bg-white border-slate-200 text-slate-700 hover:border-slate-300 active:bg-slate-50",
                 )}
               >
                 非新能源车
@@ -117,5 +117,5 @@ export function ChannelFilter() {
         </div>
       </FilterContainer>
     </div>
-  )
+  );
 }

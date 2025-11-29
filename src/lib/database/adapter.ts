@@ -7,7 +7,7 @@
  * - 支持 IndexedDB、DuckDB-WASM 等多种后端
  */
 
-import type { InsuranceRecord, FilterState } from '@/types/insurance'
+import type { InsuranceRecord, FilterState } from "@/types/insurance";
 
 /**
  * 数据库适配器接口
@@ -16,57 +16,57 @@ export interface DatabaseAdapter {
   /**
    * 适配器名称
    */
-  readonly name: string
+  readonly name: string;
 
   /**
    * 是否已初始化
    */
-  readonly initialized: boolean
+  readonly initialized: boolean;
 
   /**
    * 初始化数据库
    * @param file 数据文件（CSV 或 DuckDB 文件）
    */
-  initialize(file: File): Promise<void>
+  initialize(file: File): Promise<void>;
 
   /**
    * 获取所有原始数据
    */
-  getAllData(): Promise<InsuranceRecord[]>
+  getAllData(): Promise<InsuranceRecord[]>;
 
   /**
    * 根据筛选条件获取数据
    * @param filters 筛选条件
    */
-  getFilteredData(filters: FilterState): Promise<InsuranceRecord[]>
+  getFilteredData(filters: FilterState): Promise<InsuranceRecord[]>;
 
   /**
    * 执行 SQL 查询（可选，仅SQL数据库支持）
    * @param sql SQL 查询语句
    */
-  query?<T = any>(sql: string): Promise<T[]>
+  query?<T = any>(sql: string): Promise<T[]>;
 
   /**
    * 获取数据统计信息
    */
   getStatistics(): Promise<{
-    totalRecords: number
-    totalPremium: number
-    totalPolicyCount: number
-    uniqueWeeks: number[]
-    uniqueOrganizations: string[]
-    dateRange: { min: string; max: string } | null
-  }>
+    totalRecords: number;
+    totalPremium: number;
+    totalPolicyCount: number;
+    uniqueWeeks: number[];
+    uniqueOrganizations: string[];
+    dateRange: { min: string; max: string } | null;
+  }>;
 
   /**
    * 清空数据
    */
-  clear(): Promise<void>
+  clear(): Promise<void>;
 
   /**
    * 关闭连接
    */
-  close(): Promise<void>
+  close(): Promise<void>;
 }
 
 /**
@@ -77,17 +77,21 @@ export class DatabaseAdapterFactory {
    * 创建适配器实例
    * @param type 适配器类型
    */
-  static create(type: 'indexeddb' | 'duckdb'): DatabaseAdapter {
+  static create(type: "indexeddb" | "duckdb"): DatabaseAdapter {
     switch (type) {
-      case 'duckdb':
+      case "duckdb": {
         // 动态导入避免未使用时加载
-        const { DuckDBAdapter } = require('./duckdb-adapter')
-        return new DuckDBAdapter()
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const { DuckDBAdapter } = require("./duckdb-adapter");
+        return new DuckDBAdapter();
+      }
 
-      case 'indexeddb':
-      default:
-        const { IndexedDBAdapter } = require('./indexeddb-adapter')
-        return new IndexedDBAdapter()
+      case "indexeddb":
+      default: {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const { IndexedDBAdapter } = require("./indexeddb-adapter");
+        return new IndexedDBAdapter();
+      }
     }
   }
 
@@ -96,14 +100,14 @@ export class DatabaseAdapterFactory {
    * @param file 数据文件
    */
   static createFromFile(file: File): DatabaseAdapter {
-    const extension = file.name.split('.').pop()?.toLowerCase()
+    const extension = file.name.split(".").pop()?.toLowerCase();
 
-    if (extension === 'duckdb' || extension === 'db') {
-      return this.create('duckdb')
+    if (extension === "duckdb" || extension === "db") {
+      return this.create("duckdb");
     }
 
     // 默认使用 IndexedDB（支持 CSV）
-    return this.create('indexeddb')
+    return this.create("indexeddb");
   }
 }
 
@@ -114,9 +118,9 @@ export class DatabaseAdapterError extends Error {
   constructor(
     message: string,
     public readonly adapterName: string,
-    public readonly originalError?: Error
+    public readonly originalError?: Error,
   ) {
-    super(`[${adapterName}] ${message}`)
-    this.name = 'DatabaseAdapterError'
+    super(`[${adapterName}] ${message}`);
+    this.name = "DatabaseAdapterError";
   }
 }

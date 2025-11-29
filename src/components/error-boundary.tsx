@@ -1,17 +1,17 @@
-'use client'
+"use client";
 
-import React, { Component, ReactNode } from 'react'
-import { AlertTriangle, RefreshCw } from 'lucide-react'
+import React, { Component, ReactNode } from "react";
+import { AlertTriangle, RefreshCw } from "lucide-react";
 
 interface Props {
-  children: ReactNode
-  fallback?: ReactNode
+  children: ReactNode;
+  fallback?: ReactNode;
 }
 
 interface State {
-  hasError: boolean
-  error: Error | null
-  errorInfo: React.ErrorInfo | null
+  hasError: boolean;
+  error: Error | null;
+  errorInfo: React.ErrorInfo | null;
 }
 
 /**
@@ -20,12 +20,12 @@ interface State {
  */
 export class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super(props);
     this.state = {
       hasError: false,
       error: null,
       errorInfo: null,
-    }
+    };
   }
 
   static getDerivedStateFromError(error: Error): State {
@@ -34,17 +34,17 @@ export class ErrorBoundary extends Component<Props, State> {
       hasError: true,
       error,
       errorInfo: null,
-    }
+    };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // 记录错误信息
-    console.error('Error Boundary caught an error:', error, errorInfo)
+    console.error("Error Boundary caught an error:", error, errorInfo);
 
     this.setState({
       error,
       errorInfo,
-    })
+    });
 
     // 这里可以将错误信息发送到错误监控服务
     // 例如: logErrorToService(error, errorInfo)
@@ -55,14 +55,14 @@ export class ErrorBoundary extends Component<Props, State> {
       hasError: false,
       error: null,
       errorInfo: null,
-    })
-  }
+    });
+  };
 
   render() {
     if (this.state.hasError) {
       // 如果提供了自定义fallback,则使用它
       if (this.props.fallback) {
-        return this.props.fallback
+        return this.props.fallback;
       }
 
       // 默认的错误UI
@@ -87,7 +87,7 @@ export class ErrorBoundary extends Component<Props, State> {
             </p>
 
             {/* 错误详情(仅在开发环境显示) */}
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {process.env.NODE_ENV === "development" && this.state.error && (
               <div className="mb-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
                 <h3 className="text-sm font-semibold text-slate-700 mb-2">
                   错误详情:
@@ -139,10 +139,10 @@ export class ErrorBoundary extends Component<Props, State> {
             </div>
           </div>
         </div>
-      )
+      );
     }
 
-    return this.props.children
+    return this.props.children;
   }
 }
 
@@ -151,13 +151,13 @@ export class ErrorBoundary extends Component<Props, State> {
  */
 export function withErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
-  fallback?: ReactNode
+  fallback?: ReactNode,
 ) {
   return function WithErrorBoundaryComponent(props: P) {
     return (
       <ErrorBoundary fallback={fallback}>
         <Component {...props} />
       </ErrorBoundary>
-    )
-  }
+    );
+  };
 }

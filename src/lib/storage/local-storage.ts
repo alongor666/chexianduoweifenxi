@@ -3,13 +3,13 @@
  * 提供类型安全的本地存储功能,支持数据过期和大小限制
  */
 
-const STORAGE_PREFIX = 'insurance_analytics_'
-const MAX_STORAGE_SIZE = 500 * 1024 * 1024 // 提升到500MB支持大数据量存储
+const STORAGE_PREFIX = "insurance_analytics_";
+const MAX_STORAGE_SIZE = 500 * 1024 * 1024; // 提升到500MB支持大数据量存储
 
 interface StorageItem<T> {
-  value: T
-  timestamp: number
-  expiry?: number // 过期时间(毫秒)
+  value: T;
+  timestamp: number;
+  expiry?: number; // 过期时间(毫秒)
 }
 
 /**
@@ -20,19 +20,19 @@ export const StorageKeys = {
   FILTERS: `${STORAGE_PREFIX}filters`,
   USER_PREFERENCES: `${STORAGE_PREFIX}user_preferences`,
   LAST_UPLOAD_TIME: `${STORAGE_PREFIX}last_upload_time`,
-} as const
+} as const;
 
 /**
  * 检查 localStorage 是否可用
  */
 function isLocalStorageAvailable(): boolean {
   try {
-    const test = '__storage_test__'
-    localStorage.setItem(test, test)
-    localStorage.removeItem(test)
-    return true
+    const test = "__storage_test__";
+    localStorage.setItem(test, test);
+    localStorage.removeItem(test);
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -40,46 +40,46 @@ function isLocalStorageAvailable(): boolean {
  * 获取当前存储使用大小(估算)
  */
 function getStorageSize(): number {
-  let total = 0
+  let total = 0;
   for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i)
+    const key = localStorage.key(i);
     if (key?.startsWith(STORAGE_PREFIX)) {
-      const value = localStorage.getItem(key)
-      total += (key.length + (value?.length || 0)) * 2 // UTF-16 字符占2字节
+      const value = localStorage.getItem(key);
+      total += (key.length + (value?.length || 0)) * 2; // UTF-16 字符占2字节
     }
   }
-  return total
+  return total;
 }
 
 /**
  * 清理过期数据
  */
 function clearExpiredData(): void {
-  const now = Date.now()
-  const keysToRemove: string[] = []
+  const now = Date.now();
+  const keysToRemove: string[] = [];
 
   for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i)
+    const key = localStorage.key(i);
     if (key?.startsWith(STORAGE_PREFIX)) {
       try {
-        const value = localStorage.getItem(key)
+        const value = localStorage.getItem(key);
         if (value) {
-          const item: StorageItem<unknown> = JSON.parse(value)
+          const item: StorageItem<unknown> = JSON.parse(value);
           if (item.expiry && now > item.timestamp + item.expiry) {
-            keysToRemove.push(key)
+            keysToRemove.push(key);
           }
         }
       } catch {
         // 数据格式错误,也删除
-        keysToRemove.push(key)
+        keysToRemove.push(key);
       }
     }
   }
 
-  keysToRemove.forEach(key => localStorage.removeItem(key))
+  keysToRemove.forEach((key) => localStorage.removeItem(key));
 
   if (keysToRemove.length > 0) {
-    console.log(`[Storage] 清理了 ${keysToRemove.length} 个过期项`)
+    console.log(`[Storage] 清理了 ${keysToRemove.length} 个过期项`);
   }
 }
 
@@ -89,38 +89,38 @@ function clearExpiredData(): void {
 export function setStorageItem<T>(
   key: string,
   value: T,
-  expiryMs?: number
+  expiryMs?: number,
 ): { success: boolean; error?: string } {
   if (!isLocalStorageAvailable()) {
-    return { success: false, error: 'LocalStorage 不可用' }
+    return { success: false, error: "LocalStorage 不可用" };
   }
 
   try {
     // 清理过期数据
-    clearExpiredData()
+    clearExpiredData();
 
     const item: StorageItem<T> = {
       value,
       timestamp: Date.now(),
       expiry: expiryMs,
-    }
+    };
 
-    const serialized = JSON.stringify(item)
-    const estimatedSize = serialized.length * 2
+    const serialized = JSON.stringify(item);
+    const estimatedSize = serialized.length * 2;
 
     // 检查大小限制
-    const currentSize = getStorageSize()
+    const currentSize = getStorageSize();
     if (currentSize + estimatedSize > MAX_STORAGE_SIZE) {
-      return { success: false, error: '存储空间不足,请清理部分数据' }
+      return { success: false, error: "存储空间不足,请清理部分数据" };
     }
 
-    localStorage.setItem(key, serialized)
-    return { success: true }
+    localStorage.setItem(key, serialized);
+    return { success: true };
   } catch (e) {
-    if (e instanceof Error && e.name === 'QuotaExceededError') {
-      return { success: false, error: '存储配额已满' }
+    if (e instanceof Error && e.name === "QuotaExceededError") {
+      return { success: false, error: "存储配额已满" };
     }
-    return { success: false, error: '存储失败' }
+    return { success: false, error: "存储失败" };
   }
 }
 
@@ -129,25 +129,25 @@ export function setStorageItem<T>(
  */
 export function getStorageItem<T>(key: string): T | null {
   if (!isLocalStorageAvailable()) {
-    return null
+    return null;
   }
 
   try {
-    const value = localStorage.getItem(key)
-    if (!value) return null
+    const value = localStorage.getItem(key);
+    if (!value) return null;
 
-    const item: StorageItem<T> = JSON.parse(value)
+    const item: StorageItem<T> = JSON.parse(value);
 
     // 检查是否过期
     if (item.expiry && Date.now() > item.timestamp + item.expiry) {
-      localStorage.removeItem(key)
-      return null
+      localStorage.removeItem(key);
+      return null;
     }
 
-    return item.value
+    return item.value;
   } catch (e) {
-    console.error(`[Storage] 读取失败:`, key, e)
-    return null
+    console.error(`[Storage] 读取失败:`, key, e);
+    return null;
   }
 }
 
@@ -156,7 +156,7 @@ export function getStorageItem<T>(key: string): T | null {
  */
 export function removeStorageItem(key: string): void {
   if (isLocalStorageAvailable()) {
-    localStorage.removeItem(key)
+    localStorage.removeItem(key);
   }
 }
 
@@ -164,18 +164,18 @@ export function removeStorageItem(key: string): void {
  * 清空所有应用存储
  */
 export function clearAllStorage(): void {
-  if (!isLocalStorageAvailable()) return
+  if (!isLocalStorageAvailable()) return;
 
-  const keysToRemove: string[] = []
+  const keysToRemove: string[] = [];
   for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i)
+    const key = localStorage.key(i);
     if (key?.startsWith(STORAGE_PREFIX)) {
-      keysToRemove.push(key)
+      keysToRemove.push(key);
     }
   }
 
-  keysToRemove.forEach(key => localStorage.removeItem(key))
-  console.log(`[Storage] 已清空 ${keysToRemove.length} 个存储项`)
+  keysToRemove.forEach((key) => localStorage.removeItem(key));
+  console.log(`[Storage] 已清空 ${keysToRemove.length} 个存储项`);
 }
 
 /**
@@ -189,16 +189,16 @@ export function getStorageStats() {
       maxSize: MAX_STORAGE_SIZE,
       itemCount: 0,
       usage: 0,
-    }
+    };
   }
 
-  const size = getStorageSize()
-  let itemCount = 0
+  const size = getStorageSize();
+  let itemCount = 0;
 
   for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i)
+    const key = localStorage.key(i);
     if (key?.startsWith(STORAGE_PREFIX)) {
-      itemCount++
+      itemCount++;
     }
   }
 
@@ -208,7 +208,7 @@ export function getStorageStats() {
     maxSize: MAX_STORAGE_SIZE,
     itemCount,
     usage: (size / MAX_STORAGE_SIZE) * 100,
-  }
+  };
 }
 
 /**
@@ -221,33 +221,33 @@ export function getStorageStats() {
  */
 export function compressLargeData<T>(data: T[], maxItems: number = 50000): T[] {
   if (data.length <= maxItems) {
-    return data
+    return data;
   }
 
   // 对于超大数据集，使用分层采样策略
   if (data.length > 100000) {
     // 保留前10%、中间10%、后10%的数据，其余均匀采样
-    const tenPercent = Math.floor(data.length * 0.1)
-    const frontPart = data.slice(0, tenPercent)
-    const middleStart = Math.floor(data.length * 0.45)
-    const middlePart = data.slice(middleStart, middleStart + tenPercent)
-    const backPart = data.slice(-tenPercent)
+    const tenPercent = Math.floor(data.length * 0.1);
+    const frontPart = data.slice(0, tenPercent);
+    const middleStart = Math.floor(data.length * 0.45);
+    const middlePart = data.slice(middleStart, middleStart + tenPercent);
+    const backPart = data.slice(-tenPercent);
 
     // 剩余空间用于均匀采样
     const remainingSlots =
-      maxItems - frontPart.length - middlePart.length - backPart.length
+      maxItems - frontPart.length - middlePart.length - backPart.length;
     const samplingData = data
       .slice(tenPercent, middleStart)
-      .concat(data.slice(middleStart + tenPercent, -tenPercent))
+      .concat(data.slice(middleStart + tenPercent, -tenPercent));
 
-    const step = Math.ceil(samplingData.length / remainingSlots)
-    const sampledData: T[] = []
+    const step = Math.ceil(samplingData.length / remainingSlots);
+    const sampledData: T[] = [];
     for (
       let i = 0;
       i < samplingData.length && sampledData.length < remainingSlots;
       i += step
     ) {
-      sampledData.push(samplingData[i])
+      sampledData.push(samplingData[i]);
     }
 
     const compressed = [
@@ -255,24 +255,24 @@ export function compressLargeData<T>(data: T[], maxItems: number = 50000): T[] {
       ...sampledData,
       ...middlePart,
       ...backPart,
-    ]
+    ];
     console.warn(
-      `[Storage] 大数据集分层压缩: ${data.length} → ${compressed.length} (保留关键数据段)`
-    )
-    return compressed
+      `[Storage] 大数据集分层压缩: ${data.length} → ${compressed.length} (保留关键数据段)`,
+    );
+    return compressed;
   }
 
   // 标准均匀采样
-  const step = Math.ceil(data.length / maxItems)
-  const compressed: T[] = []
+  const step = Math.ceil(data.length / maxItems);
+  const compressed: T[] = [];
   for (let i = 0; i < data.length; i += step) {
-    compressed.push(data[i])
+    compressed.push(data[i]);
   }
 
   console.warn(
-    `[Storage] 数据已压缩: ${data.length} → ${compressed.length} (采样率: ${step})`
-  )
-  return compressed
+    `[Storage] 数据已压缩: ${data.length} → ${compressed.length} (采样率: ${step})`,
+  );
+  return compressed;
 }
 
 /**
@@ -281,11 +281,11 @@ export function compressLargeData<T>(data: T[], maxItems: number = 50000): T[] {
  */
 export const createPersistMiddleware = <T>(
   storageKey: string,
-  expiryMs?: number
+  expiryMs?: number,
 ) => {
   return {
     getStorage: () => getStorageItem<T>(storageKey),
     setStorage: (value: T) => setStorageItem(storageKey, value, expiryMs),
     removeStorage: () => removeStorageItem(storageKey),
-  }
-}
+  };
+};

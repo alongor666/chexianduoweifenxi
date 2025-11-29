@@ -1,34 +1,34 @@
-'use client'
+"use client";
 
-import { Database, HardDrive, Cloud } from 'lucide-react'
-import { FileUpload } from '@/components/features/file-upload'
-import { FullKPIDashboard } from '@/components/features/full-kpi-dashboard'
-import { TimeProgressIndicator } from '@/components/features/time-progress-indicator'
-import { TrendChart } from '@/components/features/trend-chart'
-import { WeeklyOperationalTrend } from '@/components/features/weekly-operational-trend'
-import { PremiumAnalysisBarChart } from '@/components/features/structure-bar-chart'
-import { ClaimAnalysisBarChart } from '@/components/features/claim-analysis-bar-chart'
-import { DistributionPieChart } from '@/components/features/distribution-pie-chart'
-import { ComparisonAnalysisPanel } from '@/components/features/comparison-analysis'
-import { MultiChartTabs } from '@/components/features/multi-chart-tabs'
-import { CustomerSegmentationBubble } from '@/components/features/customer-segmentation-bubble'
-import { ExpenseHeatmap } from '@/components/features/expense-heatmap'
-import { ThematicAnalysis } from '@/components/features/thematic-analysis'
-import { FilterPanel } from '@/components/filters/filter-panel'
+import { Database, HardDrive, Cloud } from "lucide-react";
+import { FileUpload } from "@/components/features/file-upload";
+import { FullKPIDashboard } from "@/components/features/full-kpi-dashboard";
+import { TimeProgressIndicator } from "@/components/features/time-progress-indicator";
+import { TrendChart } from "@/components/features/trend-chart";
+import { WeeklyOperationalTrend } from "@/components/features/weekly-operational-trend";
+import { PremiumAnalysisBarChart } from "@/components/features/structure-bar-chart";
+import { ClaimAnalysisBarChart } from "@/components/features/claim-analysis-bar-chart";
+import { DistributionPieChart } from "@/components/features/distribution-pie-chart";
+import { ComparisonAnalysisPanel } from "@/components/features/comparison-analysis";
+import { MultiChartTabs } from "@/components/features/multi-chart-tabs";
+import { CustomerSegmentationBubble } from "@/components/features/customer-segmentation-bubble";
+import { ExpenseHeatmap } from "@/components/features/expense-heatmap";
+import { ThematicAnalysis } from "@/components/features/thematic-analysis";
+import { FilterPanel } from "@/components/filters/filter-panel";
 import {
   FilterInteractionManager,
   useFilterPersistence,
-} from '@/components/filters/filter-interaction-manager'
-import { TopToolbar } from '@/components/layout/top-toolbar'
-import { Toaster } from '@/components/ui/toaster'
-import { useInsuranceData } from '@/hooks/domains/useInsuranceData'
-import { useFiltering } from '@/hooks/domains/useFiltering'
-import { useKPICalculation } from '@/hooks/domains/useKPICalculation'
-import { useKPI } from '@/hooks/use-kpi'
-import { usePersistData } from '@/hooks/use-persist-data'
-import { useSmartComparison } from '@/hooks/use-smart-comparison'
-import { useState, useEffect, useMemo } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+} from "@/components/filters/filter-interaction-manager";
+import { TopToolbar } from "@/components/layout/top-toolbar";
+import { Toaster } from "@/components/ui/toaster";
+import { useInsuranceData } from "@/hooks/domains/useInsuranceData";
+import { useFiltering } from "@/hooks/domains/useFiltering";
+import { useKPICalculation } from "@/hooks/domains/useKPICalculation";
+import { useKPI } from "@/hooks/use-kpi";
+import { usePersistData } from "@/hooks/use-persist-data";
+import { useSmartComparison } from "@/hooks/use-smart-comparison";
+import { useState, useEffect, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -36,125 +36,127 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   AnalysisTabs,
   type AnalysisTabValue,
-} from '@/components/layout/analysis-tabs'
-import { PredictionManagerPanel } from '@/components/features/prediction-manager'
-import { DataManagementPanel } from '@/components/features/data-management-panel'
-import { FilterManagementPanel } from '@/components/features/filter-management-panel'
-import type { InsuranceRecord } from '@/types/insurance'
+} from "@/components/layout/analysis-tabs";
+import { PredictionManagerPanel } from "@/components/features/prediction-manager";
+import { DataManagementPanel } from "@/components/features/data-management-panel";
+import { FilterManagementPanel } from "@/components/features/filter-management-panel";
+import type { InsuranceRecord } from "@/types/insurance";
 
 interface DashboardClientProps {
-  initialData: InsuranceRecord[]
+  initialData: InsuranceRecord[];
 }
 
 export function DashboardClient({ initialData }: DashboardClientProps) {
   // 使用新架构的 Hooks
-  const { rawData } = useInsuranceData()
-  const { setViewMode, viewMode } = useFiltering()
-  const kpiData = useKPI()
-  const { premiumTargets } = useKPICalculation()
-  const premiumTargetsOverall = premiumTargets?.overall
+  const { rawData } = useInsuranceData();
+  const { setViewMode, viewMode } = useFiltering();
+  const kpiData = useKPI();
+  const { premiumTargets } = useKPICalculation();
+  const premiumTargetsOverall = premiumTargets?.overall;
 
   // 判断数据来源
-  const dataSource = typeof window !== 'undefined'
-    ? (process.env.NEXT_PUBLIC_DATA_SOURCE || 'local')
-    : 'local'
-  const isSupabaseMode = dataSource === 'supabase' && initialData.length > 0
+  const dataSource =
+    typeof window !== "undefined"
+      ? process.env.NEXT_PUBLIC_DATA_SOURCE || "local"
+      : "local";
+  const isSupabaseMode = dataSource === "supabase" && initialData.length > 0;
 
   // 使用智能环比数据（优化参数以避免无限重渲染）
   const smartComparisonOptions = useMemo(
     () => ({
       annualTargetYuan: premiumTargetsOverall || null,
     }),
-    [premiumTargetsOverall]
-  )
-  const { currentKpi, compareKpi, previousWeekNumber } =
-    useSmartComparison(smartComparisonOptions)
+    [premiumTargetsOverall],
+  );
+  const { currentKpi, compareKpi, previousWeekNumber } = useSmartComparison(
+    smartComparisonOptions,
+  );
 
-  const [mounted, setMounted] = useState(false)
-  const router = useRouter()
-  const searchParams = useSearchParams()
+  const [mounted, setMounted] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const initialTabParam =
-    (searchParams?.get('tab') as AnalysisTabValue | null) ?? 'kpi'
+    (searchParams?.get("tab") as AnalysisTabValue | null) ?? "kpi";
   const validTabs: AnalysisTabValue[] = [
-    'data-management',
-    'kpi',
-    'trend',
-    'thematic',
-    'multichart',
-    'prediction',
-    'targets',
-  ]
+    "data-management",
+    "kpi",
+    "trend",
+    "thematic",
+    "multichart",
+    "prediction",
+    "targets",
+  ];
   const initialTab: AnalysisTabValue = validTabs.includes(initialTabParam)
     ? initialTabParam
-    : 'kpi'
+    : "kpi";
   const [activeTab, setActiveTab] = useState<AnalysisTabValue>(
-    initialTab === 'targets' ? 'kpi' : initialTab
-  )
+    initialTab === "targets" ? "kpi" : initialTab,
+  );
 
   // 数据持久化 Hook，现在会接收初始数据
-  usePersistData(initialData)
+  usePersistData(initialData);
 
   // 使用筛选器状态持久化
-  useFilterPersistence()
+  useFilterPersistence();
 
   // 判断是否有数据
-  const hasData = rawData.length > 0
+  const hasData = rawData.length > 0;
 
   // 计算时间进度（当前年度已过天数占365天的百分比）
   const timeProgress = useMemo(() => {
-    const now = new Date()
-    const startOfYear = new Date(now.getFullYear(), 0, 1)
+    const now = new Date();
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
     const daysPassed = Math.floor(
-      (now.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)
-    )
-    return (daysPassed / 365) * 100
-  }, [])
+      (now.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24),
+    );
+    return (daysPassed / 365) * 100;
+  }, []);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
-    if (initialTab === 'trend') {
-      setViewMode('trend')
-      setActiveTab('trend')
+    if (initialTab === "trend") {
+      setViewMode("trend");
+      setActiveTab("trend");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
   if (!mounted) {
-    return null
+    return null;
   }
 
   const handleTabChange = (tab: AnalysisTabValue) => {
-    if (tab === 'targets') {
-      router.push('/targets')
-      return
+    if (tab === "targets") {
+      router.push("/targets");
+      return;
     }
 
-    setActiveTab(tab)
-    if (tab === 'trend') {
-      if (viewMode !== 'trend') {
-        setViewMode('trend')
+    setActiveTab(tab);
+    if (tab === "trend") {
+      if (viewMode !== "trend") {
+        setViewMode("trend");
       }
-    } else if (tab === 'multichart') {
+    } else if (tab === "multichart") {
       // 趋势与多维图表支持单选/多选，不强制切换模式
-    } else if (viewMode !== 'single') {
-      setViewMode('single')
+    } else if (viewMode !== "single") {
+      setViewMode("single");
     }
 
-    if (tab === 'kpi') {
-      router.replace('/', { scroll: false })
+    if (tab === "kpi") {
+      router.replace("/", { scroll: false });
     } else {
-      router.replace(`/?tab=${tab}`, { scroll: false })
+      router.replace(`/?tab=${tab}`, { scroll: false });
     }
-  }
+  };
 
   return (
     <div className="min-h-screen p-8">
@@ -181,12 +183,16 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
                     {isSupabaseMode ? (
                       <>
                         <Cloud className="w-3.5 h-3.5 text-green-600" />
-                        <span className="text-xs font-medium text-green-700">Supabase</span>
+                        <span className="text-xs font-medium text-green-700">
+                          Supabase
+                        </span>
                       </>
                     ) : (
                       <>
                         <HardDrive className="w-3.5 h-3.5 text-blue-600" />
-                        <span className="text-xs font-medium text-blue-700">本地模式</span>
+                        <span className="text-xs font-medium text-blue-700">
+                          本地模式
+                        </span>
                       </>
                     )}
                   </div>
@@ -205,7 +211,7 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
           )}
 
           {/* 顶部工具栏（已整合时间进度） - 放置在统一导航之下，数据管理页面不显示 */}
-          {hasData && activeTab !== 'data-management' && (
+          {hasData && activeTab !== "data-management" && (
             <div className="mb-4">
               <TopToolbar rawCount={rawData.length} activeTab={activeTab} />
             </div>
@@ -224,14 +230,14 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
         {hasData && (
           <div className="space-y-8">
             {/* 数据管理页面 */}
-            {activeTab === 'data-management' && (
+            {activeTab === "data-management" && (
               <div className="space-y-6">
                 <DataManagementPanel />
               </div>
             )}
 
             {/* KPI 看板 - 使用完整版 */}
-            {activeTab === 'kpi' && (
+            {activeTab === "kpi" && (
               <FullKPIDashboard
                 kpiData={currentKpi || kpiData}
                 compareData={compareKpi}
@@ -240,7 +246,7 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
             )}
 
             {/* 多周趋势分析 */}
-            {activeTab === 'trend' && (
+            {activeTab === "trend" && (
               <div className="space-y-6">
                 {/* 新版周度经营趋势 */}
                 <WeeklyOperationalTrend />
@@ -250,10 +256,10 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
             )}
 
             {/* 预测管理 */}
-            {activeTab === 'prediction' && <PredictionManagerPanel />}
+            {activeTab === "prediction" && <PredictionManagerPanel />}
 
             {/* 专题分析模块 */}
-            {activeTab === 'thematic' && (
+            {activeTab === "thematic" && (
               <div className="space-y-8">
                 <ThematicAnalysis
                   currentKpis={kpiData}
@@ -266,7 +272,7 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
             )}
 
             {/* 多维图表展示 */}
-            {activeTab === 'multichart' && (
+            {activeTab === "multichart" && (
               <div className="space-y-8">
                 <MultiChartTabs />
                 <ComparisonAnalysisPanel />
@@ -288,5 +294,5 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
 
       <Toaster />
     </div>
-  )
+  );
 }

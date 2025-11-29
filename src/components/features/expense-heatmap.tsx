@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 /**
  * 费用结构热力图 (P2功能)
@@ -12,93 +12,93 @@
  * PRD位置：2.2.5 结构分析与对比模块 - 费用结构热力图（P1）
  */
 
-import { useMemo } from 'react'
-import { useFilteredData } from '@/hooks/use-filtered-data'
-import { InsuranceRecord } from '@/types/insurance'
-import { formatPercent, formatCurrency, formatNumber } from '@/utils/format'
+import { useMemo } from "react";
+import { useFilteredData } from "@/hooks/use-filtered-data";
+import { InsuranceRecord } from "@/types/insurance";
+import { formatPercent, formatCurrency, formatNumber } from "@/utils/format";
 
 interface HeatmapCell {
-  organization: string
-  metric: string
-  value: number
-  displayValue: string
-  color: string
-  level: 'excellent' | 'good' | 'warning' | 'danger'
+  organization: string;
+  metric: string;
+  value: number;
+  displayValue: string;
+  color: string;
+  level: "excellent" | "good" | "warning" | "danger";
 }
 
 interface OrganizationMetrics {
-  organization: string
-  expenseRatio: number // 费用率 (%)
-  averageExpense: number // 单均费用 (元)
-  expenseAmount: number // 费用金额 (万元)
-  totalPremium: number // 签单保费 (万元)
+  organization: string;
+  expenseRatio: number; // 费用率 (%)
+  averageExpense: number; // 单均费用 (元)
+  expenseAmount: number; // 费用金额 (万元)
+  totalPremium: number; // 签单保费 (万元)
 }
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
 // 根据费用率获取颜色和等级
 function getColorByExpenseRatio(ratio: number): {
-  color: string
-  level: HeatmapCell['level']
+  color: string;
+  level: HeatmapCell["level"];
 } {
-  if (ratio <= 15) return { color: '#10b981', level: 'excellent' } // 绿色 - 优秀
-  if (ratio <= 20) return { color: '#3b82f6', level: 'good' } // 蓝色 - 良好
-  if (ratio <= 25) return { color: '#f59e0b', level: 'warning' } // 橙色 - 警告
-  return { color: '#ef4444', level: 'danger' } // 红色 - 危险
+  if (ratio <= 15) return { color: "#10b981", level: "excellent" }; // 绿色 - 优秀
+  if (ratio <= 20) return { color: "#3b82f6", level: "good" }; // 蓝色 - 良好
+  if (ratio <= 25) return { color: "#f59e0b", level: "warning" }; // 橙色 - 警告
+  return { color: "#ef4444", level: "danger" }; // 红色 - 危险
 }
 
 // 根据单均费用获取颜色和等级
 function getColorByAverageExpense(expense: number): {
-  color: string
-  level: HeatmapCell['level']
+  color: string;
+  level: HeatmapCell["level"];
 } {
-  if (expense <= 300) return { color: '#10b981', level: 'excellent' }
-  if (expense <= 500) return { color: '#3b82f6', level: 'good' }
-  if (expense <= 700) return { color: '#f59e0b', level: 'warning' }
-  return { color: '#ef4444', level: 'danger' }
+  if (expense <= 300) return { color: "#10b981", level: "excellent" };
+  if (expense <= 500) return { color: "#3b82f6", level: "good" };
+  if (expense <= 700) return { color: "#f59e0b", level: "warning" };
+  return { color: "#ef4444", level: "danger" };
 }
 
 export function ExpenseHeatmap({ className }: Props) {
-  const filteredData = useFilteredData()
+  const filteredData = useFilteredData();
 
   // 计算每个机构的费用指标
   const organizationMetrics = useMemo(() => {
-    if (filteredData.length === 0) return []
+    if (filteredData.length === 0) return [];
 
-    const orgMap = new Map<string, InsuranceRecord[]>()
+    const orgMap = new Map<string, InsuranceRecord[]>();
 
     // 按机构分组
-    filteredData.forEach(record => {
-      const org = record.third_level_organization
+    filteredData.forEach((record) => {
+      const org = record.third_level_organization;
       if (!orgMap.has(org)) {
-        orgMap.set(org, [])
+        orgMap.set(org, []);
       }
-      orgMap.get(org)!.push(record)
-    })
+      orgMap.get(org)!.push(record);
+    });
 
     // 计算每个机构的指标
-    const metrics: OrganizationMetrics[] = []
+    const metrics: OrganizationMetrics[] = [];
 
     orgMap.forEach((records, org) => {
       const totalExpense = records.reduce(
         (sum, r) => sum + r.expense_amount_yuan,
-        0
-      )
+        0,
+      );
       const totalPremium = records.reduce(
         (sum, r) => sum + r.signed_premium_yuan,
-        0
-      )
+        0,
+      );
       const totalPolicyCount = records.reduce(
         (sum, r) => sum + r.policy_count,
-        0
-      )
+        0,
+      );
 
       const expenseRatio =
-        totalPremium > 0 ? (totalExpense / totalPremium) * 100 : 0
+        totalPremium > 0 ? (totalExpense / totalPremium) * 100 : 0;
       const averageExpense =
-        totalPolicyCount > 0 ? Math.round(totalExpense / totalPolicyCount) : 0
+        totalPolicyCount > 0 ? Math.round(totalExpense / totalPolicyCount) : 0;
 
       metrics.push({
         organization: org,
@@ -106,88 +106,90 @@ export function ExpenseHeatmap({ className }: Props) {
         averageExpense,
         expenseAmount: Math.round(totalExpense / 10000), // 转万元
         totalPremium: Math.round(totalPremium / 10000), // 转万元
-      })
-    })
+      });
+    });
 
     // 按费用率降序排序，突出问题机构
-    return metrics.sort((a, b) => b.expenseRatio - a.expenseRatio)
-  }, [filteredData])
+    return metrics.sort((a, b) => b.expenseRatio - a.expenseRatio);
+  }, [filteredData]);
 
   // 转换为热力图数据格式
   const heatmapData = useMemo(() => {
-    const cells: HeatmapCell[] = []
+    const cells: HeatmapCell[] = [];
 
-    organizationMetrics.forEach(org => {
+    organizationMetrics.forEach((org) => {
       // 费用率
-      const expenseRatioColor = getColorByExpenseRatio(org.expenseRatio)
+      const expenseRatioColor = getColorByExpenseRatio(org.expenseRatio);
       cells.push({
         organization: org.organization,
-        metric: '费用率',
+        metric: "费用率",
         value: org.expenseRatio,
         displayValue: formatPercent(org.expenseRatio / 100),
         color: expenseRatioColor.color,
         level: expenseRatioColor.level,
-      })
+      });
 
       // 单均费用
-      const avgExpenseColor = getColorByAverageExpense(org.averageExpense)
+      const avgExpenseColor = getColorByAverageExpense(org.averageExpense);
       cells.push({
         organization: org.organization,
-        metric: '单均费用',
+        metric: "单均费用",
         value: org.averageExpense,
         displayValue: `${formatNumber(org.averageExpense)} 元`,
         color: avgExpenseColor.color,
         level: avgExpenseColor.level,
-      })
+      });
 
       // 费用金额（使用相对值着色）
       const maxExpense = organizationMetrics.reduce(
         (max, m) => Math.max(max, m.expenseAmount),
-        0
-      )
-      const expenseRatioRelative = (org.expenseAmount / maxExpense) * 100
+        0,
+      );
+      const expenseRatioRelative = (org.expenseAmount / maxExpense) * 100;
       const expenseAmountColor = getColorByExpenseRatio(
-        expenseRatioRelative * 0.3
-      ) // 缩放到合理范围
+        expenseRatioRelative * 0.3,
+      ); // 缩放到合理范围
       cells.push({
         organization: org.organization,
-        metric: '费用金额',
+        metric: "费用金额",
         value: org.expenseAmount,
         displayValue: formatCurrency(org.expenseAmount),
         color: expenseAmountColor.color,
         level: expenseAmountColor.level,
-      })
-    })
+      });
+    });
 
-    return cells
-  }, [organizationMetrics])
+    return cells;
+  }, [organizationMetrics]);
 
   // 指标列表
-  const metrics = ['费用率', '单均费用', '费用金额']
+  const metrics = ["费用率", "单均费用", "费用金额"];
 
   // 获取指定机构和指标的单元格
   const getCell = (org: string, metric: string): HeatmapCell | undefined => {
     return heatmapData.find(
-      cell => cell.organization === org && cell.metric === metric
-    )
-  }
+      (cell) => cell.organization === org && cell.metric === metric,
+    );
+  };
 
   // 统计分析
   const analysis = useMemo(() => {
-    if (organizationMetrics.length === 0) return null
+    if (organizationMetrics.length === 0) return null;
 
     const avgExpenseRatio =
       organizationMetrics.reduce((sum, m) => sum + m.expenseRatio, 0) /
-      organizationMetrics.length
+      organizationMetrics.length;
     const maxExpenseRatioOrg = organizationMetrics.reduce((max, m) =>
-      m.expenseRatio > max.expenseRatio ? m : max
-    )
+      m.expenseRatio > max.expenseRatio ? m : max,
+    );
     const minExpenseRatioOrg = organizationMetrics.reduce((min, m) =>
-      m.expenseRatio < min.expenseRatio ? m : min
-    )
+      m.expenseRatio < min.expenseRatio ? m : min,
+    );
 
-    const dangerOrgs = organizationMetrics.filter(m => m.expenseRatio > 25)
-    const excellentOrgs = organizationMetrics.filter(m => m.expenseRatio <= 15)
+    const dangerOrgs = organizationMetrics.filter((m) => m.expenseRatio > 25);
+    const excellentOrgs = organizationMetrics.filter(
+      (m) => m.expenseRatio <= 15,
+    );
 
     return {
       avgExpenseRatio,
@@ -195,8 +197,8 @@ export function ExpenseHeatmap({ className }: Props) {
       minExpenseRatioOrg,
       dangerOrgs,
       excellentOrgs,
-    }
-  }, [organizationMetrics])
+    };
+  }, [organizationMetrics]);
 
   if (filteredData.length === 0) {
     return (
@@ -205,7 +207,7 @@ export function ExpenseHeatmap({ className }: Props) {
           暂无数据，请先上传数据文件
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -226,7 +228,7 @@ export function ExpenseHeatmap({ className }: Props) {
               <th className="border bg-gray-50 px-4 py-3 text-left font-semibold text-gray-700 sticky left-0 z-10">
                 机构
               </th>
-              {metrics.map(metric => (
+              {metrics.map((metric) => (
                 <th
                   key={metric}
                   className="border bg-gray-50 px-4 py-3 text-center font-semibold text-gray-700 min-w-[120px]"
@@ -240,23 +242,23 @@ export function ExpenseHeatmap({ className }: Props) {
             {organizationMetrics.map((org, idx) => (
               <tr
                 key={org.organization}
-                className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}
+                className={idx % 2 === 0 ? "bg-white" : "bg-gray-50/50"}
               >
                 <td className="border px-4 py-3 font-medium text-gray-900 sticky left-0 z-10 bg-inherit">
                   {org.organization}
                 </td>
-                {metrics.map(metric => {
-                  const cell = getCell(org.organization, metric)
-                  if (!cell) return <td key={metric} className="border"></td>
+                {metrics.map((metric) => {
+                  const cell = getCell(org.organization, metric);
+                  if (!cell) return <td key={metric} className="border"></td>;
 
                   return (
                     <td
                       key={metric}
                       className="border px-4 py-3 text-center transition-all hover:scale-105 cursor-pointer"
                       style={{
-                        backgroundColor: cell.color + '20', // 20% opacity
+                        backgroundColor: cell.color + "20", // 20% opacity
                         borderLeftColor: cell.color,
-                        borderLeftWidth: '4px',
+                        borderLeftWidth: "4px",
                       }}
                       title={`${org.organization} - ${metric}: ${cell.displayValue}`}
                     >
@@ -267,13 +269,13 @@ export function ExpenseHeatmap({ className }: Props) {
                         {cell.displayValue}
                       </div>
                       <div className="text-xs text-gray-500 mt-1">
-                        {cell.level === 'excellent' && '✓ 优秀'}
-                        {cell.level === 'good' && '○ 良好'}
-                        {cell.level === 'warning' && '△ 警告'}
-                        {cell.level === 'danger' && '✕ 危险'}
+                        {cell.level === "excellent" && "✓ 优秀"}
+                        {cell.level === "good" && "○ 良好"}
+                        {cell.level === "warning" && "△ 警告"}
+                        {cell.level === "danger" && "✕ 危险"}
                       </div>
                     </td>
-                  )
+                  );
                 })}
               </tr>
             ))}
@@ -297,8 +299,8 @@ export function ExpenseHeatmap({ className }: Props) {
               </div>
               <div className="text-xs text-gray-500 mt-1">
                 {analysis.avgExpenseRatio <= 20
-                  ? '✓ 整体控制良好'
-                  : '△ 需加强管控'}
+                  ? "✓ 整体控制良好"
+                  : "△ 需加强管控"}
               </div>
             </div>
 
@@ -309,7 +311,7 @@ export function ExpenseHeatmap({ className }: Props) {
                 {analysis.minExpenseRatioOrg.organization}
               </div>
               <div className="text-sm text-green-700">
-                费用率{' '}
+                费用率{" "}
                 {formatPercent(analysis.minExpenseRatioOrg.expenseRatio / 100)}
               </div>
             </div>
@@ -321,7 +323,7 @@ export function ExpenseHeatmap({ className }: Props) {
                 {analysis.maxExpenseRatioOrg.organization}
               </div>
               <div className="text-sm text-red-700">
-                费用率{' '}
+                费用率{" "}
                 {formatPercent(analysis.maxExpenseRatioOrg.expenseRatio / 100)}
               </div>
             </div>
@@ -336,10 +338,10 @@ export function ExpenseHeatmap({ className }: Props) {
               <div className="text-sm text-red-800">
                 {analysis.dangerOrgs
                   .map(
-                    org =>
-                      `${org.organization}(${formatPercent(org.expenseRatio / 100)})`
+                    (org) =>
+                      `${org.organization}(${formatPercent(org.expenseRatio / 100)})`,
                   )
-                  .join('、')}
+                  .join("、")}
               </div>
               <div className="text-xs text-red-700 mt-2">
                 建议：加强费用管控，优化费用结构，对标优秀机构
@@ -356,10 +358,10 @@ export function ExpenseHeatmap({ className }: Props) {
               <div className="text-sm text-green-800">
                 {analysis.excellentOrgs
                   .map(
-                    org =>
-                      `${org.organization}(${formatPercent(org.expenseRatio / 100)})`
+                    (org) =>
+                      `${org.organization}(${formatPercent(org.expenseRatio / 100)})`,
                   )
-                  .join('、')}
+                  .join("、")}
               </div>
               <div className="text-xs text-green-700 mt-2">
                 可提炼最佳实践，在其他机构推广
@@ -373,28 +375,28 @@ export function ExpenseHeatmap({ className }: Props) {
             <div className="flex items-center gap-2">
               <div
                 className="w-4 h-4 rounded"
-                style={{ backgroundColor: '#10b981' }}
+                style={{ backgroundColor: "#10b981" }}
               ></div>
               <span className="text-gray-600">优秀 (≤15%)</span>
             </div>
             <div className="flex items-center gap-2">
               <div
                 className="w-4 h-4 rounded"
-                style={{ backgroundColor: '#3b82f6' }}
+                style={{ backgroundColor: "#3b82f6" }}
               ></div>
               <span className="text-gray-600">良好 (15-20%)</span>
             </div>
             <div className="flex items-center gap-2">
               <div
                 className="w-4 h-4 rounded"
-                style={{ backgroundColor: '#f59e0b' }}
+                style={{ backgroundColor: "#f59e0b" }}
               ></div>
               <span className="text-gray-600">警告 (20-25%)</span>
             </div>
             <div className="flex items-center gap-2">
               <div
                 className="w-4 h-4 rounded"
-                style={{ backgroundColor: '#ef4444' }}
+                style={{ backgroundColor: "#ef4444" }}
               ></div>
               <span className="text-gray-600">危险 (&gt;25%)</span>
             </div>
@@ -402,5 +404,5 @@ export function ExpenseHeatmap({ className }: Props) {
         </div>
       )}
     </div>
-  )
+  );
 }

@@ -1,170 +1,170 @@
-'use client'
+"use client";
 
-import { FilterContainer } from './filter-container'
-import { MultiSelectFilter } from './multi-select-filter'
-import { useAppStore } from '@/store/use-app-store'
-import { filterRecordsWithExclusions } from '@/store/use-app-store'
+import { FilterContainer } from "./filter-container";
+import { MultiSelectFilter } from "./multi-select-filter";
+import { useAppStore } from "@/store/use-app-store";
+import { filterRecordsWithExclusions } from "@/store/use-app-store";
 import type {
   VehicleInsuranceGrade,
   HighwayRiskGrade,
   TruckScore,
-} from '@/types/insurance'
-import { normalizeChineseText } from '@/lib/utils'
+} from "@/types/insurance";
+import { normalizeChineseText } from "@/lib/utils";
 import {
   CANONICAL_RENEWAL_STATUSES,
   CANONICAL_CUSTOMER_CATEGORIES,
-} from '@/constants/dimensions'
-import { getRatingVisibility } from '@/utils/rating-visibility'
+} from "@/constants/dimensions";
+import { getRatingVisibility } from "@/utils/rating-visibility";
 
 export function CustomerFilter() {
-  const filters = useAppStore(state => state.filters)
-  const updateFilters = useAppStore(state => state.updateFilters)
-  const rawData = useAppStore(state => state.rawData)
+  const filters = useAppStore((state) => state.filters);
+  const updateFilters = useAppStore((state) => state.updateFilters);
+  const rawData = useAppStore((state) => state.rawData);
 
   // 联动：根据其他筛选条件提取唯一的客户分类（仅显示CANONICAL集合中存在且数据中实际出现的值）
   const recordsForCustomerCategory = filterRecordsWithExclusions(
     rawData,
     filters,
-    ['customerCategories']
-  )
+    ["customerCategories"],
+  );
   const presentCustomerCategories = new Set<string>(
     recordsForCustomerCategory
-      .map(record => normalizeChineseText(record.customer_category_3))
-      .filter((v): v is string => Boolean(v))
-  )
+      .map((record) => normalizeChineseText(record.customer_category_3))
+      .filter((v): v is string => Boolean(v)),
+  );
   const availableCustomerCategories = CANONICAL_CUSTOMER_CATEGORIES.filter(
-    cat => presentCustomerCategories.has(cat)
+    (cat) => presentCustomerCategories.has(cat),
   )
-    .sort((a, b) => a.localeCompare(b, 'zh-CN'))
-    .map(cat => ({ label: cat, value: cat }))
+    .sort((a, b) => a.localeCompare(b, "zh-CN"))
+    .map((cat) => ({ label: cat, value: cat }));
 
   // 获取评级筛选器可见性配置
-  const ratingVisibility = getRatingVisibility(filters)
+  const ratingVisibility = getRatingVisibility(filters);
 
   // 联动：根据其他筛选条件提取唯一的车险评级（客车）
   const recordsForVehicleGrades = filterRecordsWithExclusions(
     rawData,
     filters,
-    ['vehicleGrades']
-  )
+    ["vehicleGrades"],
+  );
   const availableVehicleGrades = recordsForVehicleGrades
-    .map(record => record.vehicle_insurance_grade)
+    .map((record) => record.vehicle_insurance_grade)
     .filter(
       (grade): grade is NonNullable<typeof grade> =>
-        grade != null && grade !== 'X' && grade.trim() !== ''
+        grade != null && grade !== "X" && grade.trim() !== "",
     )
     .reduce((unique, grade) => {
       if (!unique.includes(grade)) {
-        unique.push(grade)
+        unique.push(grade);
       }
-      return unique
+      return unique;
     }, [] as NonNullable<VehicleInsuranceGrade>[])
     .sort()
-    .map(grade => ({ label: grade, value: grade }))
+    .map((grade) => ({ label: grade, value: grade }));
 
   // 联动：根据其他筛选条件提取唯一的高速风险等级（客车）
   const recordsForHighwayRiskGrades = filterRecordsWithExclusions(
     rawData,
     filters,
-    ['highwayRiskGrades']
-  )
+    ["highwayRiskGrades"],
+  );
   const availableHighwayRiskGrades = recordsForHighwayRiskGrades
-    .map(record => record.highway_risk_grade)
+    .map((record) => record.highway_risk_grade)
     .filter(
       (grade): grade is NonNullable<typeof grade> =>
-        grade != null && grade !== 'X' && grade.trim() !== ''
+        grade != null && grade !== "X" && grade.trim() !== "",
     )
     .reduce((unique, grade) => {
       if (!unique.includes(grade)) {
-        unique.push(grade)
+        unique.push(grade);
       }
-      return unique
+      return unique;
     }, [] as NonNullable<HighwayRiskGrade>[])
     .sort()
-    .map(grade => ({ label: grade, value: grade }))
+    .map((grade) => ({ label: grade, value: grade }));
 
   // 联动：根据其他筛选条件提取唯一的小货车评分
   const recordsForSmallTruckScores = filterRecordsWithExclusions(
     rawData,
     filters,
-    ['smallTruckScores']
-  )
+    ["smallTruckScores"],
+  );
   const availableSmallTruckScores = recordsForSmallTruckScores
-    .map(record => record.small_truck_score)
+    .map((record) => record.small_truck_score)
     .filter(
       (score): score is NonNullable<typeof score> =>
-        score != null && score !== 'X' && score.trim() !== ''
+        score != null && score !== "X" && score.trim() !== "",
     )
     .reduce((unique, score) => {
       if (!unique.includes(score)) {
-        unique.push(score)
+        unique.push(score);
       }
-      return unique
+      return unique;
     }, [] as NonNullable<TruckScore>[])
     .sort()
-    .map(score => ({ label: score, value: score }))
+    .map((score) => ({ label: score, value: score }));
 
   // 联动：根据其他筛选条件提取唯一的大货车评分
   const recordsForLargeTruckScores = filterRecordsWithExclusions(
     rawData,
     filters,
-    ['largeTruckScores']
-  )
+    ["largeTruckScores"],
+  );
   const availableLargeTruckScores = recordsForLargeTruckScores
-    .map(record => record.large_truck_score)
+    .map((record) => record.large_truck_score)
     .filter(
       (score): score is NonNullable<typeof score> =>
-        score != null && score !== 'X' && score.trim() !== ''
+        score != null && score !== "X" && score.trim() !== "",
     )
     .reduce((unique, score) => {
       if (!unique.includes(score)) {
-        unique.push(score)
+        unique.push(score);
       }
-      return unique
+      return unique;
     }, [] as NonNullable<TruckScore>[])
     .sort()
-    .map(score => ({ label: score, value: score }))
+    .map((score) => ({ label: score, value: score }));
 
   // 联动：根据其他筛选条件提取唯一的新续转状态
   const recordsForRenewalStatuses = filterRecordsWithExclusions(
     rawData,
     filters,
-    ['renewalStatuses']
-  )
+    ["renewalStatuses"],
+  );
   const availableRenewalStatuses = (() => {
     const present = new Set<string>(
       recordsForRenewalStatuses
-        .map(record => String(record.renewal_status))
-        .filter((v): v is string => Boolean(v))
-    )
-    return CANONICAL_RENEWAL_STATUSES.filter(status => present.has(status))
-      .sort((a, b) => a.localeCompare(b, 'zh-CN'))
-      .map(status => ({ label: status, value: status }))
-  })()
+        .map((record) => String(record.renewal_status))
+        .filter((v): v is string => Boolean(v)),
+    );
+    return CANONICAL_RENEWAL_STATUSES.filter((status) => present.has(status))
+      .sort((a, b) => a.localeCompare(b, "zh-CN"))
+      .map((status) => ({ label: status, value: status }));
+  })();
 
   const handleCustomerCategoryChange = (categories: string[]) => {
-    updateFilters({ customerCategories: categories })
-  }
+    updateFilters({ customerCategories: categories });
+  };
 
   const handleVehicleGradeChange = (grades: string[]) => {
-    updateFilters({ vehicleGrades: grades })
-  }
+    updateFilters({ vehicleGrades: grades });
+  };
 
   const handleHighwayRiskGradeChange = (grades: string[]) => {
-    updateFilters({ highwayRiskGrades: grades })
-  }
+    updateFilters({ highwayRiskGrades: grades });
+  };
 
   const handleSmallTruckScoreChange = (scores: string[]) => {
-    updateFilters({ smallTruckScores: scores })
-  }
+    updateFilters({ smallTruckScores: scores });
+  };
 
   const handleLargeTruckScoreChange = (scores: string[]) => {
-    updateFilters({ largeTruckScores: scores })
-  }
+    updateFilters({ largeTruckScores: scores });
+  };
 
   const handleRenewalStatusChange = (statuses: string[]) => {
-    updateFilters({ renewalStatuses: statuses })
-  }
+    updateFilters({ renewalStatuses: statuses });
+  };
 
   const handleReset = () => {
     updateFilters({
@@ -174,8 +174,8 @@ export function CustomerFilter() {
       smallTruckScores: [],
       largeTruckScores: [],
       renewalStatuses: [],
-    })
-  }
+    });
+  };
 
   const hasFilters =
     filters.customerCategories.length > 0 ||
@@ -183,7 +183,7 @@ export function CustomerFilter() {
     filters.highwayRiskGrades.length > 0 ||
     filters.smallTruckScores.length > 0 ||
     filters.largeTruckScores.length > 0 ||
-    filters.renewalStatuses.length > 0
+    filters.renewalStatuses.length > 0;
 
   return (
     <div className="rounded-2xl border-2 border-slate-200 bg-white p-5">
@@ -304,5 +304,5 @@ export function CustomerFilter() {
         </div>
       </FilterContainer>
     </div>
-  )
+  );
 }

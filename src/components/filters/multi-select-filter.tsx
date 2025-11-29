@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { useState, useId } from 'react'
-import { ChevronsUpDown, Check } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { useState, useId } from "react";
+import { ChevronsUpDown, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -10,105 +10,105 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command'
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
-import { cn } from '@/lib/utils'
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 interface MultiSelectFilterProps {
-  options: { label: string; value: string }[]
-  selectedValues: string[]
-  onChange: (values: string[]) => void
-  placeholder?: string
-  searchPlaceholder?: string
-  emptyText?: string
+  options: { label: string; value: string }[];
+  selectedValues: string[];
+  onChange: (values: string[]) => void;
+  placeholder?: string;
+  searchPlaceholder?: string;
+  emptyText?: string;
   /** 唯一标识符，用于生成唯一的表单ID */
-  id?: string
+  id?: string;
 }
 
 export function MultiSelectFilter({
   options,
   selectedValues,
   onChange,
-  placeholder = '选择选项',
-  searchPlaceholder = '搜索...',
-  emptyText = '未找到选项',
+  placeholder = "选择选项",
+  searchPlaceholder = "搜索...",
+  emptyText = "未找到选项",
   id,
 }: MultiSelectFilterProps) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   // 使用 React 的 useId 生成唯一ID，如果没有传入 id 则自动生成
-  const autoId = useId()
-  const uniqueId = id || autoId
-  const optionValues = options.map(opt => opt.value)
+  const autoId = useId();
+  const uniqueId = id || autoId;
+  const optionValues = options.map((opt) => opt.value);
   const isAllSelected =
-    optionValues.length > 0 && selectedValues.length === optionValues.length
-  const showBulkActions = options.length > 3
-  const isSimpleFilter = options.length >= 2 && options.length <= 3
+    optionValues.length > 0 && selectedValues.length === optionValues.length;
+  const showBulkActions = options.length > 3;
+  const isSimpleFilter = options.length >= 2 && options.length <= 3;
 
   const handleSelect = (value: string) => {
     const newValues = selectedValues.includes(value)
-      ? selectedValues.filter(v => v !== value)
-      : [...selectedValues, value]
-    onChange(newValues)
-  }
+      ? selectedValues.filter((v) => v !== value)
+      : [...selectedValues, value];
+    onChange(newValues);
+  };
 
   const handleSelectAll = () => {
-    if (optionValues.length === 0) return
-    onChange(optionValues)
-  }
+    if (optionValues.length === 0) return;
+    onChange(optionValues);
+  };
 
   const handleInvertSelection = () => {
-    if (optionValues.length === 0) return
+    if (optionValues.length === 0) return;
     const inverted = optionValues.filter(
-      value => !selectedValues.includes(value)
-    )
-    onChange(inverted)
-  }
+      (value) => !selectedValues.includes(value),
+    );
+    onChange(inverted);
+  };
 
   const handleClear = () => {
-    if (selectedValues.length === 0) return
-    onChange([])
-  }
+    if (selectedValues.length === 0) return;
+    onChange([]);
+  };
 
   const displayText =
     selectedValues.length === 0
       ? placeholder
       : isAllSelected
-        ? '全部'
-        : `已选 ${selectedValues.length} 项`
+        ? "全部"
+        : `已选 ${selectedValues.length} 项`;
 
   // 2-3个选项时使用并列点选方式 - 使用grid布局自适应
   if (isSimpleFilter) {
     return (
       <div
         className={cn(
-          'grid gap-2',
-          options.length === 2 ? 'grid-cols-2' : 'grid-cols-3'
+          "grid gap-2",
+          options.length === 2 ? "grid-cols-2" : "grid-cols-3",
         )}
       >
-        {options.map(option => {
-          const isSelected = selectedValues.includes(option.value)
+        {options.map((option) => {
+          const isSelected = selectedValues.includes(option.value);
           return (
             <button
               key={option.value}
               onClick={() => handleSelect(option.value)}
               className={cn(
-                'px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200',
-                'border-2 active:scale-95 whitespace-normal text-center',
+                "px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200",
+                "border-2 active:scale-95 whitespace-normal text-center",
                 isSelected
-                  ? 'bg-blue-500 border-blue-500 text-white shadow-lg shadow-blue-200'
-                  : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 active:bg-slate-50'
+                  ? "bg-blue-500 border-blue-500 text-white shadow-lg shadow-blue-200"
+                  : "bg-white border-slate-200 text-slate-700 hover:border-slate-300 active:bg-slate-50",
               )}
             >
               {option.label}
             </button>
-          )
+          );
         })}
       </div>
-    )
+    );
   }
 
   // 超过3个选项时使用下拉多选方式
@@ -120,16 +120,16 @@ export function MultiSelectFilter({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            'w-full justify-between h-11 rounded-xl border-2 font-medium transition-all',
+            "w-full justify-between h-11 rounded-xl border-2 font-medium transition-all",
             selectedValues.length > 0
-              ? 'border-blue-500 text-blue-600 bg-blue-50 hover:bg-blue-100'
-              : 'border-slate-200 text-slate-700 hover:border-slate-300'
+              ? "border-blue-500 text-blue-600 bg-blue-50 hover:bg-blue-100"
+              : "border-slate-200 text-slate-700 hover:border-slate-300",
           )}
         >
           <span
             className={cn(
-              'truncate',
-              selectedValues.length > 0 && 'text-blue-600 font-semibold'
+              "truncate",
+              selectedValues.length > 0 && "text-blue-600 font-semibold",
             )}
           >
             {displayText}
@@ -155,11 +155,11 @@ export function MultiSelectFilter({
                 <button
                   onClick={handleSelectAll}
                   className={cn(
-                    'flex-shrink-0 px-4 py-2 text-sm font-medium rounded-lg transition-all',
-                    'border-2 active:scale-95',
+                    "flex-shrink-0 px-4 py-2 text-sm font-medium rounded-lg transition-all",
+                    "border-2 active:scale-95",
                     isAllSelected
-                      ? 'bg-blue-500 border-blue-500 text-white shadow-md'
-                      : 'bg-white border-slate-200 text-slate-700 hover:border-blue-300 hover:text-blue-600'
+                      ? "bg-blue-500 border-blue-500 text-white shadow-md"
+                      : "bg-white border-slate-200 text-slate-700 hover:border-blue-300 hover:text-blue-600",
                   )}
                 >
                   全选
@@ -174,10 +174,10 @@ export function MultiSelectFilter({
                   onClick={handleClear}
                   disabled={selectedValues.length === 0}
                   className={cn(
-                    'flex-shrink-0 px-4 py-2 text-sm font-medium rounded-lg transition-all border-2 active:scale-95',
+                    "flex-shrink-0 px-4 py-2 text-sm font-medium rounded-lg transition-all border-2 active:scale-95",
                     selectedValues.length > 0
-                      ? 'bg-white border-slate-200 text-slate-700 hover:border-red-300 hover:text-red-600'
-                      : 'bg-slate-50 border-slate-100 text-slate-400 cursor-not-allowed'
+                      ? "bg-white border-slate-200 text-slate-700 hover:border-red-300 hover:text-red-600"
+                      : "bg-slate-50 border-slate-100 text-slate-400 cursor-not-allowed",
                   )}
                 >
                   清空
@@ -191,25 +191,25 @@ export function MultiSelectFilter({
               {emptyText}
             </CommandEmpty>
             <CommandGroup className="p-2">
-              {options.map(option => {
-                const isSelected = selectedValues.includes(option.value)
+              {options.map((option) => {
+                const isSelected = selectedValues.includes(option.value);
                 return (
                   <CommandItem
                     key={option.value}
                     onSelect={() => handleSelect(option.value)}
                     className={cn(
-                      'cursor-pointer rounded-lg px-3 py-2.5 mb-1 transition-all',
+                      "cursor-pointer rounded-lg px-3 py-2.5 mb-1 transition-all",
                       isSelected
-                        ? 'bg-blue-50 text-blue-700 font-semibold'
-                        : 'text-slate-700 hover:bg-slate-50'
+                        ? "bg-blue-50 text-blue-700 font-semibold"
+                        : "text-slate-700 hover:bg-slate-50",
                     )}
                   >
                     <div
                       className={cn(
-                        'mr-3 flex h-5 w-5 items-center justify-center rounded-md border-2 transition-all flex-shrink-0',
+                        "mr-3 flex h-5 w-5 items-center justify-center rounded-md border-2 transition-all flex-shrink-0",
                         isSelected
-                          ? 'bg-blue-500 border-blue-500'
-                          : 'border-slate-300'
+                          ? "bg-blue-500 border-blue-500"
+                          : "border-slate-300",
                       )}
                     >
                       {isSelected && (
@@ -218,19 +218,19 @@ export function MultiSelectFilter({
                     </div>
                     <span
                       className={cn(
-                        'break-words',
-                        isSelected && 'text-blue-700'
+                        "break-words",
+                        isSelected && "text-blue-700",
                       )}
                     >
                       {option.label}
                     </span>
                   </CommandItem>
-                )
+                );
               })}
             </CommandGroup>
           </CommandList>
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

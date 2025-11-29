@@ -1,0 +1,14 @@
+node_modules/
+.next/
+out/
+dist/
+build/
+*.config.js
+*.config.ts
+.spec-workflow/
+coverage/
+.cache/
+public/
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts

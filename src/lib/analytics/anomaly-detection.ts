@@ -11,27 +11,27 @@ export interface AnomalyPoint {
   /**
    * 数据点索引
    */
-  index: number
+  index: number;
 
   /**
    * 原始值
    */
-  value: number
+  value: number;
 
   /**
    * 异常分数（越高越异常）
    */
-  score: number
+  score: number;
 
   /**
    * 异常类型
    */
-  type: 'high' | 'low'
+  type: "high" | "low";
 
   /**
    * 检测方法
    */
-  method: 'zscore' | 'iqr' | 'mad'
+  method: "zscore" | "iqr" | "mad";
 }
 
 export interface AnomalyDetectionOptions {
@@ -41,7 +41,7 @@ export interface AnomalyDetectionOptions {
    * - iqr: 四分位距法（适用于有偏分布）
    * - mad: 中位数绝对偏差法（对极值更鲁棒）
    */
-  method?: 'zscore' | 'iqr' | 'mad'
+  method?: "zscore" | "iqr" | "mad";
 
   /**
    * 敏感度阈值
@@ -49,88 +49,88 @@ export interface AnomalyDetectionOptions {
    * - iqr: 默认1.5（1.5倍IQR）
    * - mad: 默认3（3倍MAD）
    */
-  threshold?: number
+  threshold?: number;
 
   /**
    * 最小数据点数量（少于此数量不进行检测）
    */
-  minDataPoints?: number
+  minDataPoints?: number;
 }
 
 /**
  * 计算基础统计量
  */
 function calculateStats(data: number[]) {
-  const n = data.length
+  const n = data.length;
   if (n === 0) {
-    return { mean: 0, median: 0, stdDev: 0, q1: 0, q3: 0, iqr: 0, mad: 0 }
+    return { mean: 0, median: 0, stdDev: 0, q1: 0, q3: 0, iqr: 0, mad: 0 };
   }
 
   // 均值
-  const mean = data.reduce((sum, val) => sum + val, 0) / n
+  const mean = data.reduce((sum, val) => sum + val, 0) / n;
 
   // 标准差
   const variance =
-    data.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / n
-  const stdDev = Math.sqrt(variance)
+    data.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / n;
+  const stdDev = Math.sqrt(variance);
 
   // 中位数和四分位数
-  const sorted = [...data].sort((a, b) => a - b)
-  const median = sorted[Math.floor(n / 2)]
-  const q1 = sorted[Math.floor(n * 0.25)]
-  const q3 = sorted[Math.floor(n * 0.75)]
-  const iqr = q3 - q1
+  const sorted = [...data].sort((a, b) => a - b);
+  const median = sorted[Math.floor(n / 2)];
+  const q1 = sorted[Math.floor(n * 0.25)];
+  const q3 = sorted[Math.floor(n * 0.75)];
+  const iqr = q3 - q1;
 
   // MAD (Median Absolute Deviation)
-  const absDeviations = data.map(val => Math.abs(val - median))
+  const absDeviations = data.map((val) => Math.abs(val - median));
   const mad = absDeviations.sort((a, b) => a - b)[
     Math.floor(absDeviations.length / 2)
-  ]
+  ];
 
-  return { mean, median, stdDev, q1, q3, iqr, mad }
+  return { mean, median, stdDev, q1, q3, iqr, mad };
 }
 
 /**
  * Z-Score 方法检测异常
  */
 function detectByZScore(data: number[], threshold = 3): AnomalyPoint[] {
-  const stats = calculateStats(data)
-  const anomalies: AnomalyPoint[] = []
+  const stats = calculateStats(data);
+  const anomalies: AnomalyPoint[] = [];
 
   if (stats.stdDev === 0) {
-    return anomalies // 数据无变化，无异常
+    return anomalies; // 数据无变化，无异常
   }
 
   data.forEach((value, index) => {
-    const zScore = Math.abs((value - stats.mean) / stats.stdDev)
+    const zScore = Math.abs((value - stats.mean) / stats.stdDev);
 
     if (zScore > threshold) {
       anomalies.push({
         index,
         value,
         score: zScore,
-        type: value > stats.mean ? 'high' : 'low',
-        method: 'zscore',
-      })
+        type: value > stats.mean ? "high" : "low",
+        method: "zscore",
+      });
     }
-  })
+  });
 
-  return anomalies
+  return anomalies;
 }
 
 /**
  * IQR (Interquartile Range) 方法检测异常
  */
 function detectByIQR(data: number[], threshold = 1.5): AnomalyPoint[] {
-  const stats = calculateStats(data)
-  const anomalies: AnomalyPoint[] = []
+  const stats = calculateStats(data);
+  const anomalies: AnomalyPoint[] = [];
 
   if (stats.iqr === 0) {
-    return anomalies // 数据无变化，无异常
+    return anomalies; // 数据无变化，无异常
   }
 
-  const lowerBound = stats.q1 - threshold * stats.iqr
-  const upperBound = stats.q3 + threshold * stats.iqr
+  const lowerBound = stats.q1 - threshold * stats.iqr;
+  const upperBound = stats.q3 + threshold * stats.iqr;
 
   data.forEach((value, index) => {
     if (value < lowerBound || value > upperBound) {
@@ -138,51 +138,51 @@ function detectByIQR(data: number[], threshold = 1.5): AnomalyPoint[] {
       const deviation =
         value < lowerBound
           ? (stats.q1 - value) / stats.iqr
-          : (value - stats.q3) / stats.iqr
+          : (value - stats.q3) / stats.iqr;
 
       anomalies.push({
         index,
         value,
         score: deviation,
-        type: value > upperBound ? 'high' : 'low',
-        method: 'iqr',
-      })
+        type: value > upperBound ? "high" : "low",
+        method: "iqr",
+      });
     }
-  })
+  });
 
-  return anomalies
+  return anomalies;
 }
 
 /**
  * MAD (Median Absolute Deviation) 方法检测异常
  */
 function detectByMAD(data: number[], threshold = 3): AnomalyPoint[] {
-  const stats = calculateStats(data)
-  const anomalies: AnomalyPoint[] = []
+  const stats = calculateStats(data);
+  const anomalies: AnomalyPoint[] = [];
 
   if (stats.mad === 0) {
-    return anomalies // 数据无变化，无异常
+    return anomalies; // 数据无变化，无异常
   }
 
   // 修正因子（使MAD与标准差可比）
-  const consistencyConstant = 1.4826
+  const consistencyConstant = 1.4826;
 
   data.forEach((value, index) => {
     const modifiedZScore =
-      (consistencyConstant * Math.abs(value - stats.median)) / stats.mad
+      (consistencyConstant * Math.abs(value - stats.median)) / stats.mad;
 
     if (modifiedZScore > threshold) {
       anomalies.push({
         index,
         value,
         score: modifiedZScore,
-        type: value > stats.median ? 'high' : 'low',
-        method: 'mad',
-      })
+        type: value > stats.median ? "high" : "low",
+        method: "mad",
+      });
     }
-  })
+  });
 
-  return anomalies
+  return anomalies;
 }
 
 /**
@@ -201,34 +201,34 @@ function detectByMAD(data: number[], threshold = 3): AnomalyPoint[] {
  */
 export function detectAnomalies(
   data: number[],
-  options: AnomalyDetectionOptions = {}
+  options: AnomalyDetectionOptions = {},
 ): AnomalyPoint[] {
-  const { method = 'zscore', threshold, minDataPoints = 5 } = options
+  const { method = "zscore", threshold, minDataPoints = 5 } = options;
 
   // 数据点太少，不进行检测
   if (data.length < minDataPoints) {
-    return []
+    return [];
   }
 
   // 过滤掉null/undefined/NaN
   const validData = data.filter(
-    val => val !== null && val !== undefined && !isNaN(val)
-  )
+    (val) => val !== null && val !== undefined && !isNaN(val),
+  );
 
   if (validData.length < minDataPoints) {
-    return []
+    return [];
   }
 
   // 根据方法选择检测算法
   switch (method) {
-    case 'zscore':
-      return detectByZScore(validData, threshold ?? 3)
-    case 'iqr':
-      return detectByIQR(validData, threshold ?? 1.5)
-    case 'mad':
-      return detectByMAD(validData, threshold ?? 3)
+    case "zscore":
+      return detectByZScore(validData, threshold ?? 3);
+    case "iqr":
+      return detectByIQR(validData, threshold ?? 1.5);
+    case "mad":
+      return detectByMAD(validData, threshold ?? 3);
     default:
-      return detectByZScore(validData, threshold ?? 3)
+      return detectByZScore(validData, threshold ?? 3);
   }
 }
 
@@ -236,14 +236,14 @@ export function detectAnomalies(
  * 获取异常检测的统计摘要
  */
 export function getAnomalyStats(data: number[], anomalies: AnomalyPoint[]) {
-  const stats = calculateStats(data)
+  const stats = calculateStats(data);
 
   return {
     totalPoints: data.length,
     anomalyCount: anomalies.length,
     anomalyRate: (anomalies.length / data.length) * 100,
-    highAnomalies: anomalies.filter(a => a.type === 'high').length,
-    lowAnomalies: anomalies.filter(a => a.type === 'low').length,
+    highAnomalies: anomalies.filter((a) => a.type === "high").length,
+    lowAnomalies: anomalies.filter((a) => a.type === "low").length,
     stats,
-  }
+  };
 }

@@ -6,9 +6,9 @@
  * @migration 从 use-app-store.ts 拆分出缓存管理部分
  */
 
-import { create } from 'zustand'
-import { devtools } from 'zustand/middleware'
-import type { KPIResult } from '@/types/insurance'
+import { create } from "zustand";
+import { devtools } from "zustand/middleware";
+import type { KPIResult } from "@/types/insurance";
 
 interface CacheStore {
   // ==================== 状态 ====================
@@ -17,17 +17,17 @@ interface CacheStore {
    * Key: 由筛选条件和计算参数生成的唯一标识
    * Value: KPI计算结果
    */
-  kpiCache: Map<string, KPIResult>
+  kpiCache: Map<string, KPIResult>;
 
   /**
    * 缓存命中次数统计
    */
-  cacheHits: number
+  cacheHits: number;
 
   /**
    * 缓存未命中次数统计
    */
-  cacheMisses: number
+  cacheMisses: number;
 
   // ==================== 操作方法 ====================
 
@@ -36,70 +36,70 @@ interface CacheStore {
    * @param key 缓存键
    * @param result KPI计算结果
    */
-  setKPICache: (key: string, result: KPIResult) => void
+  setKPICache: (key: string, result: KPIResult) => void;
 
   /**
    * 获取KPI缓存
    * @param key 缓存键
    * @returns KPI计算结果（如果存在）
    */
-  getKPICache: (key: string) => KPIResult | undefined
+  getKPICache: (key: string) => KPIResult | undefined;
 
   /**
    * 检查缓存是否存在
    * @param key 缓存键
    * @returns 是否存在
    */
-  hasKPICache: (key: string) => boolean
+  hasKPICache: (key: string) => boolean;
 
   /**
    * 删除特定缓存
    * @param key 缓存键
    */
-  deleteKPICache: (key: string) => void
+  deleteKPICache: (key: string) => void;
 
   /**
    * 清空所有KPI缓存
    */
-  clearKPICache: () => void
+  clearKPICache: () => void;
 
   /**
    * 清空所有缓存（包括统计数据）
    */
-  clearAll: () => void
+  clearAll: () => void;
 
   // ==================== 计算属性 ====================
 
   /**
    * 获取缓存大小
    */
-  getCacheSize: () => number
+  getCacheSize: () => number;
 
   /**
    * 获取缓存命中率
    */
-  getCacheHitRate: () => number
+  getCacheHitRate: () => number;
 
   /**
    * 获取缓存统计信息
    */
   getCacheStats: () => {
-    size: number
-    hits: number
-    misses: number
-    hitRate: number
-    totalRequests: number
-  }
+    size: number;
+    hits: number;
+    misses: number;
+    hitRate: number;
+    totalRequests: number;
+  };
 
   /**
    * 记录缓存命中
    */
-  recordCacheHit: () => void
+  recordCacheHit: () => void;
 
   /**
    * 记录缓存未命中
    */
-  recordCacheMiss: () => void
+  recordCacheMiss: () => void;
 }
 
 /**
@@ -117,51 +117,51 @@ export const useCacheStore = create<CacheStore>()(
 
       setKPICache: (key, result) => {
         set(
-          state => {
-            const newCache = new Map(state.kpiCache)
-            newCache.set(key, result)
+          (state) => {
+            const newCache = new Map(state.kpiCache);
+            newCache.set(key, result);
             return {
               kpiCache: newCache,
-            }
+            };
           },
           false,
-          'setKPICache'
-        )
-        console.log(`[CacheStore] 缓存已设置: ${key}`)
+          "setKPICache",
+        );
+        console.log(`[CacheStore] 缓存已设置: ${key}`);
       },
 
-      getKPICache: key => {
-        const { kpiCache } = get()
-        const result = kpiCache.get(key)
+      getKPICache: (key) => {
+        const { kpiCache } = get();
+        const result = kpiCache.get(key);
 
         if (result) {
-          get().recordCacheHit()
-          console.log(`[CacheStore] 缓存命中: ${key}`)
+          get().recordCacheHit();
+          console.log(`[CacheStore] 缓存命中: ${key}`);
         } else {
-          get().recordCacheMiss()
-          console.log(`[CacheStore] 缓存未命中: ${key}`)
+          get().recordCacheMiss();
+          console.log(`[CacheStore] 缓存未命中: ${key}`);
         }
 
-        return result
+        return result;
       },
 
-      hasKPICache: key => {
-        return get().kpiCache.has(key)
+      hasKPICache: (key) => {
+        return get().kpiCache.has(key);
       },
 
-      deleteKPICache: key => {
+      deleteKPICache: (key) => {
         set(
-          state => {
-            const newCache = new Map(state.kpiCache)
-            newCache.delete(key)
+          (state) => {
+            const newCache = new Map(state.kpiCache);
+            newCache.delete(key);
             return {
               kpiCache: newCache,
-            }
+            };
           },
           false,
-          'deleteKPICache'
-        )
-        console.log(`[CacheStore] 缓存已删除: ${key}`)
+          "deleteKPICache",
+        );
+        console.log(`[CacheStore] 缓存已删除: ${key}`);
       },
 
       clearKPICache: () => {
@@ -170,9 +170,9 @@ export const useCacheStore = create<CacheStore>()(
             kpiCache: new Map(),
           },
           false,
-          'clearKPICache'
-        )
-        console.log('[CacheStore] KPI缓存已清空')
+          "clearKPICache",
+        );
+        console.log("[CacheStore] KPI缓存已清空");
       },
 
       clearAll: () => {
@@ -183,28 +183,28 @@ export const useCacheStore = create<CacheStore>()(
             cacheMisses: 0,
           },
           false,
-          'clearAll'
-        )
-        console.log('[CacheStore] 所有缓存和统计数据已清空')
+          "clearAll",
+        );
+        console.log("[CacheStore] 所有缓存和统计数据已清空");
       },
 
       // ==================== 计算属性 ====================
 
       getCacheSize: () => {
-        return get().kpiCache.size
+        return get().kpiCache.size;
       },
 
       getCacheHitRate: () => {
-        const { cacheHits, cacheMisses } = get()
-        const total = cacheHits + cacheMisses
-        if (total === 0) return 0
-        return (cacheHits / total) * 100
+        const { cacheHits, cacheMisses } = get();
+        const total = cacheHits + cacheMisses;
+        if (total === 0) return 0;
+        return (cacheHits / total) * 100;
       },
 
       getCacheStats: () => {
-        const { kpiCache, cacheHits, cacheMisses } = get()
-        const total = cacheHits + cacheMisses
-        const hitRate = total === 0 ? 0 : (cacheHits / total) * 100
+        const { kpiCache, cacheHits, cacheMisses } = get();
+        const total = cacheHits + cacheMisses;
+        const hitRate = total === 0 ? 0 : (cacheHits / total) * 100;
 
         return {
           size: kpiCache.size,
@@ -212,31 +212,31 @@ export const useCacheStore = create<CacheStore>()(
           misses: cacheMisses,
           hitRate,
           totalRequests: total,
-        }
+        };
       },
 
       recordCacheHit: () => {
         set(
-          state => ({
+          (state) => ({
             cacheHits: state.cacheHits + 1,
           }),
           false,
-          'recordCacheHit'
-        )
+          "recordCacheHit",
+        );
       },
 
       recordCacheMiss: () => {
         set(
-          state => ({
+          (state) => ({
             cacheMisses: state.cacheMisses + 1,
           }),
           false,
-          'recordCacheMiss'
-        )
+          "recordCacheMiss",
+        );
       },
     }),
     {
-      name: 'cache-store',
-    }
-  )
-)
+      name: "cache-store",
+    },
+  ),
+);

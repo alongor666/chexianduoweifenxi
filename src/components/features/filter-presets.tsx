@@ -3,12 +3,15 @@
  * @status 完成
  * @doc See [FEAT-P1-02: 筛选条件组合保存与管理](./../../../开发文档/01_features/FEAT-P1-02_filter-presets.md)
  */
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Save, FolderOpen, Star, Clock, Trash2, Download } from 'lucide-react'
-import { useFilterPresets, type FilterPreset } from '@/hooks/use-filter-presets'
-import { useAppStore } from '@/store/use-app-store'
+import { useState } from "react";
+import { Save, FolderOpen, Star, Clock, Trash2, Download } from "lucide-react";
+import {
+  useFilterPresets,
+  type FilterPreset,
+} from "@/hooks/use-filter-presets";
+import { useAppStore } from "@/store/use-app-store";
 import {
   Dialog,
   DialogContent,
@@ -16,12 +19,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { cn } from '@/lib/utils'
+} from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 export function FilterPresets() {
-  const filters = useAppStore(state => state.filters)
-  const updateFilters = useAppStore(state => state.updateFilters)
+  const filters = useAppStore((state) => state.filters);
+  const updateFilters = useAppStore((state) => state.updateFilters);
   const {
     presets,
     createPreset,
@@ -30,63 +33,63 @@ export function FilterPresets() {
     getMostUsedPresets,
     getRecentPresets,
     exportPresets,
-  } = useFilterPresets()
+  } = useFilterPresets();
 
-  const [isOpen, setIsOpen] = useState(false)
-  const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false)
-  const [newPresetName, setNewPresetName] = useState('')
-  const [newPresetDescription, setNewPresetDescription] = useState('')
-  const [activeTab, setActiveTab] = useState<'all' | 'frequent' | 'recent'>(
-    'all'
-  )
+  const [isOpen, setIsOpen] = useState(false);
+  const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
+  const [newPresetName, setNewPresetName] = useState("");
+  const [newPresetDescription, setNewPresetDescription] = useState("");
+  const [activeTab, setActiveTab] = useState<"all" | "frequent" | "recent">(
+    "all",
+  );
 
   // 保存当前筛选条件为预设
   const handleSavePreset = () => {
     if (!newPresetName.trim()) {
-      return
+      return;
     }
 
     createPreset(
       newPresetName.trim(),
       filters,
-      newPresetDescription.trim() || undefined
-    )
+      newPresetDescription.trim() || undefined,
+    );
 
-    setNewPresetName('')
-    setNewPresetDescription('')
-    setIsSaveDialogOpen(false)
-  }
+    setNewPresetName("");
+    setNewPresetDescription("");
+    setIsSaveDialogOpen(false);
+  };
 
   // 应用预设
   const handleApplyPreset = (preset: FilterPreset) => {
-    const filters = applyPreset(preset.id)
+    const filters = applyPreset(preset.id);
     if (filters) {
-      updateFilters(filters)
-      setIsOpen(false)
+      updateFilters(filters);
+      setIsOpen(false);
     }
-  }
+  };
 
   // 删除预设
   const handleDeletePreset = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (confirm('确定要删除这个筛选预设吗？')) {
-      deletePreset(id)
+    e.stopPropagation();
+    if (confirm("确定要删除这个筛选预设吗？")) {
+      deletePreset(id);
     }
-  }
+  };
 
   // 获取要显示的预设列表
   const getDisplayPresets = () => {
     switch (activeTab) {
-      case 'frequent':
-        return getMostUsedPresets()
-      case 'recent':
-        return getRecentPresets()
+      case "frequent":
+        return getMostUsedPresets();
+      case "recent":
+        return getRecentPresets();
       default:
-        return presets
+        return presets;
     }
-  }
+  };
 
-  const displayPresets = getDisplayPresets()
+  const displayPresets = getDisplayPresets();
 
   // 检查当前是否有筛选条件
   const hasActiveFilters =
@@ -100,7 +103,7 @@ export function FilterPresets() {
     filters.vehicleGrades.length > 0 ||
     filters.terminalSources.length > 0 ||
     filters.renewalStatuses.length > 0 ||
-    filters.isNewEnergy !== null
+    filters.isNewEnergy !== null;
 
   return (
     <div className="flex items-center gap-2">
@@ -109,13 +112,13 @@ export function FilterPresets() {
         <DialogTrigger asChild>
           <button
             className={cn(
-              'inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-all',
+              "inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-all",
               hasActiveFilters
-                ? 'border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100'
-                : 'border-slate-200 bg-white text-slate-400 cursor-not-allowed'
+                ? "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
+                : "border-slate-200 bg-white text-slate-400 cursor-not-allowed",
             )}
             disabled={!hasActiveFilters}
-            title={hasActiveFilters ? '保存当前筛选条件' : '当前没有筛选条件'}
+            title={hasActiveFilters ? "保存当前筛选条件" : "当前没有筛选条件"}
           >
             <Save className="h-4 w-4" />
             保存筛选
@@ -137,7 +140,7 @@ export function FilterPresets() {
               <input
                 type="text"
                 value={newPresetName}
-                onChange={e => setNewPresetName(e.target.value)}
+                onChange={(e) => setNewPresetName(e.target.value)}
                 placeholder="例如：2024年高新区商业险"
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
                 maxLength={50}
@@ -150,7 +153,7 @@ export function FilterPresets() {
               </label>
               <textarea
                 value={newPresetDescription}
-                onChange={e => setNewPresetDescription(e.target.value)}
+                onChange={(e) => setNewPresetDescription(e.target.value)}
                 placeholder="简要描述这个筛选条件的用途..."
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
                 rows={3}
@@ -165,16 +168,16 @@ export function FilterPresets() {
               </p>
               <div className="space-y-1 text-xs text-slate-600">
                 {filters.years.length > 0 && (
-                  <div>• 年度: {filters.years.join(', ')}</div>
+                  <div>• 年度: {filters.years.join(", ")}</div>
                 )}
                 {filters.weeks.length > 0 && (
-                  <div>• 周次: {filters.weeks.join(', ')}</div>
+                  <div>• 周次: {filters.weeks.join(", ")}</div>
                 )}
                 {filters.organizations.length > 0 && (
-                  <div>• 机构: {filters.organizations.join(', ')}</div>
+                  <div>• 机构: {filters.organizations.join(", ")}</div>
                 )}
                 {filters.insuranceTypes.length > 0 && (
-                  <div>• 险种: {filters.insuranceTypes.join(', ')}</div>
+                  <div>• 险种: {filters.insuranceTypes.join(", ")}</div>
                 )}
                 {/* 可以添加更多筛选条件显示 */}
               </div>
@@ -203,14 +206,14 @@ export function FilterPresets() {
         <DialogTrigger asChild>
           <button
             className={cn(
-              'inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-all',
+              "inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-all",
               presets.length > 0
-                ? 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-                : 'border-slate-200 bg-white text-slate-400 cursor-not-allowed'
+                ? "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                : "border-slate-200 bg-white text-slate-400 cursor-not-allowed",
             )}
             disabled={presets.length === 0}
             title={
-              presets.length > 0 ? '加载已保存的筛选预设' : '暂无保存的预设'
+              presets.length > 0 ? "加载已保存的筛选预设" : "暂无保存的预设"
             }
           >
             <FolderOpen className="h-4 w-4" />
@@ -233,35 +236,35 @@ export function FilterPresets() {
           {/* 标签页 */}
           <div className="flex gap-1 border-b border-slate-200">
             <button
-              onClick={() => setActiveTab('all')}
+              onClick={() => setActiveTab("all")}
               className={cn(
-                'px-4 py-2 text-sm font-medium transition-colors',
-                activeTab === 'all'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-slate-600 hover:text-slate-900'
+                "px-4 py-2 text-sm font-medium transition-colors",
+                activeTab === "all"
+                  ? "border-b-2 border-blue-600 text-blue-600"
+                  : "text-slate-600 hover:text-slate-900",
               )}
             >
               全部 ({presets.length})
             </button>
             <button
-              onClick={() => setActiveTab('frequent')}
+              onClick={() => setActiveTab("frequent")}
               className={cn(
-                'inline-flex items-center gap-1 px-4 py-2 text-sm font-medium transition-colors',
-                activeTab === 'frequent'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-slate-600 hover:text-slate-900'
+                "inline-flex items-center gap-1 px-4 py-2 text-sm font-medium transition-colors",
+                activeTab === "frequent"
+                  ? "border-b-2 border-blue-600 text-blue-600"
+                  : "text-slate-600 hover:text-slate-900",
               )}
             >
               <Star className="h-4 w-4" />
               常用
             </button>
             <button
-              onClick={() => setActiveTab('recent')}
+              onClick={() => setActiveTab("recent")}
               className={cn(
-                'inline-flex items-center gap-1 px-4 py-2 text-sm font-medium transition-colors',
-                activeTab === 'recent'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-slate-600 hover:text-slate-900'
+                "inline-flex items-center gap-1 px-4 py-2 text-sm font-medium transition-colors",
+                activeTab === "recent"
+                  ? "border-b-2 border-blue-600 text-blue-600"
+                  : "text-slate-600 hover:text-slate-900",
               )}
             >
               <Clock className="h-4 w-4" />
@@ -275,18 +278,18 @@ export function FilterPresets() {
               <div className="flex flex-col items-center justify-center py-12 text-center">
                 <FolderOpen className="mb-3 h-12 w-12 text-slate-300" />
                 <p className="text-sm font-medium text-slate-600">
-                  {activeTab === 'all'
-                    ? '暂无保存的筛选预设'
-                    : activeTab === 'frequent'
-                      ? '暂无常用预设'
-                      : '暂无最近使用的预设'}
+                  {activeTab === "all"
+                    ? "暂无保存的筛选预设"
+                    : activeTab === "frequent"
+                      ? "暂无常用预设"
+                      : "暂无最近使用的预设"}
                 </p>
                 <p className="mt-1 text-xs text-slate-500">
                   点击&ldquo;保存筛选&rdquo;按钮创建第一个预设
                 </p>
               </div>
             ) : (
-              displayPresets.map(preset => (
+              displayPresets.map((preset) => (
                 <div
                   key={preset.id}
                   onClick={() => handleApplyPreset(preset)}
@@ -298,7 +301,7 @@ export function FilterPresets() {
                         {preset.name}
                       </h4>
                       <button
-                        onClick={e => handleDeletePreset(preset.id, e)}
+                        onClick={(e) => handleDeletePreset(preset.id, e)}
                         className="opacity-0 transition-opacity group-hover:opacity-100"
                         title="删除预设"
                       >
@@ -353,5 +356,5 @@ export function FilterPresets() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

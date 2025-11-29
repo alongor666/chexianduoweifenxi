@@ -1,18 +1,21 @@
 /**
  * 环比计算工具
  * 用于计算KPI的环比变化、判断变化方向的好坏
+ * 应用 DRY 原则，使用统一的工具函数
  */
 
-import type { KPIResult } from '@/types/insurance'
+import type { KPIResult } from "@/types/insurance";
+import { isValidNumber } from "./guards";
+import { getChangeColor } from "./color-helpers";
 
 export interface ComparisonMetrics {
-  current: number | null
-  previous: number | null
-  absoluteChange: number | null
-  percentChange: number | null
-  isBetter: boolean
-  isWorsened: boolean
-  direction: 'up' | 'down' | 'flat'
+  current: number | null;
+  previous: number | null;
+  absoluteChange: number | null;
+  percentChange: number | null;
+  isBetter: boolean;
+  isWorsened: boolean;
+  direction: "up" | "down" | "flat";
 }
 
 /**
@@ -53,7 +56,7 @@ const KPI_BETTER_DIRECTION: Record<string, boolean> = {
   maturity_rate: true,
   new_energy_ratio: true,
   commercial_autonomy_coefficient: true,
-}
+};
 
 /**
  * 获取环比计算结果
@@ -65,11 +68,11 @@ const KPI_BETTER_DIRECTION: Record<string, boolean> = {
 export function getComparisonMetrics(
   kpiId: keyof KPIResult,
   currentKpis: KPIResult | null | undefined,
-  previousKpis: KPIResult | null | undefined
+  previousKpis: KPIResult | null | undefined,
 ): ComparisonMetrics {
   // 安全获取数值
-  const current = currentKpis?.[kpiId] ?? null
-  const previous = previousKpis?.[kpiId] ?? null
+  const current = currentKpis?.[kpiId] ?? null;
+  const previous = previousKpis?.[kpiId] ?? null;
 
   // 如果任一数据缺失，返回空结果
   if (current === null || previous === null) {
@@ -80,32 +83,32 @@ export function getComparisonMetrics(
       percentChange: null,
       isBetter: false,
       isWorsened: false,
-      direction: 'flat',
-    }
+      direction: "flat",
+    };
   }
 
   // 计算绝对变化和百分比变化
-  const absoluteChange = current - previous
+  const absoluteChange = current - previous;
   const percentChange =
-    previous !== 0 ? (absoluteChange / Math.abs(previous)) * 100 : null
+    previous !== 0 ? (absoluteChange / Math.abs(previous)) * 100 : null;
 
   // 判断变化方向
-  let direction: 'up' | 'down' | 'flat' = 'flat'
-  if (absoluteChange > 0) direction = 'up'
-  else if (absoluteChange < 0) direction = 'down'
+  let direction: "up" | "down" | "flat" = "flat";
+  if (absoluteChange > 0) direction = "up";
+  else if (absoluteChange < 0) direction = "down";
 
   // 判断该指标的"好"方向（默认为越高越好）
-  const isHigherBetter = KPI_BETTER_DIRECTION[kpiId] ?? true
+  const isHigherBetter = KPI_BETTER_DIRECTION[kpiId] ?? true;
 
   // 判断是否向好
-  let isBetter = false
-  if (direction === 'up' && isHigherBetter) isBetter = true
-  if (direction === 'down' && !isHigherBetter) isBetter = true
+  let isBetter = false;
+  if (direction === "up" && isHigherBetter) isBetter = true;
+  if (direction === "down" && !isHigherBetter) isBetter = true;
 
   // 判断是否恶化
-  let isWorsened = false
-  if (direction === 'up' && !isHigherBetter) isWorsened = true
-  if (direction === 'down' && isHigherBetter) isWorsened = true
+  let isWorsened = false;
+  if (direction === "up" && !isHigherBetter) isWorsened = true;
+  if (direction === "down" && isHigherBetter) isWorsened = true;
 
   return {
     current,
@@ -115,7 +118,7 @@ export function getComparisonMetrics(
     isBetter,
     isWorsened,
     direction,
-  }
+  };
 }
 
 /**
@@ -129,40 +132,40 @@ export function getComparisonMetrics(
 export function getBatchComparisonMetrics(
   kpiId: keyof KPIResult,
   currentData: Array<{ dimension: string; kpis: KPIResult }>,
-  previousData: Array<{ dimension: string; kpis: KPIResult }>
+  previousData: Array<{ dimension: string; kpis: KPIResult }>,
 ): Array<{ dimension: string; comparison: ComparisonMetrics }> {
   const results: Array<{ dimension: string; comparison: ComparisonMetrics }> =
-    []
+    [];
 
   // 创建对比期数据的快速查找Map
-  const previousMap = new Map<string, KPIResult>()
-  previousData.forEach(item => {
-    previousMap.set(item.dimension, item.kpis)
-  })
+  const previousMap = new Map<string, KPIResult>();
+  previousData.forEach((item) => {
+    previousMap.set(item.dimension, item.kpis);
+  });
 
   // 遍历当前期数据，计算环比
-  currentData.forEach(currentItem => {
-    const previousKpis = previousMap.get(currentItem.dimension)
+  currentData.forEach((currentItem) => {
+    const previousKpis = previousMap.get(currentItem.dimension);
     const comparison = getComparisonMetrics(
       kpiId,
       currentItem.kpis,
-      previousKpis
-    )
+      previousKpis,
+    );
 
     results.push({
       dimension: currentItem.dimension,
       comparison,
-    })
-  })
+    });
+  });
 
   // 按绝对变化值排序（降序，绝对值最大的排前面）
   results.sort((a, b) => {
-    const absA = Math.abs(a.comparison.absoluteChange ?? 0)
-    const absB = Math.abs(b.comparison.absoluteChange ?? 0)
-    return absB - absA
-  })
+    const absA = Math.abs(a.comparison.absoluteChange ?? 0);
+    const absB = Math.abs(b.comparison.absoluteChange ?? 0);
+    return absB - absA;
+  });
 
-  return results
+  return results;
 }
 
 /**
@@ -173,22 +176,22 @@ export function getBatchComparisonMetrics(
  */
 export function formatComparisonChange(
   comparison: ComparisonMetrics,
-  isPercentage = true
+  isPercentage = true,
 ): string {
-  if (comparison.absoluteChange === null) return '-'
+  if (!isValidNumber(comparison.absoluteChange)) return "-";
 
   const value = isPercentage
     ? comparison.percentChange
-    : comparison.absoluteChange
+    : comparison.absoluteChange;
 
-  if (value === null) return '-'
+  if (!isValidNumber(value)) return "-";
 
-  const sign = value >= 0 ? '+' : ''
+  const sign = value >= 0 ? "+" : "";
   const formattedValue = isPercentage
     ? `${value.toFixed(2)}%`
-    : Math.round(value).toLocaleString('zh-CN')
+    : Math.round(value).toLocaleString("zh-CN");
 
-  return `${sign}${formattedValue}`
+  return `${sign}${formattedValue}`;
 }
 
 /**
@@ -197,9 +200,9 @@ export function formatComparisonChange(
  * @returns Tailwind 色彩类名
  */
 export function getComparisonColor(comparison: ComparisonMetrics): string {
-  if (comparison.absoluteChange === null) return 'text-slate-500'
-
-  if (comparison.isBetter) return 'text-green-600'
-  if (comparison.isWorsened) return 'text-red-600'
-  return 'text-slate-600'
+  return getChangeColor(
+    comparison.absoluteChange,
+    comparison.isBetter,
+    comparison.isWorsened,
+  );
 }

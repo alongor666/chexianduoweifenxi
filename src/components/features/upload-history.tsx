@@ -1,107 +1,123 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react'
-import { Clock, FileText, CheckCircle, XCircle, AlertCircle, Eye, EyeOff, Calendar } from 'lucide-react'
-import { useAppStore } from '@/store/use-app-store'
-import { UploadHistoryRecord } from '@/lib/storage/data-persistence'
+import React, { useState, useEffect } from "react";
+import {
+  Clock,
+  FileText,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  Eye,
+  EyeOff,
+  Calendar,
+} from "lucide-react";
+import { useAppStore } from "@/store/use-app-store";
+import { UploadHistoryRecord } from "@/lib/storage/data-persistence";
 
 /**
  * 格式化文件大小
  */
 const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return '0 B'
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-}
+  if (bytes === 0) return "0 B";
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+};
 
 /**
  * 格式化时间
  */
 const formatDateTime = (timestamp: string): string => {
-  const date = new Date(timestamp)
-  return date.toLocaleString('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  })
-}
+  const date = new Date(timestamp);
+  return date.toLocaleString("zh-CN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+};
 
 /**
  * 获取状态图标和颜色
  */
 const getStatusDisplay = (status: string) => {
   switch (status) {
-    case 'success':
+    case "success":
       return {
         icon: CheckCircle,
-        color: 'text-green-600',
-        bgColor: 'bg-green-50',
-        borderColor: 'border-green-200',
-        label: '成功'
-      }
-    case 'failed':
+        color: "text-green-600",
+        bgColor: "bg-green-50",
+        borderColor: "border-green-200",
+        label: "成功",
+      };
+    case "failed":
       return {
         icon: XCircle,
-        color: 'text-red-600',
-        bgColor: 'bg-red-50',
-        borderColor: 'border-red-200',
-        label: '失败'
-      }
-    case 'partial':
+        color: "text-red-600",
+        bgColor: "bg-red-50",
+        borderColor: "border-red-200",
+        label: "失败",
+      };
+    case "partial":
       return {
         icon: AlertCircle,
-        color: 'text-yellow-600',
-        bgColor: 'bg-yellow-50',
-        borderColor: 'border-yellow-200',
-        label: '部分成功'
-      }
+        color: "text-yellow-600",
+        bgColor: "bg-yellow-50",
+        borderColor: "border-yellow-200",
+        label: "部分成功",
+      };
     default:
       return {
         icon: AlertCircle,
-        color: 'text-gray-600',
-        bgColor: 'bg-gray-50',
-        borderColor: 'border-gray-200',
-        label: '未知'
-      }
+        color: "text-gray-600",
+        bgColor: "bg-gray-50",
+        borderColor: "border-gray-200",
+        label: "未知",
+      };
   }
-}
+};
 
 export function UploadHistory() {
-  const [history, setHistory] = useState<UploadHistoryRecord[]>([])
-  const [isVisible, setIsVisible] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [history, setHistory] = useState<UploadHistoryRecord[]>([]);
+  const [isVisible, setIsVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const getUploadHistoryRecords = useAppStore(state => state.getUploadHistoryRecords)
+  const getUploadHistoryRecords = useAppStore(
+    (state) => state.getUploadHistoryRecords,
+  );
 
   // 加载上传历史
   const loadHistory = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const records = await getUploadHistoryRecords()
-      setHistory(records.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())) // 按时间倒序
+      const records = await getUploadHistoryRecords();
+      setHistory(
+        records.sort(
+          (a, b) =>
+            new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+        ),
+      ); // 按时间倒序
     } catch (error) {
-      console.error('加载上传历史失败:', error)
+      console.error("加载上传历史失败:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   // 组件挂载时加载历史
   useEffect(() => {
-    loadHistory()
-  }, [])
+    loadHistory();
+  }, []);
 
   // 切换显示状态时重新加载
   useEffect(() => {
     if (isVisible) {
-      loadHistory()
+      loadHistory();
     }
-  }, [isVisible])
+  }, [isVisible]);
 
   if (!isVisible) {
     return (
@@ -114,7 +130,7 @@ export function UploadHistory() {
           查看上传历史
         </button>
       </div>
-    )
+    );
   }
 
   return (
@@ -144,13 +160,15 @@ export function UploadHistory() {
         <div className="p-6 bg-white/80 backdrop-blur-sm rounded-lg border border-slate-200 text-center">
           <Clock className="h-12 w-12 text-slate-400 mx-auto mb-3" />
           <p className="text-slate-600">暂无上传历史</p>
-          <p className="text-sm text-slate-500 mt-1">上传文件后将在此显示历史记录</p>
+          <p className="text-sm text-slate-500 mt-1">
+            上传文件后将在此显示历史记录
+          </p>
         </div>
       ) : (
         <div className="space-y-3 max-h-96 overflow-y-auto">
           {history.map((record, index) => {
-            const statusDisplay = getStatusDisplay(record.status)
-            const StatusIcon = statusDisplay.icon
+            const statusDisplay = getStatusDisplay(record.status);
+            const StatusIcon = statusDisplay.icon;
 
             return (
               <div
@@ -161,22 +179,28 @@ export function UploadHistory() {
                   <div className={`p-2 rounded-full ${statusDisplay.bgColor}`}>
                     <StatusIcon className={`h-4 w-4 ${statusDisplay.color}`} />
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
                       <FileText className="h-4 w-4 text-slate-400" />
                       <span className="font-medium text-slate-800 truncate">
-                        {record.files.length > 0 ? record.files[0].name : '未知文件'}
+                        {record.files.length > 0
+                          ? record.files[0].name
+                          : "未知文件"}
                       </span>
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusDisplay.bgColor} ${statusDisplay.color}`}>
+                      <span
+                        className={`px-2 py-1 text-xs font-medium rounded-full ${statusDisplay.bgColor} ${statusDisplay.color}`}
+                      >
                         {statusDisplay.label}
                       </span>
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-4 text-sm text-slate-600">
                       <div>
                         <span className="text-slate-500">文件大小：</span>
-                        {record.files.length > 0 ? formatFileSize(record.files[0].size) : '未知'}
+                        {record.files.length > 0
+                          ? formatFileSize(record.files[0].size)
+                          : "未知"}
                       </div>
                       <div>
                         <span className="text-slate-500">上传时间：</span>
@@ -197,7 +221,9 @@ export function UploadHistory() {
                       <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
                         <div className="flex items-center gap-2 mb-2">
                           <Calendar className="h-4 w-4 text-blue-600" />
-                          <span className="text-sm font-medium text-blue-900">周次信息</span>
+                          <span className="text-sm font-medium text-blue-900">
+                            周次信息
+                          </span>
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
                           <div>
@@ -206,31 +232,36 @@ export function UploadHistory() {
                               {record.weekInfo.totalWeeks}
                             </span>
                           </div>
-                          {record.weekInfo.newWeeks && record.weekInfo.newWeeks.length > 0 && (
-                            <div>
-                              <span className="text-green-700">新导入：</span>
-                              <span className="font-medium text-green-600">
-                                {record.weekInfo.newWeeks.length} 个周次
-                              </span>
-                            </div>
-                          )}
-                          {record.weekInfo.skippedWeeks && record.weekInfo.skippedWeeks.length > 0 && (
-                            <div>
-                              <span className="text-yellow-700">已跳过：</span>
-                              <span className="font-medium text-yellow-600">
-                                {record.weekInfo.skippedWeeks.length} 个周次
-                              </span>
-                            </div>
-                          )}
+                          {record.weekInfo.newWeeks &&
+                            record.weekInfo.newWeeks.length > 0 && (
+                              <div>
+                                <span className="text-green-700">新导入：</span>
+                                <span className="font-medium text-green-600">
+                                  {record.weekInfo.newWeeks.length} 个周次
+                                </span>
+                              </div>
+                            )}
+                          {record.weekInfo.skippedWeeks &&
+                            record.weekInfo.skippedWeeks.length > 0 && (
+                              <div>
+                                <span className="text-yellow-700">
+                                  已跳过：
+                                </span>
+                                <span className="font-medium text-yellow-600">
+                                  {record.weekInfo.skippedWeeks.length} 个周次
+                                </span>
+                              </div>
+                            )}
                         </div>
-                        {record.weekInfo.newWeeks && record.weekInfo.newWeeks.length > 0 && (
-                          <div className="mt-2 text-xs text-slate-600">
-                            <span className="text-slate-500">导入周次：</span>
-                            {record.weekInfo.newWeeks
-                              .map(w => `第${w}周`)
-                              .join('、')}
-                          </div>
-                        )}
+                        {record.weekInfo.newWeeks &&
+                          record.weekInfo.newWeeks.length > 0 && (
+                            <div className="mt-2 text-xs text-slate-600">
+                              <span className="text-slate-500">导入周次：</span>
+                              {record.weekInfo.newWeeks
+                                .map((w) => `第${w}周`)
+                                .join("、")}
+                            </div>
+                          )}
                       </div>
                     )}
 
@@ -243,10 +274,10 @@ export function UploadHistory() {
                   </div>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
       )}
     </div>
-  )
+  );
 }

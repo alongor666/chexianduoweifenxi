@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import {
   ResponsiveContainer,
   PieChart,
@@ -8,38 +8,38 @@ import {
   Cell,
   Tooltip,
   Legend,
-} from 'recharts'
+} from "recharts";
 import {
   useCustomerDistribution,
   useChannelDistribution,
-} from '@/hooks/use-aggregation'
-import { formatNumber } from '@/utils/format'
-import type { PiePoint } from '@/hooks/use-aggregation'
+} from "@/hooks/use-aggregation";
+import { formatNumber } from "@/utils/format";
+import type { PiePoint } from "@/hooks/use-aggregation";
 
 const COLORS = [
-  '#1d4ed8',
-  '#0ea5e9',
-  '#22c55e',
-  '#ef4444',
-  '#f59e0b',
-  '#8b5cf6',
-  '#14b8a6',
-  '#ec4899',
-  '#94a3b8',
-  '#eab308',
-  '#10b981',
-]
+  "#1d4ed8",
+  "#0ea5e9",
+  "#22c55e",
+  "#ef4444",
+  "#f59e0b",
+  "#8b5cf6",
+  "#14b8a6",
+  "#ec4899",
+  "#94a3b8",
+  "#eab308",
+  "#10b981",
+];
 
 // 使用React.memo优化组件性能
 export const DistributionPieChart = React.memo(function DistributionPieChart() {
-  const [mode, setMode] = useState<'customer' | 'channel'>('customer')
-  const customer = useCustomerDistribution()
-  const channel = useChannelDistribution()
-  const data: PiePoint[] = mode === 'customer' ? customer : channel
+  const [mode, setMode] = useState<"customer" | "channel">("customer");
+  const customer = useCustomerDistribution();
+  const channel = useChannelDistribution();
+  const data: PiePoint[] = mode === "customer" ? customer : channel;
 
-  if (!data || data.length === 0) return null
+  if (!data || data.length === 0) return null;
 
-  const total = data.reduce((s, d) => s + d.value, 0)
+  const total = data.reduce((s, d) => s + d.value, 0);
 
   return (
     <div className="rounded-2xl border border-white/50 bg-white/40 p-6 shadow-lg backdrop-blur-xl">
@@ -50,14 +50,14 @@ export const DistributionPieChart = React.memo(function DistributionPieChart() {
         </div>
         <div className="flex gap-2">
           <button
-            className={`px-2 py-1 text-xs rounded border ${mode === 'customer' ? 'bg-blue-600 text-white border-blue-600' : 'border-slate-300 text-slate-700'}`}
-            onClick={() => setMode('customer')}
+            className={`px-2 py-1 text-xs rounded border ${mode === "customer" ? "bg-blue-600 text-white border-blue-600" : "border-slate-300 text-slate-700"}`}
+            onClick={() => setMode("customer")}
           >
             客户
           </button>
           <button
-            className={`px-2 py-1 text-xs rounded border ${mode === 'channel' ? 'bg-blue-600 text-white border-blue-600' : 'border-slate-300 text-slate-700'}`}
-            onClick={() => setMode('channel')}
+            className={`px-2 py-1 text-xs rounded border ${mode === "channel" ? "bg-blue-600 text-white border-blue-600" : "border-slate-300 text-slate-700"}`}
+            onClick={() => setMode("channel")}
           >
             渠道
           </button>
@@ -96,5 +96,5 @@ export const DistributionPieChart = React.memo(function DistributionPieChart() {
         总计：{formatNumber(total, 2)} 万
       </div>
     </div>
-  )
-})
+  );
+});

@@ -1,88 +1,88 @@
-'use client'
+"use client";
 
-import { FilterContainer } from './filter-container'
-import { MultiSelectFilter } from './multi-select-filter'
-import { useAppStore } from '@/store/use-app-store'
-import { filterRecordsWithExclusions } from '@/store/use-app-store'
-import { normalizeChineseText } from '@/lib/utils'
+import { FilterContainer } from "./filter-container";
+import { MultiSelectFilter } from "./multi-select-filter";
+import { useAppStore } from "@/store/use-app-store";
+import { filterRecordsWithExclusions } from "@/store/use-app-store";
+import { normalizeChineseText } from "@/lib/utils";
 import {
   CANONICAL_INSURANCE_TYPES,
   CANONICAL_COVERAGE_TYPES,
   CANONICAL_BUSINESS_TYPES,
-} from '@/constants/dimensions'
+} from "@/constants/dimensions";
 
 export function ProductFilter() {
-  const filters = useAppStore(state => state.filters)
-  const updateFilters = useAppStore(state => state.updateFilters)
-  const rawData = useAppStore(state => state.rawData)
+  const filters = useAppStore((state) => state.filters);
+  const updateFilters = useAppStore((state) => state.updateFilters);
+  const rawData = useAppStore((state) => state.rawData);
 
   // 联动：根据其他筛选条件提取唯一的保险类型
   const recordsForInsuranceType = filterRecordsWithExclusions(
     rawData,
     filters,
-    ['insuranceTypes']
-  )
+    ["insuranceTypes"],
+  );
   const presentInsuranceTypes = new Set<string>(
     recordsForInsuranceType
-      .map(record => String(record.insurance_type))
-      .filter((v): v is string => Boolean(v))
+      .map((record) => String(record.insurance_type))
+      .filter((v): v is string => Boolean(v)),
+  );
+  const availableInsuranceTypes = CANONICAL_INSURANCE_TYPES.filter((type) =>
+    presentInsuranceTypes.has(type),
   )
-  const availableInsuranceTypes = CANONICAL_INSURANCE_TYPES.filter(type =>
-    presentInsuranceTypes.has(type)
-  )
-    .sort((a, b) => a.localeCompare(b, 'zh-CN'))
-    .map(type => ({ label: type, value: type }))
+    .sort((a, b) => a.localeCompare(b, "zh-CN"))
+    .map((type) => ({ label: type, value: type }));
 
   // 联动：根据其他筛选条件提取唯一的业务类型（仅显示CANONICAL集合中存在且数据中实际出现的值）
   const recordsForBusinessType = filterRecordsWithExclusions(rawData, filters, [
-    'businessTypes',
-  ])
+    "businessTypes",
+  ]);
   const presentBusinessTypes = new Set<string>(
     recordsForBusinessType
-      .map(record => normalizeChineseText(record.business_type_category))
-      .filter((v): v is string => Boolean(v))
+      .map((record) => normalizeChineseText(record.business_type_category))
+      .filter((v): v is string => Boolean(v)),
+  );
+  const availableBusinessTypes = CANONICAL_BUSINESS_TYPES.filter((type) =>
+    presentBusinessTypes.has(type),
   )
-  const availableBusinessTypes = CANONICAL_BUSINESS_TYPES.filter(type =>
-    presentBusinessTypes.has(type)
-  )
-    .sort((a, b) => a.localeCompare(b, 'zh-CN'))
-    .map(type => ({ label: type, value: type }))
+    .sort((a, b) => a.localeCompare(b, "zh-CN"))
+    .map((type) => ({ label: type, value: type }));
 
   // 联动：根据其他筛选条件提取唯一的险别组合
   const recordsForCoverageType = filterRecordsWithExclusions(rawData, filters, [
-    'coverageTypes',
-  ])
+    "coverageTypes",
+  ]);
   const presentCoverageTypes = new Set<string>(
     recordsForCoverageType
-      .map(record => String(record.coverage_type))
-      .filter((v): v is string => Boolean(v))
+      .map((record) => String(record.coverage_type))
+      .filter((v): v is string => Boolean(v)),
+  );
+  const availableCoverageTypes = CANONICAL_COVERAGE_TYPES.filter((type) =>
+    presentCoverageTypes.has(type),
   )
-  const availableCoverageTypes = CANONICAL_COVERAGE_TYPES.filter(type =>
-    presentCoverageTypes.has(type)
-  )
-    .sort((a, b) => a.localeCompare(b, 'zh-CN'))
-    .map(type => ({ label: type, value: type }))
+    .sort((a, b) => a.localeCompare(b, "zh-CN"))
+    .map((type) => ({ label: type, value: type }));
 
   const handleInsuranceTypeChange = (types: string[]) => {
-    updateFilters({ insuranceTypes: types })
-  }
+    updateFilters({ insuranceTypes: types });
+  };
 
   const handleBusinessTypeChange = (types: string[]) => {
-    updateFilters({ businessTypes: types })
-  }
+    updateFilters({ businessTypes: types });
+  };
 
   const handleCoverageTypeChange = (types: string[]) => {
-    updateFilters({ coverageTypes: types })
-  }
+    updateFilters({ coverageTypes: types });
+  };
 
   const handleReset = () => {
-    updateFilters({ insuranceTypes: [], businessTypes: [], coverageTypes: [] })
-  }
+    updateFilters({ insuranceTypes: [], businessTypes: [], coverageTypes: [] });
+  };
 
   const hasFilters =
     filters.insuranceTypes.length > 0 ||
     filters.businessTypes.length > 0 ||
-    filters.coverageTypes.length > 0
+    filters.coverageTypes.length > 0;
 
   return (
     <div className="rounded-2xl border-2 border-slate-200 bg-white p-5">
@@ -136,5 +136,5 @@ export function ProductFilter() {
         </div>
       </FilterContainer>
     </div>
-  )
+  );
 }

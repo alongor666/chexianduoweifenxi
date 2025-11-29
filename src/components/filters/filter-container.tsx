@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
-import { ReactNode } from 'react'
-import { X } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { ReactNode } from "react";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface FilterContainerProps {
-  title: string
-  children: ReactNode
-  onReset?: () => void
+  title: string;
+  children: ReactNode;
+  onReset?: () => void;
 }
 
 export function FilterContainer({
@@ -33,5 +33,5 @@ export function FilterContainer({
       </div>
       {children}
     </div>
-  )
+  );
 }

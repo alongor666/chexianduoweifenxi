@@ -3,28 +3,28 @@
  * 支持快捷筛选和自定义选择
  */
 
-'use client'
+"use client";
 
-import React, { useState, useMemo } from 'react'
-import { Search, X } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import React, { useState, useMemo } from "react";
+import { Search, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   ALL_ORGANIZATIONS,
   MAX_ORGANIZATIONS,
   getOrganizationColor,
   canAddMoreOrganizations,
-} from '@/utils/organization-config'
-import type { QuickFilter } from '@/utils/organization-config'
+} from "@/utils/organization-config";
+import type { QuickFilter } from "@/utils/organization-config";
 
 interface OrganizationSelectorProps {
   /** 已选机构列表 */
-  selectedOrganizations: string[]
+  selectedOrganizations: string[];
   /** 机构选择变更回调 */
-  onChange: (organizations: string[]) => void
+  onChange: (organizations: string[]) => void;
   /** 快捷筛选列表 */
-  quickFilters: QuickFilter[]
+  quickFilters: QuickFilter[];
   /** 自定义类名 */
-  className?: string
+  className?: string;
 }
 
 /**
@@ -36,63 +36,70 @@ export function OrganizationSelector({
   quickFilters,
   className,
 }: OrganizationSelectorProps) {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState("");
 
   // 过滤后的机构列表
   const filteredOrgs = useMemo(() => {
-    if (!searchTerm) return ALL_ORGANIZATIONS
+    if (!searchTerm) return ALL_ORGANIZATIONS;
     return ALL_ORGANIZATIONS.filter((org) =>
-      org.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  }, [searchTerm])
+      org.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+  }, [searchTerm]);
 
   // 是否可以添加更多机构
-  const canAddMore = canAddMoreOrganizations(selectedOrganizations.length)
+  const canAddMore = canAddMoreOrganizations(selectedOrganizations.length);
 
   // 处理快捷筛选点击
   const handleQuickFilterClick = (filter: QuickFilter) => {
-    const orgs = Array.from(filter.organizations)
+    const orgs = Array.from(filter.organizations);
     // 如果超过7个，取前7个
-    const selected = orgs.slice(0, MAX_ORGANIZATIONS)
-    onChange(selected)
-  }
+    const selected = orgs.slice(0, MAX_ORGANIZATIONS);
+    onChange(selected);
+  };
 
   // 处理机构勾选/取消
   const handleToggleOrg = (org: string) => {
     if (selectedOrganizations.includes(org)) {
       // 取消勾选
-      onChange(selectedOrganizations.filter((o) => o !== org))
+      onChange(selectedOrganizations.filter((o) => o !== org));
     } else {
       // 勾选
       if (canAddMore) {
-        onChange([...selectedOrganizations, org])
+        onChange([...selectedOrganizations, org]);
       }
     }
-  }
+  };
 
   // 全选
   const handleSelectAll = () => {
-    const allOrgs = Array.from(ALL_ORGANIZATIONS)
-    const selected = allOrgs.slice(0, MAX_ORGANIZATIONS)
-    onChange(selected)
-  }
+    const allOrgs = Array.from(ALL_ORGANIZATIONS);
+    const selected = allOrgs.slice(0, MAX_ORGANIZATIONS);
+    onChange(selected);
+  };
 
   // 清空
   const handleClearAll = () => {
-    onChange([])
-  }
+    onChange([]);
+  };
 
   // 移除单个机构
   const handleRemoveOrg = (org: string) => {
-    onChange(selectedOrganizations.filter((o) => o !== org))
-  }
+    onChange(selectedOrganizations.filter((o) => o !== org));
+  };
 
   return (
-    <div className={cn('rounded-xl border border-slate-200 bg-white p-6', className)}>
+    <div
+      className={cn(
+        "rounded-xl border border-slate-200 bg-white p-6",
+        className,
+      )}
+    >
       {/* 快捷筛选 */}
       <div className="mb-6">
         <div className="mb-3 flex items-center gap-2">
-          <span className="text-sm font-semibold text-slate-700">🎯 快捷筛选</span>
+          <span className="text-sm font-semibold text-slate-700">
+            🎯 快捷筛选
+          </span>
         </div>
         <div className="flex flex-wrap gap-2">
           {quickFilters.map((filter) => (
@@ -115,7 +122,9 @@ export function OrganizationSelector({
       {/* 自定义选择 */}
       <div className="mb-6">
         <div className="mb-3 flex items-center gap-2">
-          <span className="text-sm font-semibold text-slate-700">⚙️ 自定义选择</span>
+          <span className="text-sm font-semibold text-slate-700">
+            ⚙️ 自定义选择
+          </span>
         </div>
 
         {/* 搜索框 */}
@@ -133,8 +142,8 @@ export function OrganizationSelector({
         {/* 机构列表 */}
         <div className="mb-3 flex flex-wrap gap-2">
           {filteredOrgs.map((org) => {
-            const isSelected = selectedOrganizations.includes(org)
-            const isDisabled = !isSelected && !canAddMore
+            const isSelected = selectedOrganizations.includes(org);
+            const isDisabled = !isSelected && !canAddMore;
 
             return (
               <button
@@ -142,27 +151,25 @@ export function OrganizationSelector({
                 onClick={() => handleToggleOrg(org)}
                 disabled={isDisabled}
                 className={cn(
-                  'rounded-lg border px-3 py-1.5 text-sm font-medium transition-all',
+                  "rounded-lg border px-3 py-1.5 text-sm font-medium transition-all",
                   isSelected
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
+                    ? "border-blue-500 bg-blue-50 text-blue-700"
                     : isDisabled
-                      ? 'cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400'
-                      : 'border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-50'
+                      ? "cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400"
+                      : "border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-50",
                 )}
                 title={
                   isDisabled
                     ? `最多选择 ${MAX_ORGANIZATIONS} 个机构`
                     : isSelected
-                      ? '点击取消选择'
-                      : '点击选择'
+                      ? "点击取消选择"
+                      : "点击选择"
                 }
               >
-                <span className="mr-1.5">
-                  {isSelected ? '☑' : '☐'}
-                </span>
+                <span className="mr-1.5">{isSelected ? "☑" : "☐"}</span>
                 {org}
               </button>
-            )
+            );
           })}
         </div>
 
@@ -202,7 +209,7 @@ export function OrganizationSelector({
         {selectedOrganizations.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {selectedOrganizations.map((org, index) => {
-              const color = getOrganizationColor(index)
+              const color = getOrganizationColor(index);
 
               return (
                 <div
@@ -230,7 +237,7 @@ export function OrganizationSelector({
                     <X className="h-3.5 w-3.5" />
                   </button>
                 </div>
-              )
+              );
             })}
           </div>
         ) : (
@@ -247,5 +254,5 @@ export function OrganizationSelector({
         )}
       </div>
     </div>
-  )
+  );
 }

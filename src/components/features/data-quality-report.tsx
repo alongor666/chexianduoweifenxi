@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import React, { useMemo } from 'react'
+import React, { useMemo } from "react";
 import {
   BarChart3,
   AlertTriangle,
@@ -10,32 +10,32 @@ import {
   Download,
   Target,
   Zap,
-} from 'lucide-react'
-import { cn } from '@/lib/utils'
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface DataQualityReportProps {
-  totalRecords: number
-  validRecords: number
-  invalidRecords: number
+  totalRecords: number;
+  validRecords: number;
+  invalidRecords: number;
   errorStats: {
-    totalErrors: number
-    fieldErrors: Record<string, number>
-    errorTypes: Record<string, number>
+    totalErrors: number;
+    fieldErrors: Record<string, number>;
+    errorTypes: Record<string, number>;
     severityStats: {
-      error: number
-      warning: number
-      info: number
-    }
-  }
-  fileName?: string
+      error: number;
+      warning: number;
+      info: number;
+    };
+  };
+  fileName?: string;
 }
 
 interface QualityMetric {
-  name: string
-  value: number
-  percentage: number
-  status: 'excellent' | 'good' | 'warning' | 'poor'
-  description: string
+  name: string;
+  value: number;
+  percentage: number;
+  status: "excellent" | "good" | "warning" | "poor";
+  description: string;
 }
 
 /**
@@ -54,69 +54,69 @@ export function DataQualityReport({
    */
   const qualityMetrics = useMemo((): QualityMetric[] => {
     const completenessRate =
-      totalRecords > 0 ? (validRecords / totalRecords) * 100 : 0
+      totalRecords > 0 ? (validRecords / totalRecords) * 100 : 0;
     const criticalErrorRate =
       totalRecords > 0
         ? (errorStats.severityStats.error / totalRecords) * 100
-        : 0
+        : 0;
 
     // 字段完整性评分（基于字段错误分布）
-    const fieldCount = Object.keys(errorStats.fieldErrors).length
+    const fieldCount = Object.keys(errorStats.fieldErrors).length;
     const fieldIntegrityScore =
-      fieldCount > 0 ? Math.max(0, 100 - fieldCount * 5) : 100
+      fieldCount > 0 ? Math.max(0, 100 - fieldCount * 5) : 100;
 
     // 数据一致性评分（基于错误类型分布）
     const consistencyIssues = Object.entries(errorStats.errorTypes)
       .filter(
         ([type]) =>
-          type.includes('格式') ||
-          type.includes('枚举') ||
-          type.includes('范围')
+          type.includes("格式") ||
+          type.includes("枚举") ||
+          type.includes("范围"),
       )
-      .reduce((sum, [, count]) => sum + count, 0)
+      .reduce((sum, [, count]) => sum + count, 0);
     const consistencyScore =
       totalRecords > 0
         ? Math.max(0, 100 - (consistencyIssues / totalRecords) * 100)
-        : 100
+        : 100;
 
-    const getStatus = (percentage: number): QualityMetric['status'] => {
-      if (percentage >= 95) return 'excellent'
-      if (percentage >= 85) return 'good'
-      if (percentage >= 70) return 'warning'
-      return 'poor'
-    }
+    const getStatus = (percentage: number): QualityMetric["status"] => {
+      if (percentage >= 95) return "excellent";
+      if (percentage >= 85) return "good";
+      if (percentage >= 70) return "warning";
+      return "poor";
+    };
 
     return [
       {
-        name: '数据完整性',
+        name: "数据完整性",
         value: completenessRate,
         percentage: completenessRate,
         status: getStatus(completenessRate),
-        description: '有效记录占总记录的比例',
+        description: "有效记录占总记录的比例",
       },
       {
-        name: '数据准确性',
+        name: "数据准确性",
         value: 100 - criticalErrorRate,
         percentage: 100 - criticalErrorRate,
         status: getStatus(100 - criticalErrorRate),
-        description: '无严重错误记录的比例',
+        description: "无严重错误记录的比例",
       },
       {
-        name: '字段完整性',
+        name: "字段完整性",
         value: fieldIntegrityScore,
         percentage: fieldIntegrityScore,
         status: getStatus(fieldIntegrityScore),
-        description: '字段数据的完整程度',
+        description: "字段数据的完整程度",
       },
       {
-        name: '数据一致性',
+        name: "数据一致性",
         value: consistencyScore,
         percentage: consistencyScore,
         status: getStatus(consistencyScore),
-        description: '数据格式和规范的一致性',
+        description: "数据格式和规范的一致性",
       },
-    ]
-  }, [totalRecords, validRecords, errorStats])
+    ];
+  }, [totalRecords, validRecords, errorStats]);
 
   /**
    * 计算总体质量评分
@@ -124,83 +124,83 @@ export function DataQualityReport({
   const overallScore = useMemo(() => {
     const avgScore =
       qualityMetrics.reduce((sum, metric) => sum + metric.value, 0) /
-      qualityMetrics.length
-    return Math.round(avgScore)
-  }, [qualityMetrics])
+      qualityMetrics.length;
+    return Math.round(avgScore);
+  }, [qualityMetrics]);
 
   /**
    * 获取质量等级
    */
   const getQualityGrade = (score: number) => {
     if (score >= 95)
-      return { grade: 'A+', color: 'text-green-600', bg: 'bg-green-50' }
+      return { grade: "A+", color: "text-green-600", bg: "bg-green-50" };
     if (score >= 90)
-      return { grade: 'A', color: 'text-green-600', bg: 'bg-green-50' }
+      return { grade: "A", color: "text-green-600", bg: "bg-green-50" };
     if (score >= 85)
-      return { grade: 'B+', color: 'text-blue-600', bg: 'bg-blue-50' }
+      return { grade: "B+", color: "text-blue-600", bg: "bg-blue-50" };
     if (score >= 80)
-      return { grade: 'B', color: 'text-blue-600', bg: 'bg-blue-50' }
+      return { grade: "B", color: "text-blue-600", bg: "bg-blue-50" };
     if (score >= 70)
-      return { grade: 'C', color: 'text-orange-600', bg: 'bg-orange-50' }
-    return { grade: 'D', color: 'text-red-600', bg: 'bg-red-50' }
-  }
+      return { grade: "C", color: "text-orange-600", bg: "bg-orange-50" };
+    return { grade: "D", color: "text-red-600", bg: "bg-red-50" };
+  };
 
-  const qualityGrade = getQualityGrade(overallScore)
+  const qualityGrade = getQualityGrade(overallScore);
 
   /**
    * 导出质量报告
    */
   const exportQualityReport = () => {
     const reportData = [
-      ['数据质量报告'],
-      ['文件名', fileName || '未知'],
-      ['生成时间', new Date().toLocaleString('zh-CN')],
-      [''],
-      ['总体评分', `${overallScore}分 (${qualityGrade.grade})`],
-      [''],
-      ['基础统计'],
-      ['总记录数', totalRecords],
-      ['有效记录数', validRecords],
-      ['无效记录数', invalidRecords],
-      ['错误总数', errorStats.totalErrors],
-      [''],
-      ['质量指标'],
-      ...qualityMetrics.map(metric => [
+      ["数据质量报告"],
+      ["文件名", fileName || "未知"],
+      ["生成时间", new Date().toLocaleString("zh-CN")],
+      [""],
+      ["总体评分", `${overallScore}分 (${qualityGrade.grade})`],
+      [""],
+      ["基础统计"],
+      ["总记录数", totalRecords],
+      ["有效记录数", validRecords],
+      ["无效记录数", invalidRecords],
+      ["错误总数", errorStats.totalErrors],
+      [""],
+      ["质量指标"],
+      ...qualityMetrics.map((metric) => [
         metric.name,
         `${metric.value.toFixed(1)}%`,
         metric.description,
       ]),
-      [''],
-      ['错误分布'],
-      ['严重错误', errorStats.severityStats.error],
-      ['警告', errorStats.severityStats.warning],
-      ['提示', errorStats.severityStats.info],
-      [''],
-      ['错误类型统计'],
+      [""],
+      ["错误分布"],
+      ["严重错误", errorStats.severityStats.error],
+      ["警告", errorStats.severityStats.warning],
+      ["提示", errorStats.severityStats.info],
+      [""],
+      ["错误类型统计"],
       ...Object.entries(errorStats.errorTypes).map(([type, count]) => [
         type,
         count,
       ]),
-      [''],
-      ['字段错误统计'],
+      [""],
+      ["字段错误统计"],
       ...Object.entries(errorStats.fieldErrors).map(([field, count]) => [
         field,
         count,
       ]),
-    ]
+    ];
 
     const csvContent = reportData
-      .map(row =>
-        row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')
+      .map((row) =>
+        row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(","),
       )
-      .join('\n')
+      .join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
-    link.download = `数据质量报告_${fileName || '未知文件'}_${new Date().toISOString().split('T')[0]}.csv`
-    link.click()
-  }
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `数据质量报告_${fileName || "未知文件"}_${new Date().toISOString().split("T")[0]}.csv`;
+    link.click();
+  };
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
@@ -230,15 +230,15 @@ export function DataQualityReport({
         {/* 总体评分 */}
         <div
           className={cn(
-            'p-6 rounded-xl border-2',
+            "p-6 rounded-xl border-2",
             qualityGrade.bg,
-            qualityGrade.color === 'text-green-600'
-              ? 'border-green-200'
-              : qualityGrade.color === 'text-blue-600'
-                ? 'border-blue-200'
-                : qualityGrade.color === 'text-orange-600'
-                  ? 'border-orange-200'
-                  : 'border-red-200'
+            qualityGrade.color === "text-green-600"
+              ? "border-green-200"
+              : qualityGrade.color === "text-blue-600"
+                ? "border-blue-200"
+                : qualityGrade.color === "text-orange-600"
+                  ? "border-orange-200"
+                  : "border-red-200",
           )}
         >
           <div className="flex items-center justify-between">
@@ -251,10 +251,10 @@ export function DataQualityReport({
               </p>
             </div>
             <div className="text-right">
-              <div className={cn('text-4xl font-bold', qualityGrade.color)}>
+              <div className={cn("text-4xl font-bold", qualityGrade.color)}>
                 {overallScore}
               </div>
-              <div className={cn('text-lg font-semibold', qualityGrade.color)}>
+              <div className={cn("text-lg font-semibold", qualityGrade.color)}>
                 {qualityGrade.grade}
               </div>
             </div>
@@ -274,28 +274,28 @@ export function DataQualityReport({
                     {metric.name}
                   </span>
                   <div className="flex items-center gap-2">
-                    {metric.status === 'excellent' && (
+                    {metric.status === "excellent" && (
                       <CheckCircle className="w-4 h-4 text-green-500" />
                     )}
-                    {metric.status === 'good' && (
+                    {metric.status === "good" && (
                       <Target className="w-4 h-4 text-blue-500" />
                     )}
-                    {metric.status === 'warning' && (
+                    {metric.status === "warning" && (
                       <AlertTriangle className="w-4 h-4 text-orange-500" />
                     )}
-                    {metric.status === 'poor' && (
+                    {metric.status === "poor" && (
                       <XCircle className="w-4 h-4 text-red-500" />
                     )}
                     <span
                       className={cn(
-                        'font-semibold',
-                        metric.status === 'excellent'
-                          ? 'text-green-600'
-                          : metric.status === 'good'
-                            ? 'text-blue-600'
-                            : metric.status === 'warning'
-                              ? 'text-orange-600'
-                              : 'text-red-600'
+                        "font-semibold",
+                        metric.status === "excellent"
+                          ? "text-green-600"
+                          : metric.status === "good"
+                            ? "text-blue-600"
+                            : metric.status === "warning"
+                              ? "text-orange-600"
+                              : "text-red-600",
                       )}
                     >
                       {metric.value.toFixed(1)}%
@@ -306,14 +306,14 @@ export function DataQualityReport({
                 <div className="w-full bg-slate-200 rounded-full h-2 mb-2">
                   <div
                     className={cn(
-                      'h-2 rounded-full transition-all duration-300',
-                      metric.status === 'excellent'
-                        ? 'bg-green-500'
-                        : metric.status === 'good'
-                          ? 'bg-blue-500'
-                          : metric.status === 'warning'
-                            ? 'bg-orange-500'
-                            : 'bg-red-500'
+                      "h-2 rounded-full transition-all duration-300",
+                      metric.status === "excellent"
+                        ? "bg-green-500"
+                        : metric.status === "good"
+                          ? "bg-blue-500"
+                          : metric.status === "warning"
+                            ? "bg-orange-500"
+                            : "bg-red-500",
                     )}
                     style={{ width: `${metric.percentage}%` }}
                   />
@@ -393,8 +393,8 @@ export function DataQualityReport({
                 <ul className="text-sm text-yellow-700 space-y-1">
                   {qualityMetrics
                     .filter(
-                      metric =>
-                        metric.status === 'warning' || metric.status === 'poor'
+                      (metric) =>
+                        metric.status === "warning" || metric.status === "poor",
                     )
                     .map((metric, index) => (
                       <li key={index}>
@@ -417,5 +417,5 @@ export function DataQualityReport({
         )}
       </div>
     </div>
-  )
+  );
 }

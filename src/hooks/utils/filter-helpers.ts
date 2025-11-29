@@ -1,4 +1,4 @@
-import type { FilterState } from '@/types/insurance'
+import type { FilterState } from "@/types/insurance";
 
 /**
  * 根据当前筛选器构造上一周期的筛选条件
@@ -6,20 +6,20 @@ import type { FilterState } from '@/types/insurance'
  */
 export function buildPreviousFilters(filters: FilterState): FilterState | null {
   if (!filters.weeks || filters.weeks.length === 0) {
-    return null
+    return null;
   }
 
   const previousWeeks = Array.from(new Set(filters.weeks))
-    .map(week => week - 1)
-    .filter(week => week >= 1)
+    .map((week) => week - 1)
+    .filter((week) => week >= 1);
 
   if (previousWeeks.length === 0) {
-    return null
+    return null;
   }
 
   const previousTrendWeeks = filters.trendModeWeeks?.length
-    ? filters.trendModeWeeks.map(week => week - 1).filter(week => week >= 1)
-    : filters.trendModeWeeks
+    ? filters.trendModeWeeks.map((week) => week - 1).filter((week) => week >= 1)
+    : filters.trendModeWeeks;
 
   return {
     ...filters,
@@ -29,5 +29,5 @@ export function buildPreviousFilters(filters: FilterState): FilterState | null {
         ? filters.singleModeWeek - 1
         : filters.singleModeWeek,
     trendModeWeeks: previousTrendWeeks,
-  }
+  };
 }

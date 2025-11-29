@@ -1,109 +1,116 @@
-'use client'
+"use client";
 
-import { useEffect, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
-import { AnalysisTabs, type AnalysisTabValue } from '@/components/layout/analysis-tabs'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { TargetsDataTable } from '@/components/targets-data-table'
-import { TargetManagementPanel } from '@/components/target-management-panel'
-import { DimensionSelector } from '@/components/dimension-selector'
-import { WeekSelector } from '@/components/filters/week-selector'
-import { useGoalStore } from '@/store/goalStore'
-import { useInsuranceData } from '@/hooks/domains/useInsuranceData'
-import { useFiltering } from '@/hooks/domains/useFiltering'
-import { normalizeChineseText } from '@/lib/utils'
-import { formatNumber } from '@/utils/format'
-import { formatAchievementRate } from '@/utils/goalCalculator'
+import { useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
+import {
+  AnalysisTabs,
+  type AnalysisTabValue,
+} from "@/components/layout/analysis-tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { TargetsDataTable } from "@/components/targets-data-table";
+import { TargetManagementPanel } from "@/components/target-management-panel";
+import { DimensionSelector } from "@/components/dimension-selector";
+import { WeekSelector } from "@/components/filters/week-selector";
+import { useGoalStore } from "@/store/goalStore";
+import { useInsuranceData } from "@/hooks/domains/useInsuranceData";
+import { useFiltering } from "@/hooks/domains/useFiltering";
+import { normalizeChineseText } from "@/lib/utils";
+import { formatNumber } from "@/utils/format";
+import { formatAchievementRate } from "@/utils/goalCalculator";
 
 export default function TargetsPage() {
-  const router = useRouter()
+  const router = useRouter();
   // 使用新架构的 Hooks
-  const { rawData } = useInsuranceData()
-  const { filters, updateFilters } = useFiltering()
-  const setAchievedMap = useGoalStore(state => state.setAchievedMap)
-  const initialVersion = useGoalStore(state => state.getInitialVersion())
-  const currentVersion = useGoalStore(state => state.getCurrentVersion())
-  const achievedMap = useGoalStore(state => state.achievedMap)
-  const currentDimension = useGoalStore(state => state.currentDimension)
-  const switchDimension = useGoalStore(state => state.switchDimension)
+  const { rawData } = useInsuranceData();
+  const { filters, updateFilters } = useFiltering();
+  const setAchievedMap = useGoalStore((state) => state.setAchievedMap);
+  const initialVersion = useGoalStore((state) => state.getInitialVersion());
+  const currentVersion = useGoalStore((state) => state.getCurrentVersion());
+  const achievedMap = useGoalStore((state) => state.achievedMap);
+  const currentDimension = useGoalStore((state) => state.currentDimension);
+  const switchDimension = useGoalStore((state) => state.switchDimension);
 
   // 强制单选周模式
   useEffect(() => {
-    updateFilters({ viewMode: 'single' })
-  }, [updateFilters])
+    updateFilters({ viewMode: "single" });
+  }, [updateFilters]);
 
   // 获取可用周次
   const availableWeeks = useMemo(() => {
-    const weekSet = new Set<number>()
-    rawData.forEach(record => {
+    const weekSet = new Set<number>();
+    rawData.forEach((record) => {
       if (record.week_number) {
-        weekSet.add(record.week_number)
+        weekSet.add(record.week_number);
       }
-    })
+    });
     return Array.from(weekSet)
       .sort((a, b) => a - b)
-      .map(week => ({
+      .map((week) => ({
         label: `W${week}`,
         value: `${week}`,
-        week
-      }))
-  }, [rawData])
+        week,
+      }));
+  }, [rawData]);
 
   // 基于选定周数据计算已达成值
   const achievedWanMap = useMemo(() => {
-    const aggregatedYuan = new Map<string, number>()
-    
+    const aggregatedYuan = new Map<string, number>();
+
     // 只使用选定周的数据
-    const selectedWeek = filters.singleModeWeek
-    const filteredData = selectedWeek 
-      ? rawData.filter(record => record.week_number === selectedWeek)
-      : []
+    const selectedWeek = filters.singleModeWeek;
+    const filteredData = selectedWeek
+      ? rawData.filter((record) => record.week_number === selectedWeek)
+      : [];
 
-    filteredData.forEach(record => {
-      const bizType = normalizeChineseText(record.business_type_category)
+    filteredData.forEach((record) => {
+      const bizType = normalizeChineseText(record.business_type_category);
       if (!bizType) {
-        return
+        return;
       }
-      const current = aggregatedYuan.get(bizType) ?? 0
-      aggregatedYuan.set(bizType, current + record.signed_premium_yuan)
-    })
+      const current = aggregatedYuan.get(bizType) ?? 0;
+      aggregatedYuan.set(bizType, current + record.signed_premium_yuan);
+    });
 
-    const result: Record<string, number> = {}
-    initialVersion.rows.forEach(row => {
-      const normalized = normalizeChineseText(row.bizType)
-      const totalYuan = aggregatedYuan.get(normalized) ?? 0
-      result[row.bizType] = Number((totalYuan / 10000).toFixed(2))
-    })
+    const result: Record<string, number> = {};
+    initialVersion.rows.forEach((row) => {
+      const normalized = normalizeChineseText(row.bizType);
+      const totalYuan = aggregatedYuan.get(normalized) ?? 0;
+      result[row.bizType] = Number((totalYuan / 10000).toFixed(2));
+    });
 
-    return result
-  }, [initialVersion, rawData, filters.singleModeWeek])
+    return result;
+  }, [initialVersion, rawData, filters.singleModeWeek]);
 
   useEffect(() => {
-    setAchievedMap(achievedWanMap)
-  }, [achievedWanMap, setAchievedMap])
+    setAchievedMap(achievedWanMap);
+  }, [achievedWanMap, setAchievedMap]);
 
   const totalInitial = useMemo(
-    () => initialVersion.rows.reduce((sum, row) => sum + row.annualTargetInit, 0),
-    [initialVersion]
-  )
+    () =>
+      initialVersion.rows.reduce((sum, row) => sum + row.annualTargetInit, 0),
+    [initialVersion],
+  );
   const totalTuned = useMemo(
-    () => currentVersion.rows.reduce((sum, row) => sum + row.annualTargetTuned, 0),
-    [currentVersion]
-  )
+    () =>
+      currentVersion.rows.reduce((sum, row) => sum + row.annualTargetTuned, 0),
+    [currentVersion],
+  );
   const totalAchieved = useMemo(
     () => Object.values(achievedMap).reduce((sum, value) => sum + value, 0),
-    [achievedMap]
-  )
+    [achievedMap],
+  );
 
-  const initialAchievementRate = totalInitial > 0 ? totalAchieved / totalInitial : null
-  const tunedAchievementRate = totalTuned > 0 ? totalAchieved / totalTuned : null
+  const initialAchievementRate =
+    totalInitial > 0 ? totalAchieved / totalInitial : null;
+  const tunedAchievementRate =
+    totalTuned > 0 ? totalAchieved / totalTuned : null;
 
   const navigateByTab = (tab: AnalysisTabValue) => {
-    if (tab === 'targets') return
-    router.push(tab === 'kpi' ? '/' : `/?tab=${tab}`)
-  }
+    if (tab === "targets") return;
+    router.push(tab === "kpi" ? "/" : `/?tab=${tab}`);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -112,7 +119,7 @@ export default function TargetsPage() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => router.push('/')}
+            onClick={() => router.push("/")}
             className="text-slate-600 hover:text-slate-900"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -196,5 +203,5 @@ export default function TargetsPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

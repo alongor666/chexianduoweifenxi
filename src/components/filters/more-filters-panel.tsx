@@ -1,56 +1,56 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { ChevronDown, ChevronUp, Filter } from 'lucide-react'
-import { MultiSelectFilter } from './multi-select-filter'
-import { useAppStore } from '@/store/use-app-store'
-import { useFilterStore } from '@/store/domains/filterStore'
-import { filterRecordsWithExclusions } from '@/store/use-app-store'
-import { cn, normalizeChineseText } from '@/lib/utils'
-import { CANONICAL_TERMINAL_SOURCES } from '@/constants/dimensions'
+import { useState } from "react";
+import { ChevronDown, ChevronUp, Filter } from "lucide-react";
+import { MultiSelectFilter } from "./multi-select-filter";
+import { useAppStore } from "@/store/use-app-store";
+import { useFilterStore } from "@/store/domains/filterStore";
+import { filterRecordsWithExclusions } from "@/store/use-app-store";
+import { cn, normalizeChineseText } from "@/lib/utils";
+import { CANONICAL_TERMINAL_SOURCES } from "@/constants/dimensions";
 
 /**
  * 更多筛选面板
  * 包含业务维度的详细筛选
  */
 export function MoreFiltersPanel() {
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false);
 
-  const rawData = useAppStore(state => state.rawData)
-  const filters = useFilterStore(state => state.filters)
-  const updateFilters = useFilterStore(state => state.updateFilters)
-  const updateAppFilters = useAppStore(state => state.updateFilters)
+  const rawData = useAppStore((state) => state.rawData);
+  const filters = useFilterStore((state) => state.filters);
+  const updateFilters = useFilterStore((state) => state.updateFilters);
+  const updateAppFilters = useAppStore((state) => state.updateFilters);
 
   // 同步更新两个store的筛选器
   const handleUpdateFilters = (newFilters: any) => {
-    updateFilters(newFilters)
-    updateAppFilters(newFilters)
-  }
+    updateFilters(newFilters);
+    updateAppFilters(newFilters);
+  };
 
   // 切换展开状态
   const toggleExpanded = () => {
-    setIsExpanded(!isExpanded)
-  }
+    setIsExpanded(!isExpanded);
+  };
 
   // 获取终端来源选项（使用 Canonical 并按数据出现过滤）
   const getTerminalSourceOptions = () => {
     const filtered = filterRecordsWithExclusions(rawData, filters, [
-      'terminalSources',
-    ])
+      "terminalSources",
+    ]);
     const present = new Set(
       filtered
-        .map(record => normalizeChineseText(record.terminal_source))
-        .filter((v): v is string => Boolean(v))
-    )
-    const sources = CANONICAL_TERMINAL_SOURCES.filter(s => present.has(s)).sort(
-      (a, b) => a.localeCompare(b, 'zh-CN')
-    )
-    return sources.map(source => ({ label: source, value: source }))
-  }
+        .map((record) => normalizeChineseText(record.terminal_source))
+        .filter((v): v is string => Boolean(v)),
+    );
+    const sources = CANONICAL_TERMINAL_SOURCES.filter((s) =>
+      present.has(s),
+    ).sort((a, b) => a.localeCompare(b, "zh-CN"));
+    return sources.map((source) => ({ label: source, value: source }));
+  };
 
   // 检查是否有活动的筛选器
   const hasActiveMoreFilters =
-    filters.terminalSources.length > 0 || filters.isNewEnergy !== null
+    filters.terminalSources.length > 0 || filters.isNewEnergy !== null;
 
   return (
     <div className="border border-slate-200 rounded-lg bg-white">
@@ -65,8 +65,8 @@ export function MoreFiltersPanel() {
             <h3 className="font-medium text-slate-900">更多筛选</h3>
             <p className="text-xs text-slate-500">
               {hasActiveMoreFilters
-                ? '已应用高级筛选条件'
-                : '业务维度的详细筛选'}
+                ? "已应用高级筛选条件"
+                : "业务维度的详细筛选"}
             </p>
           </div>
         </div>
@@ -94,11 +94,11 @@ export function MoreFiltersPanel() {
               </label>
               <div className="flex gap-2">
                 {[
-                  { label: '全部', value: null },
-                  { label: '新能源车', value: true },
-                  { label: '非新能源车', value: false },
-                ].map(option => {
-                  const isSelected = filters.isNewEnergy === option.value
+                  { label: "全部", value: null },
+                  { label: "新能源车", value: true },
+                  { label: "非新能源车", value: false },
+                ].map((option) => {
+                  const isSelected = filters.isNewEnergy === option.value;
                   return (
                     <button
                       key={String(option.value)}
@@ -106,16 +106,16 @@ export function MoreFiltersPanel() {
                         handleUpdateFilters({ isNewEnergy: option.value })
                       }
                       className={cn(
-                        'flex-1 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200',
-                        'border-2 active:scale-95',
+                        "flex-1 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200",
+                        "border-2 active:scale-95",
                         isSelected
-                          ? 'bg-blue-500 border-blue-500 text-white shadow-lg shadow-blue-200'
-                          : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 active:bg-slate-50'
+                          ? "bg-blue-500 border-blue-500 text-white shadow-lg shadow-blue-200"
+                          : "bg-white border-slate-200 text-slate-700 hover:border-slate-300 active:bg-slate-50",
                       )}
                     >
                       {option.label}
                     </button>
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -128,7 +128,7 @@ export function MoreFiltersPanel() {
               <MultiSelectFilter
                 options={getTerminalSourceOptions()}
                 selectedValues={filters.terminalSources}
-                onChange={values =>
+                onChange={(values) =>
                   handleUpdateFilters({
                     terminalSources: values.map(normalizeChineseText),
                   })
@@ -142,5 +142,5 @@ export function MoreFiltersPanel() {
         </div>
       )}
     </div>
-  )
+  );
 }

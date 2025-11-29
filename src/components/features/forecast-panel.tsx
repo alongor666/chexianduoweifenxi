@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState } from "react";
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -10,59 +10,60 @@ import {
   YAxis,
   Tooltip,
   Legend,
-} from 'recharts'
-import { Settings } from 'lucide-react'
+} from "recharts";
+import { Settings } from "lucide-react";
 
-import { useTrendData } from '@/hooks/use-trend'
+import { useTrendData } from "@/hooks/use-trend";
 import {
   fitTrend,
   type TrendFittingOptions,
-} from '@/lib/analytics/trend-fitting'
-import { formatNumber } from '@/utils/format'
+} from "@/lib/analytics/trend-fitting";
+import { formatNumber } from "@/utils/format";
 
 interface ForecastPanelProps {
-  className?: string
+  className?: string;
 }
 
 export function ForecastPanel({ className }: ForecastPanelProps) {
-  const series = useTrendData()
+  const series = useTrendData();
 
   const [options, setOptions] = useState<TrendFittingOptions>({
-    method: 'linear',
+    method: "linear",
     predict: true,
     predictSteps: 8,
     window: 4,
     alpha: 0.4,
-  })
+  });
 
   // 仅使用签单保费进行预测（单位：万元）
   const actual = useMemo(
-    () => series.map(p => p.signed_premium_10k ?? 0),
-    [series]
-  )
+    () => series.map((p) => p.signed_premium_10k ?? 0),
+    [series],
+  );
 
-  const result = useMemo(() => fitTrend(actual, options), [actual, options])
+  const result = useMemo(() => fitTrend(actual, options), [actual, options]);
 
   const chartData = useMemo(() => {
     const data: Array<{
-      index: number
-      label: string
-      actual: number | null
-      fitted: number | null
-      predicted: number | null
-    }> = []
+      index: number;
+      label: string;
+      actual: number | null;
+      fitted: number | null;
+      predicted: number | null;
+    }> = [];
 
     const totalLength =
-      actual.length + (options.predict ? (options.predictSteps ?? 0) : 0)
+      actual.length + (options.predict ? (options.predictSteps ?? 0) : 0);
 
     for (let i = 0; i < totalLength; i++) {
-      const isHistorical = i < actual.length
+      const isHistorical = i < actual.length;
       const label = isHistorical
         ? (series[i]?.label ?? `第${i + 1}周`)
-        : `预测第${i - actual.length + 1}周`
+        : `预测第${i - actual.length + 1}周`;
 
-      const fittedPoint = result.trendPoints[i] ?? null
-      const predictedPoint = result.predictedPoints?.[i - actual.length] ?? null
+      const fittedPoint = result.trendPoints[i] ?? null;
+      const predictedPoint =
+        result.predictedPoints?.[i - actual.length] ?? null;
 
       data.push({
         index: i,
@@ -70,26 +71,26 @@ export function ForecastPanel({ className }: ForecastPanelProps) {
         actual: isHistorical ? actual[i] : null,
         fitted: fittedPoint ? fittedPoint.value : null,
         predicted: predictedPoint ? predictedPoint.value : null,
-      })
+      });
     }
 
-    return data
-  }, [series, actual, result, options.predict, options.predictSteps])
+    return data;
+  }, [series, actual, result, options.predict, options.predictSteps]);
 
-  const r2 = result.rSquared
-  const slope = result.coefficients?.slope ?? 0
-  const direction = result.direction
+  const r2 = result.rSquared;
+  const slope = result.coefficients?.slope ?? 0;
+  const direction = result.direction;
 
   const summaryText = useMemo(() => {
     const dirText =
-      direction === 'increasing'
-        ? '上升'
-        : direction === 'decreasing'
-          ? '下降'
-          : '平稳'
-    const slopeText = slope >= 0 ? `+${slope.toFixed(2)}` : slope.toFixed(2)
-    return `趋势：${dirText} | 斜率：${slopeText} | 拟合优度R²：${r2.toFixed(3)}`
-  }, [direction, slope, r2])
+      direction === "increasing"
+        ? "上升"
+        : direction === "decreasing"
+          ? "下降"
+          : "平稳";
+    const slopeText = slope >= 0 ? `+${slope.toFixed(2)}` : slope.toFixed(2);
+    return `趋势：${dirText} | 斜率：${slopeText} | 拟合优度R²：${r2.toFixed(3)}`;
+  }, [direction, slope, r2]);
 
   return (
     <div className={className}>
@@ -106,55 +107,55 @@ export function ForecastPanel({ className }: ForecastPanelProps) {
           <button
             className="inline-flex items-center gap-1 rounded-md border bg-white px-2 py-1 text-xs text-slate-700 shadow-sm hover:bg-slate-50"
             onClick={() =>
-              setOptions(prev => ({
+              setOptions((prev) => ({
                 ...prev,
                 method:
-                  prev.method === 'linear'
-                    ? 'movingAverage'
-                    : prev.method === 'movingAverage'
-                      ? 'exponential'
-                      : 'linear',
+                  prev.method === "linear"
+                    ? "movingAverage"
+                    : prev.method === "movingAverage"
+                      ? "exponential"
+                      : "linear",
               }))
             }
             title="切换拟合方法：线性/移动平均/指数平滑"
           >
             <Settings className="h-3.5 w-3.5" />
-            {options.method === 'linear'
-              ? '线性'
-              : options.method === 'movingAverage'
-                ? '移动平均'
-                : '指数平滑'}
+            {options.method === "linear"
+              ? "线性"
+              : options.method === "movingAverage"
+                ? "移动平均"
+                : "指数平滑"}
           </button>
           <select
             className="rounded-md border bg-white px-2 py-1 text-xs text-slate-700 shadow-sm"
             value={options.predictSteps}
-            onChange={e =>
-              setOptions(prev => ({
+            onChange={(e) =>
+              setOptions((prev) => ({
                 ...prev,
                 predictSteps: Number(e.target.value),
               }))
             }
             title="预测步数"
           >
-            {[4, 8, 12, 16].map(n => (
+            {[4, 8, 12, 16].map((n) => (
               <option key={n} value={n}>
                 {n}周
               </option>
             ))}
           </select>
-          {options.method === 'movingAverage' && (
+          {options.method === "movingAverage" && (
             <select
               className="rounded-md border bg-white px-2 py-1 text-xs text-slate-700 shadow-sm"
               value={options.window ?? 4}
-              onChange={e =>
-                setOptions(prev => ({
+              onChange={(e) =>
+                setOptions((prev) => ({
                   ...prev,
                   window: Number(e.target.value),
                 }))
               }
               title="移动平均窗口大小"
             >
-              {[3, 4, 5, 6].map(n => (
+              {[3, 4, 5, 6].map((n) => (
                 <option key={n} value={n}>
                   {n}点
                 </option>
@@ -177,18 +178,20 @@ export function ForecastPanel({ className }: ForecastPanelProps) {
               <YAxis
                 tick={{ fontSize: 12 }}
                 label={{
-                  value: '单位：万元',
+                  value: "单位：万元",
                   angle: -90,
-                  position: 'insideLeft',
+                  position: "insideLeft",
                 }}
               />
               <Tooltip
                 formatter={(value: number, name: string) => {
-                  if (name === 'actual') return [formatNumber(value, 1), '实际']
-                  if (name === 'fitted') return [formatNumber(value, 1), '拟合']
-                  if (name === 'predicted')
-                    return [formatNumber(value, 1), '预测']
-                  return [value, name]
+                  if (name === "actual")
+                    return [formatNumber(value, 1), "实际"];
+                  if (name === "fitted")
+                    return [formatNumber(value, 1), "拟合"];
+                  if (name === "predicted")
+                    return [formatNumber(value, 1), "预测"];
+                  return [value, name];
                 }}
               />
               <Legend verticalAlign="top" height={24} />
@@ -226,5 +229,5 @@ export function ForecastPanel({ className }: ForecastPanelProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

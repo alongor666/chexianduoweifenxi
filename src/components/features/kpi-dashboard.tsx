@@ -3,7 +3,7 @@
  * @status 完成
  * @doc See [FEAT-P1-01: KPI看板增强](./../../../开发文档/01_features/FEAT-P1-01_kpi-dashboard-enhancements.md)
  */
-'use client'
+"use client";
 
 import {
   TrendingDown,
@@ -13,31 +13,31 @@ import {
   Shield,
   PieChart,
   Zap,
-} from 'lucide-react'
-import { KPICard, KPICardSkeleton } from './kpi-card'
+} from "lucide-react";
+import { KPICard, KPICardSkeleton } from "./kpi-card";
 import {
   formatPercent,
   formatCurrency,
   getContributionMarginColor,
   getContributionMarginBgColor,
-} from '@/utils/format'
-import type { KPIResult } from '@/types/insurance'
+} from "@/utils/format";
+import type { KPIResult } from "@/types/insurance";
 
 export interface KPIDashboardProps {
   /**
    * KPI 计算结果
    */
-  kpiData: KPIResult | null
+  kpiData: KPIResult | null;
 
   /**
    * 是否正在加载
    */
-  isLoading?: boolean
+  isLoading?: boolean;
 
   /**
    * 对比数据（用于显示环比变化）
    */
-  compareData?: KPIResult | null
+  compareData?: KPIResult | null;
 }
 
 export function KPIDashboard({
@@ -53,7 +53,7 @@ export function KPIDashboard({
           <KPICardSkeleton key={idx} />
         ))}
       </div>
-    )
+    );
   }
 
   // 如果没有数据，显示空状态
@@ -70,13 +70,13 @@ export function KPIDashboard({
           </p>
         </div>
       </div>
-    )
+    );
   }
 
   // 计算环比变化
   const getChangeValue = (
     current: number | null,
-    previous: number | null
+    previous: number | null,
   ): number | null => {
     if (
       current === null ||
@@ -87,10 +87,10 @@ export function KPIDashboard({
       isNaN(previous) ||
       previous === 0
     ) {
-      return null
+      return null;
     }
-    return ((current - previous) / previous) * 100
-  }
+    return ((current - previous) / previous) * 100;
+  };
 
   return (
     <div className="space-y-6">
@@ -114,10 +114,10 @@ export function KPIDashboard({
           description="已决赔款 / 满期保费"
           valueColor={
             kpiData.loss_ratio !== null && kpiData.loss_ratio > 70
-              ? 'text-red-600'
+              ? "text-red-600"
               : kpiData.loss_ratio !== null && kpiData.loss_ratio > 60
-                ? 'text-orange-600'
-                : 'text-green-600'
+                ? "text-orange-600"
+                : "text-green-600"
           }
           formatter={formatPercent}
           compareValue={
@@ -139,10 +139,10 @@ export function KPIDashboard({
           description="费用总额 / 满期保费"
           valueColor={
             kpiData.expense_ratio !== null && kpiData.expense_ratio > 25
-              ? 'text-red-600'
+              ? "text-red-600"
               : kpiData.expense_ratio !== null && kpiData.expense_ratio > 20
-                ? 'text-orange-600'
-                : 'text-green-600'
+                ? "text-orange-600"
+                : "text-green-600"
           }
           formatter={formatPercent}
           compareValue={
@@ -163,17 +163,17 @@ export function KPIDashboard({
           unit="%"
           description="满期边际 / 满期保费"
           valueColor={getContributionMarginColor(
-            kpiData.contribution_margin_ratio
+            kpiData.contribution_margin_ratio,
           )}
           bgColor={getContributionMarginBgColor(
-            kpiData.contribution_margin_ratio
+            kpiData.contribution_margin_ratio,
           )}
           formatter={formatPercent}
           compareValue={
             compareData
               ? getChangeValue(
                   kpiData.contribution_margin_ratio,
-                  compareData.contribution_margin_ratio
+                  compareData.contribution_margin_ratio,
                 )
               : null
           }
@@ -192,18 +192,18 @@ export function KPIDashboard({
           description="签单保费 / 目标保费"
           valueColor={
             kpiData.premium_progress !== null && kpiData.premium_progress >= 100
-              ? 'text-green-600'
+              ? "text-green-600"
               : kpiData.premium_progress !== null &&
                   kpiData.premium_progress >= 80
-                ? 'text-blue-600'
-                : 'text-orange-600'
+                ? "text-blue-600"
+                : "text-orange-600"
           }
           formatter={formatPercent}
           compareValue={
             compareData
               ? getChangeValue(
                   kpiData.premium_progress,
-                  compareData.premium_progress
+                  compareData.premium_progress,
                 )
               : null
           }
@@ -218,17 +218,17 @@ export function KPIDashboard({
           description="满期保费 / 签单保费"
           valueColor={
             kpiData.maturity_ratio !== null && kpiData.maturity_ratio >= 80
-              ? 'text-green-600'
+              ? "text-green-600"
               : kpiData.maturity_ratio !== null && kpiData.maturity_ratio >= 60
-                ? 'text-blue-600'
-                : 'text-orange-600'
+                ? "text-blue-600"
+                : "text-orange-600"
           }
           formatter={formatPercent}
           compareValue={
             compareData
               ? getChangeValue(
                   kpiData.maturity_ratio,
-                  compareData.maturity_ratio
+                  compareData.maturity_ratio,
                 )
               : null
           }
@@ -247,18 +247,18 @@ export function KPIDashboard({
           valueColor={
             kpiData.matured_claim_ratio !== null &&
             kpiData.matured_claim_ratio > 60
-              ? 'text-red-600'
+              ? "text-red-600"
               : kpiData.matured_claim_ratio !== null &&
                   kpiData.matured_claim_ratio > 50
-                ? 'text-orange-600'
-                : 'text-green-600'
+                ? "text-orange-600"
+                : "text-green-600"
           }
           formatter={formatPercent}
           compareValue={
             compareData
               ? getChangeValue(
                   kpiData.matured_claim_ratio,
-                  compareData.matured_claim_ratio
+                  compareData.matured_claim_ratio,
                 )
               : null
           }
@@ -277,18 +277,18 @@ export function KPIDashboard({
           valueColor={
             kpiData.variable_cost_ratio !== null &&
             kpiData.variable_cost_ratio > 90
-              ? 'text-red-600'
+              ? "text-red-600"
               : kpiData.variable_cost_ratio !== null &&
                   kpiData.variable_cost_ratio > 85
-                ? 'text-orange-600'
-                : 'text-green-600'
+                ? "text-orange-600"
+                : "text-green-600"
           }
           formatter={formatPercent}
           compareValue={
             compareData
               ? getChangeValue(
                   kpiData.variable_cost_ratio,
-                  compareData.variable_cost_ratio
+                  compareData.variable_cost_ratio,
                 )
               : null
           }
@@ -305,22 +305,22 @@ export function KPIDashboard({
           valueColor={
             kpiData.autonomy_coefficient !== null &&
             kpiData.autonomy_coefficient >= 0.85
-              ? 'text-green-600'
+              ? "text-green-600"
               : kpiData.autonomy_coefficient !== null &&
                   kpiData.autonomy_coefficient >= 0.75
-                ? 'text-blue-600'
-                : 'text-orange-600'
+                ? "text-blue-600"
+                : "text-orange-600"
           }
-          formatter={val =>
+          formatter={(val) =>
             val !== null && val !== undefined && !isNaN(val)
               ? val.toFixed(3)
-              : '-'
+              : "-"
           }
           compareValue={
             compareData
               ? getChangeValue(
                   kpiData.autonomy_coefficient,
-                  compareData.autonomy_coefficient
+                  compareData.autonomy_coefficient,
                 )
               : null
           }
@@ -338,10 +338,10 @@ export function KPIDashboard({
             title="满期保费总额"
             value={kpiData.matured_premium}
             description="已满期的保费总额"
-            formatter={val =>
+            formatter={(val) =>
               val !== null && val !== undefined && !isNaN(val)
                 ? formatCurrency(val) // 已经是万元
-                : '-'
+                : "-"
             }
             icon={<DollarSign className="h-5 w-5" />}
             kpiKey="matured_premium"
@@ -352,10 +352,10 @@ export function KPIDashboard({
             title="签单保费总额"
             value={kpiData.signed_premium}
             description="已签单的保费总额"
-            formatter={val =>
+            formatter={(val) =>
               val !== null && val !== undefined && !isNaN(val)
                 ? formatCurrency(val) // 已经是万元
-                : '-'
+                : "-"
             }
             icon={<DollarSign className="h-5 w-5" />}
             kpiKey="signed_premium"
@@ -366,10 +366,10 @@ export function KPIDashboard({
             title="已报告赔款总额"
             value={kpiData.reported_claim_payment}
             description="已报告的赔款总额"
-            formatter={val =>
+            formatter={(val) =>
               val !== null && val !== undefined && !isNaN(val)
                 ? formatCurrency(val) // 已经是万元
-                : '-'
+                : "-"
             }
             icon={<TrendingDown className="h-5 w-5" />}
             kpiKey="reported_claim_payment"
@@ -380,10 +380,10 @@ export function KPIDashboard({
             title="费用总额"
             value={kpiData.expense_amount}
             description="各项费用合计"
-            formatter={val =>
+            formatter={(val) =>
               val !== null && val !== undefined && !isNaN(val)
                 ? formatCurrency(val) // 已经是万元
-                : '-'
+                : "-"
             }
             icon={<DollarSign className="h-5 w-5" />}
             kpiKey="expense_amount"
@@ -391,5 +391,5 @@ export function KPIDashboard({
         </div>
       </div>
     </div>
-  )
+  );
 }

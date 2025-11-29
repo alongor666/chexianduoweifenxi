@@ -1,101 +1,101 @@
-'use client'
+"use client";
 
-import { TrendingUp, TrendingDown, Minus, Info } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { TrendingUp, TrendingDown, Minus, Info } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { getKPIFormula } from '@/lib/calculations/kpi-formulas'
+} from "@/components/ui/tooltip";
+import { getKPIFormula } from "@/lib/calculations/kpi-formulas";
 
 export interface KPICardProps {
   /**
    * KPI 名称
    */
-  title: string
+  title: string;
 
   /**
    * KPI 值
    */
-  value: number | null | undefined
+  value: number | null | undefined;
 
   /**
    * 单位（如 %、万元等）
    */
-  unit?: string
+  unit?: string;
 
   /**
    * 描述信息
    */
-  description?: string
+  description?: string;
 
   /**
    * 值的颜色（可选，如果不提供则使用默认颜色）
    */
-  valueColor?: string
+  valueColor?: string;
 
   /**
    * 背景颜色（可选）
    */
-  bgColor?: string
+  bgColor?: string;
 
   /**
    * 对比值（用于显示变化）
    */
-  compareValue?: number | null
+  compareValue?: number | null;
 
   /**
    * 对比值单位
    */
-  compareUnit?: string
+  compareUnit?: string;
 
   /**
    * 格式化函数（如果不提供，使用默认格式化）
    */
-  formatter?: (value: number | null | undefined) => string
+  formatter?: (value: number | null | undefined) => string;
 
   /**
    * 是否为大卡片（占据更多空间）
    */
-  large?: boolean
+  large?: boolean;
 
   /**
    * 自定义图标
    */
-  icon?: React.ReactNode
+  icon?: React.ReactNode;
 
   /**
    * 点击事件
    */
-  onClick?: () => void
+  onClick?: () => void;
 
   /**
    * KPI 键名（用于显示公式）
    */
-  kpiKey?: string
+  kpiKey?: string;
 
   /**
    * 分子值（用于计算详情）
    */
-  numeratorValue?: number | null
+  numeratorValue?: number | null;
 
   /**
    * 分母值（用于计算详情）
    */
-  denominatorValue?: number | null
+  denominatorValue?: number | null;
 }
 
 export function KPICard({
   title,
   value,
-  unit = '',
+  unit = "",
   description,
   valueColor,
   bgColor,
   compareValue,
-  compareUnit = '%',
+  compareUnit = "%",
   formatter,
   large = false,
   icon,
@@ -108,45 +108,45 @@ export function KPICard({
   const formattedValue = formatter
     ? formatter(value)
     : value !== null && value !== undefined && !isNaN(value)
-      ? value.toLocaleString('zh-CN', {
+      ? value.toLocaleString("zh-CN", {
           minimumFractionDigits: 0,
           maximumFractionDigits: 2,
         })
-      : '-'
+      : "-";
 
   // 格式化对比值
   const hasCompareValue =
-    compareValue !== null && compareValue !== undefined && !isNaN(compareValue)
+    compareValue !== null && compareValue !== undefined && !isNaN(compareValue);
 
   const compareDirection =
     hasCompareValue && compareValue > 0
-      ? 'up'
+      ? "up"
       : hasCompareValue && compareValue < 0
-        ? 'down'
-        : 'flat'
+        ? "down"
+        : "flat";
 
   const compareColorClass =
-    compareDirection === 'up'
-      ? 'text-green-600'
-      : compareDirection === 'down'
-        ? 'text-red-600'
-        : 'text-slate-500'
+    compareDirection === "up"
+      ? "text-green-600"
+      : compareDirection === "down"
+        ? "text-red-600"
+        : "text-slate-500";
 
   const formattedCompareValue = hasCompareValue
-    ? `${compareValue > 0 ? '+' : ''}${compareValue.toFixed(2)}${compareUnit}`
-    : null
+    ? `${compareValue > 0 ? "+" : ""}${compareValue.toFixed(2)}${compareUnit}`
+    : null;
 
   // 获取 KPI 公式定义
-  const formulaDefinition = kpiKey ? getKPIFormula(kpiKey) : undefined
+  const formulaDefinition = kpiKey ? getKPIFormula(kpiKey) : undefined;
 
   return (
     <div
       className={cn(
-        'group relative overflow-hidden rounded-xl border border-slate-200 bg-white/80 backdrop-blur-sm transition-all duration-300',
-        'hover:border-blue-300 hover:bg-white/90 hover:shadow-lg hover:shadow-blue-100/50',
-        onClick && 'cursor-pointer',
-        large ? 'col-span-2' : 'col-span-1',
-        bgColor
+        "group relative overflow-hidden rounded-xl border border-slate-200 bg-white/80 backdrop-blur-sm transition-all duration-300",
+        "hover:border-blue-300 hover:bg-white/90 hover:shadow-lg hover:shadow-blue-100/50",
+        onClick && "cursor-pointer",
+        large ? "col-span-2" : "col-span-1",
+        bgColor,
       )}
       onClick={onClick}
     >
@@ -191,10 +191,10 @@ export function KPICard({
                                 <span className="font-mono font-semibold text-slate-800">
                                   {numeratorValue !== null &&
                                   numeratorValue !== undefined
-                                    ? numeratorValue.toLocaleString('zh-CN', {
+                                    ? numeratorValue.toLocaleString("zh-CN", {
                                         maximumFractionDigits: 2,
                                       })
-                                    : '-'}
+                                    : "-"}
                                 </span>
                               </div>
                               <div className="flex justify-between text-xs">
@@ -204,10 +204,10 @@ export function KPICard({
                                 <span className="font-mono font-semibold text-slate-800">
                                   {denominatorValue !== null &&
                                   denominatorValue !== undefined
-                                    ? denominatorValue.toLocaleString('zh-CN', {
+                                    ? denominatorValue.toLocaleString("zh-CN", {
                                         maximumFractionDigits: 2,
                                       })
-                                    : '-'}
+                                    : "-"}
                                 </span>
                               </div>
                             </div>
@@ -249,8 +249,8 @@ export function KPICard({
         <div className="mb-2 flex items-baseline gap-2">
           <span
             className={cn(
-              'text-3xl font-bold tabular-nums',
-              valueColor || 'text-slate-800'
+              "text-3xl font-bold tabular-nums",
+              valueColor || "text-slate-800",
             )}
           >
             {formattedValue}
@@ -263,16 +263,16 @@ export function KPICard({
         {/* 对比值显示 */}
         {formattedCompareValue && (
           <div className="flex items-center gap-1.5">
-            {compareDirection === 'up' && (
+            {compareDirection === "up" && (
               <TrendingUp className="h-4 w-4 text-green-600" />
             )}
-            {compareDirection === 'down' && (
+            {compareDirection === "down" && (
               <TrendingDown className="h-4 w-4 text-red-600" />
             )}
-            {compareDirection === 'flat' && (
+            {compareDirection === "flat" && (
               <Minus className="h-4 w-4 text-slate-500" />
             )}
-            <span className={cn('text-sm font-semibold', compareColorClass)}>
+            <span className={cn("text-sm font-semibold", compareColorClass)}>
               {formattedCompareValue}
             </span>
             <span className="text-xs text-slate-500">vs 上期</span>
@@ -284,14 +284,14 @@ export function KPICard({
       {valueColor && (
         <div
           className={cn(
-            'absolute bottom-0 left-0 right-0 h-1 transition-all duration-300',
-            valueColor.replace('text-', 'bg-'),
-            'opacity-0 group-hover:opacity-100'
+            "absolute bottom-0 left-0 right-0 h-1 transition-all duration-300",
+            valueColor.replace("text-", "bg-"),
+            "opacity-0 group-hover:opacity-100",
           )}
         />
       )}
     </div>
-  )
+  );
 }
 
 /**
@@ -301,13 +301,13 @@ export function KPICardSkeleton({ large = false }: { large?: boolean }) {
   return (
     <div
       className={cn(
-        'animate-pulse rounded-xl border border-slate-200 bg-white/80 p-6',
-        large ? 'col-span-2' : 'col-span-1'
+        "animate-pulse rounded-xl border border-slate-200 bg-white/80 p-6",
+        large ? "col-span-2" : "col-span-1",
       )}
     >
       <div className="mb-4 h-4 w-24 rounded bg-slate-200" />
       <div className="mb-2 h-8 w-32 rounded bg-slate-200" />
       <div className="h-3 w-20 rounded bg-slate-200" />
     </div>
-  )
+  );
 }

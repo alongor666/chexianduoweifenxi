@@ -3,40 +3,47 @@
  * 负责达成率、缺口、占比等指标的统一计算与格式化
  */
 
-import type { GoalRow } from '@/types/goal'
+import type { GoalRow } from "@/types/goal";
 
 export interface GoalMetrics {
-  initialAchievementRate: number | null
-  tunedAchievementRate: number | null
-  initialGap: number
-  tunedGap: number
-  shareOfTotal: number | null
+  initialAchievementRate: number | null;
+  tunedAchievementRate: number | null;
+  initialGap: number;
+  tunedGap: number;
+  shareOfTotal: number | null;
 }
 
 export interface GoalDisplayRow extends GoalRow, GoalMetrics {}
 
-const HUNDRED = 100
+const HUNDRED = 100;
 
 /**
  * 安全除法
  * 当分母为 0 时返回 null，以便在界面中展示“—”
  */
-export function safeDivide(numerator: number, denominator: number): number | null {
+export function safeDivide(
+  numerator: number,
+  denominator: number,
+): number | null {
   if (denominator === 0) {
-    return null
+    return null;
   }
-  return numerator / denominator
+  return numerator / denominator;
 }
 
 /**
  * 计算单行目标指标
  */
-export function calculateGoalMetrics(row: GoalRow, totalInitialTarget: number): GoalMetrics {
-  const initialAchievementRate = safeDivide(row.achieved, row.annualTargetInit)
-  const tunedAchievementRate = safeDivide(row.achieved, row.annualTargetTuned)
-  const initialGap = row.annualTargetInit - row.achieved
-  const tunedGap = row.annualTargetTuned - row.achieved
-  const shareOfTotal = safeDivide(row.annualTargetInit, totalInitialTarget)
+export function calculateGoalMetrics(
+  row: GoalRow,
+  totalInitialTarget: number,
+): GoalMetrics {
+  const achieved = row.achieved ?? 0;
+  const initialAchievementRate = safeDivide(achieved, row.annualTargetInit);
+  const tunedAchievementRate = safeDivide(achieved, row.annualTargetTuned);
+  const initialGap = row.annualTargetInit - achieved;
+  const tunedGap = row.annualTargetTuned - achieved;
+  const shareOfTotal = safeDivide(row.annualTargetInit, totalInitialTarget);
 
   return {
     initialAchievementRate,
@@ -44,7 +51,7 @@ export function calculateGoalMetrics(row: GoalRow, totalInitialTarget: number): 
     initialGap,
     tunedGap,
     shareOfTotal,
-  }
+  };
 }
 
 /**
@@ -52,12 +59,12 @@ export function calculateGoalMetrics(row: GoalRow, totalInitialTarget: number): 
  */
 export function buildGoalDisplayRow(
   row: GoalRow,
-  totalInitialTarget: number
+  totalInitialTarget: number,
 ): GoalDisplayRow {
   return {
     ...row,
     ...calculateGoalMetrics(row, totalInitialTarget),
-  }
+  };
 }
 
 /**
@@ -65,16 +72,16 @@ export function buildGoalDisplayRow(
  */
 export function formatAchievementRate(rate: number | null): string {
   if (rate === null) {
-    return '—'
+    return "—";
   }
-  return `${(rate * HUNDRED).toFixed(2)}%`
+  return `${(rate * HUNDRED).toFixed(2)}%`;
 }
 
 /**
  * 缺口格式化
  */
 export function formatGapValue(gap: number): string {
-  return gap.toFixed(1)
+  return gap.toFixed(1);
 }
 
 /**
@@ -82,21 +89,21 @@ export function formatGapValue(gap: number): string {
  */
 export function formatShareOfTotal(share: number | null): string {
   if (share === null) {
-    return '—'
+    return "—";
   }
-  return `${(share * HUNDRED).toFixed(2)}%`
+  return `${(share * HUNDRED).toFixed(2)}%`;
 }
 
 /**
  * 判断缺口是否为负数
  */
 export function isNegativeGap(gap: number): boolean {
-  return gap < 0
+  return gap < 0;
 }
 
 /**
  * 根据年初目标排序
  */
 export function sortByInitialTarget(rows: GoalDisplayRow[]): GoalDisplayRow[] {
-  return [...rows].sort((a, b) => b.annualTargetInit - a.annualTargetInit)
+  return [...rows].sort((a, b) => b.annualTargetInit - a.annualTargetInit);
 }

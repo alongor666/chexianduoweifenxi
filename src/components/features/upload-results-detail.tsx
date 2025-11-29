@@ -3,9 +3,9 @@
  * 显示详细的数据验证结果，包括失败记录的具体原因
  */
 
-'use client'
+"use client";
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo } from "react";
 import {
   ChevronDown,
   ChevronRight,
@@ -17,81 +17,81 @@ import {
   BarChart3,
   Calendar,
   CheckCircle2,
-} from 'lucide-react'
-import { cn } from '@/lib/utils'
-import type { BatchUploadResult } from '@/hooks/use-file-upload'
-import { DataQualityReport } from './data-quality-report'
-import { DataRepairSuggestions } from './data-repair-suggestions'
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import type { BatchUploadResult } from "@/hooks/use-file-upload";
+import { DataQualityReport } from "./data-quality-report";
+import { DataRepairSuggestions } from "./data-repair-suggestions";
 
 interface UploadResultsDetailProps {
-  batchResult: BatchUploadResult
-  onReset: () => void
+  batchResult: BatchUploadResult;
+  onReset: () => void;
 }
 
 /**
  * 错误分类统计
  */
 interface ErrorStats {
-  totalErrors: number
-  fieldErrors: Record<string, number>
-  errorTypes: Record<string, number>
+  totalErrors: number;
+  fieldErrors: Record<string, number>;
+  errorTypes: Record<string, number>;
   severityStats: {
-    error: number
-    warning: number
-    info: number
-  }
+    error: number;
+    warning: number;
+    info: number;
+  };
 }
 
 /**
  * 错误详情项
  */
 interface ErrorDetail {
-  row: number
-  field?: string
-  message: string
-  severity: 'error' | 'warning' | 'info'
-  fileName: string
+  row: number;
+  field?: string;
+  message: string;
+  severity: "error" | "warning" | "info";
+  fileName: string;
 }
 
 export function UploadResultsDetail({
   batchResult,
   onReset,
 }: UploadResultsDetailProps) {
-  const [expandedFiles, setExpandedFiles] = useState<Set<number>>(new Set())
-  const [searchTerm, setSearchTerm] = useState('')
+  const [expandedFiles, setExpandedFiles] = useState<Set<number>>(new Set());
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedSeverity, setSelectedSeverity] = useState<
-    'all' | 'error' | 'warning' | 'info'
-  >('all')
-  const [selectedField, setSelectedField] = useState<string>('all')
+    "all" | "error" | "warning" | "info"
+  >("all");
+  const [selectedField, setSelectedField] = useState<string>("all");
 
   /**
    * 处理文件展开/收起
    */
   const toggleFileExpansion = (index: number) => {
-    const newExpanded = new Set(expandedFiles)
+    const newExpanded = new Set(expandedFiles);
     if (newExpanded.has(index)) {
-      newExpanded.delete(index)
+      newExpanded.delete(index);
     } else {
-      newExpanded.add(index)
+      newExpanded.add(index);
     }
-    setExpandedFiles(newExpanded)
-  }
+    setExpandedFiles(newExpanded);
+  };
 
   /**
    * 收集所有错误详情
    */
   const allErrorDetails = useMemo((): ErrorDetail[] => {
-    const details: ErrorDetail[] = []
+    const details: ErrorDetail[] = [];
 
-    batchResult.results.forEach(result => {
+    batchResult.results.forEach((result) => {
       // 处理成功解析但有错误的文件
       if (result.result?.errors) {
-        result.result.errors.forEach(error => {
+        result.result.errors.forEach((error) => {
           // 从错误消息中提取字段名（如果可能）
-          let field: string | undefined = undefined
-          const fieldMatch = error.message.match(/^([^:：]+)[：:]/)
+          let field: string | undefined = undefined;
+          const fieldMatch = error.message.match(/^([^:：]+)[：:]/);
           if (fieldMatch) {
-            field = fieldMatch[1].trim()
+            field = fieldMatch[1].trim();
           }
 
           details.push({
@@ -100,8 +100,8 @@ export function UploadResultsDetail({
             message: error.message,
             severity: error.severity,
             fileName: result.file.name,
-          })
-        })
+          });
+        });
       }
 
       // 处理完全失败的文件
@@ -110,98 +110,98 @@ export function UploadResultsDetail({
           row: 1,
           field: undefined,
           message: result.error,
-          severity: 'error',
+          severity: "error",
           fileName: result.file.name,
-        })
+        });
       }
-    })
+    });
 
-    return details
-  }, [batchResult])
+    return details;
+  }, [batchResult]);
 
   /**
    * 错误统计分析
    */
   const errorStats = useMemo((): ErrorStats => {
-    const fieldErrors: Record<string, number> = {}
-    const errorTypes: Record<string, number> = {}
-    const severityStats = { error: 0, warning: 0, info: 0 }
+    const fieldErrors: Record<string, number> = {};
+    const errorTypes: Record<string, number> = {};
+    const severityStats = { error: 0, warning: 0, info: 0 };
 
-    allErrorDetails.forEach(detail => {
+    allErrorDetails.forEach((detail) => {
       // 字段错误统计
       if (detail.field) {
-        fieldErrors[detail.field] = (fieldErrors[detail.field] || 0) + 1
+        fieldErrors[detail.field] = (fieldErrors[detail.field] || 0) + 1;
       }
 
       // 错误类型统计 - 改进分类逻辑
-      let errorType = '其他错误'
-      const message = detail.message.toLowerCase()
+      let errorType = "其他错误";
+      const message = detail.message.toLowerCase();
 
       if (
-        message.includes('required') ||
-        message.includes('必填') ||
-        message.includes('不能为空')
+        message.includes("required") ||
+        message.includes("必填") ||
+        message.includes("不能为空")
       ) {
-        errorType = '必填字段缺失'
+        errorType = "必填字段缺失";
       } else if (
-        message.includes('invalid') ||
-        message.includes('格式') ||
-        message.includes('无效')
+        message.includes("invalid") ||
+        message.includes("格式") ||
+        message.includes("无效")
       ) {
-        errorType = '格式错误'
+        errorType = "格式错误";
       } else if (
-        message.includes('number') ||
-        message.includes('数字') ||
-        message.includes('数值')
+        message.includes("number") ||
+        message.includes("数字") ||
+        message.includes("数值")
       ) {
-        errorType = '数值类型错误'
+        errorType = "数值类型错误";
       } else if (
-        message.includes('date') ||
-        message.includes('时间') ||
-        message.includes('日期')
+        message.includes("date") ||
+        message.includes("时间") ||
+        message.includes("日期")
       ) {
-        errorType = '日期时间错误'
+        errorType = "日期时间错误";
       } else if (
-        message.includes('enum') ||
-        message.includes('枚举') ||
-        message.includes('选项')
+        message.includes("enum") ||
+        message.includes("枚举") ||
+        message.includes("选项")
       ) {
-        errorType = '枚举值错误'
+        errorType = "枚举值错误";
       } else if (
-        message.includes('length') ||
-        message.includes('长度') ||
-        message.includes('范围')
+        message.includes("length") ||
+        message.includes("长度") ||
+        message.includes("范围")
       ) {
-        errorType = '长度范围错误'
-      } else if (message.includes('duplicate') || message.includes('重复')) {
-        errorType = '重复数据'
+        errorType = "长度范围错误";
+      } else if (message.includes("duplicate") || message.includes("重复")) {
+        errorType = "重复数据";
       } else {
         // 尝试从错误消息开头提取错误类型
-        const colonIndex = detail.message.indexOf(':')
+        const colonIndex = detail.message.indexOf(":");
         if (colonIndex > 0 && colonIndex < 30) {
-          errorType = detail.message.substring(0, colonIndex).trim()
+          errorType = detail.message.substring(0, colonIndex).trim();
         }
       }
 
-      errorTypes[errorType] = (errorTypes[errorType] || 0) + 1
+      errorTypes[errorType] = (errorTypes[errorType] || 0) + 1;
 
       // 严重程度统计
-      severityStats[detail.severity]++
-    })
+      severityStats[detail.severity]++;
+    });
 
     return {
       totalErrors: allErrorDetails.length,
       fieldErrors,
       errorTypes,
       severityStats,
-    }
-  }, [allErrorDetails])
+    };
+  }, [allErrorDetails]);
 
   /**
    * 过滤后的错误详情
    */
   const filteredErrors = useMemo(() => {
-    return allErrorDetails.filter(error => {
+    return allErrorDetails.filter((error) => {
       // 搜索过滤
       if (
         searchTerm &&
@@ -212,65 +212,65 @@ export function UploadResultsDetail({
           error.field.toLowerCase().includes(searchTerm.toLowerCase())
         )
       ) {
-        return false
+        return false;
       }
 
       // 严重程度过滤
-      if (selectedSeverity !== 'all' && error.severity !== selectedSeverity) {
-        return false
+      if (selectedSeverity !== "all" && error.severity !== selectedSeverity) {
+        return false;
       }
 
       // 字段过滤
-      if (selectedField !== 'all' && error.field !== selectedField) {
-        return false
+      if (selectedField !== "all" && error.field !== selectedField) {
+        return false;
       }
 
-      return true
-    })
-  }, [allErrorDetails, searchTerm, selectedSeverity, selectedField])
+      return true;
+    });
+  }, [allErrorDetails, searchTerm, selectedSeverity, selectedField]);
 
   /**
    * 导出错误报告
    */
   const exportErrorReport = () => {
     const csvContent = [
-      ['文件名', '行号', '字段', '错误信息', '严重程度'].join(','),
-      ...filteredErrors.map(error =>
+      ["文件名", "行号", "字段", "错误信息", "严重程度"].join(","),
+      ...filteredErrors.map((error) =>
         [
           error.fileName,
           error.row,
-          error.field || '',
+          error.field || "",
           `"${error.message.replace(/"/g, '""')}"`,
           error.severity,
-        ].join(',')
+        ].join(","),
       ),
-    ].join('\n')
+    ].join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
-    link.download = `数据验证错误报告_${new Date().toISOString().split('T')[0]}.csv`
-    link.click()
-  }
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `数据验证错误报告_${new Date().toISOString().split("T")[0]}.csv`;
+    link.click();
+  };
 
   const isAllSuccess =
-    batchResult.failureCount === 0 && errorStats.severityStats.error === 0
+    batchResult.failureCount === 0 && errorStats.severityStats.error === 0;
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6">
       {/* 总体结果概览 */}
       <div
         className={cn(
-          'p-6 rounded-2xl border-2',
+          "p-6 rounded-2xl border-2",
           isAllSuccess
-            ? 'bg-green-50/80 border-green-200'
-            : 'bg-orange-50/80 border-orange-200'
+            ? "bg-green-50/80 border-green-200"
+            : "bg-orange-50/80 border-orange-200",
         )}
       >
         <div className="flex items-start justify-between mb-4">
           <div>
             <h3 className="text-xl font-semibold text-slate-800 mb-2">
-              {isAllSuccess ? '数据导入成功' : '数据导入完成（存在问题）'}
+              {isAllSuccess ? "数据导入成功" : "数据导入完成（存在问题）"}
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div>
@@ -388,7 +388,9 @@ export function UploadResultsDetail({
             <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
               <Calendar className="w-5 h-5 text-blue-600" />
             </div>
-            <h4 className="text-lg font-semibold text-slate-800">周次导入统计</h4>
+            <h4 className="text-lg font-semibold text-slate-800">
+              周次导入统计
+            </h4>
           </div>
 
           {/* 周次统计卡片 */}
@@ -424,33 +426,39 @@ export function UploadResultsDetail({
           {/* 周次详细列表 */}
           {batchResult.weekAnalysis.weekResults.length > 0 && (
             <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4">
-              <h5 className="text-sm font-medium text-slate-700 mb-3">周次详情</h5>
+              <h5 className="text-sm font-medium text-slate-700 mb-3">
+                周次详情
+              </h5>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                {batchResult.weekAnalysis.weekResults.map((weekResult, index) => (
-                  <div
-                    key={index}
-                    className={cn(
-                      'px-3 py-2 rounded-md text-sm font-medium flex items-center justify-between',
-                      weekResult.status === 'success' &&
-                        'bg-green-100 text-green-700 border border-green-200',
-                      weekResult.status === 'skipped' &&
-                        'bg-yellow-100 text-yellow-700 border border-yellow-200',
-                      weekResult.status === 'failed' &&
-                        'bg-red-100 text-red-700 border border-red-200'
-                    )}
-                  >
-                    <span>
-                      {weekResult.year}年第{weekResult.weekNumber}周
-                    </span>
-                    {weekResult.status === 'success' && (
-                      <CheckCircle2 className="w-3 h-3" />
-                    )}
-                    {weekResult.status === 'skipped' && (
-                      <AlertTriangle className="w-3 h-3" />
-                    )}
-                    {weekResult.status === 'failed' && <XCircle className="w-3 h-3" />}
-                  </div>
-                ))}
+                {batchResult.weekAnalysis.weekResults.map(
+                  (weekResult, index) => (
+                    <div
+                      key={index}
+                      className={cn(
+                        "px-3 py-2 rounded-md text-sm font-medium flex items-center justify-between",
+                        weekResult.status === "success" &&
+                          "bg-green-100 text-green-700 border border-green-200",
+                        weekResult.status === "skipped" &&
+                          "bg-yellow-100 text-yellow-700 border border-yellow-200",
+                        weekResult.status === "failed" &&
+                          "bg-red-100 text-red-700 border border-red-200",
+                      )}
+                    >
+                      <span>
+                        {weekResult.year}年第{weekResult.weekNumber}周
+                      </span>
+                      {weekResult.status === "success" && (
+                        <CheckCircle2 className="w-3 h-3" />
+                      )}
+                      {weekResult.status === "skipped" && (
+                        <AlertTriangle className="w-3 h-3" />
+                      )}
+                      {weekResult.status === "failed" && (
+                        <XCircle className="w-3 h-3" />
+                      )}
+                    </div>
+                  ),
+                )}
               </div>
 
               {/* 跳过原因说明 */}
@@ -495,16 +503,16 @@ export function UploadResultsDetail({
                   type="text"
                   placeholder="搜索错误信息..."
                   value={searchTerm}
-                  onChange={e => setSearchTerm(e.target.value)}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   className="px-3 py-1 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <select
                 value={selectedSeverity}
-                onChange={e =>
+                onChange={(e) =>
                   setSelectedSeverity(
-                    e.target.value as 'all' | 'error' | 'warning' | 'info'
+                    e.target.value as "all" | "error" | "warning" | "info",
                   )
                 }
                 className="px-3 py-1 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -517,13 +525,13 @@ export function UploadResultsDetail({
 
               <select
                 value={selectedField}
-                onChange={e => setSelectedField(e.target.value)}
+                onChange={(e) => setSelectedField(e.target.value)}
                 className="px-3 py-1 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">所有字段</option>
                 {Object.keys(errorStats.fieldErrors)
                   .sort()
-                  .map(field => (
+                  .map((field) => (
                     <option key={field} value={field}>
                       {field} ({errorStats.fieldErrors[field]})
                     </option>
@@ -542,21 +550,21 @@ export function UploadResultsDetail({
               <div
                 key={index}
                 className={cn(
-                  'flex items-start gap-3 p-4 border-b border-slate-100 hover:bg-slate-50',
-                  error.severity === 'error' && 'border-l-4 border-l-red-500',
-                  error.severity === 'warning' &&
-                    'border-l-4 border-l-orange-500',
-                  error.severity === 'info' && 'border-l-4 border-l-blue-500'
+                  "flex items-start gap-3 p-4 border-b border-slate-100 hover:bg-slate-50",
+                  error.severity === "error" && "border-l-4 border-l-red-500",
+                  error.severity === "warning" &&
+                    "border-l-4 border-l-orange-500",
+                  error.severity === "info" && "border-l-4 border-l-blue-500",
                 )}
               >
                 <div className="flex-shrink-0 mt-0.5">
-                  {error.severity === 'error' && (
+                  {error.severity === "error" && (
                     <XCircle className="w-4 h-4 text-red-500" />
                   )}
-                  {error.severity === 'warning' && (
+                  {error.severity === "warning" && (
                     <AlertTriangle className="w-4 h-4 text-orange-500" />
                   )}
-                  {error.severity === 'info' && (
+                  {error.severity === "info" && (
                     <Info className="w-4 h-4 text-blue-500" />
                   )}
                 </div>
@@ -677,47 +685,54 @@ export function UploadResultsDetail({
                         <div>
                           <span className="text-slate-600">文件编码：</span>
                           <span className="font-medium">
-                            {result.result.stats.encoding || 'UTF-8'}
+                            {result.result.stats.encoding || "UTF-8"}
                           </span>
                         </div>
                       </div>
 
                       {/* 周次信息 */}
-                      {result.weekInfo && result.weekInfo.detectedWeeks.length > 0 && (
-                        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Calendar className="w-4 h-4 text-blue-600" />
-                            <h6 className="text-sm font-medium text-blue-900">
-                              周次信息
-                            </h6>
+                      {result.weekInfo &&
+                        result.weekInfo.detectedWeeks.length > 0 && (
+                          <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Calendar className="w-4 h-4 text-blue-600" />
+                              <h6 className="text-sm font-medium text-blue-900">
+                                周次信息
+                              </h6>
+                            </div>
+                            <div className="space-y-2 text-sm">
+                              {result.weekInfo.newWeeks.length > 0 && (
+                                <div className="flex items-center gap-2">
+                                  <CheckCircle2 className="w-3 h-3 text-green-600" />
+                                  <span className="text-green-700">
+                                    新导入 {result.weekInfo.newWeeks.length}{" "}
+                                    个周次：
+                                    {result.weekInfo.newWeeks
+                                      .map(
+                                        (w) => `${w.year}年第${w.weekNumber}周`,
+                                      )
+                                      .join("、")}
+                                  </span>
+                                </div>
+                              )}
+                              {result.weekInfo.conflictWeeks.length > 0 && (
+                                <div className="flex items-center gap-2">
+                                  <AlertTriangle className="w-3 h-3 text-yellow-600" />
+                                  <span className="text-yellow-700">
+                                    跳过 {result.weekInfo.conflictWeeks.length}{" "}
+                                    个周次：
+                                    {result.weekInfo.conflictWeeks
+                                      .map(
+                                        (w) => `${w.year}年第${w.weekNumber}周`,
+                                      )
+                                      .join("、")}
+                                    （已存在）
+                                  </span>
+                                </div>
+                              )}
+                            </div>
                           </div>
-                          <div className="space-y-2 text-sm">
-                            {result.weekInfo.newWeeks.length > 0 && (
-                              <div className="flex items-center gap-2">
-                                <CheckCircle2 className="w-3 h-3 text-green-600" />
-                                <span className="text-green-700">
-                                  新导入 {result.weekInfo.newWeeks.length} 个周次：
-                                  {result.weekInfo.newWeeks
-                                    .map(w => `${w.year}年第${w.weekNumber}周`)
-                                    .join('、')}
-                                </span>
-                              </div>
-                            )}
-                            {result.weekInfo.conflictWeeks.length > 0 && (
-                              <div className="flex items-center gap-2">
-                                <AlertTriangle className="w-3 h-3 text-yellow-600" />
-                                <span className="text-yellow-700">
-                                  跳过 {result.weekInfo.conflictWeeks.length} 个周次：
-                                  {result.weekInfo.conflictWeeks
-                                    .map(w => `${w.year}年第${w.weekNumber}周`)
-                                    .join('、')}
-                                  （已存在）
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )}
+                        )}
 
                       {result.result.errors &&
                         result.result.errors.length > 0 && (
@@ -734,13 +749,13 @@ export function UploadResultsDetail({
                                     className="text-xs text-slate-600 bg-slate-50 p-2 rounded"
                                   >
                                     第 {error.row} 行
-                                    {error.field && ` (${error.field})`}:{' '}
+                                    {error.field && ` (${error.field})`}:{" "}
                                     {error.message}
                                   </div>
                                 ))}
                               {result.result.errors.length > 10 && (
                                 <div className="text-xs text-slate-500 italic">
-                                  还有 {result.result.errors.length - 10}{' '}
+                                  还有 {result.result.errors.length - 10}{" "}
                                   个错误...
                                 </div>
                               )}
@@ -761,5 +776,5 @@ export function UploadResultsDetail({
         </div>
       </div>
     </div>
-  )
+  );
 }

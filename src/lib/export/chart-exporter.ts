@@ -7,38 +7,38 @@
  * 支持将图表导出为PNG图片
  */
 
-import html2canvas from 'html2canvas'
+import html2canvas from "html2canvas";
 
 export interface ChartExportOptions {
   /**
    * 导出文件名（不含扩展名）
    */
-  filename?: string
+  filename?: string;
 
   /**
    * 图片质量 (0-1)，仅对JPEG有效
    */
-  quality?: number
+  quality?: number;
 
   /**
    * 背景颜色（默认白色）
    */
-  backgroundColor?: string
+  backgroundColor?: string;
 
   /**
    * 缩放比例（默认2，生成高清图片）
    */
-  scale?: number
+  scale?: number;
 
   /**
    * 是否在导出前等待一段时间（毫秒），确保图表完全渲染
    */
-  waitBeforeCapture?: number
+  waitBeforeCapture?: number;
 
   /**
    * 图片格式
    */
-  format?: 'png' | 'jpeg'
+  format?: "png" | "jpeg";
 }
 
 /**
@@ -48,31 +48,31 @@ export interface ChartExportOptions {
  */
 export async function exportChartAsImage(
   element: HTMLElement | string,
-  options: ChartExportOptions = {}
+  options: ChartExportOptions = {},
 ): Promise<void> {
   const {
-    filename = `chart-${new Date().toISOString().split('T')[0]}`,
+    filename = `chart-${new Date().toISOString().split("T")[0]}`,
     quality = 0.95,
-    backgroundColor = '#ffffff',
+    backgroundColor = "#ffffff",
     scale = 2,
     waitBeforeCapture = 100,
-    format = 'png',
-  } = options
+    format = "png",
+  } = options;
 
   try {
     // 获取DOM元素
     const targetElement =
-      typeof element === 'string'
+      typeof element === "string"
         ? document.querySelector<HTMLElement>(element)
-        : element
+        : element;
 
     if (!targetElement) {
-      throw new Error('找不到要导出的图表元素')
+      throw new Error("找不到要导出的图表元素");
     }
 
     // 等待图表完全渲染
     if (waitBeforeCapture > 0) {
-      await new Promise(resolve => setTimeout(resolve, waitBeforeCapture))
+      await new Promise((resolve) => setTimeout(resolve, waitBeforeCapture));
     }
 
     // 使用html2canvas捕获元素
@@ -86,33 +86,33 @@ export async function exportChartAsImage(
       imageTimeout: 15000,
       // 优化SVG渲染（对Recharts图表重要）
       foreignObjectRendering: true,
-    })
+    });
 
     // 转换为Blob并下载
     canvas.toBlob(
-      blob => {
+      (blob) => {
         if (!blob) {
-          throw new Error('图片生成失败')
+          throw new Error("图片生成失败");
         }
 
         // 创建下载链接
-        const url = URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = url
-        link.download = `${filename}.${format}`
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${filename}.${format}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
 
         // 释放URL对象
-        URL.revokeObjectURL(url)
+        URL.revokeObjectURL(url);
       },
-      format === 'jpeg' ? 'image/jpeg' : 'image/png',
-      quality
-    )
+      format === "jpeg" ? "image/jpeg" : "image/png",
+      quality,
+    );
   } catch (error) {
-    console.error('图表导出失败:', error)
-    throw error
+    console.error("图表导出失败:", error);
+    throw error;
   }
 }
 
@@ -123,25 +123,25 @@ export async function exportChartAsImage(
  */
 export async function exportMultipleChartsAsImage(
   elements: (HTMLElement | string)[],
-  options: ChartExportOptions = {}
+  options: ChartExportOptions = {},
 ): Promise<void> {
   const {
-    filename = `charts-${new Date().toISOString().split('T')[0]}`,
+    filename = `charts-${new Date().toISOString().split("T")[0]}`,
     quality = 0.95,
-    backgroundColor = '#ffffff',
+    backgroundColor = "#ffffff",
     scale = 2,
     waitBeforeCapture = 100,
-    format = 'png',
-  } = options
+    format = "png",
+  } = options;
 
   try {
     // 等待渲染
     if (waitBeforeCapture > 0) {
-      await new Promise(resolve => setTimeout(resolve, waitBeforeCapture))
+      await new Promise((resolve) => setTimeout(resolve, waitBeforeCapture));
     }
 
     // 创建一个临时容器来合并所有图表
-    const container = document.createElement('div')
+    const container = document.createElement("div");
     container.style.cssText = `
       position: absolute;
       left: -9999px;
@@ -151,22 +151,22 @@ export async function exportMultipleChartsAsImage(
       display: flex;
       flex-direction: column;
       gap: 20px;
-    `
+    `;
 
     // 克隆所有元素到容器中
     for (const element of elements) {
       const targetElement =
-        typeof element === 'string'
+        typeof element === "string"
           ? document.querySelector<HTMLElement>(element)
-          : element
+          : element;
 
       if (targetElement) {
-        const clone = targetElement.cloneNode(true) as HTMLElement
-        container.appendChild(clone)
+        const clone = targetElement.cloneNode(true) as HTMLElement;
+        container.appendChild(clone);
       }
     }
 
-    document.body.appendChild(container)
+    document.body.appendChild(container);
 
     // 捕获合并后的图表
     const canvas = await html2canvas(container, {
@@ -177,33 +177,33 @@ export async function exportMultipleChartsAsImage(
       allowTaint: false,
       removeContainer: true,
       foreignObjectRendering: true,
-    })
+    });
 
     // 移除临时容器
-    document.body.removeChild(container)
+    document.body.removeChild(container);
 
     // 下载图片
     canvas.toBlob(
-      blob => {
+      (blob) => {
         if (!blob) {
-          throw new Error('图片生成失败')
+          throw new Error("图片生成失败");
         }
 
-        const url = URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = url
-        link.download = `${filename}.${format}`
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-        URL.revokeObjectURL(url)
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${filename}.${format}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
       },
-      format === 'jpeg' ? 'image/jpeg' : 'image/png',
-      quality
-    )
+      format === "jpeg" ? "image/jpeg" : "image/png",
+      quality,
+    );
   } catch (error) {
-    console.error('多图表导出失败:', error)
-    throw error
+    console.error("多图表导出失败:", error);
+    throw error;
   }
 }
 
@@ -215,27 +215,27 @@ export async function exportMultipleChartsAsImage(
  */
 export async function getChartAsDataURL(
   element: HTMLElement | string,
-  options: Omit<ChartExportOptions, 'filename'> = {}
+  options: Omit<ChartExportOptions, "filename"> = {},
 ): Promise<string> {
   const {
-    backgroundColor = '#ffffff',
+    backgroundColor = "#ffffff",
     scale = 2,
     waitBeforeCapture = 100,
-    format = 'png',
+    format = "png",
     quality = 0.95,
-  } = options
+  } = options;
 
   const targetElement =
-    typeof element === 'string'
+    typeof element === "string"
       ? document.querySelector<HTMLElement>(element)
-      : element
+      : element;
 
   if (!targetElement) {
-    throw new Error('找不到要转换的图表元素')
+    throw new Error("找不到要转换的图表元素");
   }
 
   if (waitBeforeCapture > 0) {
-    await new Promise(resolve => setTimeout(resolve, waitBeforeCapture))
+    await new Promise((resolve) => setTimeout(resolve, waitBeforeCapture));
   }
 
   const canvas = await html2canvas(targetElement, {
@@ -246,10 +246,10 @@ export async function getChartAsDataURL(
     allowTaint: false,
     removeContainer: true,
     foreignObjectRendering: true,
-  })
+  });
 
   return canvas.toDataURL(
-    format === 'jpeg' ? 'image/jpeg' : 'image/png',
-    quality
-  )
+    format === "jpeg" ? "image/jpeg" : "image/png",
+    quality,
+  );
 }

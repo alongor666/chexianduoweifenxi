@@ -13,10 +13,14 @@
  * 2. 各个组件中散落的 KPI 计算
  */
 
-import { kpiEngine } from '@/lib/calculations/kpi-engine'
-import type { InsuranceRecord, KPIResult, FilterState } from '@/types/insurance'
-import { DataService } from './DataService'
-import { safeMax } from '@/lib/utils/array-utils'
+import { kpiEngine } from "@/lib/calculations/kpi-engine";
+import type {
+  InsuranceRecord,
+  KPIResult,
+  FilterState,
+} from "@/types/insurance";
+import { DataService } from "./DataService";
+import { safeMax } from "@/lib/utils/array-utils";
 
 /**
  * KPI 计算选项
@@ -25,24 +29,24 @@ export interface KPICalculationOptions {
   /**
    * 年度目标（元），用于计算达成率
    */
-  annualTargetYuan?: number
+  annualTargetYuan?: number;
 
   /**
    * 计算模式
    * - current: 当周值（累计）
    * - increment: 周增量（本周新增）
    */
-  mode?: 'current' | 'increment'
+  mode?: "current" | "increment";
 
   /**
    * 当前周次（用于时间进度计算）
    */
-  currentWeekNumber?: number
+  currentWeekNumber?: number;
 
   /**
    * 年份
    */
-  year?: number
+  year?: number;
 }
 
 /**
@@ -52,12 +56,12 @@ export interface TrendAnalysisOptions {
   /**
    * 周次范围
    */
-  weekRange: number[]
+  weekRange: number[];
 
   /**
    * 是否计算同比/环比
    */
-  includeComparison?: boolean
+  includeComparison?: boolean;
 }
 
 export class KPIService {
@@ -68,18 +72,18 @@ export class KPIService {
    */
   static calculate(
     data: InsuranceRecord[],
-    options: KPICalculationOptions = {}
+    options: KPICalculationOptions = {},
   ): KPIResult | null {
     if (data.length === 0) {
-      return null
+      return null;
     }
 
     return kpiEngine.calculate(data, {
       annualTargetYuan: options.annualTargetYuan,
-      mode: options.mode || 'current',
+      mode: options.mode || "current",
       currentWeekNumber: options.currentWeekNumber,
       year: options.year || new Date().getFullYear(),
-    })
+    });
   }
 
   /**
@@ -91,18 +95,18 @@ export class KPIService {
   static calculateIncrement(
     currentWeekData: InsuranceRecord[],
     previousWeekData: InsuranceRecord[],
-    options: KPICalculationOptions = {}
+    options: KPICalculationOptions = {},
   ): KPIResult | null {
     if (currentWeekData.length === 0) {
-      return null
+      return null;
     }
 
     return kpiEngine.calculateIncrement(currentWeekData, previousWeekData, {
-      mode: 'increment',
+      mode: "increment",
       annualTargetYuan: options.annualTargetYuan,
       currentWeekNumber: options.currentWeekNumber,
       year: options.year || new Date().getFullYear(),
-    })
+    });
   }
 
   /**
@@ -114,28 +118,29 @@ export class KPIService {
   static calculateTrend(
     rawData: InsuranceRecord[],
     filters: FilterState,
-    options: TrendAnalysisOptions
+    options: TrendAnalysisOptions,
   ): Map<number, KPIResult> {
-    const trendData = new Map<number, KPIResult>()
+    const trendData = new Map<number, KPIResult>();
 
     for (const week of options.weekRange) {
-      const weekData = DataService.getByWeek(rawData, week, filters)
+      const weekData = DataService.getByWeek(rawData, week, filters);
 
       if (weekData.length > 0) {
         const kpi = this.calculate(weekData, {
           currentWeekNumber: week,
-          year: filters.years && filters.years.length > 0
-            ? safeMax(filters.years)
-            : new Date().getFullYear(),
-        })
+          year:
+            filters.years && filters.years.length > 0
+              ? safeMax(filters.years)
+              : new Date().getFullYear(),
+        });
 
         if (kpi) {
-          trendData.set(week, kpi)
+          trendData.set(week, kpi);
         }
       }
     }
 
-    return trendData
+    return trendData;
   }
 
   /**
@@ -149,23 +154,31 @@ export class KPIService {
     rawData: InsuranceRecord[],
     currentWeek: number,
     filters: FilterState,
-    annualTarget?: number
+    annualTarget?: number,
   ): {
-    currentKpi: KPIResult | null
-    compareKpi: KPIResult | null
-    previousWeekNumber: number | null
+    currentKpi: KPIResult | null;
+    compareKpi: KPIResult | null;
+    previousWeekNumber: number | null;
   } {
     // 获取当前周数据
-    const currentWeekData = DataService.getByWeek(rawData, currentWeek, filters)
+    const currentWeekData = DataService.getByWeek(
+      rawData,
+      currentWeek,
+      filters,
+    );
 
     // 获取上一周数据
-    const previousWeek = currentWeek - 1
-    const previousWeekData = DataService.getByWeek(rawData, previousWeek, filters)
+    const previousWeek = currentWeek - 1;
+    const previousWeekData = DataService.getByWeek(
+      rawData,
+      previousWeek,
+      filters,
+    );
 
     const currentKpi = this.calculate(currentWeekData, {
       annualTargetYuan: annualTarget,
       currentWeekNumber: currentWeek,
-    })
+    });
 
     const compareKpi =
       previousWeekData.length > 0
@@ -173,13 +186,13 @@ export class KPIService {
             annualTargetYuan: annualTarget,
             currentWeekNumber: previousWeek,
           })
-        : null
+        : null;
 
     return {
       currentKpi,
       compareKpi,
       previousWeekNumber: previousWeekData.length > 0 ? previousWeek : null,
-    }
+    };
   }
 
   /**
@@ -191,20 +204,20 @@ export class KPIService {
   static calculateByDimension<K extends keyof InsuranceRecord>(
     rawData: InsuranceRecord[],
     dimension: K,
-    filters: FilterState
+    filters: FilterState,
   ): Map<InsuranceRecord[K], KPIResult> {
-    const filteredData = DataService.filter(rawData, filters)
-    const groups = DataService.groupBy(filteredData, dimension)
-    const kpiByDimension = new Map<InsuranceRecord[K], KPIResult>()
+    const filteredData = DataService.filter(rawData, filters);
+    const groups = DataService.groupBy(filteredData, dimension);
+    const kpiByDimension = new Map<InsuranceRecord[K], KPIResult>();
 
     for (const [key, records] of groups.entries()) {
-      const kpi = this.calculate(records)
+      const kpi = this.calculate(records);
       if (kpi) {
-        kpiByDimension.set(key, kpi)
+        kpiByDimension.set(key, kpi);
       }
     }
 
-    return kpiByDimension
+    return kpiByDimension;
   }
 
   /**
@@ -214,14 +227,14 @@ export class KPIService {
    */
   static calculateBatch(
     rawData: InsuranceRecord[],
-    filtersList: FilterState[]
+    filtersList: FilterState[],
   ): KPIResult[] {
     return filtersList
-      .map(filters => {
-        const filteredData = DataService.filter(rawData, filters)
-        return this.calculate(filteredData)
+      .map((filters) => {
+        const filteredData = DataService.filter(rawData, filters);
+        return this.calculate(filteredData);
       })
-      .filter((kpi): kpi is KPIResult => kpi !== null)
+      .filter((kpi): kpi is KPIResult => kpi !== null);
   }
 
   /**
@@ -232,10 +245,10 @@ export class KPIService {
    */
   static calculateAchievementRate(
     actualPremium: number,
-    targetPremium: number
+    targetPremium: number,
   ): number {
-    if (targetPremium === 0) return 0
-    return actualPremium / targetPremium
+    if (targetPremium === 0) return 0;
+    return actualPremium / targetPremium;
   }
 
   /**
@@ -244,16 +257,16 @@ export class KPIService {
    * @param year 年份
    */
   static calculateTimeProgress(currentDate: Date, year?: number): number {
-    const targetYear = year || currentDate.getFullYear()
-    const startOfYear = new Date(targetYear, 0, 1)
-    const endOfYear = new Date(targetYear, 11, 31, 23, 59, 59)
+    const targetYear = year || currentDate.getFullYear();
+    const startOfYear = new Date(targetYear, 0, 1);
+    const endOfYear = new Date(targetYear, 11, 31, 23, 59, 59);
 
     const totalDays =
-      (endOfYear.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)
+      (endOfYear.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24);
     const passedDays =
-      (currentDate.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)
+      (currentDate.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24);
 
-    return Math.min(passedDays / totalDays, 1)
+    return Math.min(passedDays / totalDays, 1);
   }
 
   /**
@@ -263,34 +276,34 @@ export class KPIService {
    */
   static calculateGrowthRate(
     currentKpi: KPIResult,
-    comparisonKpi: KPIResult
+    comparisonKpi: KPIResult,
   ): {
-    premiumGrowthRate: number
-    policyCountGrowthRate: number
-    averagePremiumGrowthRate: number
+    premiumGrowthRate: number;
+    policyCountGrowthRate: number;
+    averagePremiumGrowthRate: number;
   } {
     const premiumGrowthRate =
-      comparisonKpi.signedPremium > 0
-        ? (currentKpi.signedPremium - comparisonKpi.signedPremium) /
-          comparisonKpi.signedPremium
-        : 0
+      comparisonKpi.signed_premium > 0
+        ? (currentKpi.signed_premium - comparisonKpi.signed_premium) /
+          comparisonKpi.signed_premium
+        : 0;
 
     const policyCountGrowthRate =
-      comparisonKpi.policyCount > 0
-        ? (currentKpi.policyCount - comparisonKpi.policyCount) /
-          comparisonKpi.policyCount
-        : 0
+      comparisonKpi.policy_count > 0
+        ? (currentKpi.policy_count - comparisonKpi.policy_count) /
+          comparisonKpi.policy_count
+        : 0;
 
     const averagePremiumGrowthRate =
-      comparisonKpi.averagePremium > 0
-        ? (currentKpi.averagePremium - comparisonKpi.averagePremium) /
-          comparisonKpi.averagePremium
-        : 0
+      comparisonKpi.average_premium && comparisonKpi.average_premium > 0
+        ? ((currentKpi.average_premium || 0) - comparisonKpi.average_premium) /
+          comparisonKpi.average_premium
+        : 0;
 
     return {
       premiumGrowthRate,
       policyCountGrowthRate,
       averagePremiumGrowthRate,
-    }
+    };
   }
 }

@@ -1,12 +1,12 @@
-'use client'
+"use client";
 
 import {
   Download,
   FileSpreadsheet,
   FileText,
   Image as ImageIcon,
-} from 'lucide-react'
-import { Button } from '@/components/ui/button'
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -14,42 +14,42 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { useAppStore } from '@/store/use-app-store'
-import { useFilteredData } from '@/hooks/use-filtered-data'
-import { useKPI } from '@/hooks/use-kpi'
+} from "@/components/ui/dialog";
+import { useAppStore } from "@/store/use-app-store";
+import { useFilteredData } from "@/hooks/use-filtered-data";
+import { useKPI } from "@/hooks/use-kpi";
 import {
   exportToCSV,
   exportKPISummary,
   exportFilteredData,
-} from '@/lib/export/csv-exporter'
-import { exportChartAsImage } from '@/lib/export/chart-exporter'
-import { useState } from 'react'
+} from "@/lib/export/csv-exporter";
+import { exportChartAsImage } from "@/lib/export/chart-exporter";
+import { useState } from "react";
 
 /**
  * 数据导出组件
  * 支持导出明细数据和KPI汇总
  */
 export function DataExport() {
-  const [open, setOpen] = useState(false)
-  const rawData = useAppStore(state => state.rawData)
-  const filters = useAppStore(state => state.filters)
-  const filteredData = useFilteredData()
-  const kpiData = useKPI()
+  const [open, setOpen] = useState(false);
+  const rawData = useAppStore((state) => state.rawData);
+  const filters = useAppStore((state) => state.filters);
+  const filteredData = useFilteredData();
+  const kpiData = useKPI();
 
   // 检查是否有数据
-  const hasData = rawData.length > 0
-  const hasFilteredData = filteredData.length > 0
+  const hasData = rawData.length > 0;
+  const hasFilteredData = filteredData.length > 0;
 
   /**
    * 导出全部原始数据
    */
   const handleExportAll = () => {
     exportToCSV(rawData, {
-      filename: `保险数据_全部_${new Date().toISOString().split('T')[0]}`,
-    })
-    setOpen(false)
-  }
+      filename: `保险数据_全部_${new Date().toISOString().split("T")[0]}`,
+    });
+    setOpen(false);
+  };
 
   /**
    * 导出过滤后的明细数据
@@ -58,11 +58,11 @@ export function DataExport() {
     const exportFilterState = {
       policyYear: filters.years,
       weekNumber: filters.weeks,
-      thirdLevelOrganization: filters.organizations
-    }
-    exportFilteredData(filteredData, exportFilterState)
-    setOpen(false)
-  }
+      thirdLevelOrganization: filters.organizations,
+    };
+    exportFilteredData(filteredData, exportFilterState);
+    setOpen(false);
+  };
 
   /**
    * 导出KPI汇总
@@ -72,8 +72,8 @@ export function DataExport() {
       const exportFilterState = {
         policyYear: filters.years,
         weekNumber: filters.weeks,
-        thirdLevelOrganization: filters.organizations
-      }
+        thirdLevelOrganization: filters.organizations,
+      };
       // 将 KPIResult 转换为 KPISummarySnapshot
       const kpiSummary = {
         maturedMarginRate: kpiData.contribution_margin_ratio,
@@ -85,37 +85,37 @@ export function DataExport() {
         variableCostRate: kpiData.variable_cost_ratio,
         autonomyCoefficient: kpiData.autonomy_coefficient,
         signedPremium: kpiData.signed_premium,
-        maturedPremium: kpiData.matured_premium
-      }
-      exportKPISummary(kpiSummary, exportFilterState)
+        maturedPremium: kpiData.matured_premium,
+      };
+      exportKPISummary(kpiSummary, exportFilterState);
     }
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   /**
    * 导出图表为图片
    */
   const handleExportChartImage = async (chartId: string, chartName: string) => {
     try {
-      const element = document.getElementById(chartId)
+      const element = document.getElementById(chartId);
       if (!element) {
-        alert(`未找到图表元素: ${chartId}`)
-        return
+        alert(`未找到图表元素: ${chartId}`);
+        return;
       }
 
       await exportChartAsImage(element, {
-        filename: `${chartName}_${new Date().toISOString().split('T')[0]}`,
-        backgroundColor: '#ffffff',
+        filename: `${chartName}_${new Date().toISOString().split("T")[0]}`,
+        backgroundColor: "#ffffff",
         scale: 2,
-        format: 'png',
-      })
+        format: "png",
+      });
 
       // 不关闭对话框，方便用户导出多个图表
     } catch (error) {
-      console.error('图表导出失败:', error)
-      alert('图表导出失败，请重试')
+      console.error("图表导出失败:", error);
+      alert("图表导出失败，请重试");
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -155,7 +155,7 @@ export function DataExport() {
                 导出全部原始数据
               </h4>
               <p className="text-sm text-slate-600 mt-1">
-                导出所有已上传的原始数据 ({rawData.length.toLocaleString()}{' '}
+                导出所有已上传的原始数据 ({rawData.length.toLocaleString()}{" "}
                 条记录)
               </p>
             </div>
@@ -166,8 +166,8 @@ export function DataExport() {
             onClick={hasFilteredData ? handleExportFiltered : undefined}
             className={`flex items-start gap-3 p-4 border rounded-lg transition-all ${
               hasFilteredData
-                ? 'border-slate-200 hover:border-blue-300 hover:bg-blue-50/50 cursor-pointer group'
-                : 'border-slate-100 bg-slate-50 cursor-not-allowed opacity-60'
+                ? "border-slate-200 hover:border-blue-300 hover:bg-blue-50/50 cursor-pointer group"
+                : "border-slate-100 bg-slate-50 cursor-not-allowed opacity-60"
             }`}
           >
             <div className="mt-1">
@@ -180,20 +180,20 @@ export function DataExport() {
               <p className="text-sm text-slate-600 mt-1">
                 {hasFilteredData
                   ? `导出应用筛选条件后的数据 (${filteredData.length.toLocaleString()} 条记录)`
-                  : '当前无筛选数据可导出'}
+                  : "当前无筛选数据可导出"}
               </p>
               {hasFilteredData && (
                 <div className="mt-2 text-xs text-slate-500">
                   当前筛选条件:
                   {filters.years?.length
-                    ? ` 年度(${filters.years.join(',')})`
-                    : ''}
+                    ? ` 年度(${filters.years.join(",")})`
+                    : ""}
                   {filters.weeks?.length
-                    ? ` 周次(${filters.weeks.join(',')})`
-                    : ''}
+                    ? ` 周次(${filters.weeks.join(",")})`
+                    : ""}
                   {filters.organizations?.length
                     ? ` 机构(${filters.organizations.length}个)`
-                    : ''}
+                    : ""}
                 </div>
               )}
             </div>
@@ -237,7 +237,7 @@ export function DataExport() {
             <div className="space-y-2 pl-8">
               <button
                 onClick={() =>
-                  handleExportChartImage('trend-chart', '趋势分析图')
+                  handleExportChartImage("trend-chart", "趋势分析图")
                 }
                 className="w-full text-left px-3 py-2 text-sm rounded border border-slate-200 bg-white hover:border-purple-300 hover:bg-purple-50 transition-colors"
               >
@@ -245,7 +245,7 @@ export function DataExport() {
               </button>
               <button
                 onClick={() =>
-                  handleExportChartImage('organization-chart', '机构结构分析图')
+                  handleExportChartImage("organization-chart", "机构结构分析图")
                 }
                 className="w-full text-left px-3 py-2 text-sm rounded border border-slate-200 bg-white hover:border-purple-300 hover:bg-purple-50 transition-colors"
               >
@@ -253,7 +253,7 @@ export function DataExport() {
               </button>
               <button
                 onClick={() =>
-                  handleExportChartImage('product-chart', '产品结构分析图')
+                  handleExportChartImage("product-chart", "产品结构分析图")
                 }
                 className="w-full text-left px-3 py-2 text-sm rounded border border-slate-200 bg-white hover:border-purple-300 hover:bg-purple-50 transition-colors"
               >
@@ -274,5 +274,5 @@ export function DataExport() {
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

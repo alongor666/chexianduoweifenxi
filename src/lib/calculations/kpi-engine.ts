@@ -3,44 +3,44 @@
  * 实现所有核心指标的计算逻辑
  */
 
-import type { InsuranceRecord, KPIResult } from '@/types/insurance'
+import type { InsuranceRecord, KPIResult } from "@/types/insurance";
 import {
   getTimeProgressForWeek,
   WORKING_WEEKS_PER_YEAR,
-} from '@/lib/utils/date-utils'
+} from "@/lib/utils/date-utils";
 
 /**
  * 基础聚合数据
  */
 interface BaseAggregation {
-  signed_premium_yuan: number
-  matured_premium_yuan: number
-  policy_count: number
-  claim_case_count: number
-  reported_claim_payment_yuan: number
-  expense_amount_yuan: number
-  commercial_premium_before_discount_yuan: number
-  premium_plan_yuan: number
-  marginal_contribution_amount_yuan: number
+  signed_premium_yuan: number;
+  matured_premium_yuan: number;
+  policy_count: number;
+  claim_case_count: number;
+  reported_claim_payment_yuan: number;
+  expense_amount_yuan: number;
+  commercial_premium_before_discount_yuan: number;
+  premium_plan_yuan: number;
+  marginal_contribution_amount_yuan: number;
 }
 
 interface KPIComputationOptions {
-  premiumTargetYuan?: number | null
-  policyCountTarget?: number | null
+  premiumTargetYuan?: number | null;
+  policyCountTarget?: number | null;
   /**
    * 计算模式：
    * - 'current': 当周值模式（累计值）
    * - 'increment': 周增量模式（增量值）
    */
-  mode?: 'current' | 'increment'
+  mode?: "current" | "increment";
   /**
    * 当前周次（用于计算时间进度）
    */
-  currentWeekNumber?: number | null
+  currentWeekNumber?: number | null;
   /**
    * 年份（用于计算时间进度）
    */
-  year?: number | null
+  year?: number | null;
 }
 
 /**
@@ -51,9 +51,9 @@ interface KPIComputationOptions {
  */
 function safeDivide(numerator: number, denominator: number): number | null {
   if (!denominator || denominator === 0) {
-    return null
+    return null;
   }
-  return numerator / denominator
+  return numerator / denominator;
 }
 
 /**
@@ -64,18 +64,18 @@ function safeDivide(numerator: number, denominator: number): number | null {
 function aggregateData(records: InsuranceRecord[]): BaseAggregation {
   return records.reduce(
     (acc, record) => {
-      acc.signed_premium_yuan += record.signed_premium_yuan
-      acc.matured_premium_yuan += record.matured_premium_yuan
-      acc.policy_count += record.policy_count
-      acc.claim_case_count += record.claim_case_count
-      acc.reported_claim_payment_yuan += record.reported_claim_payment_yuan
-      acc.expense_amount_yuan += record.expense_amount_yuan
+      acc.signed_premium_yuan += record.signed_premium_yuan;
+      acc.matured_premium_yuan += record.matured_premium_yuan;
+      acc.policy_count += record.policy_count;
+      acc.claim_case_count += record.claim_case_count;
+      acc.reported_claim_payment_yuan += record.reported_claim_payment_yuan;
+      acc.expense_amount_yuan += record.expense_amount_yuan;
       acc.commercial_premium_before_discount_yuan +=
-        record.commercial_premium_before_discount_yuan
-      acc.premium_plan_yuan += record.premium_plan_yuan || 0
+        record.commercial_premium_before_discount_yuan;
+      acc.premium_plan_yuan += record.premium_plan_yuan || 0;
       acc.marginal_contribution_amount_yuan +=
-        record.marginal_contribution_amount_yuan
-      return acc
+        record.marginal_contribution_amount_yuan;
+      return acc;
     },
     {
       signed_premium_yuan: 0,
@@ -87,8 +87,8 @@ function aggregateData(records: InsuranceRecord[]): BaseAggregation {
       commercial_premium_before_discount_yuan: 0,
       premium_plan_yuan: 0,
       marginal_contribution_amount_yuan: 0,
-    }
-  )
+    },
+  );
 }
 
 /**
@@ -98,21 +98,21 @@ function aggregateData(records: InsuranceRecord[]): BaseAggregation {
  */
 function computeKPIs(
   aggregated: BaseAggregation,
-  options: KPIComputationOptions = {}
+  options: KPIComputationOptions = {},
 ): KPIResult {
   const premiumTargetYuan =
-    typeof options.premiumTargetYuan === 'number'
+    typeof options.premiumTargetYuan === "number"
       ? Math.max(0, options.premiumTargetYuan)
-      : null
+      : null;
   const policyCountTarget =
-    typeof options.policyCountTarget === 'number'
+    typeof options.policyCountTarget === "number"
       ? Math.max(0, Math.round(options.policyCountTarget))
-      : null
+      : null;
 
   const premiumPlanYuan =
     premiumTargetYuan !== null
       ? premiumTargetYuan
-      : aggregated.premium_plan_yuan
+      : aggregated.premium_plan_yuan;
 
   // ============= 率值指标计算 =============
 
@@ -120,162 +120,162 @@ function computeKPIs(
   const loss_ratio =
     safeDivide(
       aggregated.reported_claim_payment_yuan,
-      aggregated.matured_premium_yuan
+      aggregated.matured_premium_yuan,
     ) !== null
       ? safeDivide(
           aggregated.reported_claim_payment_yuan,
-          aggregated.matured_premium_yuan
+          aggregated.matured_premium_yuan,
         )! * 100
-      : null
+      : null;
 
   // 费用率 = 费用金额 / 签单保费 * 100
   const expense_ratio =
     safeDivide(
       aggregated.expense_amount_yuan,
-      aggregated.signed_premium_yuan
+      aggregated.signed_premium_yuan,
     ) !== null
       ? safeDivide(
           aggregated.expense_amount_yuan,
-          aggregated.signed_premium_yuan
+          aggregated.signed_premium_yuan,
         )! * 100
-      : null
+      : null;
 
   // 满期率 = 满期保费 / 签单保费 * 100
   const maturity_ratio =
     safeDivide(
       aggregated.matured_premium_yuan,
-      aggregated.signed_premium_yuan
+      aggregated.signed_premium_yuan,
     ) !== null
       ? safeDivide(
           aggregated.matured_premium_yuan,
-          aggregated.signed_premium_yuan
+          aggregated.signed_premium_yuan,
         )! * 100
-      : null
+      : null;
 
   // 满期边际贡献率 = 边际贡献额 / 满期保费 * 100
   const contribution_margin_ratio =
     safeDivide(
       aggregated.marginal_contribution_amount_yuan,
-      aggregated.matured_premium_yuan
+      aggregated.matured_premium_yuan,
     ) !== null
       ? safeDivide(
           aggregated.marginal_contribution_amount_yuan,
-          aggregated.matured_premium_yuan
+          aggregated.matured_premium_yuan,
         )! * 100
-      : null
+      : null;
 
   // 变动成本率 = 费用率 + 满期赔付率
   const variable_cost_ratio =
     expense_ratio !== null && loss_ratio !== null
       ? expense_ratio + loss_ratio
-      : null
+      : null;
 
   // 满期出险率 = (赔案件数 / 保单件数) * 满期率
   const claim_ratio = safeDivide(
     aggregated.claim_case_count,
-    aggregated.policy_count
-  )
+    aggregated.policy_count,
+  );
   const matured_claim_ratio =
     claim_ratio !== null && maturity_ratio !== null
       ? claim_ratio * maturity_ratio
-      : null
+      : null;
 
   // 商业险自主系数 = 签单保费 / 商业险折前保费
   const autonomy_coefficient = safeDivide(
     aggregated.signed_premium_yuan,
-    aggregated.commercial_premium_before_discount_yuan
-  )
+    aggregated.commercial_premium_before_discount_yuan,
+  );
 
   // 计算年度时间进度
   // 根据模式和周次计算时间进度
-  let yearProgress = 0
-  if (options.mode === 'current' && options.currentWeekNumber && options.year) {
+  let yearProgress = 0;
+  if (options.mode === "current" && options.currentWeekNumber && options.year) {
     // 当周值模式：使用周次对应的时间进度
     yearProgress = getTimeProgressForWeek(
       options.year,
-      options.currentWeekNumber
-    )
+      options.currentWeekNumber,
+    );
   } else {
     // 默认：使用当前日期
     const currentDayOfYear = Math.floor(
       (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) /
-        (1000 * 60 * 60 * 24)
-    )
-    yearProgress = currentDayOfYear / 365
+        (1000 * 60 * 60 * 24),
+    );
+    yearProgress = currentDayOfYear / 365;
   }
 
   const completionRatio = safeDivide(
     aggregated.signed_premium_yuan,
-    premiumPlanYuan
-  )
+    premiumPlanYuan,
+  );
   const premium_progress =
-    completionRatio !== null ? completionRatio * 100 : null
+    completionRatio !== null ? completionRatio * 100 : null;
 
   // ============= 绝对值指标（转换为万元）=============
 
-  const signed_premium = Math.round(aggregated.signed_premium_yuan / 10000)
-  const matured_premium = Math.round(aggregated.matured_premium_yuan / 10000)
+  const signed_premium = Math.round(aggregated.signed_premium_yuan / 10000);
+  const matured_premium = Math.round(aggregated.matured_premium_yuan / 10000);
   const reported_claim_payment = Math.round(
-    aggregated.reported_claim_payment_yuan / 10000
-  )
-  const expense_amount = Math.round(aggregated.expense_amount_yuan / 10000)
+    aggregated.reported_claim_payment_yuan / 10000,
+  );
+  const expense_amount = Math.round(aggregated.expense_amount_yuan / 10000);
   const contribution_margin_amount = Math.round(
-    aggregated.marginal_contribution_amount_yuan / 10000
-  )
+    aggregated.marginal_contribution_amount_yuan / 10000,
+  );
 
   // ============= 均值指标（元）=============
 
   const average_premium_raw = safeDivide(
     aggregated.signed_premium_yuan,
-    aggregated.policy_count
-  )
+    aggregated.policy_count,
+  );
   const average_claim_raw = safeDivide(
     aggregated.reported_claim_payment_yuan,
-    aggregated.claim_case_count
-  )
+    aggregated.claim_case_count,
+  );
   const average_expense_raw = safeDivide(
     aggregated.expense_amount_yuan,
-    aggregated.policy_count
-  )
+    aggregated.policy_count,
+  );
   const average_contribution_raw = safeDivide(
     aggregated.marginal_contribution_amount_yuan,
-    aggregated.policy_count
-  )
+    aggregated.policy_count,
+  );
 
   const average_premium =
-    average_premium_raw !== null ? Math.round(average_premium_raw) : null
+    average_premium_raw !== null ? Math.round(average_premium_raw) : null;
   const average_claim =
-    average_claim_raw !== null ? Math.round(average_claim_raw) : null
+    average_claim_raw !== null ? Math.round(average_claim_raw) : null;
   const average_expense =
-    average_expense_raw !== null ? Math.round(average_expense_raw) : null
+    average_expense_raw !== null ? Math.round(average_expense_raw) : null;
   const average_contribution =
     average_contribution_raw !== null
       ? Math.round(average_contribution_raw)
-      : null
+      : null;
 
   // ============= 时间进度达成率 =============
   // 保费时间进度达成率的计算逻辑：
   // - 当周值模式：(实际保费 / 年度目标) / (已过天数 / 365) × 100%
   // - 周增量模式：周增量 / 周计划 × 100%，其中周计划 = 年度目标 / 50
-  let premium_time_progress_achievement_rate: number | null = null
+  let premium_time_progress_achievement_rate: number | null = null;
 
-  if (options.mode === 'increment') {
+  if (options.mode === "increment") {
     // 周增量模式
     if (premiumPlanYuan > 0) {
-      const weekPlan = premiumPlanYuan / WORKING_WEEKS_PER_YEAR // 50周
+      const weekPlan = premiumPlanYuan / WORKING_WEEKS_PER_YEAR; // 50周
       premium_time_progress_achievement_rate = safeDivide(
         aggregated.signed_premium_yuan,
-        weekPlan
-      )
+        weekPlan,
+      );
       if (premium_time_progress_achievement_rate !== null) {
-        premium_time_progress_achievement_rate *= 100
+        premium_time_progress_achievement_rate *= 100;
       }
     }
   } else {
     // 当周值模式（默认）
     if (completionRatio !== null && yearProgress > 0) {
       premium_time_progress_achievement_rate =
-        (completionRatio / yearProgress) * 100
+        (completionRatio / yearProgress) * 100;
     }
   }
 
@@ -283,17 +283,17 @@ function computeKPIs(
   const policyCompletionRatio =
     policyCountTarget !== null
       ? safeDivide(aggregated.policy_count, policyCountTarget)
-      : null
+      : null;
   const policy_count_time_progress_achievement_rate =
     policyCompletionRatio !== null && yearProgress > 0
       ? (policyCompletionRatio / yearProgress) * 100
-      : null
+      : null;
 
   // ============= 年度目标（暂不计算，需要额外数据）=============
   const annual_premium_target =
-    premiumPlanYuan > 0 ? Math.round(premiumPlanYuan / 10000) : null
+    premiumPlanYuan > 0 ? Math.round(premiumPlanYuan / 10000) : null;
   const annual_policy_count_target =
-    policyCountTarget !== null ? policyCountTarget : null
+    policyCountTarget !== null ? policyCountTarget : null;
 
   return {
     // 率值指标
@@ -324,14 +324,14 @@ function computeKPIs(
     average_claim,
     average_expense,
     average_contribution,
-  }
+  };
 }
 
 /**
  * KPI 计算引擎类
  */
 export class KPIEngine {
-  private cache: Map<string, KPIResult> = new Map()
+  private cache: Map<string, KPIResult> = new Map();
 
   /**
    * 生成缓存键
@@ -339,12 +339,12 @@ export class KPIEngine {
   private generateCacheKey(
     records: InsuranceRecord[],
     mode?: string,
-    targetOverride?: number | null
+    targetOverride?: number | null,
   ): string {
     // 使用记录数量和基础字段的哈希作为缓存键
-    const targetKey = targetOverride ? `_${Math.round(targetOverride)}` : ''
-    const key = `${mode || 'current'}_${records.length}_${records.reduce((sum, r) => sum + r.signed_premium_yuan, 0)}${targetKey}`
-    return key
+    const targetKey = targetOverride ? `_${Math.round(targetOverride)}` : "";
+    const key = `${mode || "current"}_${records.length}_${records.reduce((sum, r) => sum + r.signed_premium_yuan, 0)}${targetKey}`;
+    return key;
   }
 
   /**
@@ -356,33 +356,33 @@ export class KPIEngine {
   calculate(
     records: InsuranceRecord[],
     options: {
-      annualTargetYuan?: number | null
-      useCache?: boolean
-      mode?: 'current' | 'increment'
-      currentWeekNumber?: number | null
-      year?: number | null
-    } = {}
+      annualTargetYuan?: number | null;
+      useCache?: boolean;
+      mode?: "current" | "increment";
+      currentWeekNumber?: number | null;
+      year?: number | null;
+    } = {},
   ): KPIResult {
     const {
       annualTargetYuan = null,
       useCache = true,
-      mode = 'current',
+      mode = "current",
       currentWeekNumber = null,
       year = null,
-    } = options
+    } = options;
 
     if (records.length === 0) {
-      return this.getEmptyKPIResult()
+      return this.getEmptyKPIResult();
     }
 
     // 检查缓存
-    const cacheKey = this.generateCacheKey(records, mode, annualTargetYuan)
+    const cacheKey = this.generateCacheKey(records, mode, annualTargetYuan);
     if (useCache && this.cache.has(cacheKey)) {
-      return this.cache.get(cacheKey)!
+      return this.cache.get(cacheKey)!;
     }
 
     // 聚合数据
-    const aggregated = aggregateData(records)
+    const aggregated = aggregateData(records);
 
     // 计算 KPI
     const result = computeKPIs(aggregated, {
@@ -390,14 +390,14 @@ export class KPIEngine {
       mode,
       currentWeekNumber,
       year,
-    })
+    });
 
     // 缓存结果
     if (useCache) {
-      this.cache.set(cacheKey, result)
+      this.cache.set(cacheKey, result);
     }
 
-    return result
+    return result;
   }
 
   /**
@@ -418,37 +418,37 @@ export class KPIEngine {
     currentWeekRecords: InsuranceRecord[],
     previousWeekRecords: InsuranceRecord[],
     options: {
-      useCache?: boolean
-      mode?: 'current' | 'increment'
-      annualTargetYuan?: number | null
-      currentWeekNumber?: number | null
-      year?: number | null
-    } = {}
+      useCache?: boolean;
+      mode?: "current" | "increment";
+      annualTargetYuan?: number | null;
+      currentWeekNumber?: number | null;
+      year?: number | null;
+    } = {},
   ): KPIResult {
     const {
       useCache = true,
-      mode = 'increment',
+      mode = "increment",
       annualTargetYuan = null,
       currentWeekNumber = null,
       year = null,
-    } = options
+    } = options;
     // 如果当前周没有数据，返回空结果
     if (currentWeekRecords.length === 0) {
-      return this.getEmptyKPIResult()
+      return this.getEmptyKPIResult();
     }
 
     // 检查缓存
     // 周增量模式的缓存键需要同时包含当前周和前一周的信息
     // 使用周次、年份和所有业务指标的哈希确保缓存键的唯一性
-    const currentWeek = currentWeekRecords[0]?.week_number ?? 0
-    const currentYear = currentWeekRecords[0]?.policy_start_year ?? 0
-    const previousWeek = previousWeekRecords[0]?.week_number ?? 0
-    const previousYear = previousWeekRecords[0]?.policy_start_year ?? 0
+    const currentWeek = currentWeekRecords[0]?.week_number ?? 0;
+    const currentYear = currentWeekRecords[0]?.policy_start_year ?? 0;
+    const previousWeek = previousWeekRecords[0]?.week_number ?? 0;
+    const previousYear = previousWeekRecords[0]?.policy_start_year ?? 0;
 
     // 生成数据哈希：包含所有关键业务指标，避免只依赖保费总和
     const generateDataHash = (records: InsuranceRecord[]): string => {
-      if (records.length === 0) return '0'
-      const aggregated = aggregateData(records)
+      if (records.length === 0) return "0";
+      const aggregated = aggregateData(records);
       return [
         aggregated.signed_premium_yuan.toFixed(2),
         aggregated.matured_premium_yuan.toFixed(2),
@@ -456,24 +456,26 @@ export class KPIEngine {
         aggregated.claim_case_count,
         aggregated.reported_claim_payment_yuan.toFixed(2),
         aggregated.expense_amount_yuan.toFixed(2),
-      ].join('_')
-    }
+      ].join("_");
+    };
 
-    const currentHash = generateDataHash(currentWeekRecords)
-    const previousHash = generateDataHash(previousWeekRecords)
-    const targetKey = annualTargetYuan ? `_t${Math.round(annualTargetYuan)}` : ''
-    const cacheKey = `inc_${currentYear}w${currentWeek}_${currentHash}_${previousYear}w${previousWeek}_${previousHash}${targetKey}`
+    const currentHash = generateDataHash(currentWeekRecords);
+    const previousHash = generateDataHash(previousWeekRecords);
+    const targetKey = annualTargetYuan
+      ? `_t${Math.round(annualTargetYuan)}`
+      : "";
+    const cacheKey = `inc_${currentYear}w${currentWeek}_${currentHash}_${previousYear}w${previousWeek}_${previousHash}${targetKey}`;
 
     if (useCache && this.cache.has(cacheKey)) {
-      return this.cache.get(cacheKey)!
+      return this.cache.get(cacheKey)!;
     }
 
     // 聚合当前周和前一周数据
-    const currentAgg = aggregateData(currentWeekRecords)
+    const currentAgg = aggregateData(currentWeekRecords);
     const previousAgg =
       previousWeekRecords.length > 0
         ? aggregateData(previousWeekRecords)
-        : this.getEmptyAggregation()
+        : this.getEmptyAggregation();
 
     // 计算增量聚合数据（用于绝对值指标：签单保费、件数等）
     const incrementAgg: BaseAggregation = {
@@ -497,7 +499,7 @@ export class KPIEngine {
       marginal_contribution_amount_yuan:
         currentAgg.marginal_contribution_amount_yuan -
         previousAgg.marginal_contribution_amount_yuan,
-    }
+    };
 
     // 1. 计算增量 KPI（绝对值指标使用增量数据）
     const incrementResult = computeKPIs(incrementAgg, {
@@ -505,15 +507,15 @@ export class KPIEngine {
       mode,
       currentWeekNumber,
       year,
-    })
+    });
 
     // 2. 计算基于累计数据的比率指标（赔付率、费用率等必须基于累计数据）
     const cumulativeResult = computeKPIs(currentAgg, {
       premiumTargetYuan: annualTargetYuan,
-      mode: 'current', // 使用当周值模式计算比率
+      mode: "current", // 使用当周值模式计算比率
       currentWeekNumber,
       year,
-    })
+    });
 
     // 3. 合并结果：绝对值使用增量，比率使用累计
     const result: KPIResult = {
@@ -543,27 +545,29 @@ export class KPIEngine {
 
       // 【时间进度】使用增量数据
       premium_progress: incrementResult.premium_progress,
-      premium_time_progress_achievement_rate: incrementResult.premium_time_progress_achievement_rate,
-      policy_count_time_progress_achievement_rate: incrementResult.policy_count_time_progress_achievement_rate,
+      premium_time_progress_achievement_rate:
+        incrementResult.premium_time_progress_achievement_rate,
+      policy_count_time_progress_achievement_rate:
+        incrementResult.policy_count_time_progress_achievement_rate,
 
       // 【年度目标】
       annual_premium_target: incrementResult.annual_premium_target,
       annual_policy_count_target: incrementResult.annual_policy_count_target,
-    }
+    };
 
     // 缓存结果
     if (useCache) {
-      this.cache.set(cacheKey, result)
+      this.cache.set(cacheKey, result);
     }
 
-    return result
+    return result;
   }
 
   /**
    * 清除缓存
    */
   clearCache(): void {
-    this.cache.clear()
+    this.cache.clear();
   }
 
   /**
@@ -580,7 +584,7 @@ export class KPIEngine {
       commercial_premium_before_discount_yuan: 0,
       premium_plan_yuan: 0,
       marginal_contribution_amount_yuan: 0,
-    }
+    };
   }
 
   /**
@@ -611,21 +615,21 @@ export class KPIEngine {
       average_claim: null,
       average_expense: null,
       average_contribution: null,
-    }
+    };
   }
 }
 
 /**
  * 导出单例实例
  */
-export const kpiEngine = new KPIEngine()
+export const kpiEngine = new KPIEngine();
 
 /**
  * 便捷函数：直接计算 KPI
  */
 export function calculateKPIs(
   records: InsuranceRecord[],
-  options?: { annualTargetYuan?: number | null; useCache?: boolean }
+  options?: { annualTargetYuan?: number | null; useCache?: boolean },
 ): KPIResult {
-  return kpiEngine.calculate(records, options)
+  return kpiEngine.calculate(records, options);
 }

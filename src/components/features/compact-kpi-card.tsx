@@ -1,87 +1,87 @@
-'use client'
+"use client";
 
-import { TrendingUp, TrendingDown, Minus, Info, Maximize2 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { useState } from 'react'
+import { TrendingUp, TrendingDown, Minus, Info, Maximize2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { getKPIFormula } from '@/lib/calculations/kpi-formulas'
+} from "@/components/ui/tooltip";
+import { getKPIFormula } from "@/lib/calculations/kpi-formulas";
 
 export interface CompactKPICardProps {
   /**
    * KPI 名称
    */
-  title: string
+  title: string;
 
   /**
    * KPI 值
    */
-  value: number | null | undefined
+  value: number | null | undefined;
 
   /**
    * 单位（如 %、万元等）
    */
-  unit?: string
+  unit?: string;
 
   /**
    * 描述信息
    */
-  description?: string
+  description?: string;
 
   /**
    * 值的颜色（可选）
    */
-  valueColor?: string
+  valueColor?: string;
 
   /**
    * 背景颜色（可选）
    */
-  bgColor?: string
+  bgColor?: string;
 
   /**
    * 对比值（用于显示环比变化）
    */
-  compareValue?: number | null
+  compareValue?: number | null;
 
   /**
    * 格式化函数
    */
-  formatter?: (value: number | null | undefined) => string
+  formatter?: (value: number | null | undefined) => string;
 
   /**
    * 自定义图标
    */
-  icon?: React.ReactNode
+  icon?: React.ReactNode;
 
   /**
    * KPI 键名（用于显示公式）
    */
-  kpiKey?: string
+  kpiKey?: string;
 
   /**
    * 分子值（用于计算详情）
    */
-  numeratorValue?: number | null
+  numeratorValue?: number | null;
 
   /**
    * 分母值（用于计算详情）
    */
-  denominatorValue?: number | null
+  denominatorValue?: number | null;
 
   /**
    * 是否为核心指标（突出显示）
    */
-  isCore?: boolean
+  isCore?: boolean;
 }
 
 export function CompactKPICard({
   title,
   value,
-  unit = '',
+  unit = "",
   description,
   valueColor,
   bgColor,
@@ -93,42 +93,42 @@ export function CompactKPICard({
   denominatorValue,
   isCore = false,
 }: CompactKPICardProps) {
-  const [showDetail, setShowDetail] = useState(false)
+  const [showDetail, setShowDetail] = useState(false);
 
   // 格式化主值
   const formattedValue = formatter
     ? formatter(value)
     : value !== null && value !== undefined && !isNaN(value)
-      ? value.toLocaleString('zh-CN', {
+      ? value.toLocaleString("zh-CN", {
           minimumFractionDigits: 0,
           maximumFractionDigits: 2,
         })
-      : '-'
+      : "-";
 
   // 格式化对比值
   const hasCompareValue =
-    compareValue !== null && compareValue !== undefined && !isNaN(compareValue)
+    compareValue !== null && compareValue !== undefined && !isNaN(compareValue);
 
   const compareDirection =
     hasCompareValue && compareValue > 0
-      ? 'up'
+      ? "up"
       : hasCompareValue && compareValue < 0
-        ? 'down'
-        : 'flat'
+        ? "down"
+        : "flat";
 
   const compareColorClass =
-    compareDirection === 'up'
-      ? 'text-green-600'
-      : compareDirection === 'down'
-        ? 'text-red-600'
-        : 'text-slate-500'
+    compareDirection === "up"
+      ? "text-green-600"
+      : compareDirection === "down"
+        ? "text-red-600"
+        : "text-slate-500";
 
   const formattedCompareValue = hasCompareValue
-    ? `${compareValue > 0 ? '+' : ''}${compareValue.toFixed(2)}%`
-    : null
+    ? `${compareValue > 0 ? "+" : ""}${compareValue.toFixed(2)}%`
+    : null;
 
   // 获取 KPI 公式定义
-  const formulaDefinition = kpiKey ? getKPIFormula(kpiKey) : undefined
+  const formulaDefinition = kpiKey ? getKPIFormula(kpiKey) : undefined;
 
   return (
     <div className="relative">
@@ -136,11 +136,11 @@ export function CompactKPICard({
       <button
         onClick={() => setShowDetail(!showDetail)}
         className={cn(
-          'group relative w-full overflow-hidden rounded-lg border text-left transition-all duration-200',
+          "group relative w-full overflow-hidden rounded-lg border text-left transition-all duration-200",
           isCore
-            ? 'border-blue-200 bg-gradient-to-br from-blue-50/80 to-white hover:border-blue-300 hover:shadow-md'
-            : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm',
-          bgColor
+            ? "border-blue-200 bg-gradient-to-br from-blue-50/80 to-white hover:border-blue-300 hover:shadow-md"
+            : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm",
+          bgColor,
         )}
       >
         {/* 顶部指示条 */}
@@ -161,7 +161,7 @@ export function CompactKPICard({
                     <Tooltip delayDuration={200}>
                       <TooltipTrigger asChild>
                         <div
-                          onClick={e => e.stopPropagation()}
+                          onClick={(e) => e.stopPropagation()}
                           className="inline-flex"
                         >
                           <Info className="h-3 w-3 text-slate-400 hover:text-blue-600 transition-colors" />
@@ -195,10 +195,10 @@ export function CompactKPICard({
             {icon && (
               <div
                 className={cn(
-                  'flex h-7 w-7 items-center justify-center rounded-md transition-colors',
+                  "flex h-7 w-7 items-center justify-center rounded-md transition-colors",
                   isCore
-                    ? 'bg-blue-100 text-blue-600'
-                    : 'bg-slate-100 text-slate-600'
+                    ? "bg-blue-100 text-blue-600"
+                    : "bg-slate-100 text-slate-600",
                 )}
               >
                 <div className="scale-75">{icon}</div>
@@ -210,8 +210,8 @@ export function CompactKPICard({
           <div className="mb-2 flex items-baseline gap-1.5">
             <span
               className={cn(
-                'text-2xl font-bold tabular-nums',
-                valueColor || 'text-slate-800'
+                "text-2xl font-bold tabular-nums",
+                valueColor || "text-slate-800",
               )}
             >
               {formattedValue}
@@ -224,16 +224,16 @@ export function CompactKPICard({
           {/* 对比值 */}
           {formattedCompareValue && (
             <div className="flex items-center gap-1">
-              {compareDirection === 'up' && (
+              {compareDirection === "up" && (
                 <TrendingUp className="h-3 w-3 text-green-600" />
               )}
-              {compareDirection === 'down' && (
+              {compareDirection === "down" && (
                 <TrendingDown className="h-3 w-3 text-red-600" />
               )}
-              {compareDirection === 'flat' && (
+              {compareDirection === "flat" && (
                 <Minus className="h-3 w-3 text-slate-500" />
               )}
-              <span className={cn('text-xs font-semibold', compareColorClass)}>
+              <span className={cn("text-xs font-semibold", compareColorClass)}>
                 {formattedCompareValue}
               </span>
               <span className="text-xs text-slate-400">vs上期</span>
@@ -281,8 +281,8 @@ export function CompactKPICard({
                 <div className="flex items-baseline gap-2">
                   <span
                     className={cn(
-                      'text-4xl font-bold tabular-nums',
-                      valueColor || 'text-slate-800'
+                      "text-4xl font-bold tabular-nums",
+                      valueColor || "text-slate-800",
                     )}
                   >
                     {formattedValue}
@@ -320,10 +320,10 @@ export function CompactKPICard({
                       </span>
                       <span className="font-mono font-semibold text-slate-800">
                         {numeratorValue !== null && numeratorValue !== undefined
-                          ? numeratorValue.toLocaleString('zh-CN', {
+                          ? numeratorValue.toLocaleString("zh-CN", {
                               maximumFractionDigits: 2,
                             })
-                          : '-'}
+                          : "-"}
                       </span>
                     </div>
                     <div className="h-px bg-slate-200" />
@@ -334,10 +334,10 @@ export function CompactKPICard({
                       <span className="font-mono font-semibold text-slate-800">
                         {denominatorValue !== null &&
                         denominatorValue !== undefined
-                          ? denominatorValue.toLocaleString('zh-CN', {
+                          ? denominatorValue.toLocaleString("zh-CN", {
                               maximumFractionDigits: 2,
                             })
-                          : '-'}
+                          : "-"}
                       </span>
                     </div>
                   </div>
@@ -370,7 +370,7 @@ export function CompactKPICard({
         </>
       )}
     </div>
-  )
+  );
 }
 
 /**
@@ -383,5 +383,5 @@ export function CompactKPICardSkeleton() {
       <div className="mb-2 h-7 w-24 rounded bg-slate-200" />
       <div className="h-3 w-16 rounded bg-slate-200" />
     </div>
-  )
+  );
 }

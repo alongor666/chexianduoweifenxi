@@ -3,9 +3,9 @@
  * 综合展示5个核心维度的健康评分，支持多个机构（最多7个）的对比分析
  */
 
-'use client'
+"use client";
 
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState } from "react";
 import {
   Radar,
   RadarChart,
@@ -15,44 +15,44 @@ import {
   ResponsiveContainer,
   Tooltip,
   Legend,
-} from 'recharts'
-import { Info } from 'lucide-react'
+} from "recharts";
+import { Info } from "lucide-react";
 import {
   RADAR_DIMENSIONS,
   convertKPIToRadarScores,
   type RadarScoreResult,
-} from '@/utils/radar-score'
-import { formatPercent, formatNumber } from '@/utils/format'
-import { cn } from '@/lib/utils'
-import { getOrganizationColor } from '@/utils/organization-config'
-import { OrganizationSelector } from './organization-selector'
-import { useMultipleOrganizationKPIs } from '@/hooks/use-organization-kpi'
-import { getAllQuickFilters } from '@/utils/quick-filters'
-import type { KPIResult } from '@/types/insurance'
-import { ALL_ORGANIZATIONS } from '@/utils/organization-config'
+} from "@/utils/radar-score";
+import { formatPercent, formatNumber } from "@/utils/format";
+import { cn } from "@/lib/utils";
+import { getOrganizationColor } from "@/utils/organization-config";
+import { OrganizationSelector } from "./organization-selector";
+import { useMultipleOrganizationKPIs } from "@/hooks/use-organization-kpi";
+import { getAllQuickFilters } from "@/utils/quick-filters";
+import type { KPIResult } from "@/types/insurance";
+import { ALL_ORGANIZATIONS } from "@/utils/organization-config";
 
 interface MultiDimensionRadarProps {
   /** 自定义类名 */
-  className?: string
+  className?: string;
 }
 
 /**
  * 雷达数据点（支持多个机构）
  */
 interface RadarDataPoint {
-  dimension: string // 维度简称
-  fullLabel: string // 维度全称
-  dimensionKey: string // 维度key
-  unit: string
-  description: string
+  dimension: string; // 维度简称
+  fullLabel: string; // 维度全称
+  dimensionKey: string; // 维度key
+  unit: string;
+  description: string;
 
   // 动态机构评分字段（使用索引签名）
-  [key: string]: string | number | Record<string, any>
+  [key: string]: string | number | Record<string, any>;
 
   // 辅助数据
-  rawValues: Record<string, number>
-  levels: Record<string, string>
-  colors: Record<string, string>
+  rawValues: Record<string, number>;
+  levels: Record<string, string>;
+  colors: Record<string, string>;
 }
 
 /**
@@ -61,24 +61,24 @@ interface RadarDataPoint {
 export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
   // 机构选择状态（默认选择前3个）
   const [selectedOrganizations, setSelectedOrganizations] = useState<string[]>([
-    '天府',
-    '高新',
-    '宜宾',
-  ])
+    "天府",
+    "高新",
+    "宜宾",
+  ]);
 
   // 悬停状态
-  const [hoveredDimension, setHoveredDimension] = useState<string | null>(null)
+  const [hoveredDimension, setHoveredDimension] = useState<string | null>(null);
 
   // 获取所有机构的KPI（用于快捷筛选）
-  const allOrgKPIs = useMultipleOrganizationKPIs(Array.from(ALL_ORGANIZATIONS))
+  const allOrgKPIs = useMultipleOrganizationKPIs(Array.from(ALL_ORGANIZATIONS));
 
   // 获取已选机构的KPI
-  const selectedOrgKPIs = useMultipleOrganizationKPIs(selectedOrganizations)
+  const selectedOrgKPIs = useMultipleOrganizationKPIs(selectedOrganizations);
 
   // 生成快捷筛选列表
   const quickFilters = useMemo(() => {
-    return getAllQuickFilters(allOrgKPIs)
-  }, [allOrgKPIs])
+    return getAllQuickFilters(allOrgKPIs);
+  }, [allOrgKPIs]);
 
   // 转换为雷达图数据
   const radarData = useMemo((): RadarDataPoint[] => {
@@ -93,62 +93,62 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
         rawValues: {},
         levels: {},
         colors: {},
-      }
+      };
 
       // 为每个已选机构添加评分
       selectedOrganizations.forEach((orgName) => {
-        const kpi = selectedOrgKPIs.get(orgName)
-        const scores = kpi ? convertKPIToRadarScores(kpi) : new Map()
-        const scoreResult = scores.get(dim.key)
+        const kpi = selectedOrgKPIs.get(orgName);
+        const scores = kpi ? convertKPIToRadarScores(kpi) : new Map();
+        const scoreResult = scores.get(dim.key);
 
         // 添加评分（使用机构名作为key）
-        dataPoint[orgName] = scoreResult?.score ?? 0
+        dataPoint[orgName] = scoreResult?.score ?? 0;
 
         // 添加辅助数据
-        dataPoint.rawValues[orgName] = scoreResult?.rawValue ?? 0
-        dataPoint.levels[orgName] = scoreResult?.label ?? '-'
-        dataPoint.colors[orgName] = scoreResult?.color ?? '#94a3b8'
-      })
+        dataPoint.rawValues[orgName] = scoreResult?.rawValue ?? 0;
+        dataPoint.levels[orgName] = scoreResult?.label ?? "-";
+        dataPoint.colors[orgName] = scoreResult?.color ?? "#94a3b8";
+      });
 
-      return dataPoint
-    })
-  }, [selectedOrganizations, selectedOrgKPIs])
+      return dataPoint;
+    });
+  }, [selectedOrganizations, selectedOrgKPIs]);
 
   // 计算每个机构的综合评分
   const overallScores = useMemo(() => {
-    const scores: Record<string, number> = {}
+    const scores: Record<string, number> = {};
 
     selectedOrganizations.forEach((orgName) => {
       const validScores = radarData
         .map((d) => d[orgName] as number)
-        .filter((s) => s > 0)
+        .filter((s) => s > 0);
 
       if (validScores.length > 0) {
         scores[orgName] = Math.round(
-          validScores.reduce((sum, s) => sum + s, 0) / validScores.length
-        )
+          validScores.reduce((sum, s) => sum + s, 0) / validScores.length,
+        );
       } else {
-        scores[orgName] = 0
+        scores[orgName] = 0;
       }
-    })
+    });
 
-    return scores
-  }, [selectedOrganizations, radarData])
+    return scores;
+  }, [selectedOrganizations, radarData]);
 
   // 获取综合评分等级
   const getOverallLevel = (score: number) => {
-    if (score >= 95) return { label: '卓越', color: '#2E7D32' }
-    if (score >= 86) return { label: '良好', color: '#4CAF50' }
-    if (score >= 70) return { label: '中等', color: '#1976D2' }
-    if (score >= 20) return { label: '预警', color: '#F57C00' }
-    return { label: '高危', color: '#D32F2F' }
-  }
+    if (score >= 95) return { label: "卓越", color: "#2E7D32" };
+    if (score >= 86) return { label: "良好", color: "#4CAF50" };
+    if (score >= 70) return { label: "中等", color: "#1976D2" };
+    if (score >= 20) return { label: "预警", color: "#F57C00" };
+    return { label: "高危", color: "#D32F2F" };
+  };
 
   // 自定义 Tooltip
   const CustomTooltip = ({ active, payload }: any) => {
-    if (!active || !payload || !payload.length) return null
+    if (!active || !payload || !payload.length) return null;
 
-    const data = payload[0].payload as RadarDataPoint
+    const data = payload[0].payload as RadarDataPoint;
 
     return (
       <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-lg">
@@ -158,11 +158,11 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
 
         <div className="space-y-1.5">
           {payload.map((entry: any, index: number) => {
-            const orgName = entry.name
-            const score = entry.value
-            const rawValue = data.rawValues[orgName]
-            const level = data.levels[orgName]
-            const color = data.colors[orgName]
+            const orgName = entry.name;
+            const score = entry.value;
+            const rawValue = data.rawValues[orgName];
+            const level = data.levels[orgName];
+            const color = data.colors[orgName];
 
             return (
               <div key={orgName} className="flex items-center gap-3 text-xs">
@@ -194,7 +194,7 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
                   {level}
                 </span>
               </div>
-            )
+            );
           })}
         </div>
 
@@ -205,29 +205,29 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
           </p>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   // 获取某维度的最优机构
   const getBestOrgForDimension = (data: RadarDataPoint): string => {
-    let bestOrg = ''
-    let bestScore = -1
+    let bestOrg = "";
+    let bestScore = -1;
 
     selectedOrganizations.forEach((orgName) => {
-      const score = data[orgName] as number
+      const score = data[orgName] as number;
       if (score > bestScore) {
-        bestScore = score
-        bestOrg = orgName
+        bestScore = score;
+        bestOrg = orgName;
       }
-    })
+    });
 
-    return bestOrg || '-'
-  }
+    return bestOrg || "-";
+  };
 
   // 空状态
   if (selectedOrganizations.length === 0) {
     return (
-      <div className={cn('space-y-6', className)}>
+      <div className={cn("space-y-6", className)}>
         <OrganizationSelector
           selectedOrganizations={selectedOrganizations}
           onChange={setSelectedOrganizations}
@@ -238,11 +238,11 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
           <p className="text-sm text-slate-500">请选择要对比的机构</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className={cn('space-y-6', className)}>
+    <div className={cn("space-y-6", className)}>
       {/* 机构选择器 */}
       <OrganizationSelector
         selectedOrganizations={selectedOrganizations}
@@ -260,21 +260,24 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
                 多维健康度雷达图 - 机构对比
               </h3>
               <p className="mt-1 text-xs text-slate-500">
-                综合对比{selectedOrganizations.length}个机构在5个核心维度的业务健康状况
+                综合对比{selectedOrganizations.length}
+                个机构在5个核心维度的业务健康状况
               </p>
             </div>
 
             {/* 综合排名（前3名） */}
             <div className="rounded-lg border border-slate-200 bg-white p-3">
-              <p className="mb-2 text-xs font-medium text-slate-600">综合排名</p>
+              <p className="mb-2 text-xs font-medium text-slate-600">
+                综合排名
+              </p>
               {Object.entries(overallScores)
                 .sort(([, a], [, b]) => b - a)
                 .slice(0, 3)
                 .map(([orgName, score], index) => {
-                  const level = getOverallLevel(score)
-                  const medals = ['🥇', '🥈', '🥉']
-                  const orgIndex = selectedOrganizations.indexOf(orgName)
-                  const color = getOrganizationColor(orgIndex)
+                  const level = getOverallLevel(score);
+                  const medals = ["🥇", "🥈", "🥉"];
+                  const orgIndex = selectedOrganizations.indexOf(orgName);
+                  const color = getOrganizationColor(orgIndex);
 
                   return (
                     <div
@@ -296,7 +299,7 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
                         {score}
                       </span>
                     </div>
-                  )
+                  );
                 })}
             </div>
           </div>
@@ -311,7 +314,7 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
                 <PolarAngleAxis
                   dataKey="dimension"
                   tick={{
-                    fill: '#475569',
+                    fill: "#475569",
                     fontSize: 13,
                     fontWeight: 600,
                   }}
@@ -320,13 +323,13 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
                 <PolarRadiusAxis
                   angle={90}
                   domain={[0, 100]}
-                  tick={{ fill: '#94a3b8', fontSize: 11 }}
+                  tick={{ fill: "#94a3b8", fontSize: 11 }}
                   tickCount={6}
                 />
 
                 {/* 为每个机构渲染一条Radar折线 */}
                 {selectedOrganizations.map((orgName, index) => {
-                  const color = getOrganizationColor(index)
+                  const color = getOrganizationColor(index);
 
                   return (
                     <Radar
@@ -345,7 +348,7 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
                       activeDot={{
                         r: 7,
                         fill: color,
-                        stroke: '#fff',
+                        stroke: "#fff",
                         strokeWidth: 2,
                       }}
                       onMouseEnter={(data: any) =>
@@ -353,17 +356,17 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
                       }
                       onMouseLeave={() => setHoveredDimension(null)}
                     />
-                  )
+                  );
                 })}
 
                 <Tooltip content={<CustomTooltip />} />
                 <Legend
                   wrapperStyle={{
-                    paddingTop: '20px',
+                    paddingTop: "20px",
                   }}
                   iconType="line"
                   formatter={(value: string) => (
-                    <span style={{ fontSize: '13px', fontWeight: 500 }}>
+                    <span style={{ fontSize: "13px", fontWeight: 500 }}>
                       {value}
                     </span>
                   )}
@@ -382,5 +385,5 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

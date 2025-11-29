@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { BarChart3, TrendingUp } from 'lucide-react'
-import { useAppStore } from '@/store/use-app-store'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { BarChart3, TrendingUp } from "lucide-react";
+import { useAppStore } from "@/store/use-app-store";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 /**
  * 视图模式选择器组件（Tab标签页形式）
@@ -10,12 +10,12 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
  * 用于页面顶部标题右侧
  */
 export function ViewModeSelector() {
-  const { viewMode, setViewMode } = useAppStore()
+  const { viewMode, setViewMode } = useAppStore();
 
   return (
     <Tabs
       value={viewMode}
-      onValueChange={v => setViewMode(v as 'single' | 'trend')}
+      onValueChange={(v) => setViewMode(v as "single" | "trend")}
     >
       <TabsList className="bg-white/10 backdrop-blur-md border border-white/20 shadow-sm">
         <TabsTrigger
@@ -34,5 +34,5 @@ export function ViewModeSelector() {
         </TabsTrigger>
       </TabsList>
     </Tabs>
-  )
+  );
 }

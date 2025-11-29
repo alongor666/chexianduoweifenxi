@@ -6,147 +6,147 @@
  * @migration 从 use-app-store.ts 拆分出UI状态管理部分
  */
 
-import { create } from 'zustand'
-import { devtools, persist } from 'zustand/middleware'
+import { create } from "zustand";
+import { devtools, persist } from "zustand/middleware";
 
 interface UIStore {
   // ==================== 状态 ====================
   /**
    * 视图模式：单周模式 vs 趋势模式
    */
-  viewMode: 'single' | 'trend'
+  viewMode: "single" | "trend";
 
   /**
    * 展开的面板集合
    */
-  expandedPanels: Set<string>
+  expandedPanels: Set<string>;
 
   /**
    * 选中的机构列表（用于对比展示）
    */
-  selectedOrganizations: string[]
+  selectedOrganizations: string[];
 
   /**
    * 侧边栏是否展开
    */
-  sidebarExpanded: boolean
+  sidebarExpanded: boolean;
 
   /**
    * 筛选面板是否展开
    */
-  filterPanelExpanded: boolean
+  filterPanelExpanded: boolean;
 
   /**
    * 表格显示配置
    */
   tableConfig: {
-    pageSize: number
-    currentPage: number
-    sortBy: string | null
-    sortOrder: 'asc' | 'desc'
-  }
+    pageSize: number;
+    currentPage: number;
+    sortBy: string | null;
+    sortOrder: "asc" | "desc";
+  };
 
   /**
    * 图表显示配置
    */
   chartConfig: {
-    showLegend: boolean
-    showDataLabels: boolean
-    animationEnabled: boolean
-  }
+    showLegend: boolean;
+    showDataLabels: boolean;
+    animationEnabled: boolean;
+  };
 
   // ==================== 操作方法 ====================
 
   /**
    * 设置视图模式
    */
-  setViewMode: (mode: 'single' | 'trend') => void
+  setViewMode: (mode: "single" | "trend") => void;
 
   /**
    * 切换面板展开/收起状态
    * @param panelId 面板ID
    */
-  togglePanel: (panelId: string) => void
+  togglePanel: (panelId: string) => void;
 
   /**
    * 展开指定面板
    * @param panelId 面板ID
    */
-  expandPanel: (panelId: string) => void
+  expandPanel: (panelId: string) => void;
 
   /**
    * 收起指定面板
    * @param panelId 面板ID
    */
-  collapsePanel: (panelId: string) => void
+  collapsePanel: (panelId: string) => void;
 
   /**
    * 展开所有面板
    */
-  expandAllPanels: (panelIds: string[]) => void
+  expandAllPanels: (panelIds: string[]) => void;
 
   /**
    * 收起所有面板
    */
-  collapseAllPanels: () => void
+  collapseAllPanels: () => void;
 
   /**
    * 设置选中的机构列表
    * @param orgs 机构名称列表
    */
-  setSelectedOrganizations: (orgs: string[]) => void
+  setSelectedOrganizations: (orgs: string[]) => void;
 
   /**
    * 添加选中机构
    * @param org 机构名称
    */
-  addSelectedOrganization: (org: string) => void
+  addSelectedOrganization: (org: string) => void;
 
   /**
    * 移除选中机构
    * @param org 机构名称
    */
-  removeSelectedOrganization: (org: string) => void
+  removeSelectedOrganization: (org: string) => void;
 
   /**
    * 清空选中机构
    */
-  clearSelectedOrganizations: () => void
+  clearSelectedOrganizations: () => void;
 
   /**
    * 切换侧边栏展开状态
    */
-  toggleSidebar: () => void
+  toggleSidebar: () => void;
 
   /**
    * 设置侧边栏展开状态
    */
-  setSidebarExpanded: (expanded: boolean) => void
+  setSidebarExpanded: (expanded: boolean) => void;
 
   /**
    * 切换筛选面板展开状态
    */
-  toggleFilterPanel: () => void
+  toggleFilterPanel: () => void;
 
   /**
    * 设置筛选面板展开状态
    */
-  setFilterPanelExpanded: (expanded: boolean) => void
+  setFilterPanelExpanded: (expanded: boolean) => void;
 
   /**
    * 更新表格配置
    */
-  updateTableConfig: (config: Partial<UIStore['tableConfig']>) => void
+  updateTableConfig: (config: Partial<UIStore["tableConfig"]>) => void;
 
   /**
    * 更新图表配置
    */
-  updateChartConfig: (config: Partial<UIStore['chartConfig']>) => void
+  updateChartConfig: (config: Partial<UIStore["chartConfig"]>) => void;
 
   /**
    * 重置所有UI状态
    */
-  resetUI: () => void
+  resetUI: () => void;
 
   // ==================== 计算属性 ====================
 
@@ -154,25 +154,25 @@ interface UIStore {
    * 检查面板是否展开
    * @param panelId 面板ID
    */
-  isPanelExpanded: (panelId: string) => boolean
+  isPanelExpanded: (panelId: string) => boolean;
 
   /**
    * 获取展开面板的数量
    */
-  getExpandedPanelCount: () => number
+  getExpandedPanelCount: () => number;
 
   /**
    * 检查机构是否被选中
    * @param org 机构名称
    */
-  isOrganizationSelected: (org: string) => boolean
+  isOrganizationSelected: (org: string) => boolean;
 }
 
 /**
  * 默认UI状态
  */
 const defaultUIState = {
-  viewMode: 'single' as const,
+  viewMode: "single" as const,
   expandedPanels: new Set<string>(),
   selectedOrganizations: [],
   sidebarExpanded: true,
@@ -181,14 +181,14 @@ const defaultUIState = {
     pageSize: 20,
     currentPage: 1,
     sortBy: null,
-    sortOrder: 'asc' as const,
+    sortOrder: "asc" as const,
   },
   chartConfig: {
     showLegend: true,
     showDataLabels: false,
     animationEnabled: true,
   },
-}
+};
 
 /**
  * 创建UI Store
@@ -202,58 +202,58 @@ export const useUIStore = create<UIStore>()(
 
         // ==================== 操作方法 ====================
 
-        setViewMode: mode => {
-          set({ viewMode: mode }, false, 'setViewMode')
+        setViewMode: (mode) => {
+          set({ viewMode: mode }, false, "setViewMode");
         },
 
-        togglePanel: panelId => {
+        togglePanel: (panelId) => {
           set(
-            state => {
-              const newPanels = new Set(state.expandedPanels)
+            (state) => {
+              const newPanels = new Set(state.expandedPanels);
               if (newPanels.has(panelId)) {
-                newPanels.delete(panelId)
+                newPanels.delete(panelId);
               } else {
-                newPanels.add(panelId)
+                newPanels.add(panelId);
               }
-              return { expandedPanels: newPanels }
+              return { expandedPanels: newPanels };
             },
             false,
-            'togglePanel'
-          )
+            "togglePanel",
+          );
         },
 
-        expandPanel: panelId => {
+        expandPanel: (panelId) => {
           set(
-            state => {
-              const newPanels = new Set(state.expandedPanels)
-              newPanels.add(panelId)
-              return { expandedPanels: newPanels }
+            (state) => {
+              const newPanels = new Set(state.expandedPanels);
+              newPanels.add(panelId);
+              return { expandedPanels: newPanels };
             },
             false,
-            'expandPanel'
-          )
+            "expandPanel",
+          );
         },
 
-        collapsePanel: panelId => {
+        collapsePanel: (panelId) => {
           set(
-            state => {
-              const newPanels = new Set(state.expandedPanels)
-              newPanels.delete(panelId)
-              return { expandedPanels: newPanels }
+            (state) => {
+              const newPanels = new Set(state.expandedPanels);
+              newPanels.delete(panelId);
+              return { expandedPanels: newPanels };
             },
             false,
-            'collapsePanel'
-          )
+            "collapsePanel",
+          );
         },
 
-        expandAllPanels: panelIds => {
+        expandAllPanels: (panelIds) => {
           set(
             {
               expandedPanels: new Set(panelIds),
             },
             false,
-            'expandAllPanels'
-          )
+            "expandAllPanels",
+          );
         },
 
         collapseAllPanels: () => {
@@ -262,112 +262,124 @@ export const useUIStore = create<UIStore>()(
               expandedPanels: new Set(),
             },
             false,
-            'collapseAllPanels'
-          )
+            "collapseAllPanels",
+          );
         },
 
-        setSelectedOrganizations: orgs => {
-          set({ selectedOrganizations: orgs }, false, 'setSelectedOrganizations')
-        },
-
-        addSelectedOrganization: org => {
+        setSelectedOrganizations: (orgs) => {
           set(
-            state => ({
+            { selectedOrganizations: orgs },
+            false,
+            "setSelectedOrganizations",
+          );
+        },
+
+        addSelectedOrganization: (org) => {
+          set(
+            (state) => ({
               selectedOrganizations: [...state.selectedOrganizations, org],
             }),
             false,
-            'addSelectedOrganization'
-          )
+            "addSelectedOrganization",
+          );
         },
 
-        removeSelectedOrganization: org => {
+        removeSelectedOrganization: (org) => {
           set(
-            state => ({
+            (state) => ({
               selectedOrganizations: state.selectedOrganizations.filter(
-                o => o !== org
+                (o) => o !== org,
               ),
             }),
             false,
-            'removeSelectedOrganization'
-          )
+            "removeSelectedOrganization",
+          );
         },
 
         clearSelectedOrganizations: () => {
-          set({ selectedOrganizations: [] }, false, 'clearSelectedOrganizations')
+          set(
+            { selectedOrganizations: [] },
+            false,
+            "clearSelectedOrganizations",
+          );
         },
 
         toggleSidebar: () => {
           set(
-            state => ({ sidebarExpanded: !state.sidebarExpanded }),
+            (state) => ({ sidebarExpanded: !state.sidebarExpanded }),
             false,
-            'toggleSidebar'
-          )
+            "toggleSidebar",
+          );
         },
 
-        setSidebarExpanded: expanded => {
-          set({ sidebarExpanded: expanded }, false, 'setSidebarExpanded')
+        setSidebarExpanded: (expanded) => {
+          set({ sidebarExpanded: expanded }, false, "setSidebarExpanded");
         },
 
         toggleFilterPanel: () => {
           set(
-            state => ({ filterPanelExpanded: !state.filterPanelExpanded }),
+            (state) => ({ filterPanelExpanded: !state.filterPanelExpanded }),
             false,
-            'toggleFilterPanel'
-          )
+            "toggleFilterPanel",
+          );
         },
 
-        setFilterPanelExpanded: expanded => {
-          set({ filterPanelExpanded: expanded }, false, 'setFilterPanelExpanded')
-        },
-
-        updateTableConfig: config => {
+        setFilterPanelExpanded: (expanded) => {
           set(
-            state => ({
+            { filterPanelExpanded: expanded },
+            false,
+            "setFilterPanelExpanded",
+          );
+        },
+
+        updateTableConfig: (config) => {
+          set(
+            (state) => ({
               tableConfig: {
                 ...state.tableConfig,
                 ...config,
               },
             }),
             false,
-            'updateTableConfig'
-          )
+            "updateTableConfig",
+          );
         },
 
-        updateChartConfig: config => {
+        updateChartConfig: (config) => {
           set(
-            state => ({
+            (state) => ({
               chartConfig: {
                 ...state.chartConfig,
                 ...config,
               },
             }),
             false,
-            'updateChartConfig'
-          )
+            "updateChartConfig",
+          );
         },
 
         resetUI: () => {
-          set(defaultUIState, false, 'resetUI')
+          set(defaultUIState, false, "resetUI");
         },
 
         // ==================== 计算属性 ====================
 
-        isPanelExpanded: panelId => {
-          return get().expandedPanels.has(panelId)
+        isPanelExpanded: (panelId) => {
+          return get().expandedPanels.has(panelId);
         },
 
         getExpandedPanelCount: () => {
-          return get().expandedPanels.size
+          return get().expandedPanels.size;
         },
 
-        isOrganizationSelected: org => {
-          return get().selectedOrganizations.includes(org)
+        isOrganizationSelected: (org) => {
+          return get().selectedOrganizations.includes(org);
         },
       }),
       {
-        name: 'ui-store',
+        name: "ui-store",
         // 自定义序列化，因为Set不能直接序列化
-        partialize: state => ({
+        partialize: (state) => ({
           viewMode: state.viewMode,
           expandedPanels: Array.from(state.expandedPanels),
           selectedOrganizations: state.selectedOrganizations,
@@ -381,13 +393,13 @@ export const useUIStore = create<UIStore>()(
           ...currentState,
           ...(persistedState as any),
           expandedPanels: new Set(
-            (persistedState as any)?.expandedPanels || []
+            (persistedState as any)?.expandedPanels || [],
           ),
         }),
-      }
+      },
     ),
     {
-      name: 'ui-store',
-    }
-  )
-)
+      name: "ui-store",
+    },
+  ),
+);

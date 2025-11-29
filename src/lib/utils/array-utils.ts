@@ -27,16 +27,16 @@
  */
 export function safeMax(array: number[]): number {
   if (array.length === 0) {
-    return -Infinity
+    return -Infinity;
   }
 
-  let max = array[0]
+  let max = array[0];
   for (let i = 1; i < array.length; i++) {
     if (array[i] > max) {
-      max = array[i]
+      max = array[i];
     }
   }
-  return max
+  return max;
 }
 
 /**
@@ -63,16 +63,16 @@ export function safeMax(array: number[]): number {
  */
 export function safeMin(array: number[]): number {
   if (array.length === 0) {
-    return Infinity
+    return Infinity;
   }
 
-  let min = array[0]
+  let min = array[0];
   for (let i = 1; i < array.length; i++) {
     if (array[i] < min) {
-      min = array[i]
+      min = array[i];
     }
   }
-  return min
+  return min;
 }
 
 /**
@@ -95,21 +95,21 @@ export function safeMin(array: number[]): number {
  */
 export function safeMinMax(array: number[]): { min: number; max: number } {
   if (array.length === 0) {
-    return { min: Infinity, max: -Infinity }
+    return { min: Infinity, max: -Infinity };
   }
 
-  let min = array[0]
-  let max = array[0]
+  let min = array[0];
+  let max = array[0];
 
   for (let i = 1; i < array.length; i++) {
-    const value = array[i]
+    const value = array[i];
     if (value < min) {
-      min = value
+      min = value;
     }
     if (value > max) {
-      max = value
+      max = value;
     }
   }
 
-  return { min, max }
+  return { min, max };
 }

@@ -1,6 +1,14 @@
 /**
  * 数值格式化工具函数
+ * 应用 DRY 原则，使用统一的类型守卫
  */
+
+import { isValidNumber, safeDisplayNumber } from "./guards";
+import {
+  getContributionMarginColor,
+  getContributionMarginBgColor,
+  getStatusColor,
+} from "./color-helpers";
 
 /**
  * 格式化数字为千分位格式
@@ -10,16 +18,16 @@
  */
 export function formatNumber(
   value: number | null | undefined,
-  decimals = 0
+  decimals = 0,
 ): string {
-  if (value === null || value === undefined || isNaN(value)) {
-    return '-'
+  if (!isValidNumber(value)) {
+    return "-";
   }
 
-  return value.toLocaleString('zh-CN', {
+  return value.toLocaleString("zh-CN", {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
-  })
+  });
 }
 
 /**
@@ -30,13 +38,13 @@ export function formatNumber(
  */
 export function formatPercent(
   value: number | null | undefined,
-  decimals = 2
+  decimals = 2,
 ): string {
-  if (value === null || value === undefined || isNaN(value)) {
-    return '-'
+  if (!isValidNumber(value)) {
+    return "-";
   }
 
-  return `${value.toFixed(decimals)}%`
+  return `${value.toFixed(decimals)}%`;
 }
 
 /**
@@ -47,13 +55,13 @@ export function formatPercent(
  */
 export function formatCurrency(
   value: number | null | undefined,
-  decimals = 0
+  decimals = 0,
 ): string {
-  if (value === null || value === undefined || isNaN(value)) {
-    return '-'
+  if (!isValidNumber(value)) {
+    return "-";
   }
 
-  return `${formatNumber(value, decimals)} 万元`
+  return `${formatNumber(value, decimals)} 万元`;
 }
 
 /**
@@ -62,7 +70,7 @@ export function formatCurrency(
  * @returns 格式化后的字符串（千分位）
  */
 export function formatInteger(value: number | null | undefined): string {
-  return formatNumber(value, 0)
+  return formatNumber(value, 0);
 }
 
 /**
@@ -73,9 +81,9 @@ export function formatInteger(value: number | null | undefined): string {
  */
 export function formatDecimal(
   value: number | null | undefined,
-  decimals = 3
+  decimals = 3,
 ): string {
-  return formatNumber(value, decimals)
+  return formatNumber(value, decimals);
 }
 
 /**
@@ -86,80 +94,48 @@ export function formatDecimal(
  */
 export function formatChange(
   value: number | null | undefined,
-  isPercentage = false
+  isPercentage = false,
 ): {
-  text: string
-  color: string
-  direction: 'up' | 'down' | 'flat'
+  text: string;
+  color: string;
+  direction: "up" | "down" | "flat";
 } {
-  if (value === null || value === undefined || isNaN(value)) {
-    return { text: '-', color: 'text-slate-500', direction: 'flat' }
+  if (!isValidNumber(value)) {
+    return { text: "-", color: "text-slate-500", direction: "flat" };
   }
 
-  const absValue = Math.abs(value)
-  const integerValue = Math.round(absValue)
+  const absValue = Math.abs(value);
+  const integerValue = Math.round(absValue);
   const formattedValue = isPercentage
     ? `${absValue.toFixed(2)}%`
-    : formatNumber(integerValue, 0)
+    : formatNumber(integerValue, 0);
 
   if (value > 0) {
     return {
       text: `+${formattedValue}`,
-      color: 'text-green-600',
-      direction: 'up',
-    }
+      color: "text-green-600",
+      direction: "up",
+    };
   } else if (value < 0) {
     return {
       text: `-${formattedValue}`,
-      color: 'text-red-600',
-      direction: 'down',
-    }
+      color: "text-red-600",
+      direction: "down",
+    };
   } else {
     return {
       text: formattedValue,
-      color: 'text-slate-500',
-      direction: 'flat',
-    }
+      color: "text-slate-500",
+      direction: "flat",
+    };
   }
 }
 
-/**
- * 根据满期边际贡献率获取颜色
- * @param ratio 满期边际贡献率（%）
- * @returns 颜色类名
- */
-export function getContributionMarginColor(
-  ratio: number | null | undefined
-): string {
-  if (ratio === null || ratio === undefined || isNaN(ratio)) {
-    return 'text-slate-500'
-  }
-
-  if (ratio > 12) return 'text-green-700' // 优秀：深绿
-  if (ratio >= 8) return 'text-green-600' // 良好：浅绿
-  if (ratio >= 4) return 'text-yellow-600' // 一般：黄色
-  if (ratio >= 0) return 'text-orange-600' // 较差：橙色
-  return 'text-red-600' // 严重：红色
-}
-
-/**
- * 根据满期边际贡献率获取背景颜色
- * @param ratio 满期边际贡献率（%）
- * @returns 背景颜色类名
- */
-export function getContributionMarginBgColor(
-  ratio: number | null | undefined
-): string {
-  if (ratio === null || ratio === undefined || isNaN(ratio)) {
-    return 'bg-slate-100'
-  }
-
-  if (ratio > 12) return 'bg-green-100' // 优秀
-  if (ratio >= 8) return 'bg-green-50' // 良好
-  if (ratio >= 4) return 'bg-yellow-50' // 一般
-  if (ratio >= 0) return 'bg-orange-50' // 较差
-  return 'bg-red-50' // 严重
-}
+// 重新导出颜色工具函数（向后兼容）
+export {
+  getContributionMarginColor,
+  getContributionMarginBgColor,
+} from "./color-helpers";
 
 /**
  * 获取 KPI 状态颜色（通用）
@@ -171,13 +147,7 @@ export function getContributionMarginBgColor(
 export function getKPIStatusColor(
   value: number | null | undefined,
   threshold: number,
-  isHigherBetter = true
+  isHigherBetter = true,
 ): string {
-  if (value === null || value === undefined || isNaN(value)) {
-    return 'text-slate-500'
-  }
-
-  const isGood = isHigherBetter ? value >= threshold : value <= threshold
-
-  return isGood ? 'text-green-600' : 'text-red-600'
+  return getStatusColor(value, threshold, isHigherBetter);
 }

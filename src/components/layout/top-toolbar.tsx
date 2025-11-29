@@ -1,28 +1,28 @@
-'use client'
+"use client";
 
-import { DataViewSelector } from '@/components/filters/data-view-selector'
-import { CompactTimeFilter } from '@/components/filters/compact-time-filter'
-import { CompactOrganizationFilter } from '@/components/filters/compact-organization-filter'
-import { TimeProgressIndicator } from '@/components/features/time-progress-indicator'
-import { MoreFiltersDialog } from '@/components/features/more-filters-dialog'
-import type { AnalysisTabValue } from '@/components/layout/analysis-tabs'
+import { DataViewSelector } from "@/components/filters/data-view-selector";
+import { CompactTimeFilter } from "@/components/filters/compact-time-filter";
+import { CompactOrganizationFilter } from "@/components/filters/compact-organization-filter";
+import { TimeProgressIndicator } from "@/components/features/time-progress-indicator";
+import { MoreFiltersDialog } from "@/components/features/more-filters-dialog";
+import type { AnalysisTabValue } from "@/components/layout/analysis-tabs";
 
-type WeekSelectionMode = 'single-only' | 'flexible'
+type WeekSelectionMode = "single-only" | "flexible";
 
 interface TopToolbarProps {
-  rawCount: number
-  activeTab: AnalysisTabValue
+  rawCount: number;
+  activeTab: AnalysisTabValue;
 }
 
 function resolveWeekSelectionMode(tab: AnalysisTabValue): WeekSelectionMode {
-  if (tab === 'trend' || tab === 'multichart') {
-    return 'flexible'
+  if (tab === "trend" || tab === "multichart") {
+    return "flexible";
   }
-  return 'single-only'
+  return "single-only";
 }
 
 export function TopToolbar({ rawCount, activeTab }: TopToolbarProps) {
-  const weekSelectionMode = resolveWeekSelectionMode(activeTab)
+  const weekSelectionMode = resolveWeekSelectionMode(activeTab);
 
   return (
     <div className="bg-white border-b border-slate-200">
@@ -46,5 +46,5 @@ export function TopToolbar({ rawCount, activeTab }: TopToolbarProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
