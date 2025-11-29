@@ -11,6 +11,21 @@ export default defineConfig({
       'tests/e2e/**', // 排除 Playwright E2E 测试
       '**/*.spec.ts', // 排除 .spec.ts 文件（专用于 Playwright）
     ],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/**',
+        'tests/**',
+        '**/*.test.ts',
+        '**/*.test.tsx',
+        '**/*.spec.ts',
+        'configs/**',
+        '**/*.config.ts',
+        '**/*.config.js',
+        '**/types/**',
+      ],
+    },
   },
   resolve: {
     alias: {
