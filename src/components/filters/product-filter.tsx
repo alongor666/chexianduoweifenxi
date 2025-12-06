@@ -40,10 +40,9 @@ export function ProductFilter() {
   const recordsForBusinessType = filterRecordsWithExclusions(rawData, filters, [
     'businessTypes',
   ])
-  const presentBusinessCodes = new Set<string>(
+  const presentBusinessCodes = new Set(
     recordsForBusinessType
       .map(record => getBusinessTypeCode(record.business_type_category))
-      .filter((v): v is string => Boolean(v))
   )
   const availableBusinessTypes = CANONICAL_BUSINESS_CODES.filter(code =>
     presentBusinessCodes.has(code)

@@ -1,0 +1,23 @@
+
+> insurance-analytics@0.1.0 build:static /home/user/chexianduoweifenxi
+> NEXT_PUBLIC_DEPLOY_MODE=static NEXT_PUBLIC_DATA_SOURCE=local NODE_OPTIONS='--max-old-space-size=2048' next build
+
+  ▲ Next.js 14.2.33
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+Failed to compile.
+
+./src/constants/dimensions.ts:235:14
+Type error: Property 'OTHER' is missing in type '{ non_pc_new: string; non_pc_used: string; non_pc_transfer: string; non_truck_lt1: string; non_truck_1_2: string; biz_truck_lt2: string; biz_truck_2_9: string; biz_truck_9_10: string; biz_truck_10_plus: string; ... 6 more ...; biz_pc_ridehailing: string; }' but required in type 'Record<BusinessTypeCode, string>'.
+
+[0m [90m 233 |[39m [90m * 英文代码 → 中文全称 映射（用于与历史目标、原始数据Key对齐）[39m[0m
+[0m [90m 234 |[39m [90m */[39m[0m
+[0m[31m[1m>[22m[39m[90m 235 |[39m [36mexport[39m [36mconst[39m [33mBUSINESS_TYPE_CN_BY_CODE[39m[33m:[39m [33mRecord[39m[33m<[39m[33mBusinessTypeCode[39m[33m,[39m string[33m>[39m [33m=[39m {[0m
+[0m [90m     |[39m              [31m[1m^[22m[39m[0m
+[0m [90m 236 |[39m   non_pc_new[33m:[39m [32m'非营业客车新车'[39m[33m,[39m[0m
+[0m [90m 237 |[39m   non_pc_used[33m:[39m [32m'非营业客车旧车非过户'[39m[33m,[39m[0m
+[0m [90m 238 |[39m   non_pc_transfer[33m:[39m [32m'非营业客车旧车过户'[39m[33m,[39m[0m
+Next.js build worker exited with code: 1 and signal: null
+ ELIFECYCLE  Command failed with exit code 1.
