@@ -4,27 +4,49 @@
 
 ## 核心技术栈
 
-- **前端**: Next.js (React 框架)
-  - **UI 库**: shadcn/ui (基于 Radix UI 和 Tailwind CSS)
-  - **图表**: Recharts
-  - **状态管理**: Zustand
+- **前端**: Next.js 14.2.33 (React 18 框架)
+  - **UI 库**: shadcn/ui (基于 Radix UI 和 Tailwind CSS 3.4.1)
+  - **图表**:
+    - **主要**: Recharts 3.3.0 (React 原生图表)
+    - **高级**: ECharts 6.0.0 (复杂可视化、雷达图、热力图)
+  - **状态管理**: Zustand 5.0.8
   - **数据请求**: 原生 `fetch` API
 
-- **后端**: Node.js
-  - **核心框架**: 无特定框架，使用原生 Node.js API
-  - **数据库 ORM**: Prisma
+- **后端/运行时**: Node.js 20.x LTS
+  - **部署模式**: 静态导出（Static Export）+ 可选 API Routes
+  - **核心框架**: Next.js App Router（无独立后端框架）
 
-- **数据库**: Supabase (PostgreSQL)
+- **数据存储**（分层架构）:
+  - **主要**: IndexedDB + LocalStorage (客户端浏览器存储)
+  - **查询引擎**: DuckDB-WASM 1.30.0 (内存列式数据库，支持 SQL 查询)
+  - **可选**: Supabase PostgreSQL (远程备份/多设备同步)
 
-- **部署**: Vercel
+- **部署**:
+  - **推荐**: Vercel (静态托管)
+  - **备选**: Cloudflare Pages, Netlify, GitHub Pages
 
-- **开发语言**: TypeScript
+- **开发语言**: TypeScript 5.9.3
 
 ## 关键第三方库
 
-- **`papaparse`**: 用于在前端解析 CSV 文件，实现客户端数据预览与初步验证。
-- **`zod`**: 用于定义数据结构（Schema）并执行严格的数据验证，确保进入系统的数据符合预设格式。
-- **`date-fns`**: 提供可靠的日期处理功能，用于处理 `snapshot_date` 等时间序列数据。
+### 数据处理
+- **`papaparse` 5.5.3**: 用于在前端解析 CSV 文件，实现客户端数据预览与初步验证。
+- **`zod` 4.1.12**: 用于定义数据结构（Schema）并执行严格的数据验证，确保进入系统的数据符合预设格式。
+- **`date-fns` 4.2.1**: 提供可靠的日期处理功能，用于处理 `snapshot_date` 等时间序列数据。
+- **`@duckdb/duckdb-wasm` 1.30.0**: WebAssembly 编译的列式数据库，支持大数据量的高性能 SQL 查询。
+
+### 可视化与导出
+- **`recharts` 3.3.0**: React 生态的声明式图表库，用于趋势图、柱状图等基础可视化。
+- **`echarts` 6.0.0**: 百度开源的专业级数据可视化库，用于雷达图、热力图等高级图表。
+- **`echarts-for-react` 3.0.2**: ECharts 的 React 封装。
+- **`jspdf` 3.0.3**: 在浏览器端生成 PDF 文档，用于导出报告。
+- **`html2canvas` 1.4.1**: 将 HTML 元素转换为 Canvas 图像，配合 jsPDF 实现图表导出。
+
+### UI组件库
+- **`@radix-ui/*`**: 无头UI组件库（Headless UI），提供可访问性优秀的底层组件。
+- **`tailwindcss` 3.4.1**: 实用优先的 CSS 框架。
+- **`tailwindcss-animate` 1.0.7**: Tailwind CSS 动画插件。
+- **`class-variance-authority` 0.7.2**: 类型安全的样式变体管理。
 
 ## 数据持久化技术
 
@@ -59,13 +81,11 @@
 3.  **安装依赖**: 在项目根目录下运行 `pnpm install`。
 4.  **配置环境变量**: 
     - 复制 `.env.example` 文件为 `.env.local`。
-    - 填入 Supabase 数据库连接字符串 (`DATABASE_URL`) 和 Prisma 加速器地址 (`DATABASE_URL_WITH_ACCELERATE`)。
+    - 填入 Supabase 数据库连接字符串 (`DATABASE_URL`)。
 
 ### 常用命令
 
 - **启动开发服务器**: `pnpm dev`
-- **生成 Prisma Client**: `pnpm prisma generate`
-- **启动 Prisma Studio**: `pnpm prisma studio` (用于本地查看和编辑数据库)
 
 ### 本地验证流程
 
@@ -175,3 +195,227 @@
    - 优先上传最新周次数据
    - 缺失周次不影响功能（自动跳过）
    - 支持追加上传（自动去重）
+
+---
+
+## API端点设计
+
+### POST /api/ingest-file
+
+**状态**: 🚧 框架完成，业务逻辑待实现
+
+**用途**: 接收前端上传的已解析数据并持久化到数据库
+
+**请求格式**:
+```typescript
+POST /api/ingest-file
+Content-Type: application/json
+
+{
+  "data": InsuranceRecord[]
+}
+```
+
+**响应格式**:
+```typescript
+// 成功 (200)
+{
+  "message": "数据归档成功",
+  "processedRecords": number
+}
+
+// 失败 (400/500)
+{
+  "error": "错误信息"
+}
+```
+
+**实现文件**: `src/app/api/ingest-file/route.ts`
+
+**待完成事项**:
+- [ ] 连接 DataService 实现数据持久化
+- [ ] 实现数据验证和去重逻辑
+- [ ] 添加错误处理和日志记录
+
+---
+
+### POST /api/etl
+
+**状态**: 🚧 框架完成，DuckDB处理逻辑待实现
+
+**用途**: 批量ETL处理多个CSV文件，合并后输出单个文件
+
+**请求格式**:
+```typescript
+POST /api/etl
+Content-Type: multipart/form-data
+
+files: File[]
+outputFileName: string
+```
+
+**响应格式**:
+```typescript
+// 成功 (200)
+{
+  "success": true,
+  "message": "ETL处理完成",
+  "logs": "处理日志...",
+  "downloadUrl": "http://..."
+}
+
+// 失败 (400/500)
+{
+  "success": false,
+  "message": "错误信息",
+  "logs": "错误日志..."
+}
+```
+
+**实现文件**: `src/app/api/etl/route.ts`
+
+**待完成事项**:
+- [ ] 集成 DuckDB-WASM 进行 SQL 聚合
+- [ ] 实现多文件合并逻辑
+- [ ] 优化大文件处理性能
+
+---
+
+## 完整存储架构
+
+### 三层存储架构
+
+```
+┌─────────────────────────────────────────────────┐
+│           应用层 (Application Layer)             │
+│      ├─ React Components                        │
+│      ├─ Hooks (useFilteredData, useKPI...)      │
+│      └─ Zustand Store (状态管理)                 │
+└─────────────────────────────────────────────────┘
+                      ↓
+┌─────────────────────────────────────────────────┐
+│         服务层 (Service Layer)                   │
+│      ├─ DataService (数据查询)                   │
+│      ├─ KPIService (指标计算)                    │
+│      └─ PersistenceService (持久化管理)          │
+└─────────────────────────────────────────────────┘
+                      ↓
+┌─────────────────────────────────────────────────┐
+│    第一层: 内存查询引擎 (Query Engine)            │
+│    ┌─────────────────────────────────┐          │
+│    │   DuckDB-WASM (列式存储)         │          │
+│    │   ├─ SQL查询支持                  │          │
+│    │   ├─ 自动索引优化                 │          │
+│    │   └─ Web Worker并行处理          │          │
+│    └─────────────────────────────────┘          │
+└─────────────────────────────────────────────────┘
+                      ↓
+┌─────────────────────────────────────────────────┐
+│   第二层: 客户端持久化 (Client Storage)          │
+│    ┌─────────────────┬─────────────────┐        │
+│    │   IndexedDB     │  LocalStorage   │        │
+│    │   (主要存储)     │   (备用存储)     │        │
+│    │   ├─ 大容量      │   ├─ 5-10MB     │        │
+│    │   ├─ 结构化数据  │   ├─ 简单键值    │        │
+│    │   └─ 事务支持    │   └─ 快速访问    │        │
+│    └─────────────────┴─────────────────┘        │
+└─────────────────────────────────────────────────┘
+                      ↓
+┌─────────────────────────────────────────────────┐
+│  第三层: 远程存储 (Remote Storage, 可选)         │
+│    ┌──────────────────────────────────┐         │
+│    │   Supabase PostgreSQL            │         │
+│    │   ├─ 多设备同步                   │         │
+│    │   ├─ 历史数据备份                 │         │
+│    │   └─ 跨浏览器数据共享             │         │
+│    └──────────────────────────────────┘         │
+└─────────────────────────────────────────────────┘
+```
+
+### 存储方案选择
+
+| 场景 | 推荐方案 | 说明 |
+|------|---------|------|
+| **个人单机使用** | IndexedDB + LocalStorage | 无需配置，离线可用 |
+| **多设备同步** | + Supabase | 需要配置环境变量 |
+| **大数据查询** | + DuckDB-WASM | 自动启用，支持百万行数据 SQL 查询 |
+| **数据备份** | 导出CSV/PDF | 通过导出功能实现 |
+
+### 数据流程
+
+#### 上传流程
+```
+CSV文件 → Papa Parse解析
+       → Zod验证
+       → 存入IndexedDB/LocalStorage
+       → [可选] 同步到Supabase
+```
+
+#### 查询流程
+```
+用户筛选 → Zustand Store
+        → DuckDB SQL查询（大数据集）
+        → 或直接内存过滤（小数据集）
+        → 返回结果
+```
+
+---
+
+## 开发环境配置更新
+
+由于项目不再使用Prisma，环境配置已简化：
+
+### 必需配置
+
+```bash
+# 安装依赖
+pnpm install
+
+# 启动开发服务器
+pnpm dev
+
+# 构建生产版本
+pnpm build
+
+# 预览生产构建
+pnpm start
+```
+
+### 可选配置（Supabase远程存储）
+
+如需启用Supabase远程存储，创建 `.env.local`:
+
+```env
+# Supabase配置
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# 数据源选择（local 或 supabase）
+NEXT_PUBLIC_DATA_SOURCE=local
+```
+
+**注意**:
+- 默认使用本地存储（`NEXT_PUBLIC_DATA_SOURCE=local`）
+- Supabase为可选功能，不影响核心功能使用
+- 无需配置数据库连接字符串（已移除Prisma依赖）
+
+---
+
+## 测试框架
+
+```bash
+# 单元测试
+pnpm test
+
+# E2E测试
+pnpm test:e2e
+```
+
+**测试工具**:
+- **单元测试**: Vitest 2.1.4
+- **E2E测试**: Playwright 1.49.0
+
+---
+
+*最后更新: 2025-12-06*
+*与代码一致性: ✅ 已验证*

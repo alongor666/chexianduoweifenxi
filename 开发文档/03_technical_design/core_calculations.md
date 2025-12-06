@@ -1,6 +1,14 @@
 # 核心指标计算引擎 V2.0
 
-本文件定义了平台最终确定的16个核心KPI的计算公式、业务逻辑和显示规则，是对早期版本的全面升级和修正。
+本文件定义了平台的KPI体系架构、计算公式、业务逻辑和显示规则。
+
+**KPI体系说明**:
+- **核心展示KPI**: 16个（4x4网格布局）
+- **辅助计算字段**: 7个（用于计算但不直接展示）
+- **总计**: 23个指标字段
+
+**版本**: V3.0（与代码完全一致）
+**最后同步**: 2025-12-06
 
 ## 1. 核心原则
 
@@ -135,14 +143,98 @@
     - **金额**: 通常以"万"为单位，保留0-2位小数。
     - **数量**: 整数。
 
-## 6. 文档状态
+## 6. 辅助计算字段（不直接展示的KPI）
+
+除了上述16个核心展示KPI外，系统还实现了以下7个辅助字段，用于计算或特定场景：
+
+| 字段名 | 中文名称 | 说明 | 代码字段名 |
+|--------|---------|------|-----------|
+| 1 | 满期保费 | 用于多项比率计算的基础数据 | `maturedPremium` / `matured_premium` |
+| 2 | 商业险自主系数 | 商业险折前保费/商业险保费 | `autonomyCoefficient` / `autonomy_coefficient` |
+| 3 | 保费达成率 | 用于计算时间进度达成率 | `premiumProgress` / `premium_progress` |
+| 4 | 件数时间进度达成率 | 保单件数与目标的时间进度达成情况 | `policyCountTimeProgressAchievementRate` / `policy_count_time_progress_achievement_rate` |
+| 5 | 单均边贡额 | (边贡额 × 10000) / 保单件数 | `averageContribution` / `average_contribution` |
+| 6 | 年度保费目标 | 目标管理模块使用 | `annualPremiumTarget` / `annual_premium_target` |
+| 7 | 年度件数目标 | 目标管理模块使用 | `annualPolicyCountTarget` / `annual_policy_count_target` |
+
+**使用场景**:
+- **满期保费**: 满期率、赔付率等比率指标的分母
+- **保费达成率**: 计算保费时间进度达成率的中间值
+- **件数时间进度达成率**: 目标管理页面展示
+- **单均边贡额**: 边贡分析专题使用
+- **年度目标字段**: 目标管理和达成率计算
+
+## 7. 命名约定说明
+
+### 双命名体系
+
+系统采用**双命名体系**以适应不同技术层的惯例:
+
+| 层级 | 命名风格 | 示例 | 使用场景 |
+|------|---------|------|---------|
+| **Domain层** | `camelCase` | `lossRatio`, `contributionMarginRatio` | TypeScript业务逻辑计算 |
+| **Types/数据库层** | `snake_case` | `loss_ratio`, `contribution_margin_ratio` | 数据库字段、API响应 |
+
+**代码示例**:
+```typescript
+// Domain层 (src/domain/rules/kpi-calculator.ts)
+export interface KPIResult {
+  lossRatio: number | null
+  contributionMarginRatio: number | null
+}
+
+// Types层 (src/types/insurance.ts)
+export interface KPIResult {
+  loss_ratio: number | null
+  contribution_margin_ratio: number | null
+}
+```
+
+**转换机制**:
+- 系统通过类型映射自动处理两种命名的互转
+- 前端组件通常使用 `camelCase`
+- 数据库/CSV导入导出使用 `snake_case`
+
+### 完整字段对照表
+
+| 序号 | 文档中文名称 | Domain层(camelCase) | Types层(snake_case) | 4x4网格展示 |
+|------|-------------|---------------------|---------------------|------------|
+| 1 | 满期边际贡献率 | contributionMarginRatio | contribution_margin_ratio | ✅ 第1行第1列 |
+| 2 | 保费时间进度达成率 | premiumTimeProgressAchievementRate | premium_time_progress_achievement_rate | ✅ 第1行第2列 |
+| 3 | 满期赔付率 | lossRatio | loss_ratio | ✅ 第1行第3列 |
+| 4 | 费用率 | expenseRatio | expense_ratio | ✅ 第1行第4列 |
+| 5 | 满期边际贡献额 | contributionMarginAmount | contribution_margin_amount | ✅ 第2行第1列 |
+| 6 | 签单保费 | signedPremium | signed_premium | ✅ 第2行第2列 |
+| 7 | 已报告赔款 | reportedClaimPayment | reported_claim_payment | ✅ 第2行第3列 |
+| 8 | 费用额 | expenseAmount | expense_amount | ✅ 第2行第4列 |
+| 9 | 变动成本率 | variableCostRatio | variable_cost_ratio | ✅ 第3行第1列 |
+| 10 | 满期率 | maturityRatio | maturity_ratio | ✅ 第3行第2列 |
+| 11 | 满期出险率 | maturedClaimRatio | matured_claim_ratio | ✅ 第3行第3列 |
+| 12 | 保单件数 | policyCount | policy_count | ✅ 第3行第4列 |
+| 13 | 赔案件数 | claimCaseCount | claim_case_count | ✅ 第4行第1列 |
+| 14 | 单均保费 | averagePremium | average_premium | ✅ 第4行第2列 |
+| 15 | 案均赔款 | averageClaim | average_claim | ✅ 第4行第3列 |
+| 16 | 单均费用 | averageExpense | average_expense | ✅ 第4行第4列 |
+| 17 | 满期保费 | maturedPremium | matured_premium | ❌ 不直接展示 |
+| 18 | 商业险自主系数 | autonomyCoefficient | autonomy_coefficient | ❌ 不直接展示 |
+| 19 | 保费达成率 | premiumProgress | premium_progress | ❌ 用于计算时间进度 |
+| 20 | 件数时间进度达成率 | policyCountTimeProgressAchievementRate | policy_count_time_progress_achievement_rate | ❌ 未在文档列出 |
+| 21 | 单均边贡额 | averageContribution | average_contribution | ❌ 边贡专题使用 |
+| 22 | 年度保费目标 | annualPremiumTarget | annual_premium_target | ❌ 目标管理字段 |
+| 23 | 年度件数目标 | annualPolicyCountTarget | annual_policy_count_target | ❌ 目标管理字段 |
+
+## 8. 文档状态
 
 - **版本**: 3.0
-- **最后更新**: 2025-10-21
+- **最后更新**: 2025-12-06
 - **状态**: ✅ **现行标准**
-- **重要更新**: 新增50周工作制、周次日期映射规则、保费时间进度达成率双模式计算
+- **与代码一致性**: ✅ **完全一致**（已验证）
+- **重要更新**:
+  - 新增50周工作制、周次日期映射规则、保费时间进度达成率双模式计算
+  - 补充辅助计算字段说明（7个）
+  - 补充命名约定说明
 
-## 6. 相关文档
+## 9. 相关文档
 
 本计算引擎的定义和实现，其需求、设计和测试记录分散在以下文档中：
 
