@@ -20,6 +20,10 @@ export function DataManagementPanel() {
   const { clearPersistedData } = usePersistData()
   const rawData = useAppStore(state => state.rawData)
 
+  // 检查部署模式 - 静态部署时禁用服务器端功能
+  const deployMode = process.env.NEXT_PUBLIC_DEPLOY_MODE || 'static'
+  const isStaticMode = deployMode === 'static'
+
   const handleClearData = () => {
     if (
       confirm('确定要清空当前数据并重新开始吗?此操作将清除所有缓存的数据。')
@@ -38,7 +42,7 @@ export function DataManagementPanel() {
           <div>
             <h2 className="text-xl font-semibold text-slate-800">数据管理</h2>
             <p className="text-sm text-slate-600 mt-1">
-              管理数据导入、加工和导出
+              {isStaticMode ? '管理数据导入和导出' : '管理数据导入、加工和导出'}
             </p>
           </div>
         </div>
@@ -70,10 +74,12 @@ export function DataManagementPanel() {
                 <Download className="w-4 h-4" />
                 导出数据
               </TabsTrigger>
-              <TabsTrigger value="process" className="gap-2">
-                <Filter className="w-4 h-4" />
-                数据加工
-              </TabsTrigger>
+              {!isStaticMode && (
+                <TabsTrigger value="process" className="gap-2">
+                  <Filter className="w-4 h-4" />
+                  数据加工
+                </TabsTrigger>
+              )}
             </TabsList>
           </div>
 
@@ -111,9 +117,11 @@ export function DataManagementPanel() {
             </div>
           </TabsContent>
 
-          <TabsContent value="process" className="p-6 m-0">
-            <DataProcessingPanel />
-          </TabsContent>
+          {!isStaticMode && (
+            <TabsContent value="process" className="p-6 m-0">
+              <DataProcessingPanel />
+            </TabsContent>
+          )}
         </Tabs>
       </div>
     </div>

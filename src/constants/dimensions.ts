@@ -164,6 +164,7 @@ export type BusinessTypeCode =
   | 'motorcycle' // 摩托车
   | 'biz_pc_taxi' // 出租车
   | 'biz_pc_ridehailing' // 网约车
+  | 'OTHER' // 其他/未知类型
 
 /**
  * Canonical 业务类型代码列表（与 CANONICAL_BUSINESS_TYPES 对应）
@@ -248,6 +249,7 @@ export const BUSINESS_TYPE_CN_BY_CODE: Record<BusinessTypeCode, string> = {
   motorcycle: '摩托车',
   biz_pc_taxi: '出租车',
   biz_pc_ridehailing: '网约车',
+  OTHER: '其他',
 }
 
 /**
@@ -270,6 +272,7 @@ export const BUSINESS_TYPE_SHORT_BY_CODE: Record<BusinessTypeCode, string> = {
   motorcycle: '摩托',
   biz_pc_taxi: '营客-出租',
   biz_pc_ridehailing: '营客-网约',
+  OTHER: '其他',
 }
 
 /**

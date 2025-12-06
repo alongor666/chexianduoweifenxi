@@ -9,7 +9,8 @@
  */
 
 import type { IDataRepository, DataFilters } from '../ports/IDataRepository'
-import type { IExporter, ExportFormat, ExportOptions } from '../ports/IExporter'
+import type { IExporter, ExportOptions } from '../ports/IExporter'
+import { ExportFormat } from '../ports/IExporter'
 import type { InsuranceRecord, KPIResult } from '../../domain'
 import { calculateKPIs } from '../../domain'
 

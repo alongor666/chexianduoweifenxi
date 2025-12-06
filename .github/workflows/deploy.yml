@@ -5,35 +5,46 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:  # 允许手动触发部署
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-      
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-        
+        cache: 'pnpm'
+
     - name: Install dependencies
-      run: npm install --legacy-peer-deps
-      
-    - name: Build
-      run: npm run build
+      run: pnpm install
+
+    - name: Build for static deployment
+      run: pnpm build
       env:
         NODE_ENV: production
         CI: false
-        
+        NEXT_PUBLIC_DEPLOY_MODE: static
+        NEXT_PUBLIC_DATA_SOURCE: local
+        NEXT_TELEMETRY_DISABLED: 1
+
     - name: Add .nojekyll file
       run: touch out/.nojekyll
-      
+
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       if: github.ref == 'refs/heads/main'
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./out
+        cname: false  # 如果有自定义域名，在这里配置

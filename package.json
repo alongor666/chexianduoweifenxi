@@ -5,14 +5,17 @@
   "scripts": {
     "dev": "NODE_OPTIONS='--max-old-space-size=2048' next dev",
     "build": "NODE_OPTIONS='--max-old-space-size=2048' next build",
+    "build:static": "NEXT_PUBLIC_DEPLOY_MODE=static NEXT_PUBLIC_DATA_SOURCE=local NODE_OPTIONS='--max-old-space-size=2048' next build",
     "start": "next start",
+    "preview": "npx serve out",
     "lint": "next lint",
     "test": "vitest -c configs/vitest.config.ts",
     "test:unit": "vitest -c configs/vitest.config.ts",
     "test:e2e": "playwright test",
     "test:upload": "node scripts/test_upload.js",
     "export": "NODE_OPTIONS='--max-old-space-size=2048' next build && next export",
-    "deploy": "npm run build && touch out/.nojekyll"
+    "deploy": "pnpm run build:static && touch out/.nojekyll",
+    "deploy:preview": "pnpm run deploy && pnpm run preview"
   },
   "dependencies": {
     "@duckdb/duckdb-wasm": "^1.30.0",

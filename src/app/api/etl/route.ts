@@ -137,7 +137,7 @@ export async function GET(req: NextRequest) {
     const headers = new Headers();
     headers.set('Content-Type', 'application/octet-stream');
     headers.set('Content-Disposition', `attachment; filename="${sanitizedFilename}"`);
-    return new NextResponse(fileBuffer, { headers });
+    return new NextResponse(new Uint8Array(fileBuffer), { headers });
   } catch (error) {
     console.error('下载文件错误:', error);
     return new NextResponse('文件未找到或无法读取。', { status: 404 });
