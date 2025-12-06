@@ -57,7 +57,7 @@ export function generateDynamicQuickFilters(
     if (!kpi) return
 
     // 保费分档
-    const premium = kpi.totalPremium || 0
+    const premium = kpi.signed_premium || 0
     if (premium > PREMIUM_TIERS.high) {
       highPremiumOrgs.push(orgName)
     } else if (premium > PREMIUM_TIERS.medium) {
@@ -67,7 +67,7 @@ export function generateDynamicQuickFilters(
     }
 
     // 赔付率分档
-    const lossRatio = kpi.lossRatio
+    const lossRatio = kpi.loss_ratio
     if (lossRatio !== null && lossRatio !== undefined) {
       if (lossRatio > LOSS_RATIO_TIERS.high) {
         highLossRatioOrgs.push(orgName)

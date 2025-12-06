@@ -185,6 +185,7 @@ export function useSmartComparison(
   const viewMode = useAppStore(state => state.filters.viewMode)
   const dataViewType = useAppStore(state => state.filters.dataViewType)
   const singleModeWeek = useAppStore(state => state.filters.singleModeWeek)
+  const trendModeWeeks = useAppStore(state => state.filters.trendModeWeeks)
   const years = useAppStore(state => state.filters.years)
   const weeks = useAppStore(state => state.filters.weeks)
   const organizations = useAppStore(state => state.filters.organizations)
@@ -200,7 +201,9 @@ export function useSmartComparison(
   // 重建 filters 对象供内部函数使用
   const filters = useMemo(() => ({
     viewMode,
+    dataViewType,
     singleModeWeek,
+    trendModeWeeks,
     years,
     weeks,
     organizations,
@@ -214,7 +217,9 @@ export function useSmartComparison(
     renewalStatuses,
   }), [
     viewMode,
+    dataViewType,
     singleModeWeek,
+    trendModeWeeks,
     years,
     weeks,
     organizations,

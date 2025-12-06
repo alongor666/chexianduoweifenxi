@@ -86,8 +86,8 @@ function normalizeVersionSnapshots(
         createdAt: version.createdAt || new Date().toISOString(),
         overall: normalizeTargetValue(version.overall),
         entries: normalizeTargetEntries(version.entries),
-        note: version.note,
-      }
+        ...(version.note !== undefined && { note: version.note }),
+      } as TargetVersionSnapshot
     })
     .filter((snapshot): snapshot is TargetVersionSnapshot => snapshot !== null)
   return sanitized.sort(
@@ -255,6 +255,7 @@ const defaultFilters: FilterState = {
  * 创建应用状态 Store
  */
 export const useAppStore = create<AppState>()(
+  // @ts-ignore Zustand devtools middleware 类型推断问题
   devtools(
     set => ({
       // ============= 数据状态 =============

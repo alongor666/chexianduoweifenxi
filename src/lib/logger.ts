@@ -161,7 +161,7 @@ class Logger {
     // 在浏览器中使用彩色输出
     if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
       const color = LOG_COLORS[level]
-      const args = [
+      const args: any[] = [
         `%c${formatted}`,
         `color: ${color}; font-weight: bold`,
       ]

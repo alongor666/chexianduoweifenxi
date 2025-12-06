@@ -73,6 +73,7 @@ export function exportToCSV(
         fieldOrder.forEach(field => {
           ordered[field] = record[field as keyof InsuranceRecord]
         })
+        // @ts-expect-error 字段重排序后的对象结构与 InsuranceRecord 兼容
         return ordered as InsuranceRecord
       })
     }
@@ -85,6 +86,7 @@ export function exportToCSV(
           const newKey = fieldLabels[key] || key
           labeled[newKey] = value
         })
+        // @ts-expect-error 字段标签映射后的对象结构与 InsuranceRecord 兼容
         return labeled as InsuranceRecord
       })
     }

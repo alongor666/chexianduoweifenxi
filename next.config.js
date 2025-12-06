@@ -8,11 +8,7 @@ const nextConfig = {
     unoptimized: true,
   },
 
-  // 临时禁用 TypeScript 和 ESLint 检查以加速构建
-  // 建议: 构建成功后，逐步修复类型错误，然后移除这些配置
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  // ESLint 检查配置
   eslint: {
     ignoreDuringBuilds: true,
   },
