@@ -188,8 +188,8 @@ function normalizeVersionSnapshots(
         createdAt: version.createdAt || new Date().toISOString(),
         overall: normalizeTargetValue(version.overall),
         entries: normalizeTargetEntries(version.entries),
-        note: version.note,
-      }
+        ...(version.note !== undefined && { note: version.note }),
+      } as TargetVersionSnapshot
     })
     .filter((snapshot): snapshot is TargetVersionSnapshot => snapshot !== null)
   return sanitized.sort(
@@ -594,6 +594,7 @@ export const useTargetStore = create<TargetStore>()(
           },
         },
         // 只持久化premiumTargets
+        // @ts-expect-error Zustand persist middleware 类型推断问题
         partialize: state => ({ premiumTargets: state.premiumTargets }),
         // 自定义合并逻辑，确保数据结构升级
         merge: (persistedState: any, currentState) => {

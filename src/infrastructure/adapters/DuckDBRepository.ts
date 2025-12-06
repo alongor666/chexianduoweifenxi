@@ -14,7 +14,8 @@ import type {
   DataFilters,
   DataStats,
 } from '../../application/ports/IDataRepository'
-import type { InsuranceRecord, RawInsuranceData } from '../../domain'
+import { InsuranceRecord } from '../../domain'
+import type { RawInsuranceData } from '../../domain'
 import { normalizeChineseText } from '../../domain/rules/data-normalization'
 
 /**

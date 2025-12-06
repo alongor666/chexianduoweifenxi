@@ -153,6 +153,7 @@ export function createXAxisConfig(
   preset: keyof typeof XAXIS_PRESETS = 'default',
   overrides?: Partial<XAXisComponentOption>
 ): Partial<XAXisComponentOption> {
+  // @ts-expect-error ECharts 类型系统复杂，预设对象类型推断存在兼容性问题
   return {
     ...XAXIS_PRESETS[preset],
     ...overrides,
@@ -169,6 +170,7 @@ export function createYAxisConfig(
   preset: keyof typeof YAXIS_PRESETS = 'default',
   overrides?: Partial<YAXisComponentOption>
 ): Partial<YAXisComponentOption> {
+  // @ts-expect-error ECharts 类型系统复杂，预设对象类型推断存在兼容性问题
   return {
     ...YAXIS_PRESETS[preset],
     ...overrides,

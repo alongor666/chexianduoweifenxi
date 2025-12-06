@@ -14,8 +14,8 @@ import autoTable from 'jspdf-autotable'
 import type {
   IExporter,
   ExportOptions,
-  ExportFormat,
 } from '../../application/ports/IExporter'
+import { ExportFormat } from '../../application/ports/IExporter'
 import type { InsuranceRecord, KPIResult } from '../../domain'
 
 /**

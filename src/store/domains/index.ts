@@ -14,11 +14,21 @@ export { useTargetStore } from './targetStore'
  * 适用于需要访问多个 Store 的复杂组件
  */
 export const useStores = () => {
+  // @ts-ignore Zustand 导出的 hooks 在编译时可能无法正确解析
+  const data = useDataStore()
+  // @ts-ignore
+  const filter = useFilterStore()
+  // @ts-ignore
+  const cache = useCacheStore()
+  // @ts-ignore
+  const ui = useUIStore()
+  // @ts-ignore
+  const target = useTargetStore()
   return {
-    data: useDataStore(),
-    filter: useFilterStore(),
-    cache: useCacheStore(),
-    ui: useUIStore(),
-    target: useTargetStore(),
+    data,
+    filter,
+    cache,
+    ui,
+    target,
   }
 }

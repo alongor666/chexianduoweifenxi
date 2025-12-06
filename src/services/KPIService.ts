@@ -270,21 +270,21 @@ export class KPIService {
     averagePremiumGrowthRate: number
   } {
     const premiumGrowthRate =
-      comparisonKpi.signedPremium > 0
-        ? (currentKpi.signedPremium - comparisonKpi.signedPremium) /
-          comparisonKpi.signedPremium
+      comparisonKpi.signed_premium > 0
+        ? (currentKpi.signed_premium - comparisonKpi.signed_premium) /
+          comparisonKpi.signed_premium
         : 0
 
     const policyCountGrowthRate =
-      comparisonKpi.policyCount > 0
-        ? (currentKpi.policyCount - comparisonKpi.policyCount) /
-          comparisonKpi.policyCount
+      comparisonKpi.policy_count > 0
+        ? (currentKpi.policy_count - comparisonKpi.policy_count) /
+          comparisonKpi.policy_count
         : 0
 
     const averagePremiumGrowthRate =
-      comparisonKpi.averagePremium > 0
-        ? (currentKpi.averagePremium - comparisonKpi.averagePremium) /
-          comparisonKpi.averagePremium
+      comparisonKpi.average_premium && comparisonKpi.average_premium > 0
+        ? ((currentKpi.average_premium ?? 0) - comparisonKpi.average_premium) /
+          comparisonKpi.average_premium
         : 0
 
     return {

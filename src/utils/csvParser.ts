@@ -140,6 +140,9 @@ export function parseGoalCsv(content: string, options: GoalCsvParseOptions): Goa
   }
 
   return {
+    success: true,
+    data: rows,
+    issues: [],
     rows,
     ignoredUnknownCount,
   }
