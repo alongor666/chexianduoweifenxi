@@ -4,7 +4,6 @@ import { Database, HardDrive, Cloud } from 'lucide-react'
 import { FileUpload } from '@/components/features/file-upload'
 import { FullKPIDashboard } from '@/components/features/full-kpi-dashboard'
 import { TimeProgressIndicator } from '@/components/features/time-progress-indicator'
-import { TrendChart } from '@/components/features/trend-chart'
 import { WeeklyOperationalTrend } from '@/components/features/weekly-operational-trend'
 import { PremiumAnalysisBarChart } from '@/components/features/structure-bar-chart'
 import { ClaimAnalysisBarChart } from '@/components/features/claim-analysis-bar-chart'
@@ -242,10 +241,7 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
             {/* 多周趋势分析 */}
             {activeTab === 'trend' && (
               <div className="space-y-6">
-                {/* 新版周度经营趋势 */}
                 <WeeklyOperationalTrend />
-                {/* 原版趋势图表（保留作为备份） */}
-                {/* <TrendChart /> */}
               </div>
             )}
 
