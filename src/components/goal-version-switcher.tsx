@@ -14,7 +14,6 @@ import { Button } from '@/components/ui/button'
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
@@ -35,8 +34,7 @@ export function GoalVersionSwitcher() {
   }
 
   return (
-    <TooltipProvider delayDuration={200}>
-      <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-3">
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium text-muted-foreground" htmlFor="goal-version-select">
             目标版本
@@ -85,6 +83,5 @@ export function GoalVersionSwitcher() {
           撤销
         </Button>
       </div>
-    </TooltipProvider>
   )
 }

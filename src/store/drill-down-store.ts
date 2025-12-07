@@ -5,6 +5,7 @@
 
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
+import { useShallow } from 'zustand/react/shallow'
 import type {
   DrillDownState,
   KPIDrillDownPath,
@@ -134,7 +135,7 @@ export function useKPIDrillDownPath(
  */
 export function useKPIDrillDownSteps(kpiKey: string): DrillDownStep[] {
   return useDrillDownStore(
-    (state) => state.paths[kpiKey]?.steps ?? []
+    useShallow((state) => state.paths[kpiKey]?.steps ?? [])
   )
 }
 
@@ -144,5 +145,7 @@ export function useKPIDrillDownSteps(kpiKey: string): DrillDownStep[] {
 export function useAvailableDimensions(
   kpiKey: string
 ): DrillDownDimension[] {
-  return useDrillDownStore((state) => state.getAvailableDimensions(kpiKey))
+  return useDrillDownStore(
+    useShallow((state) => state.getAvailableDimensions(kpiKey))
+  )
 }

@@ -2,13 +2,27 @@
 
 import React, { useMemo, useRef, useEffect, useState } from 'react'
 import * as echarts from 'echarts'
-import { AlertTriangle } from 'lucide-react'
+import { AlertTriangle, ArrowDownToLine } from 'lucide-react'
 import { useTrendData } from '@/hooks/use-trend'
-import { applyFilters } from '@/hooks/use-filtered-data'
+import { applyFilters, useFilteredData } from '@/hooks/use-filtered-data'
 import { formatNumber, formatPercent } from '@/utils/format'
 import { useAppStore } from '@/store/use-app-store'
 import type { FilterState, InsuranceRecord } from '@/types/insurance'
-import { getBusinessTypeLabel, getBusinessTypeCode, getBusinessTypeShortLabelByCode, getBusinessTypeFullCNByCode } from '@/constants/dimensions'
+import {
+  getBusinessTypeLabel,
+  getBusinessTypeCode,
+  getBusinessTypeShortLabelByCode,
+  getBusinessTypeFullCNByCode,
+} from '@/constants/dimensions'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog'
+import { DrillDownControl } from './drill-down/drill-down-control'
+import { useDrillDownStore } from '@/store/drill-down-store'
 
 /**
  * 周度经营趋势分析组件
@@ -38,6 +52,9 @@ import { getBusinessTypeLabel, getBusinessTypeCode, getBusinessTypeShortLabelByC
 
 // 赔付率风险阈值
 const LOSS_RISK_THRESHOLD = 70
+
+// 趋势分析下钻KPI标识
+const TREND_KPI_KEY = 'trend-analysis-drilldown'
 
 /**
  * 图表数据点类型
@@ -505,16 +522,223 @@ function generateOperationalSummary(
 }
 
 /**
+ * 下钻趋势图组件
+ * 用于在下钻对话框中展示筛选后的数据趋势
+ */
+const DrillDownTrendChart = ({ data }: { data: InsuranceRecord[] }) => {
+  const trendData = useTrendData(data)
+  const chartRef = useRef<HTMLDivElement>(null)
+  const chartInstanceRef = useRef<echarts.ECharts | null>(null)
+  const dataViewType = useAppStore((state) => state.filters.dataViewType)
+
+  const chartData = useMemo(() => {
+    if (!trendData || trendData.length === 0) return []
+
+    return trendData
+      .map((d) => ({
+        week: d.label,
+        weekNumber: d.week,
+        year: d.year,
+        signedPremium: d.signed_premium_10k,
+        lossRatio: d.loss_ratio,
+        isRisk: d.loss_ratio !== null && d.loss_ratio >= LOSS_RISK_THRESHOLD,
+      }))
+      .sort((a, b) => {
+        if (a.year !== b.year) return a.year - b.year
+        return a.weekNumber - b.weekNumber
+      })
+  }, [trendData])
+
+  const displayData = useMemo(() => {
+    if (dataViewType === 'increment' && chartData.length > 1) {
+      return chartData.slice(1)
+    }
+    return chartData
+  }, [chartData, dataViewType])
+
+  const trendLineData = useMemo(() => {
+    return calculateTrendLine(displayData)
+  }, [displayData])
+
+  useEffect(() => {
+    if (!chartRef.current || displayData.length === 0) return
+
+    if (!chartInstanceRef.current) {
+      chartInstanceRef.current = echarts.init(chartRef.current, undefined, {
+        renderer: 'canvas',
+      })
+    }
+
+    const chart = chartInstanceRef.current
+
+    const weeks = displayData.map((d, index) => {
+      const isFirstWeekOfMonth = d.weekNumber % 4 === 1 || d.weekNumber === 1
+      const isLastWeek = index === displayData.length - 1
+      if (isFirstWeekOfMonth || isLastWeek) {
+        return `第${d.weekNumber}周`
+      }
+      return ''
+    })
+
+    const signedPremiums = displayData.map((d) => d.signedPremium)
+    const lossRatios = displayData.map((d) => d.lossRatio)
+    const normalPoints = displayData
+      .map((d, i) => (!d.isRisk && d.lossRatio !== null ? [i, d.lossRatio] : null))
+      .filter((v): v is [number, number] => v !== null)
+    const riskPoints = displayData
+      .map((d, i) => (d.isRisk && d.lossRatio !== null ? [i, d.lossRatio] : null))
+      .filter((v): v is [number, number] => v !== null)
+
+    const option: echarts.EChartsOption = {
+      backgroundColor: 'transparent',
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '10%',
+        top: '15%',
+        containLabel: true,
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'cross' },
+        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+        borderColor: '#e2e8f0',
+        textStyle: { color: '#334155', fontSize: 12 },
+        formatter: (params: any) => {
+          if (!Array.isArray(params) || params.length === 0) return ''
+          const dataIndex = params[0].dataIndex
+          const point = displayData[dataIndex]
+          if (!point) return ''
+          
+          return `<div style="min-width: 200px;">
+            <div style="font-weight: 600; margin-bottom: 4px;">${point.week}</div>
+            <div style="margin-bottom: 4px;">
+              <span style="color: #64748b;">保费：</span>
+              <span style="font-weight: 600;">${formatNumber(point.signedPremium, 1)}万</span>
+            </div>
+            <div>
+              <span style="color: #64748b;">赔付：</span>
+              <span style="font-weight: 600; color: ${point.isRisk ? '#ef4444' : '#334155'};">
+                ${point.lossRatio !== null ? formatPercent(point.lossRatio, 1) : '—'}
+              </span>
+            </div>
+          </div>`
+        }
+      },
+      legend: {
+        data: ['签单保费', '赔付率', '趋势线'],
+        top: '2%',
+      },
+      xAxis: [{
+        type: 'category',
+        data: weeks,
+        axisLabel: { fontSize: 10, rotate: 45 },
+      }],
+      yAxis: [
+        {
+          type: 'value',
+          name: '保费',
+          position: 'left',
+          splitLine: { show: true, lineStyle: { color: '#f1f5f9' } },
+        },
+        {
+          type: 'value',
+          name: '赔付率',
+          position: 'right',
+          splitLine: { show: false },
+        },
+      ],
+      series: [
+        {
+          name: '签单保费',
+          type: 'line',
+          yAxisIndex: 0,
+          data: signedPremiums,
+          smooth: true,
+          itemStyle: { color: '#3b82f6' },
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: 'rgba(59, 130, 246, 0.3)' },
+              { offset: 1, color: 'rgba(59, 130, 246, 0.05)' },
+            ]),
+          },
+        },
+        {
+          name: '赔付率',
+          type: 'scatter',
+          yAxisIndex: 1,
+          data: normalPoints,
+          itemStyle: { color: '#94a3b8' },
+        },
+        {
+          name: '赔付率', // Share legend name
+          type: 'scatter',
+          yAxisIndex: 1,
+          data: riskPoints,
+          itemStyle: { color: '#f97316' },
+        },
+        {
+          name: '赔付率', // Share legend name
+          type: 'line',
+          yAxisIndex: 1,
+          data: lossRatios,
+          lineStyle: { color: '#f97316', width: 1 },
+          showSymbol: false,
+          markArea: {
+            silent: true,
+            itemStyle: { color: 'rgba(254, 226, 226, 0.3)' },
+            data: [[{ yAxis: LOSS_RISK_THRESHOLD }, { yAxis: 'max' }]],
+          },
+        },
+        {
+          name: '趋势线',
+          type: 'line',
+          yAxisIndex: 1,
+          data: trendLineData,
+          lineStyle: { color: '#8b5cf6', type: 'dashed' },
+          symbol: 'none',
+        },
+      ],
+    }
+
+    chart.setOption(option)
+
+    const resizeObserver = new ResizeObserver(() => chart.resize())
+    resizeObserver.observe(chartRef.current)
+
+    return () => {
+      resizeObserver.disconnect()
+      chart.dispose()
+      chartInstanceRef.current = null
+    }
+  }, [displayData, trendLineData])
+
+  if (!displayData || displayData.length === 0) {
+    return <div className="p-4 text-center text-slate-500">暂无数据</div>
+  }
+
+  return <div ref={chartRef} style={{ width: '100%', height: '300px' }} />
+}
+
+/**
  * 周度经营趋势图表组件
  */
 export const WeeklyOperationalTrend = React.memo(function WeeklyOperationalTrend() {
   const trendData = useTrendData()
   const chartRef = useRef<HTMLDivElement>(null)
   const chartInstanceRef = useRef<echarts.ECharts | null>(null)
+  
+  // 状态管理
   const [selectedPoint, setSelectedPoint] = useState<ChartDataPoint | null>(null)
+  const [showDrillDown, setShowDrillDown] = useState(false)
+  
   const dataViewType = useAppStore((state) => state.filters.dataViewType)
   const filters = useAppStore((state) => state.filters)
   const rawRecords = useAppStore((state) => state.rawData)
+  
+  // 获取当前过滤后的数据（用于下钻分析）
+  const filteredData = useFilteredData()
+  const clearDrillDownPath = useDrillDownStore((state) => state.clearDrillDownPath)
 
   // 处理数据
   const chartData = useMemo(() => {
@@ -827,6 +1051,27 @@ export const WeeklyOperationalTrend = React.memo(function WeeklyOperationalTrend
   const trendLineData = useMemo(() => {
     return calculateTrendLine(displayData)
   }, [displayData])
+
+  // 计算选中周的下钻数据
+  const selectedWeekData = useMemo(() => {
+    if (!selectedPoint || !filteredData) return []
+    return filteredData.filter(
+      (r) =>
+        r.policy_start_year === selectedPoint.year &&
+        r.week_number === selectedPoint.weekNumber
+    )
+  }, [selectedPoint, filteredData])
+
+  // 处理风险点点击事件
+  const handlePointClick = (point: ChartDataPoint) => {
+    console.log('🔍 下钻分析：', point)
+    setSelectedPoint(point)
+    
+    // 清除该KPI之前的下钻路径，确保每次都是新的开始
+    clearDrillDownPath(TREND_KPI_KEY)
+    
+    setShowDrillDown(true)
+  }
 
   // 初始化和更新图表
   useEffect(() => {
@@ -1206,25 +1451,6 @@ export const WeeklyOperationalTrend = React.memo(function WeeklyOperationalTrend
     }
   }, [])
 
-  /**
-   * 处理风险点点击事件
-   */
-  const handlePointClick = (point: ChartDataPoint) => {
-    console.log('🔍 下钻分析：', point)
-    setSelectedPoint(point)
-
-    // TODO: 集成下钻逻辑
-    // 可以触发筛选器更新、打开详情面板等
-    // 例如：
-    // updateFilters({
-    //   years: [point.year],
-    //   weeks: [point.weekNumber],
-    // })
-    // router.push('/detail-analysis')
-
-    alert(`点击了 ${point.week}\n将进入车型/机构剖面下钻分析`)
-  }
-
   if (!displayData || displayData.length === 0) {
     return (
       <div className="rounded-2xl border border-slate-200 bg-white/60 p-6 backdrop-blur">
@@ -1234,125 +1460,153 @@ export const WeeklyOperationalTrend = React.memo(function WeeklyOperationalTrend
   }
 
   return (
-    <div className="rounded-2xl border border-slate-100 bg-white/60 p-6 shadow-lg backdrop-blur">
-      {/* 趋势图标题 - 核心观点 */}
-      <div className="mb-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <h3 className="text-xl font-bold text-slate-900">
-              📈 趋势洞察：{stats.totalRiskWeeks > 0 
-                ? `赔付率连续${stats.totalRiskWeeks}周预警，经营风险上升` 
-                : `经营态势平稳，保费增长${displayData.length > 1 
-                  ? displayData[displayData.length - 1].signedPremium > displayData[displayData.length - 2].signedPremium 
-                    ? '向好' 
-                    : '承压'
-                  : '稳定'}`}
-            </h3>
-            {displayData.length > 0 && (
-              <span className="text-sm text-slate-500">
-                {displayData[displayData.length - 1].year}年第
-                {displayData[displayData.length - 1].weekNumber}周
-              </span>
-            )}
-          </div>
-          
-          {/* 统计标签 */}
-          <div className="flex flex-wrap items-center gap-2">
-            {stats.totalRiskWeeks > 0 && (
-              <div className="flex items-center gap-1.5 rounded-lg bg-rose-50 px-3 py-1.5 text-xs">
-                <AlertTriangle className="h-4 w-4 text-rose-600" />
-                <span className="font-medium text-rose-700">
-                  {stats.totalRiskWeeks} 个高风险周
+    <>
+      <div className="rounded-2xl border border-slate-100 bg-white/60 p-6 shadow-lg backdrop-blur">
+        {/* 趋势图标题 - 核心观点 */}
+        <div className="mb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <h3 className="text-xl font-bold text-slate-900">
+                📈 趋势洞察：{stats.totalRiskWeeks > 0 
+                  ? `赔付率连续${stats.totalRiskWeeks}周预警，经营风险上升` 
+                  : `经营态势平稳，保费增长${displayData.length > 1 
+                    ? displayData[displayData.length - 1].signedPremium > displayData[displayData.length - 2].signedPremium 
+                      ? '向好' 
+                      : '承压'
+                    : '稳定'}`}
+              </h3>
+              {displayData.length > 0 && (
+                <span className="text-sm text-slate-500">
+                  {displayData[displayData.length - 1].year}年第
+                  {displayData[displayData.length - 1].weekNumber}周
                 </span>
-              </div>
-            )}
+              )}
+            </div>
+            
+            {/* 统计标签 */}
+            <div className="flex flex-wrap items-center gap-2">
+              {stats.totalRiskWeeks > 0 && (
+                <div className="flex items-center gap-1.5 rounded-lg bg-rose-50 px-3 py-1.5 text-xs">
+                  <AlertTriangle className="h-4 w-4 text-rose-600" />
+                  <span className="font-medium text-rose-700">
+                    {stats.totalRiskWeeks} 个高风险周
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* 图表容器 */}
-      <div ref={chartRef} style={{ width: '100%', height: '480px' }} />
+        {/* 图表容器 */}
+        <div ref={chartRef} style={{ width: '100%', height: '480px' }} />
 
-      {/* 操作提示 */}
-      <div className="mb-6 flex items-center justify-between text-xs text-slate-500">
-        <div className="flex items-center gap-4">
-          <span>💡 提示：点击橙色风险点可进入下钻分析</span>
-          <span>• 拖动时间轴可缩放查看</span>
+        {/* 操作提示 */}
+        <div className="mb-6 flex items-center justify-between text-xs text-slate-500">
+          <div className="flex items-center gap-4">
+            <span>💡 提示：点击橙色风险点可进入下钻分析</span>
+            <span>• 拖动时间轴可缩放查看</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="inline-block h-2 w-2 rounded-full bg-blue-500"></span>
+            <span>签单保费</span>
+            <span className="ml-3 inline-block h-2 w-2 rounded-full bg-orange-500"></span>
+            <span>赔付率</span>
+            <span className="ml-3 inline-block h-2 w-2 rounded-full bg-red-500"></span>
+            <span>阈值 70%</span>
+            <span className="ml-3 inline-block h-2 w-2 rounded-full bg-purple-500"></span>
+            <span>趋势线</span>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="inline-block h-2 w-2 rounded-full bg-blue-500"></span>
-          <span>签单保费</span>
-          <span className="ml-3 inline-block h-2 w-2 rounded-full bg-orange-500"></span>
-          <span>赔付率</span>
-          <span className="ml-3 inline-block h-2 w-2 rounded-full bg-red-500"></span>
-          <span>阈值 70%</span>
-          <span className="ml-3 inline-block h-2 w-2 rounded-full bg-purple-500"></span>
-          <span>趋势线</span>
-        </div>
-      </div>
 
-      {/* 经营摘要 - 交换到下部 */}
-      <div className="border-t border-slate-200 pt-6">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-4">
-              <h4 className="text-lg font-semibold text-slate-900">
-                📊 详细经营分析
-              </h4>
-            </div>
-            {analysisNarrative ? (
-              <div className="space-y-2 text-sm leading-relaxed text-slate-600">
-                <p>{analysisNarrative.overview}</p>
-                <p>{analysisNarrative.lossTrend}</p>
+        {/* 经营摘要 - 交换到下部 */}
+        <div className="border-t border-slate-200 pt-6">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-4">
+                <h4 className="text-lg font-semibold text-slate-900">
+                  📊 详细经营分析
+                </h4>
+              </div>
+              {analysisNarrative ? (
+                <div className="space-y-2 text-sm leading-relaxed text-slate-600">
+                  <p>{analysisNarrative.overview}</p>
+                  <p>{analysisNarrative.lossTrend}</p>
 
-                {analysisNarrative.businessLines.length > 0 && (
+                  {analysisNarrative.businessLines.length > 0 && (
+                    <div className="space-y-1">
+                      <p className="font-medium text-slate-700">业务类型异常</p>
+                      <ul className="list-disc space-y-1 pl-5 text-slate-600">
+                        {analysisNarrative.businessLines.map((line, index) => (
+                          <li key={`business-${index}`}>{line}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {analysisNarrative.organizationLines.length > 0 && (
+                    <div className="space-y-1">
+                      <p className="font-medium text-slate-700">机构集中区域</p>
+                      <ul className="list-disc space-y-1 pl-5 text-slate-600">
+                        {analysisNarrative.organizationLines.map(
+                          (line, index) => (
+                            <li key={`organization-${index}`}>{line}</li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  )}
+
+                  {analysisNarrative.insight && (
+                    <p>{analysisNarrative.insight}</p>
+                  )}
+
                   <div className="space-y-1">
-                    <p className="font-medium text-slate-700">业务类型异常</p>
+                    <p className="font-medium text-slate-700">管理建议</p>
                     <ul className="list-disc space-y-1 pl-5 text-slate-600">
-                      {analysisNarrative.businessLines.map((line, index) => (
-                        <li key={`business-${index}`}>{line}</li>
+                      {analysisNarrative.actionLines.map((line, index) => (
+                        <li key={`action-${index}`}>{line}</li>
                       ))}
                     </ul>
                   </div>
-                )}
 
-                {analysisNarrative.organizationLines.length > 0 && (
-                  <div className="space-y-1">
-                    <p className="font-medium text-slate-700">机构集中区域</p>
-                    <ul className="list-disc space-y-1 pl-5 text-slate-600">
-                      {analysisNarrative.organizationLines.map(
-                        (line, index) => (
-                          <li key={`organization-${index}`}>{line}</li>
-                        )
-                      )}
-                    </ul>
-                  </div>
-                )}
-
-                {analysisNarrative.insight && (
-                  <p>{analysisNarrative.insight}</p>
-                )}
-
-                <div className="space-y-1">
-                  <p className="font-medium text-slate-700">管理建议</p>
-                  <ul className="list-disc space-y-1 pl-5 text-slate-600">
-                    {analysisNarrative.actionLines.map((line, index) => (
-                      <li key={`action-${index}`}>{line}</li>
-                    ))}
-                  </ul>
+                  <p>{analysisNarrative.followUp}</p>
                 </div>
-
-                <p>{analysisNarrative.followUp}</p>
-              </div>
-            ) : (
-              <p className="text-sm leading-relaxed text-slate-600">
-                {operationalSummary}
-              </p>
-            )}
+              ) : (
+                <p className="text-sm leading-relaxed text-slate-600">
+                  {operationalSummary}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* 下钻对话框 */}
+      {selectedPoint && (
+        <Dialog open={showDrillDown} onOpenChange={setShowDrillDown}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <ArrowDownToLine className="h-5 w-5 text-blue-600" />
+                <span>{selectedPoint.year}年第{selectedPoint.weekNumber}周 - 多维下钻分析</span>
+              </DialogTitle>
+              <DialogDescription>
+                当前周数据量：{selectedWeekData.length} 条。选择维度进行深入分析。
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="mt-4">
+              <DrillDownControl 
+                kpiKey={TREND_KPI_KEY} 
+                initialData={selectedWeekData}
+              >
+                {(filtered) => <DrillDownTrendChart data={filtered} />}
+              </DrillDownControl>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
   )
 })
 

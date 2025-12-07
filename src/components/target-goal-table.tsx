@@ -14,7 +14,6 @@ import { cn } from '@/lib/utils'
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 
@@ -118,22 +117,19 @@ export function TargetGoalTable() {
   const renderRateCell = (value: number | null) => {
     if (value === null) {
       return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="cursor-help text-muted-foreground">—</span>
-            </TooltipTrigger>
-            <TooltipContent>分母为 0，无法计算</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="cursor-help text-muted-foreground">—</span>
+          </TooltipTrigger>
+          <TooltipContent>分母为 0，无法计算</TooltipContent>
+        </Tooltip>
       )
     }
     return formatAchievementRate(value)
   }
 
   return (
-    <TooltipProvider delayDuration={200}>
-      <div className="mt-6 overflow-hidden rounded-lg border">
+    <div className="mt-6 overflow-hidden rounded-lg border">
         <table className="min-w-full table-fixed">
         <thead className="bg-muted/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
           <tr>
@@ -193,6 +189,5 @@ export function TargetGoalTable() {
         </tbody>
         </table>
       </div>
-    </TooltipProvider>
   )
 }

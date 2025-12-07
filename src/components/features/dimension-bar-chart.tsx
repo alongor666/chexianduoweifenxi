@@ -1,16 +1,7 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
-import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  Cell,
-} from 'recharts'
+import React, { useMemo, useState, useRef, useEffect } from 'react'
+import * as echarts from 'echarts'
 import { useFilteredData } from '@/store/use-app-store'
 import type { InsuranceRecord } from '@/types/insurance'
 import { getContributionMarginHexColor } from '@/utils/color-scale'
@@ -110,6 +101,166 @@ export function DimensionBarChart<T extends string>({
     return aggregated.slice(0, Math.max(1, Math.min(50, topN)))
   }, [filteredData, yDimension, topN, aggregateFunction, metricConfig.sortKey])
 
+  const chartRef = useRef<HTMLDivElement>(null)
+  const chartInstanceRef = useRef<echarts.ECharts | null>(null)
+
+  // 初始化和更新图表
+  useEffect(() => {
+    if (!chartRef.current || !chartData || chartData.length === 0) return
+
+    // 初始化 ECharts 实例
+    if (!chartInstanceRef.current) {
+      chartInstanceRef.current = echarts.init(chartRef.current, undefined, {
+        renderer: 'canvas',
+      })
+    }
+
+    const chart = chartInstanceRef.current
+
+    // 准备数据：横向条形图需要反转数据顺序（从下到上显示）
+    const reversedData = [...chartData].reverse()
+
+    // 提取 Y 轴标签和 X 轴数值
+    const yAxisLabels = reversedData.map((d) => d.label)
+    const xAxisValues = reversedData.map((d) => d[metricConfig.dataKey] as number)
+
+    // 为每个条形设置颜色
+    const itemColors = reversedData.map((d) =>
+      getContributionMarginHexColor(d.contribution_margin_ratio)
+    )
+
+    // ECharts 配置
+    const option: echarts.EChartsOption = {
+      backgroundColor: 'transparent',
+      grid: {
+        left: '15%',
+        right: '5%',
+        top: '5%',
+        bottom: '5%',
+        containLabel: true,
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow',
+        },
+        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+        borderColor: '#e2e8f0',
+        borderWidth: 1,
+        textStyle: {
+          color: '#334155',
+          fontSize: 12,
+        },
+        padding: 12,
+        formatter: (params: any) => {
+          if (!Array.isArray(params) || params.length === 0) return ''
+          const param = params[0]
+          const dataIndex = param.dataIndex
+          const originalIndex = chartData.length - 1 - dataIndex
+          const dataPoint = chartData[originalIndex]
+
+          if (!dataPoint) return ''
+
+          const contributionText =
+            dataPoint.contribution_margin_ratio !== null
+              ? `${(dataPoint.contribution_margin_ratio * 100).toFixed(1)}%`
+              : '—'
+
+          return `<div style="min-width: 200px;">
+            <div style="font-weight: 600; margin-bottom: 6px; font-size: 13px;">${param.name}</div>
+            <div style="margin-bottom: 4px;">
+              <span style="color: #64748b;">${metricConfig.name}：</span>
+              <span style="font-weight: 600;">${metricConfig.formatter(param.value)}</span>
+            </div>
+            <div>
+              <span style="color: #64748b;">边际贡献率：</span>
+              <span style="font-weight: 600; color: #3b82f6;">${contributionText}</span>
+            </div>
+          </div>`
+        },
+      },
+      xAxis: {
+        type: 'value',
+        axisLabel: {
+          formatter: (value: number) => metricConfig.formatter(value),
+          fontSize: 11,
+          color: '#64748b',
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#cbd5e1',
+          },
+        },
+        splitLine: {
+          lineStyle: {
+            color: '#f1f5f9',
+          },
+        },
+      },
+      yAxis: {
+        type: 'category',
+        data: yAxisLabels,
+        axisLabel: {
+          fontSize: 12,
+          color: '#334155',
+          width: 110,
+          overflow: 'truncate',
+          ellipsis: '...',
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#cbd5e1',
+          },
+        },
+      },
+      series: [
+        {
+          name: metricConfig.name,
+          type: 'bar',
+          data: xAxisValues,
+          itemStyle: {
+            borderRadius: [0, 4, 4, 0],
+            color: (params: any) => {
+              return itemColors[params.dataIndex] || '#94a3b8'
+            },
+          },
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowColor: 'rgba(0, 0, 0, 0.3)',
+            },
+          },
+          barMaxWidth: 30,
+        },
+      ],
+    }
+
+    chart.setOption(option, true)
+
+    // 响应式调整
+    const resizeObserver = new ResizeObserver(() => {
+      chart.resize()
+    })
+
+    if (chartRef.current) {
+      resizeObserver.observe(chartRef.current)
+    }
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [chartData, metricConfig, chartId])
+
+  // 清理
+  useEffect(() => {
+    return () => {
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.dispose()
+        chartInstanceRef.current = null
+      }
+    }
+  }, [])
+
   if (!chartData || chartData.length === 0) return null
 
   return (
@@ -169,42 +320,7 @@ export function DimensionBarChart<T extends string>({
         </div>
       </div>
 
-      <div className="h-80">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={chartData}
-            layout="vertical"
-            margin={{ top: 10, right: 30, left: 20, bottom: 0 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-            <XAxis type="number" tickFormatter={metricConfig.formatter} />
-            <YAxis
-              type="category"
-              dataKey="label"
-              width={120}
-              tick={{ fontSize: 12 }}
-            />
-            <Tooltip
-              formatter={(value: number) => metricConfig.formatter(value)}
-              labelStyle={{ color: '#1e293b', fontWeight: 600 }}
-            />
-            <Bar
-              dataKey={metricConfig.dataKey}
-              name={metricConfig.name}
-              radius={[0, 4, 4, 0]}
-            >
-              {chartData.map(dataPoint => (
-                <Cell
-                  key={`${chartId}-bar-${dataPoint.key}`}
-                  fill={getContributionMarginHexColor(
-                    dataPoint.contribution_margin_ratio
-                  )}
-                />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+      <div ref={chartRef} className="h-80" />
     </div>
   )
 }

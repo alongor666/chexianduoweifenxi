@@ -9,7 +9,6 @@
  */
 
 import React from 'react'
-import type { TooltipProps } from 'recharts'
 import { formatNumber, formatPercent } from '@/utils/formatters'
 import type { CustomTooltipPayload, PointAnalytics } from '../types'
 import { formatDelta, getDeltaClass } from '../utils'

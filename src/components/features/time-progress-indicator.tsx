@@ -9,7 +9,6 @@ import { safeMax } from '@/lib/utils/array-utils'
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 
@@ -179,8 +178,7 @@ export function TimeProgressIndicator({
 
   // 普通模式渲染（保持原有样式）
   return (
-    <TooltipProvider>
-      <div className={cn('space-y-3', className)}>
+    <div className={cn('space-y-3', className)}>
         {/* 主信息行 - 响应式布局 */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 text-sm">
           {/* 当前周次 */}
@@ -233,6 +231,5 @@ export function TimeProgressIndicator({
           </div>
         </div>
       </div>
-    </TooltipProvider>
   )
 }

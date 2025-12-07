@@ -13,21 +13,8 @@
  * PRD位置：2.2.5 结构分析与对比模块 - 客户分群气泡图（P1）
  */
 
-import { useMemo, useState } from 'react'
-import {
-  ScatterChart,
-  Scatter,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  ZAxis,
-  Cell,
-  ReferenceLine,
-} from 'recharts'
-import type { TooltipProps } from 'recharts'
+import { useMemo, useState, useRef, useEffect } from 'react'
+import * as echarts from 'echarts'
 import { useFilteredData } from '@/hooks/use-filtered-data'
 import { InsuranceRecord } from '@/types/insurance'
 import { formatNumber, formatPercent } from '@/utils/format'
@@ -190,46 +177,248 @@ export function CustomerSegmentationBubble({ className }: Props) {
     }
   }, [bubbleData])
 
-  // 自定义 Tooltip
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (!active || !payload?.length) return null
+  const chartRef = useRef<HTMLDivElement>(null)
+  const chartInstanceRef = useRef<echarts.ECharts | null>(null)
 
-    const data = payload[0].payload as BubbleDataPoint
+  // 客户群标签
+  const segmentLabels = {
+    'high-value': '💎 高价值客户',
+    'high-risk': '⚠️ 高风险客户',
+    'low-value': '📉 低价值客户',
+    normal: '✓ 正常客户',
+  }
 
-    const segmentLabels = {
-      'high-value': '💎 高价值客户',
-      'high-risk': '⚠️ 高风险客户',
-      'low-value': '📉 低价值客户',
-      normal: '✓ 正常客户',
+  // 初始化和更新图表
+  useEffect(() => {
+    if (!chartRef.current || bubbleData.length === 0) return
+
+    // 初始化 ECharts 实例
+    if (!chartInstanceRef.current) {
+      chartInstanceRef.current = echarts.init(chartRef.current, undefined, {
+        renderer: 'canvas',
+      })
     }
 
-    return (
-      <div className="bg-white p-4 border rounded-lg shadow-lg">
-        <div className="font-semibold text-lg mb-2">{data.name}</div>
-        <div className="space-y-1 text-sm">
-          <div>
-            单均保费:{' '}
-            <span className="font-medium">{`${formatNumber(data.averagePremium)} 元`}</span>
-          </div>
-          <div>
-            赔付率:{' '}
-            <span className="font-medium">
-              {formatPercent(data.lossRatio / 100)}
-            </span>
-          </div>
-          <div>
-            保单件数:{' '}
-            <span className="font-medium">
-              {data.policyCount.toLocaleString()}
-            </span>
-          </div>
-          <div className="pt-2 border-t mt-2">
-            <span className="text-gray-600">{segmentLabels[data.segment]}</span>
-          </div>
-        </div>
-      </div>
-    )
-  }
+    const chart = chartInstanceRef.current
+
+    // 准备数据：ECharts scatter 需要 [x, y, size] 格式
+    const chartData = bubbleData.map((d) => ({
+      value: [d.averagePremium, d.lossRatio, d.policyCount],
+      name: d.name,
+      itemStyle: {
+        color: d.color,
+      },
+      segment: d.segment,
+      policyCount: d.policyCount,
+    }))
+
+    // ECharts 配置
+    const option: echarts.EChartsOption = {
+      backgroundColor: 'transparent',
+      grid: {
+        left: '10%',
+        right: '10%',
+        top: '10%',
+        bottom: '15%',
+        containLabel: true,
+      },
+      tooltip: {
+        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+        borderColor: '#e2e8f0',
+        borderWidth: 1,
+        textStyle: {
+          color: '#334155',
+          fontSize: 12,
+        },
+        padding: 16,
+        formatter: (params: any) => {
+          const data = params.data
+          const segment = data.segment as BubbleDataPoint['segment']
+          const segmentLabel = segmentLabels[segment]
+
+          return `<div style="min-width: 220px;">
+            <div style="font-weight: 600; margin-bottom: 8px; font-size: 14px;">${data.name}</div>
+            <div style="margin-bottom: 4px;">
+              <span style="color: #64748b;">单均保费：</span>
+              <span style="font-weight: 600;">${formatNumber(data.value[0])} 元</span>
+            </div>
+            <div style="margin-bottom: 4px;">
+              <span style="color: #64748b;">赔付率：</span>
+              <span style="font-weight: 600;">${formatPercent(data.value[1] / 100)}</span>
+            </div>
+            <div style="margin-bottom: 8px;">
+              <span style="color: #64748b;">保单件数：</span>
+              <span style="font-weight: 600;">${data.policyCount.toLocaleString()}</span>
+            </div>
+            <div style="padding-top: 8px; border-top: 1px solid #e5e7eb;">
+              <span style="color: #6b7280;">${segmentLabel}</span>
+            </div>
+          </div>`
+        },
+      },
+      xAxis: {
+        type: 'value',
+        name: '单均保费（元）',
+        nameLocation: 'middle',
+        nameGap: 35,
+        nameTextStyle: {
+          fontSize: 13,
+          fontWeight: 500,
+          color: '#334155',
+        },
+        axisLabel: {
+          formatter: (value: number) => `${(value / 1000).toFixed(1)}k`,
+          fontSize: 11,
+          color: '#64748b',
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#cbd5e1',
+          },
+        },
+        splitLine: {
+          lineStyle: {
+            color: '#f1f5f9',
+          },
+        },
+      },
+      yAxis: {
+        type: 'value',
+        name: '赔付率（%）',
+        nameLocation: 'middle',
+        nameGap: 45,
+        nameTextStyle: {
+          fontSize: 13,
+          fontWeight: 500,
+          color: '#334155',
+        },
+        axisLabel: {
+          formatter: (value: number) => `${value.toFixed(0)}%`,
+          fontSize: 11,
+          color: '#64748b',
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#cbd5e1',
+          },
+        },
+        splitLine: {
+          lineStyle: {
+            color: '#f1f5f9',
+          },
+        },
+      },
+      series: [
+        {
+          name: '客户群',
+          type: 'scatter',
+          data: chartData,
+          symbolSize: (data: number[]) => {
+            // 根据保单件数动态设置气泡大小
+            const policyCount = data[2]
+            const minSize = 10
+            const maxSize = 40
+            const minCount = Math.min(...bubbleData.map((d) => d.policyCount))
+            const maxCount = Math.max(...bubbleData.map((d) => d.policyCount))
+            if (maxCount === minCount) return (minSize + maxSize) / 2
+            return (
+              minSize +
+              ((policyCount - minCount) / (maxCount - minCount)) *
+                (maxSize - minSize)
+            )
+          },
+          emphasis: {
+            focus: 'series',
+            itemStyle: {
+              shadowBlur: 15,
+              shadowColor: 'rgba(0, 0, 0, 0.3)',
+            },
+          },
+        },
+      ],
+      // 添加参考线标记
+      graphic: [
+        // 垂直参考线（平均单均保费）
+        {
+          type: 'line',
+          shape: {
+            x1: 0,
+            y1: 0,
+            x2: 0,
+            y2: 0,
+          },
+          style: {
+            stroke: '#9ca3af',
+            lineDash: [3, 3],
+          },
+          z: 0,
+        },
+      ],
+    }
+
+    // 添加参考线（需要在 setOption 后动态添加）
+    chart.setOption(option, true)
+
+    // 添加平均值参考线
+    chart.setOption({
+      series: [
+        {
+          markLine: {
+            silent: true,
+            symbol: 'none',
+            lineStyle: {
+              type: 'dashed',
+              color: '#9ca3af',
+              width: 1,
+            },
+            label: {
+              fontSize: 11,
+              color: '#6b7280',
+            },
+            data: [
+              {
+                xAxis: references.avgPremium,
+                label: {
+                  formatter: '平均单均保费',
+                  position: 'end',
+                },
+              },
+              {
+                yAxis: references.avgLossRatio,
+                label: {
+                  formatter: '平均赔付率',
+                  position: 'end',
+                },
+              },
+            ],
+          },
+        },
+      ],
+    })
+
+    // 响应式调整
+    const resizeObserver = new ResizeObserver(() => {
+      chart.resize()
+    })
+
+    if (chartRef.current) {
+      resizeObserver.observe(chartRef.current)
+    }
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [bubbleData, references])
+
+  // 清理
+  useEffect(() => {
+    return () => {
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.dispose()
+        chartInstanceRef.current = null
+      }
+    }
+  }, [])
 
   if (bubbleData.length === 0) {
     return (
@@ -281,86 +470,7 @@ export function CustomerSegmentationBubble({ className }: Props) {
 
       {/* 图表区域 */}
       <div className="p-4">
-        <ResponsiveContainer width="100%" height={500}>
-          <ScatterChart margin={{ top: 20, right: 80, bottom: 60, left: 80 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-
-            <XAxis
-              type="number"
-              dataKey="averagePremium"
-              name="单均保费"
-              unit="元"
-              tickFormatter={value => `${(value / 1000).toFixed(1)}k`}
-              label={{
-                value: '单均保费（元）',
-                position: 'bottom',
-                offset: 40,
-                style: { fontSize: 14, fontWeight: 500 },
-              }}
-            />
-
-            <YAxis
-              type="number"
-              dataKey="lossRatio"
-              name="赔付率"
-              unit="%"
-              tickFormatter={value => `${value.toFixed(0)}%`}
-              label={{
-                value: '赔付率（%）',
-                angle: -90,
-                position: 'left',
-                offset: 50,
-                style: { fontSize: 14, fontWeight: 500 },
-              }}
-            />
-
-            <ZAxis
-              type="number"
-              dataKey="policyCount"
-              range={[100, 2000]}
-              name="保单件数"
-            />
-
-            {/* 参考线 - 行业平均 */}
-            <ReferenceLine
-              x={references.avgPremium}
-              stroke="#9ca3af"
-              strokeDasharray="3 3"
-              label={{
-                value: '平均单均保费',
-                position: 'top',
-                fill: '#6b7280',
-                fontSize: 12,
-              }}
-            />
-            <ReferenceLine
-              y={references.avgLossRatio}
-              stroke="#9ca3af"
-              strokeDasharray="3 3"
-              label={{
-                value: '平均赔付率',
-                position: 'right',
-                fill: '#6b7280',
-                fontSize: 12,
-              }}
-            />
-
-            <Tooltip
-              content={<CustomTooltip />}
-              cursor={{ strokeDasharray: '3 3' }}
-            />
-            <Legend
-              wrapperStyle={{ paddingTop: '20px' }}
-              formatter={(value: string) => value}
-            />
-
-            <Scatter name="客户群" data={bubbleData} fill="#8884d8">
-              {bubbleData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
-              ))}
-            </Scatter>
-          </ScatterChart>
-        </ResponsiveContainer>
+        <div ref={chartRef} style={{ width: '100%', height: '500px' }} />
 
         {/* 智能洞察 */}
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">

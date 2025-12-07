@@ -196,7 +196,7 @@ export function buildHeatmapChart(config: HeatmapChartConfig): EChartsOption {
       {
         name: value.name,
         type: 'heatmap',
-        data: heatmapData,
+        data: heatmapData as any,
         label: {
           show: showLabel,
           fontSize: 11,
@@ -213,7 +213,7 @@ export function buildHeatmapChart(config: HeatmapChartConfig): EChartsOption {
             borderWidth: 2,
           },
         },
-      },
+      } as any,
     ],
   }
 

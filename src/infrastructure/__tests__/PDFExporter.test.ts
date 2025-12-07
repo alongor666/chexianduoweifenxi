@@ -13,6 +13,19 @@ import { InsuranceRecord } from '../../domain/entities/InsuranceRecord'
 import type { KPIResult } from '../../domain'
 import { ExportFormat } from '../../application/ports/IExporter'
 
+// Helper to read blob text since blob.text() might be missing in JSDOM
+async function readBlobText(blob: Blob): Promise<string> {
+  if (blob.text) {
+    return blob.text()
+  }
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = reject
+    reader.readAsText(blob)
+  })
+}
+
 describe('PDFExporter', () => {
   let exporter: PDFExporter
   let sampleRecords: InsuranceRecord[]

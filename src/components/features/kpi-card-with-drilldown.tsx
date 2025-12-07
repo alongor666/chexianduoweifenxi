@@ -19,18 +19,31 @@ import {
 import { Button } from '@/components/ui/button'
 import { useKPIDrillDownSteps } from '@/store/drill-down-store'
 import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
+import type { InsuranceRecord } from '@/types/insurance'
 
 export interface KPICardWithDrilldownProps extends KPICardProps {
+  /**
+   * KPI 键值（用于标识当前指标）
+   */
+  kpiKey?: string
+
   /**
    * 是否启用下钻功能
    */
   enableDrillDown?: boolean
+
+  /**
+   * 计算KPI值的函数（用于下钻时动态计算）
+   */
+  calculateValue?: (data: InsuranceRecord[]) => number | null
 }
 
 export function KPICardWithDrilldown({
   enableDrillDown = true,
   kpiKey,
   onClick,
+  calculateValue,
   ...kpiCardProps
 }: KPICardWithDrilldownProps) {
   const [showDrillDown, setShowDrillDown] = useState(false)
@@ -52,7 +65,7 @@ export function KPICardWithDrilldown({
     <>
       {/* KPI卡片 */}
       <div className="relative">
-        <KPICard {...kpiCardProps} kpiKey={kpiKey} onClick={handleCardClick} />
+        <KPICard {...kpiCardProps} onClick={handleCardClick} />
 
         {/* 下钻按钮（如果启用） */}
         {enableDrillDown && kpiKey && (
@@ -94,7 +107,34 @@ export function KPICardWithDrilldown({
             </DialogHeader>
 
             <div className="mt-4">
-              <DrillDownControl kpiKey={kpiKey} />
+              <DrillDownControl kpiKey={kpiKey}>
+                {(filteredData) => {
+                  if (!calculateValue) return null
+                  const val = calculateValue(filteredData)
+                  if (val === null) return null
+
+                  return (
+                    <div className="mt-4 rounded-lg border border-blue-100 bg-blue-50/50 p-4">
+                      <div className="text-sm text-slate-600">
+                        {kpiCardProps.title} (当前筛选)
+                      </div>
+                      <div
+                        className={cn(
+                          'mt-1 text-2xl font-bold',
+                          kpiCardProps.valueColor
+                        )}
+                      >
+                        {kpiCardProps.formatter
+                          ? kpiCardProps.formatter(val)
+                          : val}
+                        <span className="ml-1 text-sm text-slate-500">
+                          {kpiCardProps.unit}
+                        </span>
+                      </div>
+                    </div>
+                  )
+                }}
+              </DrillDownControl>
             </div>
           </DialogContent>
         </Dialog>

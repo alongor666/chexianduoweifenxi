@@ -275,7 +275,7 @@ export const CHART_DATAZOOM = {
 export function buildBaseTheme(): EChartsOption {
   return {
     backgroundColor: 'transparent',
-    color: CHART_COLORS.primary,
+    color: [...CHART_COLORS.primary] as any,
     textStyle: {
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     },

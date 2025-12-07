@@ -3,7 +3,7 @@ import { parseGoalCsv } from '../csvParser'
 import { GoalCsvParseError } from '@/types/goal'
 import { KNOWN_BUSINESS_TYPES } from '@/store/goalStore'
 
-const validCsv = `业务类型,年度目标（万）\n车险整体,100\n网约车,200\n`
+const validCsv = `业务类型,年度目标（万）\n出租车,100\n网约车,200\n`
 
 describe('parseGoalCsv', () => {
   it('parses valid csv data', () => {
@@ -11,11 +11,11 @@ describe('parseGoalCsv', () => {
       knownBusinessTypes: KNOWN_BUSINESS_TYPES,
     })
     expect(result.rows).toHaveLength(2)
-    expect(result.rows[0]).toEqual({ bizType: '车险整体', annualTarget: 100 })
+    expect(result.rows[0]).toEqual({ bizType: '出租车', annualTarget: 100 })
   })
 
   it('throws when required columns missing', () => {
-    const csv = `业务类型\n车险整体`
+    const csv = `业务类型\n出租车`
     expect(() =>
       parseGoalCsv(csv, {
         knownBusinessTypes: KNOWN_BUSINESS_TYPES,
@@ -24,7 +24,7 @@ describe('parseGoalCsv', () => {
   })
 
   it('throws when encountering non numeric value', () => {
-    const csv = `业务类型,年度目标（万）\n车险整体,abc`
+    const csv = `业务类型,年度目标（万）\n出租车,abc`
     expect(() =>
       parseGoalCsv(csv, {
         knownBusinessTypes: KNOWN_BUSINESS_TYPES,
@@ -33,7 +33,7 @@ describe('parseGoalCsv', () => {
   })
 
   it('throws when duplicate business types found', () => {
-    const csv = `业务类型,年度目标（万）\n车险整体,100\n车险整体,120`
+    const csv = `业务类型,年度目标（万）\n出租车,100\n出租车,120`
     expect(() =>
       parseGoalCsv(csv, {
         knownBusinessTypes: KNOWN_BUSINESS_TYPES,

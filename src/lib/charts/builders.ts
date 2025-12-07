@@ -50,8 +50,8 @@ export function buildLegend(
  * 构建标准 X 轴配置
  */
 export function buildXAxis(
-  config?: Partial<EChartsOption['xAxis']>
-): EChartsOption['xAxis'] {
+  config?: Partial<any>
+): any {
   return {
     type: 'category',
     ...CHART_AXIS.xAxis,
@@ -63,8 +63,8 @@ export function buildXAxis(
  * 构建标准 Y 轴配置
  */
 export function buildYAxis(
-  config?: Partial<EChartsOption['yAxis']>
-): EChartsOption['yAxis'] {
+  config?: Partial<any>
+): any {
   return {
     type: 'value',
     ...CHART_AXIS.yAxis,
@@ -81,7 +81,7 @@ export function buildDualYAxis(leftConfig?: {
 }, rightConfig?: {
   name?: string
   formatter?: (value: number) => string
-}): EChartsOption['yAxis'] {
+}): any[] {
   return [
     buildYAxis({
       position: 'left',

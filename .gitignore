@@ -1,5 +1,14 @@
 node_modules
 
+# 操作系统文件
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# 测试产物
+test-results/
+coverage/
+
 # DuckDB 数据库文件(本地测试用,不提交到仓库)
 *.duckdb
 *.duckdb.wal

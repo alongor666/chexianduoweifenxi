@@ -11,6 +11,25 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { CSVParser } from '../adapters/CSVParser'
 import type { ValidationErrorType } from '../../application/ports/IFileParser'
 
+// Helper to create file with text() method polyfilled if needed
+function createTestFile(bits: BlobPart[], name: string, options?: FilePropertyBag): File {
+  const file = new File(bits, name, options)
+  if (!file.text) {
+    Object.defineProperty(file, 'text', {
+      value: async () => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = () => resolve(reader.result as string)
+          reader.onerror = reject
+          reader.readAsText(file)
+        })
+      },
+      writable: true
+    })
+  }
+  return file
+}
+
 describe('CSVParser', () => {
   let parser: CSVParser
 
@@ -27,7 +46,7 @@ describe('CSVParser', () => {
 
   describe('validate', () => {
     it('应该拒绝非 CSV 文件', async () => {
-      const file = new File(['content'], 'test.txt', { type: 'text/plain' })
+      const file = createTestFile(['content'], 'test.txt', { type: 'text/plain' })
       const result = await parser.validate(file)
 
       expect(result.isValid).toBe(false)
@@ -36,7 +55,7 @@ describe('CSVParser', () => {
     })
 
     it('应该拒绝空文件', async () => {
-      const file = new File([], 'test.csv', { type: 'text/csv' })
+      const file = createTestFile([], 'test.csv', { type: 'text/csv' })
       const result = await parser.validate(file)
 
       expect(result.isValid).toBe(false)
@@ -46,7 +65,7 @@ describe('CSVParser', () => {
     it('应该拒绝过大的文件', async () => {
       // 创建一个超过 100MB 的文件（模拟）
       const largeContent = 'x'.repeat(101 * 1024 * 1024)
-      const file = new File([largeContent], 'large.csv', { type: 'text/csv' })
+      const file = createTestFile([largeContent], 'large.csv', { type: 'text/csv' })
       const result = await parser.validate(file)
 
       expect(result.isValid).toBe(false)
@@ -59,7 +78,7 @@ describe('CSVParser', () => {
       const csvContent = `snapshot_date,policy_start_year
 2024-01-01,2024`
 
-      const file = new File([csvContent], 'test.csv', { type: 'text/csv' })
+      const file = createTestFile([csvContent], 'test.csv', { type: 'text/csv' })
       const result = await parser.validate(file)
 
       expect(result.isValid).toBe(false)
@@ -72,7 +91,7 @@ describe('CSVParser', () => {
       const csvContent = `snapshot_date,policy_start_year,week_number,chengdu_branch,third_level_organization,customer_category_3,insurance_type,business_type_category,coverage_type,renewal_status,is_new_energy_vehicle,is_transferred_vehicle,terminal_source,signed_premium_yuan,matured_premium_yuan,policy_count,claim_case_count,reported_claim_payment_yuan,expense_amount_yuan,commercial_premium_before_discount_yuan,marginal_contribution_amount_yuan
 2024-01-01,2024,1,成都,测试机构,个人,商业险,非车险,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500`
 
-      const file = new File([csvContent], 'test.csv', { type: 'text/csv' })
+      const file = createTestFile([csvContent], 'test.csv', { type: 'text/csv' })
       const result = await parser.validate(file)
 
       expect(result.isValid).toBe(true)
@@ -83,7 +102,7 @@ describe('CSVParser', () => {
       const csvContent = `snapshot_date,policy_start_year,week_number,chengdu_branch,third_level_organization,customer_category_3,insurance_type,business_type_category,coverage_type,renewal_status,is_new_energy_vehicle,is_transferred_vehicle,terminal_source,signed_premium_yuan,matured_premium_yuan,policy_count,claim_case_count,reported_claim_payment_yuan,expense_amount_yuan,commercial_premium_before_discount_yuan,marginal_contribution_amount_yuan
 2024-01-01,invalid_year,1,成都,测试机构,个人,商业险,非车险,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500`
 
-      const file = new File([csvContent], 'test.csv', { type: 'text/csv' })
+      const file = createTestFile([csvContent], 'test.csv', { type: 'text/csv' })
       const result = await parser.validate(file)
 
       expect(result.errors.some(e => e.type === 'INVALID_FIELD_TYPE' as ValidationErrorType)).toBe(
@@ -95,7 +114,7 @@ describe('CSVParser', () => {
       const csvContent = `snapshot_date,policy_start_year,week_number,chengdu_branch,third_level_organization,customer_category_3,insurance_type,business_type_category,coverage_type,renewal_status,is_new_energy_vehicle,is_transferred_vehicle,terminal_source,signed_premium_yuan,matured_premium_yuan,policy_count,claim_case_count,reported_claim_payment_yuan,expense_amount_yuan,commercial_premium_before_discount_yuan,marginal_contribution_amount_yuan
 2024-01-01,2024,200,成都,测试机构,个人,商业险,非车险,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500`
 
-      const file = new File([csvContent], 'test.csv', { type: 'text/csv' })
+      const file = createTestFile([csvContent], 'test.csv', { type: 'text/csv' })
       const result = await parser.validate(file)
 
       expect(result.warnings.length).toBeGreaterThan(0)
@@ -109,7 +128,7 @@ describe('CSVParser', () => {
 2024-01-01,2024,1,成都,测试机构,个人,商业险,非车险,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500
 2024-01-08,2024,2,成都,测试机构,企业,交强险,车险,交三,续保,true,false,渠道,5000,4500,2,1,1000,200,5200,3300`
 
-      const file = new File([csvContent], 'test.csv', { type: 'text/csv' })
+      const file = createTestFile([csvContent], 'test.csv', { type: 'text/csv' })
       const result = await parser.parse(file)
 
       expect(result).toHaveLength(2)
@@ -152,15 +171,15 @@ describe('CSVParser', () => {
       const csvContent = `snapshot_date,policy_start_year,week_number,chengdu_branch,third_level_organization,customer_category_3,insurance_type,business_type_category,coverage_type,renewal_status,is_new_energy_vehicle,is_transferred_vehicle,vehicle_insurance_grade,highway_risk_grade,large_truck_score,small_truck_score,terminal_source,signed_premium_yuan,matured_premium_yuan,policy_count,claim_case_count,reported_claim_payment_yuan,expense_amount_yuan,commercial_premium_before_discount_yuan,premium_plan_yuan,marginal_contribution_amount_yuan
 2024-01-01,2024,1,成都,测试机构,个人,商业险,非车险,主全,新保,false,false,A,低,90,85,直销,10000,9000,1,0,0,500,10500,10000,8500`
 
-      const file = new File([csvContent], 'test.csv', { type: 'text/csv' })
+      const file = createTestFile([csvContent], 'test.csv', { type: 'text/csv' })
       const result = await parser.parse(file)
 
       expect(result).toHaveLength(1)
       expect(result[0]).toMatchObject({
         vehicle_insurance_grade: 'A',
         highway_risk_grade: '低',
-        large_truck_score: '90',
-        small_truck_score: '85',
+        large_truck_score: 90,
+        small_truck_score: 85,
         premium_plan_yuan: 10000,
       })
     })
@@ -169,7 +188,7 @@ describe('CSVParser', () => {
       const csvContent = `snapshot_date,policy_start_year,week_number,chengdu_branch,third_level_organization,customer_category_3,insurance_type,business_type_category,coverage_type,renewal_status,is_new_energy_vehicle,is_transferred_vehicle,vehicle_insurance_grade,terminal_source,signed_premium_yuan,matured_premium_yuan,policy_count,claim_case_count,reported_claim_payment_yuan,expense_amount_yuan,commercial_premium_before_discount_yuan,marginal_contribution_amount_yuan
 2024-01-01,2024,1,成都,测试机构,个人,商业险,非车险,主全,新保,false,false,,直销,10000,9000,1,0,0,500,10500,8500`
 
-      const file = new File([csvContent], 'test.csv', { type: 'text/csv' })
+      const file = createTestFile([csvContent], 'test.csv', { type: 'text/csv' })
       const result = await parser.parse(file)
 
       expect(result).toHaveLength(1)
@@ -180,7 +199,7 @@ describe('CSVParser', () => {
       const csvContent = `snapshot_date,policy_start_year,week_number,chengdu_branch,third_level_organization,customer_category_3,insurance_type,business_type_category,coverage_type,renewal_status,is_new_energy_vehicle,is_transferred_vehicle,terminal_source,signed_premium_yuan,matured_premium_yuan,policy_count,claim_case_count,reported_claim_payment_yuan,expense_amount_yuan,commercial_premium_before_discount_yuan,marginal_contribution_amount_yuan
 2024-01-01,2024,1,成都,　测试机构　,个人,商业险,非车险,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500`
 
-      const file = new File([csvContent], 'test.csv', { type: 'text/csv' })
+      const file = createTestFile([csvContent], 'test.csv', { type: 'text/csv' })
       const result = await parser.parse(file)
 
       expect(result).toHaveLength(1)
@@ -190,7 +209,7 @@ describe('CSVParser', () => {
 
     it('应该抛出解析错误（格式错误）', async () => {
       // 创建一个无效的 CSV（格式错误）
-      const file = new File(['invalid csv content with no structure'], 'test.csv', {
+      const file = createTestFile(['invalid csv content with no structure'], 'test.csv', {
         type: 'text/csv',
       })
 
@@ -213,7 +232,7 @@ describe('CSVParser', () => {
       }
 
       const csvContent = [header, ...rows].join('\n')
-      const file = new File([csvContent], 'large.csv', { type: 'text/csv' })
+      const file = createTestFile([csvContent], 'large.csv', { type: 'text/csv' })
 
       const startTime = performance.now()
       const result = await parser.parse(file)
@@ -228,7 +247,7 @@ describe('CSVParser', () => {
       const csvContent = `snapshot_date,policy_start_year,week_number,chengdu_branch,third_level_organization,customer_category_3,insurance_type,business_type_category,coverage_type,renewal_status,is_new_energy_vehicle,is_transferred_vehicle,terminal_source,signed_premium_yuan,matured_premium_yuan,policy_count,claim_case_count,reported_claim_payment_yuan,expense_amount_yuan,commercial_premium_before_discount_yuan,marginal_contribution_amount_yuan
 2024-01-01,2024,1,成都,"包含,逗号的机构",个人,商业险,非车险,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500`
 
-      const file = new File([csvContent], 'test.csv', { type: 'text/csv' })
+      const file = createTestFile([csvContent], 'test.csv', { type: 'text/csv' })
       const result = await parser.parse(file)
 
       expect(result).toHaveLength(1)

@@ -116,6 +116,7 @@ export class CSVParser implements IFileParser {
           type: 'INVALID_FILE_FORMAT' as ValidationErrorType,
           message: `不支持的文件类型: ${file.type || '未知'}。请上传 CSV 文件。`,
         })
+        return { isValid: false, errors, warnings }
       }
 
       // 2. 验证文件大小
@@ -290,6 +291,24 @@ export class CSVParser implements IFileParser {
   }
 
   /**
+   * 解析布尔值
+   * 兼容 'True', 'False', 'true', 'false', 1, 0 等格式
+   */
+  private parseBoolean(value: any): boolean {
+    if (typeof value === 'boolean') {
+      return value
+    }
+    if (typeof value === 'string') {
+      const normalized = value.trim().toLowerCase()
+      return normalized === 'true' || normalized === 'yes' || normalized === '1'
+    }
+    if (typeof value === 'number') {
+      return value === 1
+    }
+    return Boolean(value)
+  }
+
+  /**
    * 将 CSV 行映射为 RawInsuranceData
    */
   private mapToRawData(row: any, index: number): RawInsuranceData {
@@ -309,8 +328,8 @@ export class CSVParser implements IFileParser {
         ),
         coverage_type: row.coverage_type || '主全',
         renewal_status: row.renewal_status || '新保',
-        is_new_energy_vehicle: Boolean(row.is_new_energy_vehicle),
-        is_transferred_vehicle: Boolean(row.is_transferred_vehicle),
+        is_new_energy_vehicle: this.parseBoolean(row.is_new_energy_vehicle),
+        is_transferred_vehicle: this.parseBoolean(row.is_transferred_vehicle),
         vehicle_insurance_grade: row.vehicle_insurance_grade || null,
         highway_risk_grade: row.highway_risk_grade || null,
         large_truck_score: row.large_truck_score || null,

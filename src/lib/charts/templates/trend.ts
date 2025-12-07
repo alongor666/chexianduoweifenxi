@@ -15,6 +15,7 @@ import {
   buildTooltip,
   buildLegend,
   buildXAxis,
+  buildYAxis,
   buildDualYAxis,
   buildDataZoom,
   buildLineSeries,

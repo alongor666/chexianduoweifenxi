@@ -157,38 +157,36 @@ export function CompactKPICard({
                   {title}
                 </h3>
                 {formulaDefinition && (
-                  <TooltipProvider>
-                    <Tooltip delayDuration={200}>
-                      <TooltipTrigger asChild>
-                        <div
-                          onClick={e => e.stopPropagation()}
-                          className="inline-flex"
-                        >
-                          <Info className="h-3 w-3 text-slate-400 hover:text-blue-600 transition-colors" />
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent
-                        side="top"
-                        className="max-w-xs border border-slate-200 bg-white p-3 shadow-lg"
+                  <Tooltip delayDuration={200}>
+                    <TooltipTrigger asChild>
+                      <div
+                        onClick={e => e.stopPropagation()}
+                        className="inline-flex"
                       >
-                        <div className="space-y-2">
-                          <div>
-                            <p className="text-xs font-semibold text-slate-700">
-                              计算公式
-                            </p>
-                            <p className="mt-0.5 font-mono text-xs text-blue-600">
-                              {formulaDefinition.formula}
-                            </p>
-                          </div>
-                          <div className="border-t border-slate-100 pt-1.5">
-                            <p className="text-xs text-slate-600">
-                              {formulaDefinition.businessMeaning}
-                            </p>
-                          </div>
+                        <Info className="h-3 w-3 text-slate-400 hover:text-blue-600 transition-colors" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="top"
+                      className="max-w-xs border border-slate-200 bg-white p-3 shadow-lg"
+                    >
+                      <div className="space-y-2">
+                        <div>
+                          <p className="text-xs font-semibold text-slate-700">
+                            计算公式
+                          </p>
+                          <p className="mt-0.5 font-mono text-xs text-blue-600">
+                            {formulaDefinition.formula}
+                          </p>
                         </div>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                        <div className="border-t border-slate-100 pt-1.5">
+                          <p className="text-xs text-slate-600">
+                            {formulaDefinition.businessMeaning}
+                          </p>
+                        </div>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
                 )}
               </div>
             </div>

@@ -193,9 +193,57 @@ filteredData = rawData.filter(record => {
 
 ### 集成组件
 - `src/components/features/kpi-card-with-drilldown.tsx` - 带下钻的KPI卡片
-- `src/components/features/kpi-dashboard.tsx` - KPI看板（已集成下钻功能）
+- `src/components/features/full-kpi-dashboard.tsx` - 完整版KPI看板（已集成下钻功能）
+
+## 趋势分析集成
+
+### 功能描述
+
+支持在「周度经营趋势」图表中，通过点击特定数据点（某一周），对该周数据进行多维度下钻分析。
+
+### 交互流程
+
+1.  **触发**：用户点击趋势图中的任意数据点。
+2.  **响应**：
+    *   系统锁定被点击周的时间上下文。
+    *   弹出下钻对话框，标题显示该周信息。
+    *   自动重置之前的下钻路径。
+3.  **分析**：用户在对话框中使用与 KPI 卡片完全一致的下钻组件进行多维分析。
+
+### 技术变更
+
+#### 下钻控制器增强 (`src/components/features/drill-down/drill-down-control.tsx`)
+
+新增 `initialData` 属性，支持传入预筛选的数据集。
+
+```typescript
+interface DrillDownControlProps {
+  kpiKey: string
+  initialData?: InsuranceRecord[] // 新增：支持传入初始数据
+  className?: string
+}
+```
+
+-   **当提供 `initialData` 时**：组件将跳过全局筛选步骤，直接基于 `initialData` 进行下钻筛选。这允许父组件预先根据上下文（如特定周）筛选数据。
+-   **未提供 `initialData` 时**：保持原有逻辑，使用全局 `rawData` 并应用全局筛选器。
+
+#### 趋势组件集成 (`src/components/features/weekly-operational-trend.tsx`)
+
+-   集成 `DrillDownControl` 和 `Dialog` 组件。
+-   实现 `handlePointClick` 事件处理，计算被点击周的数据子集 (`weekData`)。
+-   将 `weekData` 传递给 `DrillDownControl`。
 
 ## 更新日志
+
+### v1.2.0 (2025-12-07)
+- ✅ 趋势分析组件集成多层下钻功能
+- ✅ DrillDownControl 支持 initialData 属性
+- ✅ 实现图表点击交互与数据联动
+
+### v1.1.0 (2025-12-07)
+- ✅ 完整版KPI看板集成下钻功能
+- ✅ 删除紧凑版KPI组件
+- ✅ 统一使用FullKPIDashboard（4x4布局）
 
 ### v1.0.0 (2025-12-07)
 - ✅ 实现多层下钻核心功能
@@ -203,4 +251,4 @@ filteredData = rawData.filter(record => {
 - ✅ 面包屑导航可视化
 - ✅ 维度智能选择器
 - ✅ 状态持久化
-- ✅ 集成到8个核心KPI卡片
+- ✅ 集成到KPI卡片组件

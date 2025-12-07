@@ -49,8 +49,9 @@ function sortYearWeekKeys(keys: string[]): string[] {
   })
 }
 
-export function useTrendData(): TrendPoint[] {
-  const filtered = useFilteredData()
+export function useTrendData(records?: InsuranceRecord[]): TrendPoint[] {
+  const filteredFromStore = useFilteredData()
+  const filtered = records || filteredFromStore
   const filters = useAppStore(state => state.filters)
   const dataViewType = filters.dataViewType
   const premiumTargets = useAppStore(state => state.premiumTargets)

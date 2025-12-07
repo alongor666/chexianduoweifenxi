@@ -1,14 +1,7 @@
 'use client'
 
-import { TrendingUp, TrendingDown, Minus, Info } from 'lucide-react'
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { getKPIFormula } from '@/lib/calculations/kpi-formulas'
 
 export interface KPICardProps {
   /**
@@ -70,21 +63,6 @@ export interface KPICardProps {
    * 点击事件
    */
   onClick?: () => void
-
-  /**
-   * KPI 键名（用于显示公式）
-   */
-  kpiKey?: string
-
-  /**
-   * 分子值（用于计算详情）
-   */
-  numeratorValue?: number | null
-
-  /**
-   * 分母值（用于计算详情）
-   */
-  denominatorValue?: number | null
 }
 
 export function KPICard({
@@ -100,9 +78,6 @@ export function KPICard({
   large = false,
   icon,
   onClick,
-  kpiKey,
-  numeratorValue,
-  denominatorValue,
 }: KPICardProps) {
   // 格式化主值
   const formattedValue = formatter
@@ -136,9 +111,6 @@ export function KPICard({
     ? `${compareValue > 0 ? '+' : ''}${compareValue.toFixed(2)}${compareUnit}`
     : null
 
-  // 获取 KPI 公式定义
-  const formulaDefinition = kpiKey ? getKPIFormula(kpiKey) : undefined
-
   return (
     <div
       className={cn(
@@ -157,83 +129,7 @@ export function KPICard({
         {/* 标题行 */}
         <div className="mb-4 flex items-start justify-between">
           <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <h3 className="text-sm font-medium text-slate-600">{title}</h3>
-              {formulaDefinition && (
-                <TooltipProvider>
-                  <Tooltip delayDuration={200}>
-                    <TooltipTrigger asChild>
-                      <button className="group/info inline-flex items-center">
-                        <Info className="h-4 w-4 text-slate-400 transition-colors hover:text-blue-600" />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side="right"
-                      className="max-w-sm border border-slate-200 bg-white p-4 shadow-lg"
-                    >
-                      <div className="space-y-3">
-                        <div>
-                          <p className="text-xs font-semibold text-slate-700">
-                            计算公式
-                          </p>
-                          <p className="mt-1 font-mono text-sm text-blue-600">
-                            {formulaDefinition.formula}
-                          </p>
-                        </div>
-
-                        {formulaDefinition.numerator &&
-                          formulaDefinition.denominator && (
-                            <div className="space-y-1 border-t border-slate-100 pt-2">
-                              <div className="flex justify-between text-xs">
-                                <span className="text-slate-600">
-                                  {formulaDefinition.numerator}
-                                </span>
-                                <span className="font-mono font-semibold text-slate-800">
-                                  {numeratorValue !== null &&
-                                  numeratorValue !== undefined
-                                    ? numeratorValue.toLocaleString('zh-CN', {
-                                        maximumFractionDigits: 2,
-                                      })
-                                    : '-'}
-                                </span>
-                              </div>
-                              <div className="flex justify-between text-xs">
-                                <span className="text-slate-600">
-                                  {formulaDefinition.denominator}
-                                </span>
-                                <span className="font-mono font-semibold text-slate-800">
-                                  {denominatorValue !== null &&
-                                  denominatorValue !== undefined
-                                    ? denominatorValue.toLocaleString('zh-CN', {
-                                        maximumFractionDigits: 2,
-                                      })
-                                    : '-'}
-                                </span>
-                              </div>
-                            </div>
-                          )}
-
-                        <div className="border-t border-slate-100 pt-2">
-                          <p className="text-xs text-slate-600">
-                            <span className="font-semibold">业务含义：</span>
-                            {formulaDefinition.businessMeaning}
-                          </p>
-                        </div>
-
-                        {formulaDefinition.example && (
-                          <div className="border-t border-slate-100 pt-2">
-                            <p className="text-xs text-slate-500">
-                              <span className="font-semibold">示例：</span>
-                              {formulaDefinition.example}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
-            </div>
+            <h3 className="text-sm font-medium text-slate-600">{title}</h3>
             {description && (
               <p className="mt-1 text-xs text-slate-500">{description}</p>
             )}

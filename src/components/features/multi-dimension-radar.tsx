@@ -5,17 +5,8 @@
 
 'use client'
 
-import React, { useMemo, useState } from 'react'
-import {
-  Radar,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
-} from 'recharts'
+import React, { useMemo, useState, useRef, useEffect } from 'react'
+import * as echarts from 'echarts'
 import { Info } from 'lucide-react'
 import {
   RADAR_DIMENSIONS,
@@ -68,6 +59,10 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
 
   // 悬停状态
   const [hoveredDimension, setHoveredDimension] = useState<string | null>(null)
+
+  // 图表引用
+  const chartRef = useRef<HTMLDivElement>(null)
+  const chartInstanceRef = useRef<echarts.ECharts | null>(null)
 
   // 获取所有机构的KPI（用于快捷筛选）
   const allOrgKPIs = useMultipleOrganizationKPIs(Array.from(ALL_ORGANIZATIONS))
@@ -144,77 +139,16 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
     return { label: '高危', color: '#D32F2F' }
   }
 
-  // 自定义 Tooltip
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (!active || !payload || !payload.length) return null
-
-    const data = payload[0].payload as RadarDataPoint
-
-    return (
-      <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-lg">
-        <p className="mb-2 text-sm font-semibold text-slate-800">
-          {data.fullLabel}
-        </p>
-
-        <div className="space-y-1.5">
-          {payload.map((entry: any, index: number) => {
-            const orgName = entry.name
-            const score = entry.value
-            const rawValue = data.rawValues[orgName]
-            const level = data.levels[orgName]
-            const color = data.colors[orgName]
-
-            return (
-              <div key={orgName} className="flex items-center gap-3 text-xs">
-                {/* 颜色点 */}
-                <div
-                  className="h-3 w-3 rounded-full"
-                  style={{ backgroundColor: entry.stroke }}
-                />
-
-                {/* 机构名 */}
-                <span className="w-12 font-medium text-slate-700">
-                  {orgName}
-                </span>
-
-                {/* 评分 */}
-                <span className="font-bold text-slate-900">
-                  {formatNumber(score, 1)}
-                </span>
-
-                {/* 原始值 */}
-                {rawValue !== undefined && (
-                  <span className="text-slate-500">
-                    ({formatPercent(rawValue, 1)})
-                  </span>
-                )}
-
-                {/* 等级 */}
-                <span className="font-medium" style={{ color }}>
-                  {level}
-                </span>
-              </div>
-            )
-          })}
-        </div>
-
-        {/* 最优机构 */}
-        <div className="mt-2 border-t border-slate-200 pt-2">
-          <p className="text-xs text-slate-500">
-            最优: {getBestOrgForDimension(data)} 🏆
-          </p>
-        </div>
-      </div>
-    )
-  }
-
   // 获取某维度的最优机构
-  const getBestOrgForDimension = (data: RadarDataPoint): string => {
+  const getBestOrgForDimension = (dimensionKey: string): string => {
     let bestOrg = ''
     let bestScore = -1
 
+    const dimData = radarData.find((d) => d.dimensionKey === dimensionKey)
+    if (!dimData) return '-'
+
     selectedOrganizations.forEach((orgName) => {
-      const score = data[orgName] as number
+      const score = dimData[orgName] as number
       if (score > bestScore) {
         bestScore = score
         bestOrg = orgName
@@ -223,6 +157,190 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
 
     return bestOrg || '-'
   }
+
+  // 初始化和更新图表
+  useEffect(() => {
+    if (!chartRef.current || !radarData || radarData.length === 0 || selectedOrganizations.length === 0) return
+
+    // 初始化 ECharts 实例
+    if (!chartInstanceRef.current) {
+      chartInstanceRef.current = echarts.init(chartRef.current, undefined, {
+        renderer: 'canvas',
+      })
+    }
+
+    const chart = chartInstanceRef.current
+
+    // 准备雷达图指标（维度）
+    const indicators = radarData.map((d) => ({
+      name: d.dimension,
+      max: 100,
+    }))
+
+    // 准备系列数据（每个机构一个系列）
+    const seriesData = selectedOrganizations.map((orgName, index) => {
+      const values = radarData.map((d) => d[orgName] as number)
+      const color = getOrganizationColor(index)
+
+      return {
+        name: orgName,
+        value: values,
+        itemStyle: {
+          color: color,
+        },
+        lineStyle: {
+          color: color,
+          width: 2.5,
+        },
+        areaStyle: {
+          color: color,
+          opacity: 0.08,
+        },
+      }
+    })
+
+    // ECharts 配置
+    const option: echarts.EChartsOption = {
+      backgroundColor: 'transparent',
+      tooltip: {
+        trigger: 'item',
+        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+        borderColor: '#e2e8f0',
+        borderWidth: 1,
+        textStyle: {
+          color: '#334155',
+          fontSize: 12,
+        },
+        padding: 12,
+        formatter: (params: any) => {
+          const seriesIndex = params.seriesIndex
+          const dataIndex = params.dataIndex
+          const orgName = selectedOrganizations[seriesIndex]
+          const dimData = radarData[dataIndex]
+
+          if (!dimData) return ''
+
+          const score = dimData[orgName] as number
+          const rawValue = dimData.rawValues[orgName]
+          const level = dimData.levels[orgName]
+          const color = dimData.colors[orgName]
+          const bestOrg = getBestOrgForDimension(dimData.dimensionKey)
+
+          let html = `<div style="min-width: 200px;">
+            <div style="font-weight: 600; margin-bottom: 8px; font-size: 13px;">${dimData.fullLabel}</div>
+            <div style="margin-bottom: 6px;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                <div style="width: 12px; height: 12px; border-radius: 50%; background: ${getOrganizationColor(seriesIndex)};"></div>
+                <span style="font-weight: 500; color: #475569;">${orgName}</span>
+              </div>
+              <div style="margin-left: 20px;">
+                <span style="color: #64748b;">评分：</span>
+                <span style="font-weight: 600; color: #1e293b;">${formatNumber(score, 1)}</span>
+              </div>`
+
+          if (rawValue !== undefined) {
+            html += `<div style="margin-left: 20px;">
+              <span style="color: #64748b;">原始值：</span>
+              <span style="color: #64748b;">${formatPercent(rawValue, 1)}</span>
+            </div>`
+          }
+
+          html += `<div style="margin-left: 20px;">
+            <span style="color: #64748b;">等级：</span>
+            <span style="font-weight: 600; color: ${color};">${level}</span>
+          </div>
+        </div>
+        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0;">
+          <span style="font-size: 11px; color: #64748b;">最优: ${bestOrg} 🏆</span>
+        </div>
+      </div>`
+
+          return html
+        },
+      },
+      legend: {
+        data: selectedOrganizations,
+        bottom: '5%',
+        textStyle: {
+          fontSize: 13,
+          fontWeight: 500,
+        },
+        itemWidth: 20,
+        itemHeight: 8,
+      },
+      radar: {
+        indicator: indicators,
+        center: ['50%', '52%'],
+        radius: '60%',
+        splitNumber: 5,
+        shape: 'polygon',
+        axisName: {
+          color: '#475569',
+          fontSize: 13,
+          fontWeight: 600,
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#cbd5e1',
+          },
+        },
+        splitLine: {
+          lineStyle: {
+            color: '#cbd5e1',
+            width: 1,
+          },
+        },
+        splitArea: {
+          show: true,
+          areaStyle: {
+            color: ['rgba(255, 255, 255, 0.05)', 'rgba(148, 163, 184, 0.05)'],
+          },
+        },
+      },
+      series: [
+        {
+          type: 'radar',
+          data: seriesData,
+          symbol: 'circle',
+          symbolSize: 5,
+          emphasis: {
+            lineStyle: {
+              width: 3,
+            },
+            itemStyle: {
+              borderWidth: 2,
+              borderColor: '#fff',
+            },
+          },
+        },
+      ],
+    }
+
+    chart.setOption(option, true)
+
+    // 响应式调整
+    const resizeObserver = new ResizeObserver(() => {
+      chart.resize()
+    })
+
+    if (chartRef.current) {
+      resizeObserver.observe(chartRef.current)
+    }
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [radarData, selectedOrganizations])
+
+  // 清理
+  useEffect(() => {
+    return () => {
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.dispose()
+        chartInstanceRef.current = null
+      }
+    }
+  }, [])
 
   // 空状态
   if (selectedOrganizations.length === 0) {
@@ -304,73 +422,7 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
 
         {/* 雷达图 */}
         <div className="p-6">
-          <div className="h-96">
-            <ResponsiveContainer width="100%" height="100%">
-              <RadarChart data={radarData}>
-                <PolarGrid stroke="#cbd5e1" strokeWidth={1} />
-                <PolarAngleAxis
-                  dataKey="dimension"
-                  tick={{
-                    fill: '#475569',
-                    fontSize: 13,
-                    fontWeight: 600,
-                  }}
-                  tickLine={false}
-                />
-                <PolarRadiusAxis
-                  angle={90}
-                  domain={[0, 100]}
-                  tick={{ fill: '#94a3b8', fontSize: 11 }}
-                  tickCount={6}
-                />
-
-                {/* 为每个机构渲染一条Radar折线 */}
-                {selectedOrganizations.map((orgName, index) => {
-                  const color = getOrganizationColor(index)
-
-                  return (
-                    <Radar
-                      key={orgName}
-                      name={orgName}
-                      dataKey={orgName}
-                      stroke={color}
-                      fill={color}
-                      fillOpacity={0.08}
-                      strokeWidth={2.5}
-                      dot={{
-                        r: 5,
-                        fill: color,
-                        strokeWidth: 0,
-                      }}
-                      activeDot={{
-                        r: 7,
-                        fill: color,
-                        stroke: '#fff',
-                        strokeWidth: 2,
-                      }}
-                      onMouseEnter={(data: any) =>
-                        setHoveredDimension(data.dimensionKey)
-                      }
-                      onMouseLeave={() => setHoveredDimension(null)}
-                    />
-                  )
-                })}
-
-                <Tooltip content={<CustomTooltip />} />
-                <Legend
-                  wrapperStyle={{
-                    paddingTop: '20px',
-                  }}
-                  iconType="line"
-                  formatter={(value: string) => (
-                    <span style={{ fontSize: '13px', fontWeight: 500 }}>
-                      {value}
-                    </span>
-                  )}
-                />
-              </RadarChart>
-            </ResponsiveContainer>
-          </div>
+          <div ref={chartRef} className="h-96 w-full" />
         </div>
 
         {/* 说明文本 */}

@@ -1,16 +1,7 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
-import {
-  ResponsiveContainer,
-  ComposedChart,
-  Line,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-} from 'recharts'
+import React, { useMemo, useState, useRef, useEffect } from 'react'
+import * as echarts from 'echarts'
 import { Settings } from 'lucide-react'
 
 import { useTrendData } from '@/hooks/use-trend'
@@ -91,6 +82,185 @@ export function ForecastPanel({ className }: ForecastPanelProps) {
     return `趋势：${dirText} | 斜率：${slopeText} | 拟合优度R²：${r2.toFixed(3)}`
   }, [direction, slope, r2])
 
+  const chartRef = useRef<HTMLDivElement>(null)
+  const chartInstanceRef = useRef<echarts.ECharts | null>(null)
+
+  // 初始化和更新图表
+  useEffect(() => {
+    if (!chartRef.current || chartData.length === 0) return
+
+    // 初始化 ECharts 实例
+    if (!chartInstanceRef.current) {
+      chartInstanceRef.current = echarts.init(chartRef.current, undefined, {
+        renderer: 'canvas',
+      })
+    }
+
+    const chart = chartInstanceRef.current
+
+    // 提取数据
+    const labels = chartData.map((d) => d.label)
+    const actualData = chartData.map((d) => d.actual)
+    const fittedData = chartData.map((d) => d.fitted)
+    const predictedData = chartData.map((d) => d.predicted)
+
+    // ECharts 配置
+    const option: echarts.EChartsOption = {
+      backgroundColor: 'transparent',
+      grid: {
+        left: '5%',
+        right: '5%',
+        top: '15%',
+        bottom: '10%',
+        containLabel: true,
+      },
+      tooltip: {
+        trigger: 'axis',
+        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+        borderColor: '#e2e8f0',
+        borderWidth: 1,
+        textStyle: {
+          color: '#334155',
+          fontSize: 12,
+        },
+        padding: 12,
+        formatter: (params: any) => {
+          if (!Array.isArray(params) || params.length === 0) return ''
+          const label = params[0].name
+
+          let html = `<div style="min-width: 180px;">
+            <div style="font-weight: 600; margin-bottom: 6px; font-size: 13px;">${label}</div>`
+
+          params.forEach((param: any) => {
+            if (param.value !== null) {
+              html += `<div style="margin-bottom: 2px;">
+                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: ${param.color}; margin-right: 6px;"></span>
+                <span style="color: #64748b;">${param.seriesName}：</span>
+                <span style="font-weight: 600;">${formatNumber(param.value, 1)} 万元</span>
+              </div>`
+            }
+          })
+
+          html += `</div>`
+          return html
+        },
+      },
+      legend: {
+        data: ['实际', '拟合', '预测'],
+        top: '2%',
+        textStyle: {
+          fontSize: 12,
+        },
+      },
+      xAxis: {
+        type: 'category',
+        data: labels,
+        axisLabel: {
+          fontSize: 11,
+          color: '#64748b',
+          rotate: 45,
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#cbd5e1',
+          },
+        },
+      },
+      yAxis: {
+        type: 'value',
+        name: '单位：万元',
+        nameTextStyle: {
+          color: '#64748b',
+          fontSize: 12,
+        },
+        axisLabel: {
+          fontSize: 11,
+          color: '#64748b',
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#cbd5e1',
+          },
+        },
+        splitLine: {
+          lineStyle: {
+            color: '#f1f5f9',
+          },
+        },
+      },
+      series: [
+        {
+          name: '实际',
+          type: 'line',
+          data: actualData,
+          smooth: false,
+          symbol: 'none',
+          lineStyle: {
+            color: '#2563eb',
+            width: 2,
+          },
+          itemStyle: {
+            color: '#2563eb',
+          },
+        },
+        {
+          name: '拟合',
+          type: 'line',
+          data: fittedData,
+          smooth: false,
+          symbol: 'none',
+          lineStyle: {
+            color: '#10b981',
+            width: 2,
+            type: 'dashed',
+          },
+          itemStyle: {
+            color: '#10b981',
+          },
+        },
+        {
+          name: '预测',
+          type: 'line',
+          data: predictedData,
+          smooth: false,
+          symbol: 'none',
+          lineStyle: {
+            color: '#f59e0b',
+            width: 2,
+          },
+          itemStyle: {
+            color: '#f59e0b',
+          },
+        },
+      ],
+    }
+
+    chart.setOption(option, true)
+
+    // 响应式调整
+    const resizeObserver = new ResizeObserver(() => {
+      chart.resize()
+    })
+
+    if (chartRef.current) {
+      resizeObserver.observe(chartRef.current)
+    }
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [chartData])
+
+  // 清理
+  useEffect(() => {
+    return () => {
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.dispose()
+        chartInstanceRef.current = null
+      }
+    }
+  }, [])
+
   return (
     <div className={className}>
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -166,61 +336,7 @@ export function ForecastPanel({ className }: ForecastPanelProps) {
 
       <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="mb-2 text-xs text-slate-600">{summaryText}</div>
-        <div className="h-72 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart
-              data={chartData}
-              margin={{ top: 10, right: 20, bottom: 0, left: 0 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-              <YAxis
-                tick={{ fontSize: 12 }}
-                label={{
-                  value: '单位：万元',
-                  angle: -90,
-                  position: 'insideLeft',
-                }}
-              />
-              <Tooltip
-                formatter={(value: number, name: string) => {
-                  if (name === 'actual') return [formatNumber(value, 1), '实际']
-                  if (name === 'fitted') return [formatNumber(value, 1), '拟合']
-                  if (name === 'predicted')
-                    return [formatNumber(value, 1), '预测']
-                  return [value, name]
-                }}
-              />
-              <Legend verticalAlign="top" height={24} />
-
-              <Line
-                type="monotone"
-                dataKey="actual"
-                name="实际"
-                stroke="#2563eb"
-                strokeWidth={2}
-                dot={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="fitted"
-                name="拟合"
-                stroke="#10b981"
-                strokeWidth={2}
-                dot={false}
-                strokeDasharray="4 2"
-              />
-              <Line
-                type="monotone"
-                dataKey="predicted"
-                name="预测"
-                stroke="#f59e0b"
-                strokeWidth={2}
-                dot={false}
-              />
-            </ComposedChart>
-          </ResponsiveContainer>
-        </div>
+        <div ref={chartRef} className="h-72 w-full" />
         <div className="mt-2 text-xs text-slate-500">
           注：预测基于所选筛选条件下的历史趋势，不构成保证；建议与目标管理和周趋势分析配合使用。
         </div>
