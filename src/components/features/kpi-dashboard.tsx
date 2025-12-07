@@ -15,6 +15,7 @@ import {
   Zap,
 } from 'lucide-react'
 import { KPICard, KPICardSkeleton } from './kpi-card'
+import { KPICardWithDrilldown } from './kpi-card-with-drilldown'
 import {
   formatPercent,
   formatCurrency,
@@ -107,7 +108,7 @@ export function KPIDashboard({
       {/* KPI 网格 - 4x2 布局 */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {/* 1. 赔付率 */}
-        <KPICard
+        <KPICardWithDrilldown
           title="赔付率"
           value={kpiData.loss_ratio}
           unit="%"
@@ -129,10 +130,11 @@ export function KPIDashboard({
           kpiKey="loss_ratio"
           numeratorValue={kpiData.reported_claim_payment * 10000}
           denominatorValue={kpiData.matured_premium * 10000}
+          enableDrillDown={true}
         />
 
         {/* 2. 费用率 */}
-        <KPICard
+        <KPICardWithDrilldown
           title="费用率"
           value={kpiData.expense_ratio}
           unit="%"
@@ -154,10 +156,11 @@ export function KPIDashboard({
           kpiKey="expense_ratio"
           numeratorValue={kpiData.expense_amount * 10000}
           denominatorValue={kpiData.signed_premium * 10000}
+          enableDrillDown={true}
         />
 
         {/* 3. 满期边际贡献率 ⭐ 核心指标 */}
-        <KPICard
+        <KPICardWithDrilldown
           title="满期边际贡献率"
           value={kpiData.contribution_margin_ratio}
           unit="%"
@@ -182,10 +185,11 @@ export function KPIDashboard({
           kpiKey="contribution_margin_ratio"
           numeratorValue={kpiData.contribution_margin_amount * 10000}
           denominatorValue={kpiData.matured_premium * 10000}
+          enableDrillDown={true}
         />
 
         {/* 4. 保费进度 */}
-        <KPICard
+        <KPICardWithDrilldown
           title="保费进度"
           value={kpiData.premium_progress}
           unit="%"
@@ -208,10 +212,12 @@ export function KPIDashboard({
               : null
           }
           icon={<Calendar className="h-5 w-5" />}
+          kpiKey="premium_progress"
+          enableDrillDown={true}
         />
 
         {/* 5. 满期率 */}
-        <KPICard
+        <KPICardWithDrilldown
           title="满期率"
           value={kpiData.maturity_ratio}
           unit="%"
@@ -236,10 +242,11 @@ export function KPIDashboard({
           kpiKey="maturity_ratio"
           numeratorValue={kpiData.matured_premium * 10000}
           denominatorValue={kpiData.signed_premium * 10000}
+          enableDrillDown={true}
         />
 
         {/* 6. 满期出险率 */}
-        <KPICard
+        <KPICardWithDrilldown
           title="满期出险率"
           value={kpiData.matured_claim_ratio}
           unit="%"
@@ -266,10 +273,11 @@ export function KPIDashboard({
           kpiKey="matured_claim_ratio"
           numeratorValue={kpiData.claim_case_count}
           denominatorValue={kpiData.policy_count}
+          enableDrillDown={true}
         />
 
         {/* 7. 变动成本率 */}
-        <KPICard
+        <KPICardWithDrilldown
           title="变动成本率"
           value={kpiData.variable_cost_ratio}
           unit="%"
@@ -294,10 +302,11 @@ export function KPIDashboard({
           }
           icon={<DollarSign className="h-5 w-5" />}
           kpiKey="variable_cost_ratio"
+          enableDrillDown={true}
         />
 
         {/* 8. 自主系数 */}
-        <KPICard
+        <KPICardWithDrilldown
           title="自主系数"
           value={kpiData.autonomy_coefficient}
           unit=""
@@ -326,6 +335,7 @@ export function KPIDashboard({
           }
           icon={<Zap className="h-5 w-5" />}
           kpiKey="autonomy_coefficient"
+          enableDrillDown={true}
         />
       </div>
 
