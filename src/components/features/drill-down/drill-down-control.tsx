@@ -89,7 +89,6 @@ export function DrillDownControl({
       dimensionLabel,
       value,
       displayLabel,
-      displayLabel,
     }
     addDrillDownStep(kpiKey, step)
   }

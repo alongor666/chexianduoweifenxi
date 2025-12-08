@@ -50,8 +50,8 @@ const nextConfig = {
   },
 
   // GitHub Pages 部署时的基础路径
-  basePath: process.env.NODE_ENV === 'production' ? '/insuralytics' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/insuralytics/' : '',
+  basePath: process.env.NODE_ENV === 'production' ? '/chexianduoweifenxi' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/chexianduoweifenxi/' : '',
 
   // 环境变量配置
   env: {

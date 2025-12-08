@@ -27,8 +27,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  basePath: process.env.NODE_ENV === 'production' ? '/insurance-analytics' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/insurance-analytics/' : '',
+  basePath: process.env.NODE_ENV === 'production' ? '/chexianduoweifenxi' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/chexianduoweifenxi/' : '',
 }
 ```
 
