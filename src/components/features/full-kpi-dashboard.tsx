@@ -12,6 +12,7 @@ import {
 import type { KPIResult } from '@/types/insurance'
 import { KPICardWithDrilldown } from './kpi-card-with-drilldown'
 import { kpiEngine } from '@/lib/calculations/kpi-engine'
+import { getComparisonMetrics } from '@/utils/comparison'
 
 export interface FullKPIDashboardProps {
   /**
@@ -238,14 +239,45 @@ export function FullKPIDashboard({
   // 渲染单个KPI卡片（使用KPICardWithDrilldown）
   const renderKPICard = (config: KPIConfig) => {
     const value = kpiData?.[config.key] as number | null
-    const compareValue = compareData?.[config.key] as number | null
+    // const compareValue = compareData?.[config.key] as number | null // 旧逻辑：直接传递上期值
+
+    // 新逻辑：计算环比变化
+    const comparison = getComparisonMetrics(config.key, kpiData, compareData)
+    
+    // 判断是否为率值指标（率值指标通常显示绝对变化的百分点，金额指标显示百分比变化）
+    const isRatioMetric = [
+      'loss_ratio',
+      'expense_ratio',
+      'maturity_ratio',
+      'contribution_margin_ratio',
+      'variable_cost_ratio',
+      'matured_claim_ratio',
+      'premium_time_progress_achievement_rate',
+      'autonomy_coefficient'
+    ].includes(config.key as string)
+
+    let displayCompareValue: number | null = null
+    let displayCompareUnit = '%'
+
+    if (comparison.absoluteChange !== null) {
+      if (isRatioMetric) {
+        // 率值指标：显示绝对变化（pp = percentage points）
+        displayCompareValue = comparison.absoluteChange
+        displayCompareUnit = 'pp'
+      } else {
+        // 金额/数量指标：显示百分比变化
+        displayCompareValue = comparison.percentChange
+        displayCompareUnit = '%'
+      }
+    }
 
     return (
       <KPICardWithDrilldown
         key={config.key as string}
         title={config.title}
         value={value}
-        compareValue={compareValue}
+        compareValue={displayCompareValue}
+        compareUnit={displayCompareUnit}
         unit={config.unit}
         valueColor={config.getColor(value)}
         formatter={config.formatter}

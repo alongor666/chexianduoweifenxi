@@ -140,13 +140,13 @@ export const KPI_FORMULAS: Record<string, KPIFormulaDefinition> = {
   premium_progress: {
     name: '保费达成率',
     key: 'premium_progress',
-    formula: '(签单保费 / 保费计划) / (已过天数 / 365) × 100%',
-    description: '考虑时间进度的保费完成情况',
+    formula: '(签单保费 / 保费计划) / (当前周次 / 50) × 100%',
+    description: '考虑时间进度的保费完成情况，基于每年50个工作周计算',
     numerator: '实际签单保费（元）',
     denominator: '计划保费 × 时间进度',
     unit: '%',
     businessMeaning: '反映业务进度是否符合预期，达成率>100%表示超额完成',
-    example: '(签单500万 ÷ 计划1000万) ÷ (182天 ÷ 365天) = 100.3%',
+    example: '(签单500万 ÷ 计划1000万) ÷ (25周 ÷ 50周) = 100%',
   },
 
   // ============= 绝对值指标（万元）=============
