@@ -187,21 +187,24 @@ function computeKPIs(
   )
 
   // 计算年度时间进度
-  // 根据模式和周次计算时间进度
+  // 修正：统一使用 WORKING_WEEKS_PER_YEAR (50周) 作为分母，与增量模式保持口径一致
+  // 避免使用 365 天作为分母导致的时间进度偏差，确保"累计模式"和"增量模式"的达成率计算逻辑自洽
   let yearProgress = 0
-  if (options.mode === 'current' && options.currentWeekNumber && options.year) {
-    // 当周值模式：使用周次对应的时间进度
-    yearProgress = getTimeProgressForWeek(
-      options.year,
-      options.currentWeekNumber
+  if (options.currentWeekNumber) {
+    // 优先使用传入的周次
+    yearProgress = Math.min(
+      options.currentWeekNumber / WORKING_WEEKS_PER_YEAR,
+      1.0
     )
   } else {
-    // 默认：使用当前日期
+    // 降级：使用当前日期
     const currentDayOfYear = Math.floor(
       (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) /
         (1000 * 60 * 60 * 24)
     )
-    yearProgress = currentDayOfYear / 365
+    // 估算当前周次（向上取整）并计算进度
+    const estimatedWeek = Math.ceil(currentDayOfYear / 7)
+    yearProgress = Math.min(estimatedWeek / WORKING_WEEKS_PER_YEAR, 1.0)
   }
 
   const completionRatio = safeDivide(

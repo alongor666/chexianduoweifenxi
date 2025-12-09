@@ -163,17 +163,19 @@ export class KPIService {
     const previousWeekData = DataService.getByWeek(rawData, previousWeek, filters)
 
     const currentKpi = this.calculate(currentWeekData, {
-      annualTargetYuan: annualTarget,
-      currentWeekNumber: currentWeek,
-    })
-
-    const compareKpi =
-      previousWeekData.length > 0
-        ? this.calculate(previousWeekData, {
             annualTargetYuan: annualTarget,
-            currentWeekNumber: previousWeek,
+            currentWeekNumber: currentWeek,
+            mode: 'increment', // 强制使用增量模式计算环比，确保对比的是"周业绩"而非"年达成率"
           })
-        : null
+
+          const compareKpi =
+            previousWeekData.length > 0
+              ? this.calculate(previousWeekData, {
+                  annualTargetYuan: annualTarget,
+                  currentWeekNumber: previousWeek,
+                  mode: 'increment', // 强制使用增量模式计算环比
+                })
+              : null
 
     return {
       currentKpi,
