@@ -4,6 +4,7 @@ import { useAppStore } from '@/store/use-app-store'
 import type { InsuranceRecord } from '@/types/insurance'
 import { useFilteredData, applyFilters } from './use-filtered-data'
 import { buildPreviousFilters } from './utils/filter-helpers'
+import { normalizeChineseText } from '@/domain/rules/data-normalization'
 
 export type PremiumDimensionKey =
   | 'customer_category_3'
@@ -58,7 +59,7 @@ function normalizeDimensionValue(
         return { key: `__EMPTY__:${dimensionKey}`, label: '未标记' }
       }
 
-      const raw = String(rawValue)
+      const raw = normalizeChineseText(String(rawValue))
       if (dimensionKey === 'business_type_category') {
         const code = getBusinessTypeCode(raw)
         return { key: code, label: getBusinessTypeShortLabelByCode(code) }

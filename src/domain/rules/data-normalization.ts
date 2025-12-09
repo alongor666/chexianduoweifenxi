@@ -36,8 +36,8 @@ export function normalizeChineseText(text: string): string {
 
   return (
     text
-      // 1. 移除零宽字符
-      .replace(/[\u200B-\u200D\uFEFF]/g, '')
+      // 1. 移除零宽字符和替换字符
+      .replace(/[\u200B-\u200D\uFEFF\uFFFD]/g, '')
       // 2. 将全角空格替换为半角空格
       .replace(/\u3000/g, ' ')
       // 3. 移除首尾空格
