@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "NODE_OPTIONS='--max-old-space-size=2048' next dev",
     "build": "NODE_OPTIONS='--max-old-space-size=2048' next build",
-    "build:static": "NEXT_PUBLIC_DEPLOY_MODE=static NEXT_PUBLIC_DATA_SOURCE=local NODE_OPTIONS='--max-old-space-size=2048' next build",
+    "build:static": "NEXT_PUBLIC_DEPLOY_MODE=static NEXT_PUBLIC_DATA_SOURCE=local NEXT_TELEMETRY_DISABLED=1 NODE_OPTIONS='--max-old-space-size=2048' next build",
     "start": "next start",
     "preview": "npx serve out",
     "lint": "next lint",
@@ -13,7 +13,7 @@
     "test:unit": "vitest -c configs/vitest.config.ts",
     "test:e2e": "playwright test",
     "test:upload": "node scripts/test_upload.js",
-    "export": "NODE_OPTIONS='--max-old-space-size=2048' next build && next export",
+    "export": "pnpm run build:static",
     "deploy": "pnpm run build:static && touch out/.nojekyll",
     "deploy:preview": "pnpm run deploy && pnpm run preview"
   },

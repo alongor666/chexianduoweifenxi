@@ -87,10 +87,10 @@ const nextConfig = {
 # 安装依赖
 pnpm install
 
-# 构建静态文件
-pnpm build
+# 构建并导出静态文件
+pnpm run build:static
 
-# 输出目录: ./out/
+# 输出目录: ./out/（`output: 'export'` 会自动生成静态资源）
 ```
 
 构建完成后，静态文件会生成在 `out/` 目录中。
@@ -149,11 +149,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build
-        run: pnpm build
-        env:
-          NEXT_PUBLIC_DEPLOY_MODE: static
-          NEXT_PUBLIC_DATA_SOURCE: local
+      - name: Build and export
+        run: pnpm run deploy
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
@@ -186,7 +183,7 @@ jobs:
 
 ```toml
 [build]
-  command = "pnpm build"
+  command = "pnpm run build:static"
   publish = "out"
 
 [build.environment]
@@ -204,7 +201,7 @@ jobs:
 
 1. 连接 GitHub 仓库
 2. 配置构建设置:
-   - 构建命令: `pnpm build`
+   - 构建命令: `pnpm run build:static`
    - 输出目录: `out`
 3. 设置环境变量并部署
 
@@ -212,7 +209,7 @@ jobs:
 
 **步骤**:
 
-1. 构建静态文件: `pnpm build`
+1. 构建静态文件: `pnpm run build:static`
 2. 将 `out/` 目录内容复制到 Web 服务器
 3. 配置 Nginx 示例:
 
@@ -256,7 +253,7 @@ server {
 
 ```bash
 # 分析包体积
-pnpm build
+pnpm run build:static
 # 查看 .next/analyze/ 目录（需要配置 @next/bundle-analyzer）
 ```
 
@@ -339,8 +336,8 @@ const nextConfig = {
 
 1. 修改代码
 2. 本地测试: `pnpm dev`
-3. 构建: `pnpm build`
-4. 本地预览: `npx serve out`
+3. 构建: `pnpm run build:static`
+4. 本地预览: `pnpm run preview`
 5. 提交代码并推送（触发自动部署）
 
 ### 监控建议
