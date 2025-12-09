@@ -1611,11 +1611,11 @@ export function ThematicAnalysis({
     <div className={cn('w-full', className)}>
       <Tabs defaultValue="premium" className="w-full">
         <TabsList
-          className={cn('grid w-full', compact ? 'grid-cols-3' : 'grid-cols-3')}
+          className={cn('grid w-full', compact ? 'grid-cols-2' : 'grid-cols-2')}
         >
           <TabsTrigger value="premium">保费分析</TabsTrigger>
           <TabsTrigger value="loss">赔付分析</TabsTrigger>
-          <TabsTrigger value="contribution">边贡分析</TabsTrigger>
+          {/* <TabsTrigger value="contribution">边贡分析</TabsTrigger> */}
         </TabsList>
 
         <TabsContent value="premium" className="mt-4">
