@@ -19,6 +19,8 @@ interface LossMetrics {
   reportedClaimPayment: number
   claimCaseCount: number
   averageClaim: number | null
+  maturedPremiumYuan: number
+  signedPremiumYuan: number
 }
 
 export interface LossDimensionItem {
@@ -33,6 +35,7 @@ interface GroupAccumulator {
   maturedPremiumYuan: number
   reportedClaimPaymentYuan: number
   claimCaseCount: number
+  signedPremiumYuan: number
 }
 
 function normalizeDimensionValue(
@@ -86,6 +89,7 @@ function aggregateLossMetrics(
         maturedPremiumYuan: 0,
         reportedClaimPaymentYuan: 0,
         claimCaseCount: 0,
+        signedPremiumYuan: 0,
       })
     }
 
@@ -94,6 +98,7 @@ function aggregateLossMetrics(
     group.maturedPremiumYuan += record.matured_premium_yuan
     group.reportedClaimPaymentYuan += record.reported_claim_payment_yuan
     group.claimCaseCount += record.claim_case_count
+    group.signedPremiumYuan += record.signed_premium_yuan
   })
 
   const result = new Map<string, LossMetrics & { label: string }>()
@@ -116,6 +121,8 @@ function aggregateLossMetrics(
       reportedClaimPayment,
       claimCaseCount,
       averageClaim,
+      maturedPremiumYuan: group.maturedPremiumYuan,
+      signedPremiumYuan: group.signedPremiumYuan,
     })
   })
 
@@ -137,7 +144,8 @@ function mergeMetrics(
     })
   })
 
-  return items
+  // 按签单保费降序排序，保持与保费分析一致的展示顺序
+  return items.sort((a, b) => b.current.signedPremiumYuan - a.current.signedPremiumYuan)
 }
 
 export function useLossDimensionAnalysis(
