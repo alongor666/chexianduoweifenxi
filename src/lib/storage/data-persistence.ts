@@ -4,18 +4,18 @@
  */
 
 import type { InsuranceRecord } from '@/types/insurance'
-import type { FileUploadResult, BatchUploadResult } from '@/hooks/use-file-upload'
+import type { BatchUploadResult } from '@/hooks/use-file-upload'
 import { safeMin, safeMax } from '@/lib/utils/array-utils'
 
 /**
  * 周次信息
  */
 export interface WeekInfo {
-  weekNumber: number              // 周次号
-  year: number                    // 年份
-  recordCount: number             // 该周记录数
-  isConflict: boolean            // 是否与已有数据冲突
-  source: 'existing' | 'new'     // 数据来源
+  weekNumber: number // 周次号
+  year: number // 年份
+  recordCount: number // 该周记录数
+  isConflict: boolean // 是否与已有数据冲突
+  source: 'existing' | 'new' // 数据来源
 }
 
 /**
@@ -31,20 +31,21 @@ export interface UploadHistoryRecord {
     recordCount: number
     validRecords: number
     invalidRecords: number
-    weekRange?: string            // 周次范围，例如 "2025年第11-12周"
-    newWeekCount?: number         // 新导入的周次数
-    skippedWeekCount?: number     // 跳过的周次数
+    weekRange?: string // 周次范围，例如 "2025年第11-12周"
+    newWeekCount?: number // 新导入的周次数
+    skippedWeekCount?: number // 跳过的周次数
   }[]
   totalRecords: number
   validRecords: number
   invalidRecords: number
   status: 'success' | 'partial' | 'failed'
   error?: string
-  weekInfo?: {                    // 周次统计信息
-    totalWeeks: number            // 总周次数
-    newWeeks: number[]           // 新导入的周次号列表
-    skippedWeeks: number[]       // 跳过的周次号列表
-    yearRange: number[]          // 年份范围
+  weekInfo?: {
+    // 周次统计信息
+    totalWeeks: number // 总周次数
+    newWeeks: number[] // 新导入的周次号列表
+    skippedWeeks: number[] // 跳过的周次号列表
+    yearRange: number[] // 年份范围
   }
 }
 
@@ -68,19 +69,21 @@ const STORAGE_KEYS = {
  * 计算数据哈希值（简单实现）
  */
 function calculateDataHash(data: InsuranceRecord[]): string {
-  const content = JSON.stringify(data.map(r => ({
-    week: r.week_number,
-    year: r.policy_start_year,
-    organization: r.third_level_organization,
-    premium: r.signed_premium_yuan,
-    policy_count: r.policy_count,
-  })))
-  
+  const content = JSON.stringify(
+    data.map(r => ({
+      week: r.week_number,
+      year: r.policy_start_year,
+      organization: r.third_level_organization,
+      premium: r.signed_premium_yuan,
+      policy_count: r.policy_count,
+    }))
+  )
+
   // 简单的哈希算法
   let hash = 0
   for (let i = 0; i < content.length; i++) {
     const char = content.charCodeAt(i)
-    hash = ((hash << 5) - hash) + char
+    hash = (hash << 5) - hash + char
     hash = hash & hash // 转换为32位整数
   }
   return Math.abs(hash).toString(36)
@@ -90,14 +93,14 @@ function calculateDataHash(data: InsuranceRecord[]): string {
  * 计算文件哈希值
  */
 function calculateFileHash(file: File): Promise<string> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const reader = new FileReader()
-    reader.onload = (e) => {
+    reader.onload = e => {
       const content = e.target?.result as string
       let hash = 0
       for (let i = 0; i < content.length; i++) {
         const char = content.charCodeAt(i)
-        hash = ((hash << 5) - hash) + char
+        hash = (hash << 5) - hash + char
         hash = hash & hash
       }
       resolve(Math.abs(hash).toString(36))
@@ -109,7 +112,9 @@ function calculateFileHash(file: File): Promise<string> {
 /**
  * 保存数据到本地存储
  */
-export async function saveDataToStorage(data: InsuranceRecord[]): Promise<void> {
+export async function saveDataToStorage(
+  data: InsuranceRecord[]
+): Promise<void> {
   try {
     const dataHash = calculateDataHash(data)
     const storageInfo: DataStorageInfo = {
@@ -121,8 +126,10 @@ export async function saveDataToStorage(data: InsuranceRecord[]): Promise<void> 
 
     localStorage.setItem(STORAGE_KEYS.DATA, JSON.stringify(data))
     localStorage.setItem(STORAGE_KEYS.STORAGE_INFO, JSON.stringify(storageInfo))
-    
-    console.log(`[Data Persistence] 数据已保存到本地存储，共 ${data.length} 条记录`)
+
+    console.log(
+      `[Data Persistence] 数据已保存到本地存储，共 ${data.length} 条记录`
+    )
   } catch (error) {
     console.error('[Data Persistence] 保存数据失败:', error)
     throw new Error('保存数据到本地存储失败')
@@ -138,7 +145,9 @@ export function loadDataFromStorage(): InsuranceRecord[] | null {
     if (!dataStr) return null
 
     const data = JSON.parse(dataStr) as InsuranceRecord[]
-    console.log(`[Data Persistence] 从本地存储加载数据，共 ${data.length} 条记录`)
+    console.log(
+      `[Data Persistence] 从本地存储加载数据，共 ${data.length} 条记录`
+    )
     return data
   } catch (error) {
     console.error('[Data Persistence] 加载数据失败:', error)
@@ -200,13 +209,13 @@ export async function addUploadHistory(
 ): Promise<void> {
   try {
     const history = getUploadHistory()
-    
+
     // 计算文件哈希
     const fileInfos = await Promise.all(
       files.map(async (file, index) => {
         const result = batchResult.results[index]
         const hash = await calculateFileHash(file)
-        
+
         return {
           name: file.name,
           size: file.size,
@@ -225,12 +234,16 @@ export async function addUploadHistory(
       totalRecords: batchResult.totalRecords,
       validRecords: batchResult.validRecords,
       invalidRecords: batchResult.invalidRecords,
-      status: batchResult.failureCount === 0 ? 'success' : 
-              batchResult.successCount > 0 ? 'partial' : 'failed',
+      status:
+        batchResult.failureCount === 0
+          ? 'success'
+          : batchResult.successCount > 0
+            ? 'partial'
+            : 'failed',
     }
 
     history.unshift(record) // 最新的记录在前面
-    
+
     // 只保留最近50条记录
     if (history.length > 50) {
       history.splice(50)
@@ -256,7 +269,9 @@ export async function checkFileExists(file: File): Promise<{
     const history = getUploadHistory()
 
     for (const record of history) {
-      const fileInfo = record.files.find(f => f.hash === fileHash && f.name === file.name)
+      const fileInfo = record.files.find(
+        f => f.hash === fileHash && f.name === file.name
+      )
       if (fileInfo) {
         return {
           exists: true,
@@ -296,7 +311,9 @@ export function getDataStats(): {
 /**
  * 从记录中提取周次信息
  */
-export function extractWeeksFromRecords(records: InsuranceRecord[]): WeekInfo[] {
+export function extractWeeksFromRecords(
+  records: InsuranceRecord[]
+): WeekInfo[] {
   const weekMap = new Map<string, WeekInfo>()
 
   records.forEach(record => {
@@ -308,7 +325,7 @@ export function extractWeeksFromRecords(records: InsuranceRecord[]): WeekInfo[] 
         year: record.policy_start_year,
         recordCount: 0,
         isConflict: false,
-        source: 'new'
+        source: 'new',
       })
     }
 
@@ -345,7 +362,7 @@ export function getExistingWeeks(existingData: InsuranceRecord[]): Set<string> {
 export function analyzeWeekConflicts(
   detectedWeeks: WeekInfo[],
   existingData: InsuranceRecord[]
-): { newWeeks: WeekInfo[], conflictWeeks: WeekInfo[] } {
+): { newWeeks: WeekInfo[]; conflictWeeks: WeekInfo[] } {
   const existingWeeks = getExistingWeeks(existingData)
 
   const newWeeks: WeekInfo[] = []
@@ -413,17 +430,19 @@ export function formatWeekRange(weeks: WeekInfo[]): string {
     }
   } else {
     // 多年份的情况
-    return years.map(year => {
-      const yearWeeks = sortedWeeks.filter(w => w.year === year)
-      const weekNumbers = yearWeeks.map(w => w.weekNumber)
-      const minWeek = safeMin(weekNumbers)
-      const maxWeek = safeMax(weekNumbers)
+    return years
+      .map(year => {
+        const yearWeeks = sortedWeeks.filter(w => w.year === year)
+        const weekNumbers = yearWeeks.map(w => w.weekNumber)
+        const minWeek = safeMin(weekNumbers)
+        const maxWeek = safeMax(weekNumbers)
 
-      if (minWeek === maxWeek) {
-        return `${year}年第${minWeek}周`
-      } else {
-        return `${year}年第${minWeek}-${maxWeek}周`
-      }
-    }).join(', ')
+        if (minWeek === maxWeek) {
+          return `${year}年第${minWeek}周`
+        } else {
+          return `${year}年第${minWeek}-${maxWeek}周`
+        }
+      })
+      .join(', ')
   }
 }

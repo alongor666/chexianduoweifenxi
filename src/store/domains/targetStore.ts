@@ -287,7 +287,9 @@ export const useTargetStore = create<TargetStore>()(
           TARGET_DIMENSIONS.forEach(dimensionKey => {
             const incomingDimension = targets.dimensions?.[dimensionKey]
             const fallbackEntries =
-              dimensionKey === 'businessType' ? targets.byBusinessType : undefined
+              dimensionKey === 'businessType'
+                ? targets.byBusinessType
+                : undefined
 
             const entries = normalizeTargetEntries(
               incomingDimension?.entries ?? fallbackEntries
@@ -393,7 +395,8 @@ export const useTargetStore = create<TargetStore>()(
         saveTargetVersion: (dimension, label, note) => {
           set(
             state => {
-              const currentDimension = state.premiumTargets.dimensions[dimension]
+              const currentDimension =
+                state.premiumTargets.dimensions[dimension]
               const newVersion: TargetVersionSnapshot = {
                 id: `ver-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
                 label,
@@ -536,7 +539,10 @@ export const useTargetStore = create<TargetStore>()(
               console.log('[TargetStore] 从本地存储加载目标数据成功')
             }
           } catch (error) {
-            console.warn('[TargetStore] 读取保费目标数据失败，已回退默认值', error)
+            console.warn(
+              '[TargetStore] 读取保费目标数据失败，已回退默认值',
+              error
+            )
           }
         },
 
@@ -597,10 +603,9 @@ export const useTargetStore = create<TargetStore>()(
         // @ts-expect-error Zustand persist middleware 类型推断问题
         partialize: state => ({ premiumTargets: state.premiumTargets }),
         // 自定义合并逻辑，确保数据结构升级
-        merge: (persistedState: any, currentState) => {
-          const upgraded = upgradePremiumTargets(
-            persistedState?.premiumTargets
-          )
+        merge: (persistedState: unknown, currentState) => {
+          const state = persistedState as { premiumTargets: unknown }
+          const upgraded = upgradePremiumTargets(state?.premiumTargets)
           return {
             ...currentState,
             premiumTargets: upgraded,

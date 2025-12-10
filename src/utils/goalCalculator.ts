@@ -21,7 +21,10 @@ const HUNDRED = 100
  * 安全除法
  * 当分母为 0 时返回 null，以便在界面中展示“—”
  */
-export function safeDivide(numerator: number, denominator: number): number | null {
+export function safeDivide(
+  numerator: number,
+  denominator: number
+): number | null {
   if (denominator === 0) {
     return null
   }
@@ -31,7 +34,10 @@ export function safeDivide(numerator: number, denominator: number): number | nul
 /**
  * 计算单行目标指标
  */
-export function calculateGoalMetrics(row: GoalRow, totalInitialTarget: number): GoalMetrics {
+export function calculateGoalMetrics(
+  row: GoalRow,
+  totalInitialTarget: number
+): GoalMetrics {
   const initialAchievementRate = safeDivide(row.achieved, row.annualTargetInit)
   const tunedAchievementRate = safeDivide(row.achieved, row.annualTargetTuned)
   const initialGap = row.annualTargetInit - row.achieved

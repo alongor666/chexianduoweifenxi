@@ -16,6 +16,7 @@ export type DrillDownDimensionKey =
   | 'renewal_status' // 新转续维度（续保状态）
   | 'is_transferred_vehicle' // 是否过户车
   | 'insurance_type' // 车险种类
+  | 'week_number' // 周次
 
 /**
  * 维度配置
@@ -68,57 +69,53 @@ export interface DrillDownStep {
 }
 
 /**
- * 单个KPI的下钻路径
- */
-export interface KPIDrillDownPath {
-  /**
-   * KPI标识（例如："loss_ratio"）
-   */
-  kpiKey: string
-
-  /**
-   * 下钻路径（按下钻顺序排列）
-   */
-  steps: DrillDownStep[]
-}
-
-/**
  * 全局下钻状态
  */
 export interface DrillDownState {
   /**
-   * 所有KPI的下钻路径
-   * key为KPI标识
+   * 当前已确认生效的下钻步骤
    */
-  paths: Record<string, KPIDrillDownPath>
+  steps: DrillDownStep[]
 
   /**
-   * 添加下钻步骤
+   * 待确认的下钻步骤（用户操作后尚未点击确认）
    */
-  addDrillDownStep: (
-    kpiKey: string,
-    step: DrillDownStep
-  ) => void
+  pendingSteps: DrillDownStep[] | null
 
   /**
-   * 移除指定步骤及之后的所有步骤（用于面包屑导航）
+   * 添加下钻步骤（进入待确认状态）
    */
-  removeDrillDownStepsFrom: (kpiKey: string, stepIndex: number) => void
+  addDrillDownStep: (step: DrillDownStep) => void
 
   /**
-   * 清空指定KPI的下钻路径
+   * 移除指定步骤及之后的所有步骤
    */
-  clearDrillDownPath: (kpiKey: string) => void
+  removeDrillDownStepsFrom: (stepIndex: number, fromPending?: boolean) => void
 
   /**
-   * 获取指定KPI已使用的维度键
+   * 清除所有下钻步骤
    */
-  getUsedDimensions: (kpiKey: string) => DrillDownDimensionKey[]
+  clearDrillDown: () => void
 
   /**
-   * 获取指定KPI可用的维度列表（排除已使用的）
+   * 确认应用待确认的步骤
    */
-  getAvailableDimensions: (kpiKey: string) => DrillDownDimension[]
+  applyDrillDown: () => void
+
+  /**
+   * 取消待确认的步骤
+   */
+  cancelDrillDown: () => void
+
+  /**
+   * 检查维度是否已使用
+   */
+  isDimensionUsed: (key: DrillDownDimensionKey) => boolean
+
+  /**
+   * 重置所有状态（立即清除所有步骤，无需确认）
+   */
+  resetAll: () => void
 }
 
 /**
@@ -129,49 +126,55 @@ export const DRILL_DOWN_DIMENSIONS: DrillDownDimension[] = [
     key: 'third_level_organization',
     label: '三级机构',
     description: '按三级机构进行下钻分析',
-    getValue: (record) => record.third_level_organization,
+    getValue: record => record.third_level_organization,
   },
   {
     key: 'business_type_category',
     label: '业务类型',
     description: '按业务类型进行下钻分析',
-    getValue: (record) => record.business_type_category,
+    getValue: record => record.business_type_category,
   },
   {
     key: 'coverage_type',
     label: '险别组合',
     description: '按险别组合进行下钻分析',
-    getValue: (record) => record.coverage_type,
+    getValue: record => record.coverage_type,
   },
   {
     key: 'terminal_source',
     label: '终端来源',
     description: '按终端来源进行下钻分析',
-    getValue: (record) => record.terminal_source,
+    getValue: record => record.terminal_source,
   },
   {
     key: 'is_new_energy_vehicle',
     label: '能源类型',
     description: '按能源类型进行下钻分析',
-    getValue: (record) => record.is_new_energy_vehicle,
+    getValue: record => record.is_new_energy_vehicle,
   },
   {
     key: 'renewal_status',
     label: '新转续维度',
     description: '按续保状态进行下钻分析',
-    getValue: (record) => record.renewal_status,
+    getValue: record => record.renewal_status,
   },
   {
     key: 'is_transferred_vehicle',
     label: '是否过户车',
     description: '按是否过户车进行下钻分析',
-    getValue: (record) => record.is_transferred_vehicle,
+    getValue: record => record.is_transferred_vehicle,
   },
   {
     key: 'insurance_type',
     label: '车险种类',
     description: '按车险种类进行下钻分析',
-    getValue: (record) => record.insurance_type,
+    getValue: record => record.insurance_type,
+  },
+  {
+    key: 'week_number',
+    label: '周次',
+    description: '按周次进行下钻分析',
+    getValue: record => String(record.week_number),
   },
 ]
 
@@ -181,7 +184,7 @@ export const DRILL_DOWN_DIMENSIONS: DrillDownDimension[] = [
 export function getDimensionByKey(
   key: DrillDownDimensionKey
 ): DrillDownDimension | undefined {
-  return DRILL_DOWN_DIMENSIONS.find((dim) => dim.key === key)
+  return DRILL_DOWN_DIMENSIONS.find(dim => dim.key === key)
 }
 
 /**

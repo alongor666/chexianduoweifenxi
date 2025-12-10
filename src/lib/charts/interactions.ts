@@ -11,12 +11,12 @@ import type { FilterState } from '@/types/insurance'
  * 下钻路径类型
  */
 export type DrillDownPath =
-  | 'organization->vehicle'      // 机构 → 车型
-  | 'organization->business'     // 机构 → 业务类型
-  | 'vehicle->organization'      // 车型 → 机构
-  | 'business->organization'     // 业务类型 → 机构
-  | 'week->organization'         // 周 → 机构
-  | 'week->business'             // 周 → 业务类型
+  | 'organization->vehicle' // 机构 → 车型
+  | 'organization->business' // 机构 → 业务类型
+  | 'vehicle->organization' // 车型 → 机构
+  | 'business->organization' // 业务类型 → 机构
+  | 'week->organization' // 周 → 机构
+  | 'week->business' // 周 → 业务类型
 
 /**
  * 下钻事件数据
@@ -31,7 +31,7 @@ export interface DrillDownData {
   /** 目标维度（可选，自动推断） */
   targetDimension?: string
   /** 原始数据点 */
-  rawData?: any
+  rawData?: unknown
 }
 
 /**
@@ -45,7 +45,7 @@ export interface LinkageData {
   /** 联动目标图表 ID */
   targetChartIds: string[]
   /** 联动数据 */
-  data: any
+  data: unknown
 }
 
 /**
@@ -53,7 +53,8 @@ export interface LinkageData {
  */
 export class ChartEventManager {
   private charts: Map<string, ECharts> = new Map()
-  private drillDownHandlers: Map<string, (data: DrillDownData) => void> = new Map()
+  private drillDownHandlers: Map<string, (data: DrillDownData) => void> =
+    new Map()
   private linkageHandlers: Map<string, (data: LinkageData) => void> = new Map()
 
   /**
@@ -155,6 +156,7 @@ export const globalChartEventManager = new ChartEventManager()
  * 下钻辅助函数：从点击事件构建下钻数据
  */
 export function buildDrillDownData(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   params: any,
   path: DrillDownPath
 ): DrillDownData {
@@ -211,7 +213,9 @@ export function drillDownToFilters(
  * 刷选辅助函数：处理框选事件
  */
 export function handleBrushSelection(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   params: any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSelection: (selectedData: any[]) => void
 ): void {
   if (!params.batch || params.batch.length === 0) return
@@ -224,8 +228,10 @@ export function handleBrushSelection(
   }
 
   // 收集所有被选中的数据点
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const selectedData: any[] = []
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   selected.forEach((item: any) => {
     if (item.dataIndex && item.dataIndex.length > 0) {
       item.dataIndex.forEach((idx: number) => {
@@ -247,6 +253,7 @@ export function buildClickHandler(
   drillPath: DrillDownPath,
   onDrillDown: (data: DrillDownData) => void
 ) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (params: any, chart: ECharts) => {
     // 只处理数据点击击事件
     if (params.componentType !== 'series') return
@@ -266,12 +273,14 @@ export function buildLinkageConfig(config: {
   targetIds: string[]
   /** 联动类型 */
   type: 'highlight' | 'filter'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }): any {
   const { sourceId, targetIds, type } = config
 
   if (type === 'highlight') {
     // 悬停高亮联动
     return {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onMouseOver: (params: any) => {
         globalChartEventManager.triggerLinkage({
           type: 'highlight',
@@ -299,6 +308,7 @@ export function buildLinkageConfig(config: {
  * 批量下钻辅助函数（用于刷选批量下钻）
  */
 export function batchDrillDown(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   selectedData: any[],
   path: DrillDownPath,
   currentFilters: FilterState

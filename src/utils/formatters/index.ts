@@ -33,7 +33,11 @@ export {
 export { formatPercent, formatPercentFromDecimal } from './percent'
 
 // 变化值格式化
-export { formatChange, type ChangeDirection, type FormattedChange } from './change'
+export {
+  formatChange,
+  type ChangeDirection,
+  type FormattedChange,
+} from './change'
 
 // 周次格式化
 export { formatWeekRange, formatWeek } from './week'

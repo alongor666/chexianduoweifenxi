@@ -47,7 +47,9 @@ export class PDFExporter implements IExporter {
       })
 
       // 3. 创建 Blob
-      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' })
+      const blob = new Blob(['\uFEFF' + csv], {
+        type: 'text/csv;charset=utf-8;',
+      })
 
       console.log(`[PDFExporter] CSV 导出完成`)
       return blob
@@ -106,6 +108,7 @@ export class PDFExporter implements IExporter {
       })
 
       // 5. 添加页脚
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const pageCount = (doc as any).internal.getNumberOfPages()
       for (let i = 1; i <= pageCount; i++) {
         doc.setPage(i)
@@ -191,8 +194,16 @@ export class PDFExporter implements IExporter {
   private exportKPIToCSV(kpis: KPIResult, options?: ExportOptions): Blob {
     const kpiData = [
       // 率值指标
-      { 类别: '率值指标', 指标: '满期赔付率', 数值: this.formatPercentage(kpis.lossRatio) },
-      { 类别: '率值指标', 指标: '费用率', 数值: this.formatPercentage(kpis.expenseRatio) },
+      {
+        类别: '率值指标',
+        指标: '满期赔付率',
+        数值: this.formatPercentage(kpis.lossRatio),
+      },
+      {
+        类别: '率值指标',
+        指标: '费用率',
+        数值: this.formatPercentage(kpis.expenseRatio),
+      },
       {
         类别: '率值指标',
         指标: '满期率',
@@ -230,8 +241,16 @@ export class PDFExporter implements IExporter {
         指标: '满期保费（元）',
         数值: this.formatCurrency(kpis.maturedPremium),
       },
-      { 类别: '绝对值指标', 指标: '保单件数', 数值: kpis.policyCount.toString() },
-      { 类别: '绝对值指标', 指标: '赔案件数', 数值: kpis.claimCaseCount.toString() },
+      {
+        类别: '绝对值指标',
+        指标: '保单件数',
+        数值: kpis.policyCount.toString(),
+      },
+      {
+        类别: '绝对值指标',
+        指标: '赔案件数',
+        数值: kpis.claimCaseCount.toString(),
+      },
       {
         类别: '绝对值指标',
         指标: '已报告赔款（元）',
@@ -332,7 +351,10 @@ export class PDFExporter implements IExporter {
       ['赔案件数', kpis.claimCaseCount.toString() + ' 件'],
       ['已报告赔款', this.formatCurrency(kpis.reportedClaimPayment) + ' 元'],
       ['费用金额', this.formatCurrency(kpis.expenseAmount) + ' 元'],
-      ['边际贡献额', this.formatCurrency(kpis.contributionMarginAmount) + ' 元'],
+      [
+        '边际贡献额',
+        this.formatCurrency(kpis.contributionMarginAmount) + ' 元',
+      ],
     ]
 
     autoTable(doc, {

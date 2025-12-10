@@ -42,7 +42,10 @@ function validateHeader(fields: string[] | undefined): CsvIssue[] {
 /**
  * 解析 CSV（逗号分隔值）字符串
  */
-export function parseGoalCsv(content: string, options: GoalCsvParseOptions): GoalCsvParseResult {
+export function parseGoalCsv(
+  content: string,
+  options: GoalCsvParseOptions
+): GoalCsvParseResult {
   const parseResult = Papa.parse<Record<string, string>>(content, {
     header: true,
     skipEmptyLines: true,

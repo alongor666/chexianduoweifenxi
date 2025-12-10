@@ -44,10 +44,7 @@ export function useInsuranceData() {
   )
 
   // 原始数据统计
-  const rawStats = useMemo(
-    () => DataService.getStatistics(rawData),
-    [rawData]
-  )
+  const rawStats = useMemo(() => DataService.getStatistics(rawData), [rawData])
 
   return {
     // 数据
@@ -113,9 +110,9 @@ export function useInsuranceDataByWeekRange(
 /**
  * 按维度分组的数据
  */
-export function useInsuranceDataByDimension<K extends keyof import('@/types/insurance').InsuranceRecord>(
-  dimension: K
-) {
+export function useInsuranceDataByDimension<
+  K extends keyof import('@/types/insurance').InsuranceRecord,
+>(dimension: K) {
   const { filteredData } = useInsuranceData()
 
   const groups = useMemo(

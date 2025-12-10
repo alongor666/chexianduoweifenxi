@@ -43,11 +43,11 @@ class MockDataRepository implements IDataRepository {
   }
 
   async findByWeek(weekNumber: number): Promise<InsuranceRecord[]> {
-    return this.data.filter((r) => r.weekNumber === weekNumber)
+    return this.data.filter(r => r.weekNumber === weekNumber)
   }
 
   async findByYear(year: number): Promise<InsuranceRecord[]> {
-    return this.data.filter((r) => r.policyStartYear === year)
+    return this.data.filter(r => r.policyStartYear === year)
   }
 
   async findByFilters(filters: any): Promise<InsuranceRecord[]> {

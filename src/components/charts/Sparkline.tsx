@@ -132,7 +132,16 @@ export function Sparkline({
     }
 
     return config
-  }, [data, color, smooth, showSymbol, strokeWidth, filled, fillOpacity, connectNulls])
+  }, [
+    data,
+    color,
+    smooth,
+    showSymbol,
+    strokeWidth,
+    filled,
+    fillOpacity,
+    connectNulls,
+  ])
 
   if (!data || data.length === 0) {
     return null

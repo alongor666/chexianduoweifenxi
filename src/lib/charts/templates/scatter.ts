@@ -36,7 +36,7 @@ export interface ScatterDataPoint {
   /** 颜色（可选） */
   color?: string
   /** 原始数据（用于 tooltip） */
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export interface ScatterChartConfig {
@@ -89,6 +89,7 @@ export interface ScatterChartConfig {
   colorMap?: Record<string, string>
 
   /** 自定义 tooltip 格式化函数 */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tooltipFormatter?: (params: any) => string
 
   /** 是否按分类分组 */
@@ -112,13 +113,17 @@ export function buildScatterChart(config: ScatterChartConfig): EChartsOption {
   } = config
 
   // 按分类分组数据
-  const groupedData = groupByCategory ? groupDataByCategory(data) : { 默认: data }
+  const groupedData = groupByCategory
+    ? groupDataByCategory(data)
+    : { 默认: data }
 
   // 构建系列
   const series: any[] = []
 
   Object.entries(groupedData).forEach(([category, points], index) => {
-    const color = colorMap?.[category] || CHART_COLORS.primary[index % CHART_COLORS.primary.length]
+    const color =
+      colorMap?.[category] ||
+      CHART_COLORS.primary[index % CHART_COLORS.primary.length]
 
     series.push({
       name: category,
@@ -132,7 +137,9 @@ export function buildScatterChart(config: ScatterChartConfig): EChartsOption {
             const minData = Math.min(...allSizes)
             const maxData = Math.max(...allSizes)
             const range = maxData - minData || 1
-            return minSize + ((sizeValue - minData) / range) * (maxSize - minSize)
+            return (
+              minSize + ((sizeValue - minData) / range) * (maxSize - minSize)
+            )
           }
         : 12,
       data: points.map(p => {
@@ -166,10 +173,12 @@ export function buildScatterChart(config: ScatterChartConfig): EChartsOption {
     grid: buildGrid('default'),
     tooltip: buildTooltip({
       trigger: 'item',
-      formatter: tooltipFormatter || ((params: any) => {
-        const point = params.data.raw as ScatterDataPoint
+      formatter:
+        tooltipFormatter ||
+        ((params: any) => {
+          const point = params.data.raw as ScatterDataPoint
 
-        let html = `<div style="min-width: 220px;">
+          let html = `<div style="min-width: 220px;">
           <div style="font-weight: 600; margin-bottom: 8px; font-size: 13px;">${point.name}</div>
           <div style="margin-bottom: 4px;">
             <span style="color: #64748b;">${xAxis.name}：</span>
@@ -180,22 +189,22 @@ export function buildScatterChart(config: ScatterChartConfig): EChartsOption {
             <span style="font-weight: 600;">${yAxis.formatter?.(point.y) || formatPercent(point.y / 100)}</span>
           </div>`
 
-        if (bubble && point.size !== undefined) {
-          html += `<div style="margin-bottom: 4px;">
+          if (bubble && point.size !== undefined) {
+            html += `<div style="margin-bottom: 4px;">
             <span style="color: #64748b;">${bubble.name}：</span>
             <span style="font-weight: 600;">${formatNumber(point.size)}</span>
           </div>`
-        }
+          }
 
-        if (point.category) {
-          html += `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0;">
+          if (point.category) {
+            html += `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0;">
             <span style="color: #64748b; font-size: 11px;">${point.category}</span>
           </div>`
-        }
+          }
 
-        html += `</div>`
-        return html
-      }),
+          html += `</div>`
+          return html
+        }),
     }),
     legend: buildLegend({
       data: Object.keys(groupedData),
@@ -206,7 +215,8 @@ export function buildScatterChart(config: ScatterChartConfig): EChartsOption {
       nameLocation: 'middle',
       nameGap: 30,
       axisLabel: {
-        formatter: xAxis.formatter || ((value: number) => formatNumber(value, 0)),
+        formatter:
+          xAxis.formatter || ((value: number) => formatNumber(value, 0)),
       },
     }),
     yAxis: buildYAxis({
@@ -215,7 +225,8 @@ export function buildScatterChart(config: ScatterChartConfig): EChartsOption {
       nameLocation: 'middle',
       nameGap: 50,
       axisLabel: {
-        formatter: yAxis.formatter || ((value: number) => `${value.toFixed(0)}%`),
+        formatter:
+          yAxis.formatter || ((value: number) => `${value.toFixed(0)}%`),
       },
     }),
     series,
@@ -278,53 +289,61 @@ export function buildScatterChart(config: ScatterChartConfig): EChartsOption {
       },
       data: [
         // 右上象限
-        labels?.topRight ? [
-          {
-            name: labels.topRight,
-            xAxis: xValue,
-            yAxis: 'max',
-          },
-          {
-            xAxis: 'max',
-            yAxis: yValue,
-          },
-        ] : [],
+        labels?.topRight
+          ? [
+              {
+                name: labels.topRight,
+                xAxis: xValue,
+                yAxis: 'max',
+              },
+              {
+                xAxis: 'max',
+                yAxis: yValue,
+              },
+            ]
+          : [],
         // 左上象限
-        labels?.topLeft ? [
-          {
-            name: labels.topLeft,
-            xAxis: 'min',
-            yAxis: 'max',
-          },
-          {
-            xAxis: xValue,
-            yAxis: yValue,
-          },
-        ] : [],
+        labels?.topLeft
+          ? [
+              {
+                name: labels.topLeft,
+                xAxis: 'min',
+                yAxis: 'max',
+              },
+              {
+                xAxis: xValue,
+                yAxis: yValue,
+              },
+            ]
+          : [],
         // 左下象限
-        labels?.bottomLeft ? [
-          {
-            name: labels.bottomLeft,
-            xAxis: 'min',
-            yAxis: yValue,
-          },
-          {
-            xAxis: xValue,
-            yAxis: 'min',
-          },
-        ] : [],
+        labels?.bottomLeft
+          ? [
+              {
+                name: labels.bottomLeft,
+                xAxis: 'min',
+                yAxis: yValue,
+              },
+              {
+                xAxis: xValue,
+                yAxis: 'min',
+              },
+            ]
+          : [],
         // 右下象限
-        labels?.bottomRight ? [
-          {
-            name: labels.bottomRight,
-            xAxis: xValue,
-            yAxis: 'min',
-          },
-          {
-            xAxis: 'max',
-            yAxis: yValue,
-          },
-        ] : [],
+        labels?.bottomRight
+          ? [
+              {
+                name: labels.bottomRight,
+                xAxis: xValue,
+                yAxis: 'min',
+              },
+              {
+                xAxis: 'max',
+                yAxis: yValue,
+              },
+            ]
+          : [],
       ].filter(d => d.length > 0),
     }
   }
@@ -335,7 +354,9 @@ export function buildScatterChart(config: ScatterChartConfig): EChartsOption {
 /**
  * 按分类分组数据
  */
-function groupDataByCategory(data: ScatterDataPoint[]): Record<string, ScatterDataPoint[]> {
+function groupDataByCategory(
+  data: ScatterDataPoint[]
+): Record<string, ScatterDataPoint[]> {
   const groups: Record<string, ScatterDataPoint[]> = {}
 
   data.forEach(point => {

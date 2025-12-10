@@ -1,5 +1,8 @@
 import { useMemo } from 'react'
-import { getBusinessTypeCode, getBusinessTypeShortLabelByCode } from '@/constants/dimensions'
+import {
+  getBusinessTypeCode,
+  getBusinessTypeShortLabelByCode,
+} from '@/constants/dimensions'
 import { useAppStore } from '@/store/use-app-store'
 import type { InsuranceRecord } from '@/types/insurance'
 import { useFilteredData, applyFilters } from './use-filtered-data'

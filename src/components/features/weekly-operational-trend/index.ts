@@ -4,6 +4,9 @@
  * 统一导出所有类型定义、工具函数和常量。
  */
 
+// 导出主组件
+export { WeeklyOperationalTrend } from './component'
+
 // 导出常量
 export { LOSS_RISK_THRESHOLD } from './constants'
 
@@ -33,4 +36,4 @@ export {
 } from './utils'
 
 // 导出经营摘要生成器
-export { generateOperationalSummary } from './narrative-generator'
+export { generateOperationalSummary } from './summary-utils'

@@ -25,11 +25,11 @@ class MockDataRepository implements IDataRepository {
   }
 
   async findByWeek(weekNumber: number): Promise<InsuranceRecord[]> {
-    return this.mockData.filter((r) => r.weekNumber === weekNumber)
+    return this.mockData.filter(r => r.weekNumber === weekNumber)
   }
 
   async findByYear(year: number): Promise<InsuranceRecord[]> {
-    return this.mockData.filter((r) => r.policyStartYear === year)
+    return this.mockData.filter(r => r.policyStartYear === year)
   }
 
   async findByFilters(filters: any): Promise<InsuranceRecord[]> {
@@ -138,16 +138,25 @@ describe('CalculateKPIUseCase', () => {
     // Note: Institution is mapped to thirdLevelOrganization in the real model
     // For now, we'll group by year since we can't easily override institution in the helper
     const records = [
-      createTestInsuranceRecord({ policyStartYear: 2024, signedPremiumYuan: 5000 }),
-      createTestInsuranceRecord({ policyStartYear: 2024, signedPremiumYuan: 3000 }),
-      createTestInsuranceRecord({ policyStartYear: 2023, signedPremiumYuan: 2000 }),
+      createTestInsuranceRecord({
+        policyStartYear: 2024,
+        signedPremiumYuan: 5000,
+      }),
+      createTestInsuranceRecord({
+        policyStartYear: 2024,
+        signedPremiumYuan: 3000,
+      }),
+      createTestInsuranceRecord({
+        policyStartYear: 2023,
+        signedPremiumYuan: 2000,
+      }),
     ]
     mockRepository.setMockData(records)
 
     const results = await useCase.executeGrouped('year')
 
     expect(results.length).toBe(2)
-    const group2024 = results.find((r) => r.groupValue === '2024')
+    const group2024 = results.find(r => r.groupValue === '2024')
     expect(group2024).toBeDefined()
     expect(group2024?.recordCount).toBe(2)
   })

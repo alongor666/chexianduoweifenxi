@@ -9,7 +9,9 @@ test.describe('新架构 - 数据管理', () => {
   test('应正确加载和过滤数据', async () => {
     // 导入新架构模块
     const { useDataStore } = await import('../../src/store/domains/dataStore')
-    const { useFilterStore } = await import('../../src/store/domains/filterStore')
+    const { useFilterStore } = await import(
+      '../../src/store/domains/filterStore'
+    )
     const { DataService } = await import('../../src/services/DataService')
 
     // 准备测试数据
@@ -53,12 +55,18 @@ test.describe('新架构 - 数据管理', () => {
 
     // 2. 测试筛选功能
     useFilterStore.getState().updateFilters({ years: [2024] })
-    const filteredData = DataService.filter(mockData, useFilterStore.getState().filters)
+    const filteredData = DataService.filter(
+      mockData,
+      useFilterStore.getState().filters
+    )
     expect(filteredData).toHaveLength(2)
 
     // 3. 测试筛选器重置
     useFilterStore.getState().resetFilters()
-    const allData = DataService.filter(mockData, useFilterStore.getState().filters)
+    const allData = DataService.filter(
+      mockData,
+      useFilterStore.getState().filters
+    )
     expect(allData).toHaveLength(3)
   })
 })
@@ -194,14 +202,19 @@ test.describe('新架构 - UI状态管理', () => {
 
     // 3. 设置表格列可见性
     useUIStore.getState().setTableColumns(['column1', 'column2'])
-    expect(useUIStore.getState().tableConfig.visibleColumns).toEqual(['column1', 'column2'])
+    expect(useUIStore.getState().tableConfig.visibleColumns).toEqual([
+      'column1',
+      'column2',
+    ])
   })
 })
 
 test.describe('新架构 - 集成测试', () => {
   test('应支持完整的数据流程', async () => {
     const { useDataStore } = await import('../../src/store/domains/dataStore')
-    const { useFilterStore } = await import('../../src/store/domains/filterStore')
+    const { useFilterStore } = await import(
+      '../../src/store/domains/filterStore'
+    )
     const { useCacheStore } = await import('../../src/store/domains/cacheStore')
     const { DataService } = await import('../../src/services/DataService')
     const { KPIService } = await import('../../src/services/KPIService')
@@ -232,7 +245,10 @@ test.describe('新架构 - 集成测试', () => {
       weeks: [1, 2, 3],
     })
 
-    const filteredData = DataService.filter(mockData, useFilterStore.getState().filters)
+    const filteredData = DataService.filter(
+      mockData,
+      useFilterStore.getState().filters
+    )
     expect(filteredData.length).toBeGreaterThan(0)
 
     // 3. 计算KPI（使用缓存）

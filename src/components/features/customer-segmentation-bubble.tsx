@@ -18,7 +18,10 @@ import * as echarts from 'echarts'
 import { useFilteredData } from '@/hooks/use-filtered-data'
 import { InsuranceRecord } from '@/types/insurance'
 import { formatNumber, formatPercent } from '@/utils/format'
-import { getBusinessTypeCode, getBusinessTypeShortLabelByCode } from '@/constants/dimensions'
+import {
+  getBusinessTypeCode,
+  getBusinessTypeShortLabelByCode,
+} from '@/constants/dimensions'
 
 // 颜色配置 - 按客户类型
 const CUSTOMER_COLORS: Record<string, string> = {
@@ -43,10 +46,10 @@ const BUSINESS_COLORS: Record<string, string> = {
   '营货-≥10t卸': '#14b8a6',
   '营货-≥10t特': '#a855f7',
   '营货-其他': '#6b7280',
-  '摩托': '#64748b',
+  摩托: '#64748b',
   '营客-出租': '#d946ef',
   '营客-网约': '#ec4899',
-  '其他': '#6b7280',
+  其他: '#6b7280',
 }
 
 type ColorByType = 'customer' | 'business'
@@ -202,7 +205,7 @@ export function CustomerSegmentationBubble({ className }: Props) {
     const chart = chartInstanceRef.current
 
     // 准备数据：ECharts scatter 需要 [x, y, size] 格式
-    const chartData = bubbleData.map((d) => ({
+    const chartData = bubbleData.map(d => ({
       value: [d.averagePremium, d.lossRatio, d.policyCount],
       name: d.name,
       itemStyle: {
@@ -318,8 +321,8 @@ export function CustomerSegmentationBubble({ className }: Props) {
             const policyCount = data[2]
             const minSize = 10
             const maxSize = 40
-            const minCount = Math.min(...bubbleData.map((d) => d.policyCount))
-            const maxCount = Math.max(...bubbleData.map((d) => d.policyCount))
+            const minCount = Math.min(...bubbleData.map(d => d.policyCount))
+            const maxCount = Math.max(...bubbleData.map(d => d.policyCount))
             if (maxCount === minCount) return (minSize + maxSize) / 2
             return (
               minSize +

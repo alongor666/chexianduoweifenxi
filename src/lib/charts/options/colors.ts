@@ -28,14 +28,14 @@ export const CHART_COLORS = {
  * 默认图表颜色序列
  */
 export const DEFAULT_CHART_COLORS = [
-  CHART_COLORS.primary,    // 蓝色
-  CHART_COLORS.success,    // 绿色
-  CHART_COLORS.warning,    // 橙色
-  CHART_COLORS.danger,     // 红色
-  CHART_COLORS.secondary,  // 紫色
-  CHART_COLORS.info,       // 青色
-  CHART_COLORS.pink,       // 粉色
-  CHART_COLORS.neutral,    // 灰色
+  CHART_COLORS.primary, // 蓝色
+  CHART_COLORS.success, // 绿色
+  CHART_COLORS.warning, // 橙色
+  CHART_COLORS.danger, // 红色
+  CHART_COLORS.secondary, // 紫色
+  CHART_COLORS.info, // 青色
+  CHART_COLORS.pink, // 粉色
+  CHART_COLORS.neutral, // 灰色
 ]
 
 /**

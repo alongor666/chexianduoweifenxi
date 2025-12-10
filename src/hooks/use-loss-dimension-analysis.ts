@@ -1,5 +1,8 @@
 import { useMemo } from 'react'
-import { getBusinessTypeCode, getBusinessTypeShortLabelByCode } from '@/constants/dimensions'
+import {
+  getBusinessTypeCode,
+  getBusinessTypeShortLabelByCode,
+} from '@/constants/dimensions'
 import { useAppStore } from '@/store/use-app-store'
 import type { InsuranceRecord } from '@/types/insurance'
 import { useFilteredData, applyFilters } from './use-filtered-data'
@@ -146,7 +149,9 @@ function mergeMetrics(
   })
 
   // 按签单保费降序排序，保持与保费分析一致的展示顺序
-  return items.sort((a, b) => b.current.signedPremiumYuan - a.current.signedPremiumYuan)
+  return items.sort(
+    (a, b) => b.current.signedPremiumYuan - a.current.signedPremiumYuan
+  )
 }
 
 export function useLossDimensionAnalysis(

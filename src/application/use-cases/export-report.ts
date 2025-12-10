@@ -192,17 +192,17 @@ export class ExportReportUseCase {
       case ExportFormat.PDF:
         return await this.exporter.exportToPDF(records, undefined, options)
       default:
-        throw new ExportError('UNSUPPORTED_FORMAT', `不支持的导出格式: ${format}`)
+        throw new ExportError(
+          'UNSUPPORTED_FORMAT',
+          `不支持的导出格式: ${format}`
+        )
     }
   }
 
   /**
    * 生成文件名
    */
-  private generateFileName(
-    format: ExportFormat,
-    baseName?: string
-  ): string {
+  private generateFileName(format: ExportFormat, baseName?: string): string {
     const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '')
     const name = baseName || 'insurance-data'
     const extension = format.toLowerCase()

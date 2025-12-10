@@ -51,11 +51,7 @@ export class CalculateKPIUseCase {
         filters,
       }
     } catch (error) {
-      throw new KPICalculationError(
-        'CALCULATION_FAILED',
-        'KPI 计算失败',
-        error
-      )
+      throw new KPICalculationError('CALCULATION_FAILED', 'KPI 计算失败', error)
     }
   }
 

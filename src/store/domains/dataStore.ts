@@ -134,7 +134,9 @@ export const useDataStore = create<DataStore>()(
             await get().saveToStorage()
           }
 
-          console.log(`[DataStore] 数据已设置，共 ${normalizedData.length} 条记录`)
+          console.log(
+            `[DataStore] 数据已设置，共 ${normalizedData.length} 条记录`
+          )
         } catch (error) {
           const err = error instanceof Error ? error : new Error('设置数据失败')
           set({ error: err }, false, 'setData:error')

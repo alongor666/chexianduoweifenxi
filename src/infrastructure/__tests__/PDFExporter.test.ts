@@ -241,35 +241,37 @@ describe('PDFExporter', () => {
 
     it('应该只显示前 100 条数据', async () => {
       // 创建 150 条记录
-      const manyRecords = Array.from({ length: 150 }, (_, i) =>
-        new InsuranceRecord(
-          '2024-01-01',
-          2024,
-          (i % 105) + 1,
-          '成都',
-          `测试机构${i}`,
-          '个人',
-          '商业险',
-          '非车险',
-          '主全',
-          '新保',
-          false,
-          false,
-          null,
-          null,
-          null,
-          null,
-          '直销',
-          10000,
-          9000,
-          1,
-          0,
-          0,
-          500,
-          10500,
-          null,
-          8500
-        )
+      const manyRecords = Array.from(
+        { length: 150 },
+        (_, i) =>
+          new InsuranceRecord(
+            '2024-01-01',
+            2024,
+            (i % 105) + 1,
+            '成都',
+            `测试机构${i}`,
+            '个人',
+            '商业险',
+            '非车险',
+            '主全',
+            '新保',
+            false,
+            false,
+            null,
+            null,
+            null,
+            null,
+            '直销',
+            10000,
+            9000,
+            1,
+            0,
+            0,
+            500,
+            10500,
+            null,
+            8500
+          )
       )
 
       const blob = await exporter.exportToPDF(manyRecords)
@@ -358,35 +360,37 @@ describe('PDFExporter', () => {
   describe('边界情况', () => {
     it('应该处理大量数据的 CSV 导出', async () => {
       // 创建 10000 条记录
-      const largeDataset = Array.from({ length: 10000 }, (_, i) =>
-        new InsuranceRecord(
-          '2024-01-01',
-          2024,
-          (i % 105) + 1,
-          '成都',
-          `机构${i}`,
-          '个人',
-          '商业险',
-          '非车险',
-          '主全',
-          '新保',
-          false,
-          false,
-          null,
-          null,
-          null,
-          null,
-          '直销',
-          10000,
-          9000,
-          1,
-          0,
-          0,
-          500,
-          10500,
-          null,
-          8500
-        )
+      const largeDataset = Array.from(
+        { length: 10000 },
+        (_, i) =>
+          new InsuranceRecord(
+            '2024-01-01',
+            2024,
+            (i % 105) + 1,
+            '成都',
+            `机构${i}`,
+            '个人',
+            '商业险',
+            '非车险',
+            '主全',
+            '新保',
+            false,
+            false,
+            null,
+            null,
+            null,
+            null,
+            '直销',
+            10000,
+            9000,
+            1,
+            0,
+            0,
+            500,
+            10500,
+            null,
+            8500
+          )
       )
 
       const startTime = performance.now()
@@ -443,7 +447,10 @@ describe('PDFExporter', () => {
         expenseRatio: 0.001,
       }
 
-      const blob = await exporter.exportKPIReport(kpiWithSmallValues, ExportFormat.CSV)
+      const blob = await exporter.exportKPIReport(
+        kpiWithSmallValues,
+        ExportFormat.CSV
+      )
       const text = await blob.text()
 
       expect(text).toContain('0.01%')
@@ -457,7 +464,10 @@ describe('PDFExporter', () => {
         maturedPremium: 8888888888.88,
       }
 
-      const blob = await exporter.exportKPIReport(kpiWithLargeValues, ExportFormat.CSV)
+      const blob = await exporter.exportKPIReport(
+        kpiWithLargeValues,
+        ExportFormat.CSV
+      )
       const text = await blob.text()
 
       // 验证大数值被正确格式化

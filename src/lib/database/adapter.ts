@@ -44,7 +44,7 @@ export interface DatabaseAdapter {
    * 执行 SQL 查询（可选，仅SQL数据库支持）
    * @param sql SQL 查询语句
    */
-  query?<T = any>(sql: string): Promise<T[]>
+  query?<T = unknown>(sql: string): Promise<T[]>
 
   /**
    * 获取数据统计信息
@@ -77,16 +77,16 @@ export class DatabaseAdapterFactory {
    * 创建适配器实例
    * @param type 适配器类型
    */
-  static create(type: 'indexeddb' | 'duckdb'): DatabaseAdapter {
+  static async create(type: 'indexeddb' | 'duckdb'): Promise<DatabaseAdapter> {
     switch (type) {
       case 'duckdb':
         // 动态导入避免未使用时加载
-        const { DuckDBAdapter } = require('./duckdb-adapter')
+        const { DuckDBAdapter } = await import('./duckdb-adapter')
         return new DuckDBAdapter()
 
       case 'indexeddb':
       default:
-        const { IndexedDBAdapter } = require('./indexeddb-adapter')
+        const { IndexedDBAdapter } = await import('./indexeddb-adapter')
         return new IndexedDBAdapter()
     }
   }
@@ -95,7 +95,7 @@ export class DatabaseAdapterFactory {
    * 根据文件类型自动选择适配器
    * @param file 数据文件
    */
-  static createFromFile(file: File): DatabaseAdapter {
+  static async createFromFile(file: File): Promise<DatabaseAdapter> {
     const extension = file.name.split('.').pop()?.toLowerCase()
 
     if (extension === 'duckdb' || extension === 'db') {

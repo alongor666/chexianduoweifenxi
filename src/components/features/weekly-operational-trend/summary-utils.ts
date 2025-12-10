@@ -1,24 +1,64 @@
-/**
- * 周度经营趋势分析 - 经营摘要生成器
- *
- * 根据周度趋势数据自动生成结构化的经营分析报告文本。
- */
+import { formatNumber } from '@/utils/format'
+import type { ChartDataPoint, DimensionHighlight } from './types'
+import { formatWeekList } from './format-utils'
 
-import { formatNumber } from '@/utils/formatters'
-import type { ChartDataPoint } from './types'
-import { formatWeekList } from './utils'
+/**
+ * 生成行动建议
+ */
+export function generateActionLines(
+  businessHighlights: DimensionHighlight[],
+  organizationHighlights: DimensionHighlight[],
+  coverageHotspots: string,
+  businessHotspots: string,
+  organizationHotspots: string,
+  hasHighlights: boolean
+): string[] {
+  const actionLines: string[] = []
+  if (hasHighlights) {
+    const coverageDisplay =
+      coverageHotspots === '—' ? '重点险别' : coverageHotspots
+    const businessDisplay =
+      businessHotspots === '—' ? '重点业务类型' : businessHotspots
+    const organizationDisplay =
+      organizationHotspots === '—' ? '重点机构' : organizationHotspots
+
+    if (organizationHotspots !== '—') {
+      actionLines.push(
+        `渠道：聚焦 ${organizationDisplay} 等机构，核查代理与直销渠道质量并梳理承保准入。`
+      )
+    } else {
+      actionLines.push('渠道：保持重点机构渠道巡查频次，确保异常及时上报。')
+    }
+    actionLines.push(
+      `产品：针对 ${coverageDisplay} 与 ${businessDisplay}，复盘费率及赔付条款，评估是否需调整承保策略。`
+    )
+    const primaryBusiness =
+      businessHighlights[0]?.label ??
+      (businessHotspots !== '—'
+        ? businessHotspots.replace(/等$/, '')
+        : '重点业务')
+    const primaryCoverage =
+      businessHighlights[0]?.topCoverage ??
+      (coverageHotspots !== '—'
+        ? coverageHotspots.replace(/等$/, '')
+        : '重点险别')
+    const primaryOrganization =
+      organizationHighlights[0]?.label ??
+      (organizationHotspots !== '—'
+        ? organizationHotspots.replace(/等$/, '')
+        : '重点机构')
+    actionLines.push(
+      `作业：构建“${primaryBusiness}—${primaryCoverage}—${primaryOrganization}”风险热力图，纳入周度经营例会跟踪。`
+    )
+  } else {
+    actionLines.push('渠道：当前未发现异常波动，维持现有巡检节奏即可。')
+    actionLines.push('流程：持续关注赔付率趋势，如触及阈值及时启动专项排查。')
+  }
+  return actionLines
+}
 
 /**
  * 生成经营摘要
- *
- * 根据图表数据和数据视图模式，自动生成经营摘要文本。
- * 摘要内容会根据数据模式（当周值/周增量）调整描述重点。
- *
- * @param data - 图表数据点数组
- * @param mode - 数据视图模式
- *   - 'current': 当周值模式（年度累计）
- *   - 'increment': 周增量模式（环比增长）
- * @returns 经营摘要文本
  */
 export function generateOperationalSummary(
   data: ChartDataPoint[],
@@ -40,16 +80,13 @@ export function generateOperationalSummary(
     }
   }
 
-  const totalRiskWeeks = data.filter((d) => d.isRisk).length
+  const totalRiskWeeks = data.filter(d => d.isRisk).length
 
   if (mode === 'increment') {
-    const previousPoint =
-      data.length > 1 ? data[data.length - 2] : null
+    const previousPoint = data.length > 1 ? data[data.length - 2] : null
     const latestPremiumWan = formatNumber(latestPremium, 0)
     const premiumChange =
-      previousPoint != null
-        ? latestPremium - previousPoint.signedPremium
-        : null
+      previousPoint != null ? latestPremium - previousPoint.signedPremium : null
     const premiumChangeText =
       premiumChange != null
         ? `，较上周${premiumChange >= 0 ? '增加' : '下降'} ${formatNumber(
@@ -76,7 +113,7 @@ export function generateOperationalSummary(
         ? `保费周增量在${premiumDrops
             .slice(-2)
             .map(
-              (item) =>
+              item =>
                 `第${item.week}周较前一周下降 ${formatNumber(
                   Math.abs(item.diff),
                   0
@@ -85,9 +122,7 @@ export function generateOperationalSummary(
             .join('、')}，需尽快排查渠道与获客效率`
         : '保费周增量总体保持平稳'
 
-    const riskWeeks = data
-      .filter((d) => d.isRisk)
-      .map((d) => d.weekNumber)
+    const riskWeeks = data.filter(d => d.isRisk).map(d => d.weekNumber)
     const riskWeekText =
       riskWeeks.length > 0
         ? `赔付率预警集中在 ${formatWeekList(

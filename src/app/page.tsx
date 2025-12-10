@@ -13,7 +13,13 @@ export default function HomePage() {
   // DashboardClient 会自动从 LocalStorage 加载持久化数据
   // 使用 Suspense 包裹以支持 useSearchParams
   return (
-    <Suspense fallback={<div className="flex items-center justify-center h-screen">加载中...</div>}>
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center h-screen">
+          加载中...
+        </div>
+      }
+    >
       <DashboardClient initialData={[]} />
     </Suspense>
   )

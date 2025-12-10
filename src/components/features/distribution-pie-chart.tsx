@@ -50,7 +50,7 @@ export const DistributionPieChart = React.memo(function DistributionPieChart() {
     const total = data.reduce((s, d) => s + d.value, 0)
 
     // 准备数据：ECharts 饼图需要 name 和 value 字段
-    const chartData = data.map((item) => ({
+    const chartData = data.map(item => ({
       name: item.label,
       value: item.value,
     }))
@@ -91,7 +91,7 @@ export const DistributionPieChart = React.memo(function DistributionPieChart() {
           fontSize: 12,
         },
         formatter: (name: string) => {
-          const item = data.find((d) => d.label === name)
+          const item = data.find(d => d.label === name)
           if (!item) return name
           const percent = ((item.value / total) * 100).toFixed(1)
           return `${name}  ${percent}%`

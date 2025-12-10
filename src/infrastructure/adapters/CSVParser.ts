@@ -27,7 +27,11 @@ import { normalizeChineseText } from '../../domain/rules/data-normalization'
  */
 export class CSVParser implements IFileParser {
   // 支持的文件类型
-  private readonly supportedTypes = ['.csv', 'text/csv', 'application/vnd.ms-excel']
+  private readonly supportedTypes = [
+    '.csv',
+    'text/csv',
+    'application/vnd.ms-excel',
+  ]
 
   // 最大文件大小（100MB）
   private readonly maxFileSize = 100 * 1024 * 1024
@@ -69,15 +73,17 @@ export class CSVParser implements IFileParser {
       const text = await file.text()
 
       // 2. 使用 PapaParse 解析
-      const parseResult = await new Promise<Papa.ParseResult<any>>((resolve, reject) => {
-        Papa.parse(text, {
-          header: true,
-          skipEmptyLines: true,
-          dynamicTyping: true, // 自动转换数字类型
-          complete: resolve,
-          error: reject,
-        })
-      })
+      const parseResult = await new Promise<Papa.ParseResult<any>>(
+        (resolve, reject) => {
+          Papa.parse(text, {
+            header: true,
+            skipEmptyLines: true,
+            dynamicTyping: true, // 自动转换数字类型
+            complete: resolve,
+            error: reject,
+          })
+        }
+      )
 
       // 3. 检查解析错误
       if (parseResult.errors.length > 0) {
@@ -140,7 +146,7 @@ export class CSVParser implements IFileParser {
 
       // 3. 解析并验证内容
       const text = await file.text()
-      const parseResult = await new Promise<Papa.ParseResult<any>>((resolve) => {
+      const parseResult = await new Promise<Papa.ParseResult<any>>(resolve => {
         Papa.parse(text, {
           header: true,
           skipEmptyLines: true,
@@ -151,7 +157,9 @@ export class CSVParser implements IFileParser {
 
       // 4. 验证表头
       const headers = parseResult.meta.fields || []
-      const missingFields = this.requiredFields.filter(field => !headers.includes(field))
+      const missingFields = this.requiredFields.filter(
+        field => !headers.includes(field)
+      )
 
       if (missingFields.length > 0) {
         errors.push({
@@ -178,7 +186,9 @@ export class CSVParser implements IFileParser {
         errors,
         warnings,
         totalRows: parseResult.data.length,
-        validRows: parseResult.data.length - errors.filter(e => e.row !== undefined).length,
+        validRows:
+          parseResult.data.length -
+          errors.filter(e => e.row !== undefined).length,
       }
     } catch (error) {
       errors.push({
@@ -223,7 +233,11 @@ export class CSVParser implements IFileParser {
   ): void {
     // 验证必需字段存在
     for (const field of this.requiredFields) {
-      if (row[field] === undefined || row[field] === null || row[field] === '') {
+      if (
+        row[field] === undefined ||
+        row[field] === null ||
+        row[field] === ''
+      ) {
         errors.push({
           type: 'MISSING_REQUIRED_FIELD' as ValidationErrorType,
           message: `第 ${rowIndex + 2} 行缺少必需字段`,
@@ -321,7 +335,9 @@ export class CSVParser implements IFileParser {
         third_level_organization: normalizeChineseText(
           String(row.third_level_organization || '')
         ),
-        customer_category_3: normalizeChineseText(String(row.customer_category_3 || '')),
+        customer_category_3: normalizeChineseText(
+          String(row.customer_category_3 || '')
+        ),
         insurance_type: row.insurance_type || '商业险',
         business_type_category: normalizeChineseText(
           String(row.business_type_category || '')
@@ -334,17 +350,23 @@ export class CSVParser implements IFileParser {
         highway_risk_grade: row.highway_risk_grade || null,
         large_truck_score: row.large_truck_score || null,
         small_truck_score: row.small_truck_score || null,
-        terminal_source: normalizeChineseText(String(row.terminal_source || '')),
+        terminal_source: normalizeChineseText(
+          String(row.terminal_source || '')
+        ),
         signed_premium_yuan: Number(row.signed_premium_yuan || 0),
         matured_premium_yuan: Number(row.matured_premium_yuan || 0),
         policy_count: Number(row.policy_count || 0),
         claim_case_count: Number(row.claim_case_count || 0),
-        reported_claim_payment_yuan: Number(row.reported_claim_payment_yuan || 0),
+        reported_claim_payment_yuan: Number(
+          row.reported_claim_payment_yuan || 0
+        ),
         expense_amount_yuan: Number(row.expense_amount_yuan || 0),
         commercial_premium_before_discount_yuan: Number(
           row.commercial_premium_before_discount_yuan || 0
         ),
-        premium_plan_yuan: row.premium_plan_yuan ? Number(row.premium_plan_yuan) : null,
+        premium_plan_yuan: row.premium_plan_yuan
+          ? Number(row.premium_plan_yuan)
+          : null,
         marginal_contribution_amount_yuan: Number(
           row.marginal_contribution_amount_yuan || 0
         ),

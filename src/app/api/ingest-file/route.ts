@@ -17,12 +17,14 @@ export async function POST(request: Request) {
       )
     }
 
-    console.log(`[API /api/ingest-file] 收到 ${data.length} 条记录，准备处理...`)
+    console.log(
+      `[API /api/ingest-file] 收到 ${data.length} 条记录，准备处理...`
+    )
 
     // --- 在此调用 DataService ---
     // 这是一个占位符。在未来的步骤中，我们将在这里集成 DataService
     // 以执行“按周覆盖”的去重策略并写入 PostgreSQL 数据库。
-    const processedRecords = data.length 
+    const processedRecords = data.length
 
     console.log(`[API /api/ingest-file] 成功处理 ${processedRecords} 条记录。`)
 

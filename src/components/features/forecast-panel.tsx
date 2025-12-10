@@ -99,10 +99,10 @@ export function ForecastPanel({ className }: ForecastPanelProps) {
     const chart = chartInstanceRef.current
 
     // 提取数据
-    const labels = chartData.map((d) => d.label)
-    const actualData = chartData.map((d) => d.actual)
-    const fittedData = chartData.map((d) => d.fitted)
-    const predictedData = chartData.map((d) => d.predicted)
+    const labels = chartData.map(d => d.label)
+    const actualData = chartData.map(d => d.actual)
+    const fittedData = chartData.map(d => d.fitted)
+    const predictedData = chartData.map(d => d.predicted)
 
     // ECharts 配置
     const option: echarts.EChartsOption = {

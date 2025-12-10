@@ -30,30 +30,30 @@ export function MultiChartTabs({ className }: MultiChartTabsProps) {
     {
       value: 'radar' as const,
       label: '机构雷达图',
-      description: '多机构健康度对比分析'
+      description: '多机构健康度对比分析',
     },
     {
       value: 'premium' as const,
       label: '保费分析',
-      description: '保费数据多维度分析'
+      description: '保费数据多维度分析',
     },
     {
       value: 'claim' as const,
       label: '赔付分析',
-      description: '赔付数据多维度分析'
+      description: '赔付数据多维度分析',
     },
     {
       value: 'distribution' as const,
       label: '占比分析',
-      description: '客户与渠道占比分析'
-    }
+      description: '客户与渠道占比分析',
+    },
   ]
 
   return (
     <div className={className}>
       <Tabs
         value={activeTab}
-        onValueChange={(value) => setActiveTab(value as MultiChartTabValue)}
+        onValueChange={value => setActiveTab(value as MultiChartTabValue)}
         className="space-y-6"
       >
         {/* 标签页导航 */}
@@ -68,9 +68,9 @@ export function MultiChartTabs({ className }: MultiChartTabsProps) {
               </p>
             </div>
           </div>
-          
+
           <TabsList className="grid grid-cols-4 gap-2 bg-slate-100/50 p-1 rounded-lg">
-            {tabItems.map((item) => (
+            {tabItems.map(item => (
               <TabsTrigger
                 key={item.value}
                 value={item.value}

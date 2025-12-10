@@ -2,11 +2,23 @@
 
 import React, { useCallback, useMemo, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { Download, UploadCloud, FileText, History, Save, CheckCircle } from 'lucide-react'
+import {
+  Download,
+  UploadCloud,
+  FileText,
+  History,
+  Save,
+  CheckCircle,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { useToast } from '@/hooks/use-toast'
 import { parseGoalCsvFile } from '@/utils/csvParser'
 import { useGoalStore, KNOWN_BUSINESS_TYPES } from '@/store/goalStore'
@@ -24,7 +36,9 @@ export function TargetManagementPanel() {
   const [ignoredUnknownCount, setIgnoredUnknownCount] = useState(0)
 
   const createTunedVersion = useGoalStore(state => state.createTunedVersion)
-  const exportCurrentVersionCsv = useGoalStore(state => state.exportCurrentVersionCsv)
+  const exportCurrentVersionCsv = useGoalStore(
+    state => state.exportCurrentVersionCsv
+  )
   const getCurrentVersion = useGoalStore(state => state.getCurrentVersion)
   const baseYear = useGoalStore(state => state.baseYear)
   const versions = useGoalStore(state => state.versions)
@@ -37,7 +51,7 @@ export function TargetManagementPanel() {
   const generateTemplate = useCallback(() => {
     const templateData = KNOWN_BUSINESS_TYPES.map(bizType => `${bizType},0`)
     const csvContent = `业务类型,年度目标（万）\n${templateData.join('\n')}\n`
-    
+
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
@@ -63,10 +77,13 @@ export function TargetManagementPanel() {
 
       const file = acceptedFiles[0]
       try {
-        const { rows, ignoredUnknownCount: ignored } = await parseGoalCsvFile(file, {
-          knownBusinessTypes: KNOWN_BUSINESS_TYPES,
-          unknownBusinessStrategy: 'block',
-        })
+        const { rows, ignoredUnknownCount: ignored } = await parseGoalCsvFile(
+          file,
+          {
+            knownBusinessTypes: KNOWN_BUSINESS_TYPES,
+            unknownBusinessStrategy: 'block',
+          }
+        )
 
         const { versionId } = createTunedVersion(rows || [])
         setIgnoredUnknownCount(ignored || 0)
@@ -92,15 +109,16 @@ export function TargetManagementPanel() {
     [createTunedVersion, toast]
   )
 
-  const { getRootProps, getInputProps, isDragActive, fileRejections } = useDropzone({
-    onDrop,
-    accept: {
-      'text/csv': ['.csv'],
-      'application/vnd.ms-excel': ['.csv'],
-    },
-    maxFiles: 1,
-    disabled: isImporting,
-  })
+  const { getRootProps, getInputProps, isDragActive, fileRejections } =
+    useDropzone({
+      onDrop,
+      accept: {
+        'text/csv': ['.csv'],
+        'application/vnd.ms-excel': ['.csv'],
+      },
+      maxFiles: 1,
+      disabled: isImporting,
+    })
 
   const rejectionAlert = useMemo(() => {
     if (fileRejections.length === 0) return null
@@ -184,17 +202,20 @@ export function TargetManagementPanel() {
                   })}
                 >
                   <input {...getInputProps()} aria-label="上传 CSV 文件" />
-                  <UploadCloud className="mb-2 h-6 w-6 text-primary" aria-hidden="true" />
+                  <UploadCloud
+                    className="mb-2 h-6 w-6 text-primary"
+                    aria-hidden="true"
+                  />
                   <p className="text-sm font-medium">拖拽或点击上传 CSV 文件</p>
                   <p className="mt-1 text-xs text-muted-foreground">
                     支持业务类型、年度目标数据导入
                   </p>
                 </div>
                 {rejectionAlert}
-                <Button 
-                  onClick={generateTemplate} 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  onClick={generateTemplate}
+                  variant="outline"
+                  size="sm"
                   className="w-full"
                 >
                   <Download className="h-4 w-4 mr-2" />
@@ -211,7 +232,12 @@ export function TargetManagementPanel() {
                     导出为 CSV 格式文件
                   </p>
                 </div>
-                <Button onClick={handleExport} variant="outline" size="sm" className="w-full">
+                <Button
+                  onClick={handleExport}
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                >
                   <Download className="h-4 w-4 mr-2" />
                   导出当前版本
                 </Button>
@@ -250,14 +276,14 @@ export function TargetManagementPanel() {
               <div className="space-y-3">
                 <h3 className="text-sm font-medium text-gray-700">版本历史</h3>
                 <div className="space-y-2 max-h-32 overflow-y-auto">
-                  {versions.map((version) => (
+                  {versions.map(version => (
                     <div
                       key={version.id}
                       className={cn(
-                        "flex items-center justify-between p-2 rounded border text-sm",
-                        version.id === currentVersionId 
-                          ? "bg-primary/10 border-primary/30" 
-                          : "bg-muted/20 border-muted-foreground/20"
+                        'flex items-center justify-between p-2 rounded border text-sm',
+                        version.id === currentVersionId
+                          ? 'bg-primary/10 border-primary/30'
+                          : 'bg-muted/20 border-muted-foreground/20'
                       )}
                     >
                       <div>

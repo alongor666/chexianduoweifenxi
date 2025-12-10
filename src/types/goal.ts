@@ -28,11 +28,14 @@ export interface GoalState {
   achievedMap: Record<string, number>
   // 新增：多维度支持
   currentDimension: DimensionType
-  dimensionData: Record<DimensionType, {
-    versions: GoalVersion[]
-    currentVersionId: string
-    achievedMap: Record<string, number>
-  }>
+  dimensionData: Record<
+    DimensionType,
+    {
+      versions: GoalVersion[]
+      currentVersionId: string
+      achievedMap: Record<string, number>
+    }
+  >
 }
 
 export interface GoalSnapshot {
@@ -40,11 +43,14 @@ export interface GoalSnapshot {
   versions: GoalVersion[]
   // 新增：多维度快照支持
   currentDimension: DimensionType
-  dimensionData: Record<DimensionType, {
-    versions: GoalVersion[]
-    currentVersionId: string
-    achievedMap: Record<string, number>
-  }>
+  dimensionData: Record<
+    DimensionType,
+    {
+      versions: GoalVersion[]
+      currentVersionId: string
+      achievedMap: Record<string, number>
+    }
+  >
 }
 
 export interface GoalCsvRow {

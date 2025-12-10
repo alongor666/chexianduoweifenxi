@@ -1,6 +1,8 @@
 import { useMemo } from 'react'
 import { getBusinessTypeCode } from '@/constants/dimensions'
 import { useAppStore } from '@/store/use-app-store'
+import { useDrillDownStore } from '@/store/drill-down-store'
+import { filterDrillDownData } from '@/components/features/drill-down/utils'
 import type { InsuranceRecord, FilterState } from '@/types/insurance'
 
 /**
@@ -103,11 +105,27 @@ export function applyFilters(
 
 /**
  * 获取过滤后的数据
- * 根据当前的筛选条件过滤原始数据
+ * 根据当前的筛选条件过滤原始数据，并应用全局下钻筛选
  */
 export function useFilteredData(): InsuranceRecord[] {
   const rawData = useAppStore(state => state.rawData)
   const filters = useAppStore(state => state.filters)
+  const drillDownSteps = useDrillDownStore(state => state.steps)
 
-  return useMemo(() => applyFilters(rawData, filters), [rawData, filters])
+  return useMemo(() => {
+    // 1. 应用基础筛选
+    const baseFiltered = applyFilters(rawData, filters)
+
+    // 2. 如果有下钻步骤，应用下钻筛选
+    if (drillDownSteps.length > 0) {
+      return filterDrillDownData({
+        rawData: [], // 提供 initialData 时忽略 rawData
+        initialData: baseFiltered,
+        filters,
+        drillDownSteps,
+      })
+    }
+
+    return baseFiltered
+  }, [rawData, filters, drillDownSteps])
 }

@@ -29,16 +29,18 @@ import { InsuranceRecord } from '../entities/InsuranceRecord'
 /**
  * 创建测试用的保险记录
  */
-function createTestRecord(overrides: Partial<{
-  signedPremiumYuan: number
-  maturedPremiumYuan: number
-  policyCount: number
-  claimCaseCount: number
-  reportedClaimPaymentYuan: number
-  expenseAmountYuan: number
-  commercialPremiumBeforeDiscountYuan: number
-  marginalContributionAmountYuan: number
-}> = {}): InsuranceRecord {
+function createTestRecord(
+  overrides: Partial<{
+    signedPremiumYuan: number
+    maturedPremiumYuan: number
+    policyCount: number
+    claimCaseCount: number
+    reportedClaimPaymentYuan: number
+    expenseAmountYuan: number
+    commercialPremiumBeforeDiscountYuan: number
+    marginalContributionAmountYuan: number
+  }> = {}
+): InsuranceRecord {
   return new InsuranceRecord(
     '2025-01-14',
     2025,

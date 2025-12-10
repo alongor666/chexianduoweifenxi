@@ -108,7 +108,9 @@ export function createTestRawData(
     policy_count:
       overrides?.policy_count !== undefined ? overrides.policy_count : 1,
     claim_case_count:
-      overrides?.claim_case_count !== undefined ? overrides.claim_case_count : 0,
+      overrides?.claim_case_count !== undefined
+        ? overrides.claim_case_count
+        : 0,
     reported_claim_payment_yuan:
       overrides?.reported_claim_payment_yuan !== undefined
         ? overrides.reported_claim_payment_yuan

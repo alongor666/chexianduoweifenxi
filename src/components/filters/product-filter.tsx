@@ -41,8 +41,9 @@ export function ProductFilter() {
     'businessTypes',
   ])
   const presentBusinessCodes = new Set(
-    recordsForBusinessType
-      .map(record => getBusinessTypeCode(record.business_type_category))
+    recordsForBusinessType.map(record =>
+      getBusinessTypeCode(record.business_type_category)
+    )
   )
   const availableBusinessTypes = CANONICAL_BUSINESS_CODES.filter(code =>
     presentBusinessCodes.has(code)

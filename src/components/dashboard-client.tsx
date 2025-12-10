@@ -45,6 +45,8 @@ import {
 import { PredictionManagerPanel } from '@/components/features/prediction-manager'
 import { DataManagementPanel } from '@/components/features/data-management-panel'
 import { FilterManagementPanel } from '@/components/features/filter-management-panel'
+import { DrillDownBar } from '@/components/features/drill-down/drill-down-bar'
+import { useDrillDownStore } from '@/store/drill-down-store'
 import type { InsuranceRecord } from '@/types/insurance'
 
 interface DashboardClientProps {
@@ -60,9 +62,10 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
   const premiumTargetsOverall = premiumTargets?.overall
 
   // 判断数据来源
-  const dataSource = typeof window !== 'undefined'
-    ? (process.env.NEXT_PUBLIC_DATA_SOURCE || 'local')
-    : 'local'
+  const dataSource =
+    typeof window !== 'undefined'
+      ? process.env.NEXT_PUBLIC_DATA_SOURCE || 'local'
+      : 'local'
   const isSupabaseMode = dataSource === 'supabase' && initialData.length > 0
 
   // 使用智能环比数据（优化参数以避免无限重渲染）
@@ -72,8 +75,9 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
     }),
     [premiumTargetsOverall]
   )
-  const { currentKpi, compareKpi, previousWeekNumber } =
-    useSmartComparison(smartComparisonOptions)
+  const { currentKpi, compareKpi, previousWeekNumber } = useSmartComparison(
+    smartComparisonOptions
+  )
 
   const [mounted, setMounted] = useState(false)
   const router = useRouter()
@@ -132,6 +136,9 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
   }
 
   const handleTabChange = (tab: AnalysisTabValue) => {
+    // 切换标签页时重置下钻状态
+    useDrillDownStore.getState().resetAll()
+
     if (tab === 'targets') {
       router.push('/targets')
       return
@@ -180,12 +187,16 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
                     {isSupabaseMode ? (
                       <>
                         <Cloud className="w-3.5 h-3.5 text-green-600" />
-                        <span className="text-xs font-medium text-green-700">Supabase</span>
+                        <span className="text-xs font-medium text-green-700">
+                          Supabase
+                        </span>
                       </>
                     ) : (
                       <>
                         <HardDrive className="w-3.5 h-3.5 text-blue-600" />
-                        <span className="text-xs font-medium text-blue-700">本地模式</span>
+                        <span className="text-xs font-medium text-blue-700">
+                          本地模式
+                        </span>
                       </>
                     )}
                   </div>
@@ -209,11 +220,21 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
               <TopToolbar rawCount={rawData.length} activeTab={activeTab} />
             </div>
           )}
+
+          {/* 下钻导航条 - 位于筛选器和内容区之间 */}
+          {/* 移除头部内的 DrillDownBar */}
         </div>
       </header>
 
       {/* 主内容 */}
       <main className="max-w-7xl mx-auto">
+        {/* 下钻导航条 - 位于筛选器和内容区之间，Sticky 定位 */}
+        {hasData && (activeTab === 'kpi' || activeTab === 'trend') && (
+          <div className="sticky top-0 z-40 mb-6 bg-slate-50/95 backdrop-blur supports-[backdrop-filter]:bg-slate-50/60 pb-4 pt-2 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 border-b border-slate-200/60 transition-all duration-200">
+            <DrillDownBar />
+          </div>
+        )}
+
         {!hasData && (
           <div className="space-y-6">
             <FileUpload />

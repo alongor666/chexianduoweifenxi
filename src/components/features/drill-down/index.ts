@@ -8,5 +8,4 @@ export type { DrillDownBreadcrumbProps } from './drill-down-breadcrumb'
 export { DimensionSelector } from './dimension-selector'
 export type { DimensionSelectorProps } from './dimension-selector'
 
-export { DrillDownControl } from './drill-down-control'
-export type { DrillDownControlProps } from './drill-down-control'
+export { DrillDownBar } from './drill-down-bar'

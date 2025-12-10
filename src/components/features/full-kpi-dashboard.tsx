@@ -243,7 +243,7 @@ export function FullKPIDashboard({
 
     // 新逻辑：计算环比变化
     const comparison = getComparisonMetrics(config.key, kpiData, compareData)
-    
+
     // 判断是否为率值指标（率值指标通常显示绝对变化的百分点，金额指标显示百分比变化）
     const isRatioMetric = [
       'loss_ratio',
@@ -253,7 +253,7 @@ export function FullKPIDashboard({
       'variable_cost_ratio',
       'matured_claim_ratio',
       'premium_time_progress_achievement_rate',
-      'autonomy_coefficient'
+      'autonomy_coefficient',
     ].includes(config.key as string)
 
     let displayCompareValue: number | null = null
@@ -283,7 +283,7 @@ export function FullKPIDashboard({
         formatter={config.formatter}
         kpiKey={config.key as string}
         enableDrillDown={true}
-        calculateValue={(data) => {
+        calculateValue={data => {
           const result = kpiEngine.calculate(data)
           return result[config.key] as number | null
         }}

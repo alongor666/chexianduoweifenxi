@@ -10,7 +10,9 @@ import { DataService } from '../DataService'
 import type { InsuranceRecord, FilterState } from '@/types/insurance'
 
 // 测试数据工厂
-function createMockRecord(overrides?: Partial<InsuranceRecord>): InsuranceRecord {
+function createMockRecord(
+  overrides?: Partial<InsuranceRecord>
+): InsuranceRecord {
   return {
     snapshot_date: '2025-03-15',
     week_number: 11,
@@ -68,9 +70,21 @@ describe('DataService', () => {
 
     test('应正确筛选多个条件（AND逻辑）', () => {
       const mockData = [
-        createMockRecord({ policy_start_year: 2025, week_number: 11, insurance_type: '车险' }),
-        createMockRecord({ policy_start_year: 2025, week_number: 11, insurance_type: '寿险' }),
-        createMockRecord({ policy_start_year: 2025, week_number: 12, insurance_type: '车险' }),
+        createMockRecord({
+          policy_start_year: 2025,
+          week_number: 11,
+          insurance_type: '车险',
+        }),
+        createMockRecord({
+          policy_start_year: 2025,
+          week_number: 11,
+          insurance_type: '寿险',
+        }),
+        createMockRecord({
+          policy_start_year: 2025,
+          week_number: 12,
+          insurance_type: '车险',
+        }),
       ]
 
       const filters: FilterState = {
@@ -157,7 +171,10 @@ describe('DataService', () => {
       const mockData = [
         createMockRecord({ insurance_type: '车险', signed_premium_yuan: 5000 }),
         createMockRecord({ insurance_type: '车险', signed_premium_yuan: 3000 }),
-        createMockRecord({ insurance_type: '寿险', signed_premium_yuan: 10000 }),
+        createMockRecord({
+          insurance_type: '寿险',
+          signed_premium_yuan: 10000,
+        }),
       ]
 
       const result = DataService.groupBy(mockData, 'insurance_type')
@@ -171,9 +188,21 @@ describe('DataService', () => {
   describe('getStatistics', () => {
     test('应正确计算统计信息', () => {
       const mockData = [
-        createMockRecord({ signed_premium_yuan: 5000, policy_count: 1, week_number: 10 }),
-        createMockRecord({ signed_premium_yuan: 3000, policy_count: 2, week_number: 11 }),
-        createMockRecord({ signed_premium_yuan: 2000, policy_count: 1, week_number: 10 }),
+        createMockRecord({
+          signed_premium_yuan: 5000,
+          policy_count: 1,
+          week_number: 10,
+        }),
+        createMockRecord({
+          signed_premium_yuan: 3000,
+          policy_count: 2,
+          week_number: 11,
+        }),
+        createMockRecord({
+          signed_premium_yuan: 2000,
+          policy_count: 1,
+          week_number: 10,
+        }),
       ]
 
       const result = DataService.getStatistics(mockData)
@@ -252,7 +281,9 @@ describe('DataService', () => {
       const result = DataService.getByWeekRange(mockData, [10, 12])
 
       expect(result).toHaveLength(3)
-      expect(result.every(r => r.week_number >= 10 && r.week_number <= 12)).toBe(true)
+      expect(
+        result.every(r => r.week_number >= 10 && r.week_number <= 12)
+      ).toBe(true)
     })
   })
 })

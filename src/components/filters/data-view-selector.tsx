@@ -30,7 +30,7 @@ export function DataViewSelector() {
     // 同时更新新旧两个Store的状态，确保数据同步
     updateFilters({ dataViewType: type })
     setDataViewType(type)
-    
+
     console.log(`[DataViewSelector] 切换数据视图类型: ${type}`)
   }
 

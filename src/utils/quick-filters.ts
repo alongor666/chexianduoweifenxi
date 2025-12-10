@@ -159,7 +159,7 @@ export function applyQuickFilter(
   allFilters: QuickFilter[],
   maxCount: number = 7
 ): string[] {
-  const filter = allFilters.find((f) => f.id === filterId)
+  const filter = allFilters.find(f => f.id === filterId)
   if (!filter) return []
 
   // 如果机构数量超过限制，取前N个

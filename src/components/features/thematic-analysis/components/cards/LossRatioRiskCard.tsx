@@ -68,7 +68,10 @@ function clampProgress(value: number | null): number {
   return clamped
 }
 
-export function LossRatioRiskCard({ item, compact = false }: LossRatioRiskCardProps) {
+export function LossRatioRiskCard({
+  item,
+  compact = false,
+}: LossRatioRiskCardProps) {
   const lossRatio = item.current.lossRatio
   const colorScale = getDynamicColorByLossRatio(lossRatio)
   const comparison = buildComparisonForMetric(

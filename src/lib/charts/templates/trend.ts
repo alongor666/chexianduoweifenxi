@@ -20,7 +20,6 @@ import {
   buildDataZoom,
   buildLineSeries,
   buildScatterSeries,
-  buildThresholdLine,
   buildRiskArea,
 } from '../builders'
 import { CHART_COLORS, getGradientColor } from '../theme'
@@ -36,7 +35,7 @@ export interface TrendDataPoint {
   /** 是否为风险点 */
   isRisk?: boolean
   /** 原始数据（用于 tooltip） */
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export interface TrendChartConfig {
@@ -70,6 +69,7 @@ export interface TrendChartConfig {
   }
 
   /** 自定义 tooltip 格式化函数 */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tooltipFormatter?: (params: any) => string
 
   /** 点击事件处理（外部处理，这里只是配置） */
@@ -97,19 +97,26 @@ export function buildTrendChart(config: TrendChartConfig): EChartsOption {
   // 分离风险点和正常点
   const normalPoints = secondary
     ? data
-        .map((d, i) => (!d.isRisk && d.secondaryValue !== null ? [i, d.secondaryValue] : null))
+        .map((d, i) =>
+          !d.isRisk && d.secondaryValue !== null ? [i, d.secondaryValue] : null
+        )
         .filter((v): v is [number, number] => v !== null)
     : []
 
   const riskPoints = secondary
     ? data
-        .map((d, i) => (d.isRisk && d.secondaryValue !== null ? [i, d.secondaryValue] : null))
+        .map((d, i) =>
+          d.isRisk && d.secondaryValue !== null ? [i, d.secondaryValue] : null
+        )
         .filter((v): v is [number, number] => v !== null)
     : []
 
   // 计算趋势线（简单移动平均）
   const trendLineData = secondary?.showTrendLine
-    ? calculateMovingAverage(secondaryData.filter(v => v !== null) as number[], 3)
+    ? calculateMovingAverage(
+        secondaryData.filter(v => v !== null) as number[],
+        3
+      )
     : []
 
   // 构建系列
@@ -133,7 +140,10 @@ export function buildTrendChart(config: TrendChartConfig): EChartsOption {
   if (primary.showArea) {
     const lastSeries = series[series.length - 1]
     lastSeries.areaStyle = {
-      color: getGradientColor(primary.color || CHART_COLORS.metrics.premium, 0.3),
+      color: getGradientColor(
+        primary.color || CHART_COLORS.metrics.premium,
+        0.3
+      ),
     }
   }
 
@@ -243,46 +253,48 @@ export function buildTrendChart(config: TrendChartConfig): EChartsOption {
           color: '#999',
         },
       },
-      formatter: tooltipFormatter || ((params: any) => {
-        if (!Array.isArray(params) || params.length === 0) return ''
+      formatter:
+        tooltipFormatter ||
+        ((params: any) => {
+          if (!Array.isArray(params) || params.length === 0) return ''
 
-        const dataIndex = params[0].dataIndex
-        const point = data[dataIndex]
+          const dataIndex = params[0].dataIndex
+          const point = data[dataIndex]
 
-        if (!point) return ''
+          if (!point) return ''
 
-        let html = `<div style="min-width: 260px;">
+          let html = `<div style="min-width: 260px;">
           <div style="font-weight: 600; margin-bottom: 8px; font-size: 13px;">${point.label}</div>
           <div style="margin-bottom: 4px;">
             <span style="color: #64748b;">${primary.name}：</span>
             <span style="font-weight: 600;">${formatNumber(point.primaryValue, 1)} ${primary.unit}</span>
           </div>`
 
-        if (secondary && point.secondaryValue !== null) {
-          const thresholdDiff = secondary.threshold
-            ? point.secondaryValue - secondary.threshold
-            : null
+          if (secondary && point.secondaryValue !== null) {
+            const thresholdDiff = secondary.threshold
+              ? point.secondaryValue - secondary.threshold
+              : null
 
-          html += `<div style="margin-bottom: 4px;">
+            html += `<div style="margin-bottom: 4px;">
             <span style="color: #64748b;">${secondary.name}：</span>
             <span style="font-weight: 600; color: ${point.isRisk ? '#ef4444' : '#334155'};">
               ${formatPercent(point.secondaryValue, 2)}
             </span>
           </div>`
 
-          if (thresholdDiff !== null) {
-            html += `<div style="margin-bottom: 8px;">
+            if (thresholdDiff !== null) {
+              html += `<div style="margin-bottom: 8px;">
               <span style="color: #64748b;">与阈值差值：</span>
               <span style="font-weight: 600; color: ${thresholdDiff >= 0 ? '#ef4444' : '#10b981'};">
               ${thresholdDiff >= 0 ? '+' : ''}${thresholdDiff.toFixed(1)}pp
               </span>
             </div>`
+            }
           }
-        }
 
-        html += `</div>`
-        return html
-      }),
+          html += `</div>`
+          return html
+        }),
     }),
     legend: buildLegend(),
     xAxis: buildXAxis({
@@ -333,14 +345,19 @@ export function buildTrendChart(config: TrendChartConfig): EChartsOption {
 /**
  * 计算移动平均（用于趋势线）
  */
-function calculateMovingAverage(data: number[], window: number): (number | null)[] {
+function calculateMovingAverage(
+  data: number[],
+  window: number
+): (number | null)[] {
   const result: (number | null)[] = []
 
   for (let i = 0; i < data.length; i++) {
     if (i < window - 1) {
       result.push(null)
     } else {
-      const sum = data.slice(i - window + 1, i + 1).reduce((acc, val) => acc + val, 0)
+      const sum = data
+        .slice(i - window + 1, i + 1)
+        .reduce((acc, val) => acc + val, 0)
       result.push(sum / window)
     }
   }

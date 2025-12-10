@@ -1,7 +1,16 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Clock, FileText, CheckCircle, XCircle, AlertCircle, Eye, EyeOff, Calendar } from 'lucide-react'
+import {
+  Clock,
+  FileText,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  Eye,
+  EyeOff,
+  Calendar,
+} from 'lucide-react'
 import { useAppStore } from '@/store/use-app-store'
 import { UploadHistoryRecord } from '@/lib/storage/data-persistence'
 
@@ -27,7 +36,7 @@ const formatDateTime = (timestamp: string): string => {
     day: '2-digit',
     hour: '2-digit',
     minute: '2-digit',
-    second: '2-digit'
+    second: '2-digit',
   })
 }
 
@@ -42,7 +51,7 @@ const getStatusDisplay = (status: string) => {
         color: 'text-green-600',
         bgColor: 'bg-green-50',
         borderColor: 'border-green-200',
-        label: '成功'
+        label: '成功',
       }
     case 'failed':
       return {
@@ -50,7 +59,7 @@ const getStatusDisplay = (status: string) => {
         color: 'text-red-600',
         bgColor: 'bg-red-50',
         borderColor: 'border-red-200',
-        label: '失败'
+        label: '失败',
       }
     case 'partial':
       return {
@@ -58,7 +67,7 @@ const getStatusDisplay = (status: string) => {
         color: 'text-yellow-600',
         bgColor: 'bg-yellow-50',
         borderColor: 'border-yellow-200',
-        label: '部分成功'
+        label: '部分成功',
       }
     default:
       return {
@@ -66,7 +75,7 @@ const getStatusDisplay = (status: string) => {
         color: 'text-gray-600',
         bgColor: 'bg-gray-50',
         borderColor: 'border-gray-200',
-        label: '未知'
+        label: '未知',
       }
   }
 }
@@ -76,14 +85,21 @@ export function UploadHistory() {
   const [isVisible, setIsVisible] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const getUploadHistoryRecords = useAppStore(state => state.getUploadHistoryRecords)
+  const getUploadHistoryRecords = useAppStore(
+    state => state.getUploadHistoryRecords
+  )
 
   // 加载上传历史
   const loadHistory = async () => {
     setLoading(true)
     try {
       const records = await getUploadHistoryRecords()
-      setHistory(records.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())) // 按时间倒序
+      setHistory(
+        records.sort(
+          (a, b) =>
+            new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        )
+      ) // 按时间倒序
     } catch (error) {
       console.error('加载上传历史失败:', error)
     } finally {
@@ -144,7 +160,9 @@ export function UploadHistory() {
         <div className="p-6 bg-white/80 backdrop-blur-sm rounded-lg border border-slate-200 text-center">
           <Clock className="h-12 w-12 text-slate-400 mx-auto mb-3" />
           <p className="text-slate-600">暂无上传历史</p>
-          <p className="text-sm text-slate-500 mt-1">上传文件后将在此显示历史记录</p>
+          <p className="text-sm text-slate-500 mt-1">
+            上传文件后将在此显示历史记录
+          </p>
         </div>
       ) : (
         <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -161,22 +179,28 @@ export function UploadHistory() {
                   <div className={`p-2 rounded-full ${statusDisplay.bgColor}`}>
                     <StatusIcon className={`h-4 w-4 ${statusDisplay.color}`} />
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
                       <FileText className="h-4 w-4 text-slate-400" />
                       <span className="font-medium text-slate-800 truncate">
-                        {record.files.length > 0 ? record.files[0].name : '未知文件'}
+                        {record.files.length > 0
+                          ? record.files[0].name
+                          : '未知文件'}
                       </span>
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusDisplay.bgColor} ${statusDisplay.color}`}>
+                      <span
+                        className={`px-2 py-1 text-xs font-medium rounded-full ${statusDisplay.bgColor} ${statusDisplay.color}`}
+                      >
                         {statusDisplay.label}
                       </span>
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-4 text-sm text-slate-600">
                       <div>
                         <span className="text-slate-500">文件大小：</span>
-                        {record.files.length > 0 ? formatFileSize(record.files[0].size) : '未知'}
+                        {record.files.length > 0
+                          ? formatFileSize(record.files[0].size)
+                          : '未知'}
                       </div>
                       <div>
                         <span className="text-slate-500">上传时间：</span>
@@ -197,7 +221,9 @@ export function UploadHistory() {
                       <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
                         <div className="flex items-center gap-2 mb-2">
                           <Calendar className="h-4 w-4 text-blue-600" />
-                          <span className="text-sm font-medium text-blue-900">周次信息</span>
+                          <span className="text-sm font-medium text-blue-900">
+                            周次信息
+                          </span>
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
                           <div>
@@ -206,31 +232,36 @@ export function UploadHistory() {
                               {record.weekInfo.totalWeeks}
                             </span>
                           </div>
-                          {record.weekInfo.newWeeks && record.weekInfo.newWeeks.length > 0 && (
-                            <div>
-                              <span className="text-green-700">新导入：</span>
-                              <span className="font-medium text-green-600">
-                                {record.weekInfo.newWeeks.length} 个周次
-                              </span>
-                            </div>
-                          )}
-                          {record.weekInfo.skippedWeeks && record.weekInfo.skippedWeeks.length > 0 && (
-                            <div>
-                              <span className="text-yellow-700">已跳过：</span>
-                              <span className="font-medium text-yellow-600">
-                                {record.weekInfo.skippedWeeks.length} 个周次
-                              </span>
-                            </div>
-                          )}
+                          {record.weekInfo.newWeeks &&
+                            record.weekInfo.newWeeks.length > 0 && (
+                              <div>
+                                <span className="text-green-700">新导入：</span>
+                                <span className="font-medium text-green-600">
+                                  {record.weekInfo.newWeeks.length} 个周次
+                                </span>
+                              </div>
+                            )}
+                          {record.weekInfo.skippedWeeks &&
+                            record.weekInfo.skippedWeeks.length > 0 && (
+                              <div>
+                                <span className="text-yellow-700">
+                                  已跳过：
+                                </span>
+                                <span className="font-medium text-yellow-600">
+                                  {record.weekInfo.skippedWeeks.length} 个周次
+                                </span>
+                              </div>
+                            )}
                         </div>
-                        {record.weekInfo.newWeeks && record.weekInfo.newWeeks.length > 0 && (
-                          <div className="mt-2 text-xs text-slate-600">
-                            <span className="text-slate-500">导入周次：</span>
-                            {record.weekInfo.newWeeks
-                              .map(w => `第${w}周`)
-                              .join('、')}
-                          </div>
-                        )}
+                        {record.weekInfo.newWeeks &&
+                          record.weekInfo.newWeeks.length > 0 && (
+                            <div className="mt-2 text-xs text-slate-600">
+                              <span className="text-slate-500">导入周次：</span>
+                              {record.weekInfo.newWeeks
+                                .map(w => `第${w}周`)
+                                .join('、')}
+                            </div>
+                          )}
                       </div>
                     )}
 

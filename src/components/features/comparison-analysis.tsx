@@ -52,9 +52,9 @@ export function OrganizationComparisonChart() {
     const chart = chartInstanceRef.current
 
     // 提取数据
-    const organizations = chartData.map((d) => d.name)
-    const premiumData = chartData.map((d) => d.满期保费)
-    const marginData = chartData.map((d) => d.边际贡献率)
+    const organizations = chartData.map(d => d.name)
+    const premiumData = chartData.map(d => d.满期保费)
+    const marginData = chartData.map(d => d.边际贡献率)
 
     // ECharts 配置
     const option: echarts.EChartsOption = {
@@ -308,9 +308,13 @@ export function InsuranceTypeStructureChart() {
 
     // 初始化 ECharts 实例
     if (!pieChartInstanceRef.current) {
-      pieChartInstanceRef.current = echarts.init(pieChartRef.current, undefined, {
-        renderer: 'canvas',
-      })
+      pieChartInstanceRef.current = echarts.init(
+        pieChartRef.current,
+        undefined,
+        {
+          renderer: 'canvas',
+        }
+      )
     }
 
     const chart = pieChartInstanceRef.current

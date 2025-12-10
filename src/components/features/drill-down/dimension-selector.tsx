@@ -70,7 +70,7 @@ export function DimensionSelector({
     // 从数据中提取该维度的所有唯一值
     const valuesMap = new Map<string | boolean, number>()
 
-    filteredData.forEach((record) => {
+    filteredData.forEach(record => {
       const value = selectedDimension.getValue(record)
       const count = valuesMap.get(value) || 0
       valuesMap.set(value, count + 1)
@@ -96,9 +96,7 @@ export function DimensionSelector({
 
   // 处理维度选择
   const handleDimensionChange = (dimensionKey: string) => {
-    const dimension = availableDimensions.find(
-      (d) => d.key === dimensionKey
-    )
+    const dimension = availableDimensions.find(d => d.key === dimensionKey)
     setSelectedDimension(dimension || null)
   }
 
@@ -107,9 +105,7 @@ export function DimensionSelector({
     if (!selectedDimension) return
 
     const displayLabel =
-      typeof value === 'boolean'
-        ? formatBooleanValue(value)
-        : String(value)
+      typeof value === 'boolean' ? formatBooleanValue(value) : String(value)
 
     onSelectValue(
       selectedDimension.key,
@@ -131,9 +127,7 @@ export function DimensionSelector({
           className
         )}
       >
-        <p className="text-sm text-slate-500">
-          所有维度已使用，无法继续下钻
-        </p>
+        <p className="text-sm text-slate-500">所有维度已使用，无法继续下钻</p>
       </div>
     )
   }
@@ -148,9 +142,7 @@ export function DimensionSelector({
       {/* 标题 */}
       <div className="flex items-center gap-2">
         <Filter className="h-4 w-4 text-slate-600" />
-        <h4 className="text-sm font-semibold text-slate-700">
-          选择下钻维度
-        </h4>
+        <h4 className="text-sm font-semibold text-slate-700">选择下钻维度</h4>
       </div>
 
       {/* 维度选择 */}
@@ -166,7 +158,7 @@ export function DimensionSelector({
             <SelectValue placeholder="请选择维度..." />
           </SelectTrigger>
           <SelectContent>
-            {availableDimensions.map((dimension) => (
+            {availableDimensions.map(dimension => (
               <SelectItem key={dimension.key} value={dimension.key}>
                 <div className="flex items-center gap-2">
                   <span className="font-medium">{dimension.label}</span>
@@ -212,9 +204,7 @@ export function DimensionSelector({
       {/* 提示信息 */}
       {selectedDimension && dimensionValues.length === 0 && (
         <div className="rounded-lg border border-amber-200 bg-amber-50/50 p-3">
-          <p className="text-xs text-amber-700">
-            当前数据中没有该维度的可选值
-          </p>
+          <p className="text-xs text-amber-700">当前数据中没有该维度的可选值</p>
         </div>
       )}
     </div>

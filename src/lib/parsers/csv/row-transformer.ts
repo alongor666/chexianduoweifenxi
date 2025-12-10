@@ -10,7 +10,12 @@ import type {
   TruckScore,
 } from '@/types/insurance'
 import { normalizeChineseText } from '@/lib/utils'
-import { parseNumber, parseEnum, parseOptionalEnum, parseBoolean } from './field-parsers'
+import {
+  parseNumber,
+  parseEnum,
+  parseOptionalEnum,
+  parseBoolean,
+} from './field-parsers'
 import { logger } from '@/lib/logger'
 
 const log = logger.create('RowTransformer')
@@ -107,14 +112,22 @@ export function transformCSVRow(
         row.highway_risk_grade,
         ['A', 'B', 'C', 'D', 'E', 'F', 'X']
       ),
-      large_truck_score: parseOptionalEnum<TruckScore>(
-        row.large_truck_score,
-        ['A', 'B', 'C', 'D', 'E', 'X']
-      ),
-      small_truck_score: parseOptionalEnum<TruckScore>(
-        row.small_truck_score,
-        ['A', 'B', 'C', 'D', 'E', 'X']
-      ),
+      large_truck_score: parseOptionalEnum<TruckScore>(row.large_truck_score, [
+        'A',
+        'B',
+        'C',
+        'D',
+        'E',
+        'X',
+      ]),
+      small_truck_score: parseOptionalEnum<TruckScore>(row.small_truck_score, [
+        'A',
+        'B',
+        'C',
+        'D',
+        'E',
+        'X',
+      ]),
 
       // ========== 渠道维度 ==========
       terminal_source: normalizeChineseText(
@@ -134,12 +147,10 @@ export function transformCSVRow(
         errors,
         { min: 0, max: 10000000 }
       ),
-      policy_count: parseNumber(
-        row.policy_count,
-        'policy_count',
-        errors,
-        { min: 0, integer: true }
-      ),
+      policy_count: parseNumber(row.policy_count, 'policy_count', errors, {
+        min: 0,
+        integer: true,
+      }),
       claim_case_count: parseNumber(
         row.claim_case_count,
         'claim_case_count',
@@ -182,7 +193,10 @@ export function transformCSVRow(
       ),
     }
 
-    log.debug('CSV行转换完成', { rowIndex: rowIndex + 1, errorCount: errors.length })
+    log.debug('CSV行转换完成', {
+      rowIndex: rowIndex + 1,
+      errorCount: errors.length,
+    })
     return { data, errors }
   } catch (error) {
     const errorMsg = `行 ${rowIndex + 1}: 数据转换失败 - ${

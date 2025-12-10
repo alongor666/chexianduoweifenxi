@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState, useRef, useEffect } from 'react'
 import * as echarts from 'echarts'
-import { useFilteredData } from '@/store/use-app-store'
+import { useFilteredData } from '@/hooks/use-filtered-data'
 import type { InsuranceRecord } from '@/types/insurance'
 import { getContributionMarginHexColor } from '@/utils/color-scale'
 
@@ -121,11 +121,11 @@ export function DimensionBarChart<T extends string>({
     const reversedData = [...chartData].reverse()
 
     // 提取 Y 轴标签和 X 轴数值
-    const yAxisLabels = reversedData.map((d) => d.label)
-    const xAxisValues = reversedData.map((d) => d[metricConfig.dataKey] as number)
+    const yAxisLabels = reversedData.map(d => d.label)
+    const xAxisValues = reversedData.map(d => d[metricConfig.dataKey] as number)
 
     // 为每个条形设置颜色
-    const itemColors = reversedData.map((d) =>
+    const itemColors = reversedData.map(d =>
       getContributionMarginHexColor(d.contribution_margin_ratio)
     )
 

@@ -90,7 +90,10 @@ export class DuckDBRepository implements IDataRepository {
         throw new Error(`未找到表 ${this.tableName}`)
       }
 
-      const tableInfo = tableList[0] as { table_schema: string; table_name: string }
+      const tableInfo = tableList[0] as {
+        table_schema: string
+        table_name: string
+      }
       const schema = tableInfo.table_schema
 
       // 设置完整表名
@@ -123,7 +126,9 @@ export class DuckDBRepository implements IDataRepository {
       // 如果需要支持，需要创建新表或使用临时表
       throw new Error('DuckDB 仓储当前不支持动态保存，请使用文件初始化')
     } catch (error) {
-      throw new Error(`保存数据失败: ${error instanceof Error ? error.message : String(error)}`)
+      throw new Error(
+        `保存数据失败: ${error instanceof Error ? error.message : String(error)}`
+      )
     }
   }
 
@@ -134,7 +139,9 @@ export class DuckDBRepository implements IDataRepository {
     this.ensureInitialized()
 
     try {
-      const result = await this.conn!.query(`SELECT * FROM ${this.fullTableName}`)
+      const result = await this.conn!.query(
+        `SELECT * FROM ${this.fullTableName}`
+      )
       return this.arrowToRecords(result)
     } catch (error) {
       throw new Error(
@@ -308,19 +315,28 @@ export class DuckDBRepository implements IDataRepository {
 
     // 机构筛选
     if (filters.institutions && filters.institutions.length > 0) {
-      const orgs = filters.institutions.map(o => `'${this.escapeSql(o)}'`).join(',')
+      const orgs = filters.institutions
+        .map(o => `'${this.escapeSql(o)}'`)
+        .join(',')
       conditions.push(`third_level_organization IN (${orgs})`)
     }
 
     // 客户类别筛选
     if (filters.customerCategory3 && filters.customerCategory3.length > 0) {
-      const cats = filters.customerCategory3.map(c => `'${this.escapeSql(c)}'`).join(',')
+      const cats = filters.customerCategory3
+        .map(c => `'${this.escapeSql(c)}'`)
+        .join(',')
       conditions.push(`customer_category_3 IN (${cats})`)
     }
 
     // 业务类别筛选
-    if (filters.businessTypeCategory && filters.businessTypeCategory.length > 0) {
-      const types = filters.businessTypeCategory.map(t => `'${this.escapeSql(t)}'`).join(',')
+    if (
+      filters.businessTypeCategory &&
+      filters.businessTypeCategory.length > 0
+    ) {
+      const types = filters.businessTypeCategory
+        .map(t => `'${this.escapeSql(t)}'`)
+        .join(',')
       conditions.push(`business_type_category IN (${types})`)
     }
 
@@ -331,7 +347,9 @@ export class DuckDBRepository implements IDataRepository {
 
     // 渠道筛选
     if (filters.channel && filters.channel.length > 0) {
-      const channels = filters.channel.map(c => `'${this.escapeSql(c)}'`).join(',')
+      const channels = filters.channel
+        .map(c => `'${this.escapeSql(c)}'`)
+        .join(',')
       conditions.push(`terminal_source IN (${channels})`)
     }
 
@@ -348,10 +366,16 @@ export class DuckDBRepository implements IDataRepository {
         policy_start_year: Number(row.policy_start_year),
         week_number: Number(row.week_number),
         chengdu_branch: row.chengdu_branch,
-        third_level_organization: normalizeChineseText(String(row.third_level_organization)),
-        customer_category_3: normalizeChineseText(String(row.customer_category_3)),
+        third_level_organization: normalizeChineseText(
+          String(row.third_level_organization)
+        ),
+        customer_category_3: normalizeChineseText(
+          String(row.customer_category_3)
+        ),
         insurance_type: row.insurance_type,
-        business_type_category: normalizeChineseText(String(row.business_type_category)),
+        business_type_category: normalizeChineseText(
+          String(row.business_type_category)
+        ),
         coverage_type: row.coverage_type,
         renewal_status: row.renewal_status,
         is_new_energy_vehicle: Boolean(row.is_new_energy_vehicle),
@@ -370,8 +394,12 @@ export class DuckDBRepository implements IDataRepository {
         commercial_premium_before_discount_yuan: Number(
           row.commercial_premium_before_discount_yuan
         ),
-        premium_plan_yuan: row.premium_plan_yuan ? Number(row.premium_plan_yuan) : null,
-        marginal_contribution_amount_yuan: Number(row.marginal_contribution_amount_yuan),
+        premium_plan_yuan: row.premium_plan_yuan
+          ? Number(row.premium_plan_yuan)
+          : null,
+        marginal_contribution_amount_yuan: Number(
+          row.marginal_contribution_amount_yuan
+        ),
       }
 
       // 使用 Domain 实体的工厂方法创建实例

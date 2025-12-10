@@ -29,7 +29,7 @@ pip install duckdb
 #### 3. 运行转换脚本
 
 ```bash
-python scripts/csv_to_duckdb.py
+python3 scripts/etl_to_duckdb.py
 ```
 
 #### 4. 使用生成的数据库
@@ -107,22 +107,21 @@ python scripts/csv_to_duckdb.py
 #### 自定义输入输出路径
 
 ```python
-from csv_to_duckdb import CSVToDuckDBConverter
+from etl_to_duckdb import ETLConverter
 
-converter = CSVToDuckDBConverter(
-    csv_pattern="path/to/your/*.csv",
-    output_db="custom_output.duckdb"
+converter = ETLConverter(
+    input_dir="path/to/your/data",
+    output_db="custom_output.duckdb",
+    table_name="insurance_records"
 )
-converter.convert()
+converter.run()
 ```
 
-#### 只导入特定周的数据
-
-修改脚本中的 CSV 文件列表，或使用 glob 模式：
+#### 指定数据目录
 
 ```bash
-# 只导入第 44-45 周
-python scripts/csv_to_duckdb.py --pattern "实际数据/*第4[4-5]周*.csv"
+# 指定包含 Excel/CSV 文件的目录
+python3 scripts/etl_to_duckdb.py --input-dir "其他数据目录/"
 ```
 
 ### 故障排除

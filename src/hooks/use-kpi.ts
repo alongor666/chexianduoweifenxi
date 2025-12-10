@@ -5,11 +5,15 @@
  */
 
 import { useMemo } from 'react'
-import { useAppStore, useFilteredData } from '@/store/use-app-store'
+import { useAppStore } from '@/store/use-app-store'
+import { useFilteredData } from '@/hooks/use-filtered-data'
 import { kpiEngine } from '@/lib/calculations/kpi-engine'
 import type { KPIResult, InsuranceRecord } from '@/types/insurance'
 import { normalizeChineseText } from '@/domain/rules/data-normalization'
-import { getBusinessTypeFullCNByCode, getBusinessTypeCode } from '@/constants/dimensions'
+import {
+  getBusinessTypeFullCNByCode,
+  getBusinessTypeCode,
+} from '@/constants/dimensions'
 import { safeMax } from '@/lib/utils/array-utils'
 
 /**
@@ -22,7 +26,9 @@ export function useKPI(): KPIResult | null {
   // 使用细粒度选择器避免对象引用问题
   const businessTypes = useAppStore(state => state.filters.businessTypes)
   const organizations = useAppStore(state => state.filters.organizations)
-  const customerCategories = useAppStore(state => state.filters.customerCategories)
+  const customerCategories = useAppStore(
+    state => state.filters.customerCategories
+  )
   const insuranceTypes = useAppStore(state => state.filters.insuranceTypes)
   const years = useAppStore(state => state.filters.years)
   const coverageTypes = useAppStore(state => state.filters.coverageTypes)
@@ -94,7 +100,13 @@ export function useKPI(): KPIResult | null {
 
     // 5. 总体目标
     return premiumTargets.overall > 0 ? premiumTargets.overall : null
-  }, [businessTypes, organizations, customerCategories, insuranceTypes, premiumTargets])
+  }, [
+    businessTypes,
+    organizations,
+    customerCategories,
+    insuranceTypes,
+    premiumTargets,
+  ])
 
   const kpiResult = useMemo(() => {
     if (filteredData.length === 0) {
@@ -118,12 +130,9 @@ export function useKPI(): KPIResult | null {
     }
 
     // 获取当前选择的周次和年份
-    const currentWeek =
-      viewMode === 'single' ? singleModeWeek : null
+    const currentWeek = viewMode === 'single' ? singleModeWeek : null
     const currentYear =
-      years.length > 0
-        ? safeMax(years)
-        : new Date().getFullYear()
+      years.length > 0 ? safeMax(years) : new Date().getFullYear()
 
     // 当周值模式：直接计算
     if (dataViewType === 'current') {

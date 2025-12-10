@@ -10,14 +10,9 @@
  */
 
 import type { EChartsOption } from 'echarts'
-import {
-  buildGrid,
-  buildTooltip,
-  buildXAxis,
-  buildYAxis,
-} from '../builders'
+import { buildGrid, buildTooltip, buildXAxis, buildYAxis } from '../builders'
 import { CHART_COLORS } from '../theme'
-import { formatNumber, formatPercent } from '@/utils/format'
+import { formatNumber } from '@/utils/format'
 
 export interface HeatmapDataPoint {
   /** X 轴维度值 */
@@ -27,7 +22,7 @@ export interface HeatmapDataPoint {
   /** 热力值 */
   value: number
   /** 原始数据（用于 tooltip） */
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export interface HeatmapChartConfig {
@@ -67,6 +62,7 @@ export interface HeatmapChartConfig {
   showLabel?: boolean
 
   /** 自定义 tooltip 格式化函数 */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tooltipFormatter?: (params: any) => string
 
   /** 单元格点击处理（外部处理，这里只是配置） */
@@ -115,12 +111,15 @@ export function buildHeatmapChart(config: HeatmapChartConfig): EChartsOption {
     grid: buildGrid('compact'),
     tooltip: buildTooltip({
       position: 'top',
-      formatter: tooltipFormatter || ((params: any) => {
-        const [xIndex, yIndex, val, raw] = params.data
-        const xLabel = xAxis.categories[xIndex]
-        const yLabel = yAxis.categories[yIndex]
+      formatter:
+        tooltipFormatter ||
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ((params: any) => {
+          const [xIndex, yIndex, val, raw] = params.data
+          const xLabel = xAxis.categories[xIndex]
+          const yLabel = yAxis.categories[yIndex]
 
-        let html = `<div style="min-width: 200px;">
+          let html = `<div style="min-width: 200px;">
           <div style="font-weight: 600; margin-bottom: 8px; font-size: 13px;">
             ${yLabel} × ${xLabel}
           </div>
@@ -129,29 +128,29 @@ export function buildHeatmapChart(config: HeatmapChartConfig): EChartsOption {
             <span style="font-weight: 600;">${value.formatter?.(val) || formatNumber(val, 1)} ${value.unit}</span>
           </div>`
 
-        // 显示额外信息
-        if (raw && typeof raw === 'object') {
-          const additionalKeys = Object.keys(raw).filter(
-            k => !['x', 'y', 'value'].includes(k)
-          )
+          // 显示额外信息
+          if (raw && typeof raw === 'object') {
+            const additionalKeys = Object.keys(raw).filter(
+              k => !['x', 'y', 'value'].includes(k)
+            )
 
-          if (additionalKeys.length > 0) {
-            html += `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #64748b;">`
+            if (additionalKeys.length > 0) {
+              html += `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #64748b;">`
 
-            additionalKeys.slice(0, 3).forEach(key => {
-              const val = raw[key]
-              if (val !== undefined && val !== null) {
-                html += `<div>${key}: ${formatValue(val)}</div>`
-              }
-            })
+              additionalKeys.slice(0, 3).forEach(key => {
+                const val = raw[key]
+                if (val !== undefined && val !== null) {
+                  html += `<div>${key}: ${formatValue(val)}</div>`
+                }
+              })
 
-            html += `</div>`
+              html += `</div>`
+            }
           }
-        }
 
-        html += `</div>`
-        return html
-      }),
+          html += `</div>`
+          return html
+        }),
     }),
     xAxis: buildXAxis({
       type: 'category',
@@ -186,7 +185,10 @@ export function buildHeatmapChart(config: HeatmapChartConfig): EChartsOption {
       left: 'center',
       bottom: '0%',
       inRange,
-      text: [`${maxValue.toFixed(0)}${value.unit}`, `${minValue.toFixed(0)}${value.unit}`],
+      text: [
+        `${maxValue.toFixed(0)}${value.unit}`,
+        `${minValue.toFixed(0)}${value.unit}`,
+      ],
       textStyle: {
         color: CHART_COLORS.neutral[700],
         fontSize: 11,
@@ -196,10 +198,12 @@ export function buildHeatmapChart(config: HeatmapChartConfig): EChartsOption {
       {
         name: value.name,
         type: 'heatmap',
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         data: heatmapData as any,
         label: {
           show: showLabel,
           fontSize: 11,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           formatter: (params: any) => {
             const val = params.data[2]
             return value.formatter?.(val) || formatNumber(val, 1)
@@ -213,6 +217,7 @@ export function buildHeatmapChart(config: HeatmapChartConfig): EChartsOption {
             borderWidth: 2,
           },
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
     ],
   }
@@ -259,7 +264,7 @@ function getColorScheme(
 /**
  * 格式化值（用于 tooltip）
  */
-function formatValue(val: any): string {
+function formatValue(val: unknown): string {
   if (typeof val === 'number') {
     return formatNumber(val, 2)
   }
@@ -272,7 +277,9 @@ function formatValue(val: any): string {
 /**
  * 构建风险热力图（快捷方法）
  */
-export function buildRiskHeatmap(config: Omit<HeatmapChartConfig, 'colorScheme'>): EChartsOption {
+export function buildRiskHeatmap(
+  config: Omit<HeatmapChartConfig, 'colorScheme'>
+): EChartsOption {
   return buildHeatmapChart({
     ...config,
     colorScheme: 'risk',
@@ -282,7 +289,9 @@ export function buildRiskHeatmap(config: Omit<HeatmapChartConfig, 'colorScheme'>
 /**
  * 构建性能热力图（快捷方法）
  */
-export function buildPerformanceHeatmap(config: Omit<HeatmapChartConfig, 'colorScheme'>): EChartsOption {
+export function buildPerformanceHeatmap(
+  config: Omit<HeatmapChartConfig, 'colorScheme'>
+): EChartsOption {
   return buildHeatmapChart({
     ...config,
     colorScheme: 'performance',

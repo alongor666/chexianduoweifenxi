@@ -23,7 +23,10 @@ import {
   usePremiumDimensionAnalysis,
   type PremiumDimensionKey,
 } from '@/hooks/use-premium-dimension-analysis'
-import { PREMIUM_DIMENSION_OPTIONS, DEFAULT_PREMIUM_DIMENSION } from '../../constants'
+import {
+  PREMIUM_DIMENSION_OPTIONS,
+  DEFAULT_PREMIUM_DIMENSION,
+} from '../../constants'
 import {
   PremiumProgressCard,
   PolicyProgressCard,

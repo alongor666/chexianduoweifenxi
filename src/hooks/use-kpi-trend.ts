@@ -133,14 +133,24 @@ function applyFilters(
   // 性能优化：预先转换为Set以加速查找（O(1) vs O(n)）
   const yearsSet = filters.years.length > 0 ? new Set(filters.years) : null
   const weeksSet = filters.weeks.length > 0 ? new Set(filters.weeks) : null
-  const orgsSet = filters.organizations.length > 0 ? new Set(filters.organizations) : null
-  const insTypesSet = filters.insuranceTypes.length > 0 ? new Set(filters.insuranceTypes) : null
-  const bizTypesSet = filters.businessTypes.length > 0 ? new Set(filters.businessTypes) : null
-  const covTypesSet = filters.coverageTypes.length > 0 ? new Set(filters.coverageTypes) : null
-  const custCatsSet = filters.customerCategories.length > 0 ? new Set(filters.customerCategories) : null
-  const vehGradesSet = filters.vehicleGrades.length > 0 ? new Set(filters.vehicleGrades) : null
-  const termSourcesSet = filters.terminalSources.length > 0 ? new Set(filters.terminalSources) : null
-  const renewalStatusesSet = filters.renewalStatuses.length > 0 ? new Set(filters.renewalStatuses) : null
+  const orgsSet =
+    filters.organizations.length > 0 ? new Set(filters.organizations) : null
+  const insTypesSet =
+    filters.insuranceTypes.length > 0 ? new Set(filters.insuranceTypes) : null
+  const bizTypesSet =
+    filters.businessTypes.length > 0 ? new Set(filters.businessTypes) : null
+  const covTypesSet =
+    filters.coverageTypes.length > 0 ? new Set(filters.coverageTypes) : null
+  const custCatsSet =
+    filters.customerCategories.length > 0
+      ? new Set(filters.customerCategories)
+      : null
+  const vehGradesSet =
+    filters.vehicleGrades.length > 0 ? new Set(filters.vehicleGrades) : null
+  const termSourcesSet =
+    filters.terminalSources.length > 0 ? new Set(filters.terminalSources) : null
+  const renewalStatusesSet =
+    filters.renewalStatuses.length > 0 ? new Set(filters.renewalStatuses) : null
 
   return data.filter(record => {
     // 年度筛选
@@ -182,7 +192,11 @@ function applyFilters(
     }
 
     // 车险评级筛选
-    if (vehGradesSet && record.vehicle_insurance_grade && !vehGradesSet.has(record.vehicle_insurance_grade)) {
+    if (
+      vehGradesSet &&
+      record.vehicle_insurance_grade &&
+      !vehGradesSet.has(record.vehicle_insurance_grade)
+    ) {
       return false
     }
 
@@ -192,7 +206,10 @@ function applyFilters(
     }
 
     // 新能源车筛选
-    if (filters.isNewEnergy !== null && record.is_new_energy_vehicle !== filters.isNewEnergy) {
+    if (
+      filters.isNewEnergy !== null &&
+      record.is_new_energy_vehicle !== filters.isNewEnergy
+    ) {
       return false
     }
 
@@ -229,7 +246,9 @@ export function useKPITrend(
   const filters = useAppStore(state => state.filters)
 
   // 使用 ref 来存储上一次的计算结果，避免不必要的重新计算
-  const lastResultRef = useRef<{ key: string; data: (number | null)[] } | null>(null)
+  const lastResultRef = useRef<{ key: string; data: (number | null)[] } | null>(
+    null
+  )
 
   const trendData = useMemo(() => {
     // 生成筛选器哈希
@@ -306,7 +325,11 @@ export function useMultipleKPITrends(
 
     // 为每个KPI计算趋势
     kpiKeys.forEach((kpiKey: keyof ReturnType<typeof calculateKPIs>) => {
-      result[kpiKey as string] = calculateKPITrend(dataToUse, kpiKey, weeks) as number[]
+      result[kpiKey as string] = calculateKPITrend(
+        dataToUse,
+        kpiKey,
+        weeks
+      ) as number[]
     })
 
     return result

@@ -112,7 +112,8 @@ export function CompactOrganizationFilter() {
           'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1',
           'shadow-sm hover:shadow-md',
           isOpen && 'bg-slate-100 border-slate-400',
-          filters.organizations.length > 0 && 'border-blue-300 bg-blue-50 text-blue-700'
+          filters.organizations.length > 0 &&
+            'border-blue-300 bg-blue-50 text-blue-700'
         )}
       >
         <Building2 className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />

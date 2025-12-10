@@ -2,13 +2,13 @@
 
 ## 功能概述
 
-在KPI卡片中实现多层下钻功能，支持用户按多个维度逐层深入分析数据，每次下钻可选择不同维度，已下钻的维度不会重复出现。
+在KPI卡片和趋势图中实现多层下钻功能，支持用户按多个维度逐层深入分析数据。下钻交互已从弹窗模式升级为**全局下钻导航条**，位于筛选器与内容区域之间，提供更清晰、直观的可视化分析体验。
 
 ## 功能特性
 
 ### 1. 多维度下钻支持
 
-支持以下8个维度的下钻分析：
+支持以下9个维度的下钻分析：
 
 - **三级机构**（`third_level_organization`）：按机构进行下钻
 - **业务类型**（`business_type_category`）：按业务类型进行下钻
@@ -18,24 +18,24 @@
 - **新转续维度**（`renewal_status`）：按续保状态进行下钻
 - **是否过户车**（`is_transferred_vehicle`）：按是否过户进行下钻
 - **车险种类**（`insurance_type`）：按商业险/交强险进行下钻
+- **周次**（`week_number`）：按周次进行下钻（趋势图分析）
 
-### 2. 下钻路径管理
+### 2. 全局下钻导航条
 
-- **多层级下钻**：支持无限层级的下钻（理论上最多8层）
-- **维度不重复**：每个维度只能使用一次，已下钻的维度不再出现在选择列表中
-- **路径独立**：每个KPI卡片的下钻路径相互独立，互不影响
+新的下钻交互模式：
+- **位置**：位于顶部筛选器与主要内容区之间。
+- **展示**：从左至右逐级展示已选择的维度（面包屑），清晰呈现下钻路径。
+- **交互**：
+  - 点击KPI卡片或趋势图数据点激活下钻模式。
+  - 在导航条中添加新的下钻维度。
+  - 点击面包屑节点快速返回上层。
+  - 点击左侧关闭按钮退出下钻模式。
 
-### 3. 可视化导航
+### 3. 智能数据展示
 
-- **面包屑导航**：清晰展示当前的下钻路径
-- **快速回退**：点击面包屑可快速返回到任意上层
-- **一键清除**：支持一键清除所有下钻条件
-
-### 4. 智能数据展示
-
-- **实时统计**：显示当前层级的数据量
-- **自动排序**：维度值按数据量降序排列
-- **数据计数**：每个维度值旁显示对应的记录数
+- **实时统计**：导航条右侧实时显示当前筛选后的数据量。
+- **自动排序**：维度选择器中，维度值按数据量降序排列。
+- **关联联动**：下钻操作会实时更新页面下方的内容区域（KPI看板或趋势图）。
 
 ## 技术实现
 
@@ -43,212 +43,97 @@
 
 #### 1. 类型定义（`src/types/drill-down.ts`）
 
-```typescript
-// 下钻维度键
-export type DrillDownDimensionKey =
-  | 'third_level_organization'
-  | 'business_type_category'
-  | 'coverage_type'
-  | 'terminal_source'
-  | 'is_new_energy_vehicle'
-  | 'renewal_status'
-  | 'is_transferred_vehicle'
-  | 'insurance_type'
-
-// 下钻步骤
-export interface DrillDownStep {
-  dimensionKey: DrillDownDimensionKey
-  dimensionLabel: string
-  value: string | boolean
-  displayLabel: string
-}
-
-// KPI下钻路径
-export interface KPIDrillDownPath {
-  kpiKey: string
-  steps: DrillDownStep[]
-}
-```
+新增`week_number`维度支持。
 
 #### 2. 状态管理（`src/store/drill-down-store.ts`）
 
-使用Zustand管理下钻状态：
+新增 `activeKPI` 状态，用于控制全局下钻导航条的显示与内容：
 
 ```typescript
 interface DrillDownStoreState {
-  paths: Record<string, KPIDrillDownPath>
-  addDrillDownStep: (kpiKey: string, step: DrillDownStep) => void
-  removeDrillDownStepsFrom: (kpiKey: string, stepIndex: number) => void
-  clearDrillDownPath: (kpiKey: string) => void
-  getUsedDimensions: (kpiKey: string) => DrillDownDimensionKey[]
-  getAvailableDimensions: (kpiKey: string) => DrillDownDimension[]
+  // ...原有路径状态
+  activeKPI: string | null // 当前激活的KPI
+  activeKPITitle: string | null // 当前激活的KPI标题
+  setActiveKPI: (kpiKey: string | null, title?: string | null) => void
+  resetAll: () => void
 }
 ```
 
 #### 3. UI组件
 
+**下钻导航条** (`src/components/features/drill-down/drill-down-bar.tsx`)
+- 核心交互组件，集成面包屑导航和维度添加功能。
+- 根据 `activeKPI` 状态自动显示或隐藏。
+
 **面包屑导航** (`src/components/features/drill-down/drill-down-breadcrumb.tsx`)
-- 展示下钻路径
-- 支持点击返回上层
-- 一键清除功能
+- 展示下钻路径，支持点击返回。
 
 **维度选择器** (`src/components/features/drill-down/dimension-selector.tsx`)
-- 两步选择流程：先选维度，再选值
-- 智能排除已使用的维度
-- 按数据量排序显示维度值
+- 提供维度选择和值过滤功能。
 
-**下钻控制器** (`src/components/features/drill-down/drill-down-control.tsx`)
-- 整合面包屑和维度选择器
-- 处理数据筛选逻辑
-- 显示实时数据统计
+### 集成方式
 
-**带下钻的KPI卡片** (`src/components/features/kpi-card-with-drilldown.tsx`)
-- 封装原有KPI卡片
-- 添加下钻按钮和徽章
-- 对话框展示下钻界面
+#### 1. 仪表盘集成 (`src/components/dashboard-client.tsx`)
 
-### 数据筛选逻辑
+在 `TopToolbar` 和主要内容区之间集成 `DrillDownBar`：
 
-下钻功能通过在全局筛选器基础上叠加下钻路径实现：
+```tsx
+{hasData && (activeTab === 'kpi' || activeTab === 'trend') && (
+  <div className="mb-6">
+    <DrillDownBar />
+  </div>
+)}
+```
 
-```typescript
-filteredData = rawData.filter(record => {
-  // 1. 应用全局筛选器条件
-  if (!passGlobalFilters(record)) return false
+#### 2. KPI卡片集成 (`src/components/features/kpi-card-with-drilldown.tsx`)
 
-  // 2. 应用下钻路径条件
-  for (const step of drillDownSteps) {
-    const recordValue = getRecordValue(record, step.dimensionKey)
-    if (recordValue !== step.value) return false
-  }
+点击下钻按钮时，不再弹出对话框，而是调用 `setActiveKPI` 激活全局导航条：
 
-  return true
-})
+```tsx
+const handleStartDrillDown = () => {
+  setActiveKPI(kpiKey, title)
+}
+```
+
+#### 3. 趋势图集成 (`src/components/features/weekly-operational-trend.tsx`)
+
+点击图表数据点时，自动添加周次下钻步骤并激活导航条：
+
+```tsx
+const handlePointClick = (point) => {
+  clearDrillDownPath(TREND_KPI_KEY)
+  addDrillDownStep(TREND_KPI_KEY, { ...week_step... })
+  setActiveKPI(TREND_KPI_KEY, '趋势下钻分析')
+}
 ```
 
 ## 使用方式
 
 ### 1. 进入下钻模式
 
-点击任意KPI卡片右上角的「下钻」按钮，或直接点击卡片主体区域。
+- **KPI看板**：点击任意KPI卡片的「下钻」按钮。
+- **趋势分析**：点击趋势图中的任意数据点（圆点）。
 
-### 2. 选择下钻维度
+### 2. 进行下钻分析
 
-1. 在弹出的对话框中，从「选择维度」下拉列表选择要下钻的维度
-2. 系统会显示该维度的所有可选值及对应的记录数
-3. 点击任意值完成一次下钻
+- 页面顶部会出现下钻导航条。
+- 点击导航条中的「+ 添加下钻维度」按钮，选择维度和值。
+- 下方内容区域会实时更新为筛选后的数据。
 
-### 3. 继续下钻或返回
+### 3. 退出下钻
 
-- **继续下钻**：重复步骤2，选择其他未使用的维度继续深入分析
-- **返回上层**：点击面包屑中的任意层级，或点击清除按钮
-
-### 4. 退出下钻
-
-关闭对话框即可退出下钻模式，下钻路径会保存在本地存储中。
-
-## 存储机制
-
-- 使用Zustand的`persist`中间件实现状态持久化
-- 存储键：`drill-down-storage`
-- 版本：v1
-- 下钻路径会自动保存到LocalStorage，刷新页面后仍然保留
-
-## 注意事项
-
-1. **与全局筛选器的关系**
-   - 下钻条件会叠加在全局筛选器之上
-   - 修改全局筛选器不会清除下钻路径
-   - 建议在设置好全局筛选器后再使用下钻功能
-
-2. **性能考虑**
-   - 下钻过程中实时筛选数据，数据量较大时可能有轻微延迟
-   - 建议先使用全局筛选器缩小数据范围
-
-3. **布尔值显示**
-   - 布尔类型的维度值会自动转换为中文显示（是/否）
-   - 存储时保持原始布尔值
-
-## 后续优化方向
-
-1. **KPI实时计算**：根据下钻路径实时重新计算KPI值
-2. **下钻历史**：记录下钻历史，支持快速切换
-3. **下钻预设**：保存常用的下钻路径组合
-4. **可视化增强**：在图表中也支持下钻功能
-5. **导出功能**：支持导出当前下钻层级的数据
-
-## 相关文件
-
-### 类型定义
-- `src/types/drill-down.ts` - 下钻功能类型定义
-
-### 状态管理
-- `src/store/drill-down-store.ts` - 下钻状态管理
-
-### UI组件
-- `src/components/features/drill-down/drill-down-breadcrumb.tsx` - 面包屑导航
-- `src/components/features/drill-down/dimension-selector.tsx` - 维度选择器
-- `src/components/features/drill-down/drill-down-control.tsx` - 下钻控制器
-- `src/components/features/drill-down/index.ts` - 组件导出
-
-### 集成组件
-- `src/components/features/kpi-card-with-drilldown.tsx` - 带下钻的KPI卡片
-- `src/components/features/full-kpi-dashboard.tsx` - 完整版KPI看板（已集成下钻功能）
-
-## 趋势分析集成
-
-### 功能描述
-
-支持在「周度经营趋势」图表中，通过点击特定数据点（某一周），对该周数据进行多维度下钻分析。
-
-### 交互流程
-
-1.  **触发**：用户点击趋势图中的任意数据点。
-2.  **响应**：
-    *   系统锁定被点击周的时间上下文。
-    *   弹出下钻对话框，标题显示该周信息。
-    *   自动重置之前的下钻路径。
-3.  **分析**：用户在对话框中使用与 KPI 卡片完全一致的下钻组件进行多维分析。
-
-### 技术变更
-
-#### 下钻控制器增强 (`src/components/features/drill-down/drill-down-control.tsx`)
-
-新增 `initialData` 属性，支持传入预筛选的数据集。
-
-```typescript
-interface DrillDownControlProps {
-  kpiKey: string
-  initialData?: InsuranceRecord[] // 新增：支持传入初始数据
-  className?: string
-}
-```
-
--   **当提供 `initialData` 时**：组件将跳过全局筛选步骤，直接基于 `initialData` 进行下钻筛选。这允许父组件预先根据上下文（如特定周）筛选数据。
--   **未提供 `initialData` 时**：保持原有逻辑，使用全局 `rawData` 并应用全局筛选器。
-
-#### 趋势组件集成 (`src/components/features/weekly-operational-trend.tsx`)
-
--   集成 `DrillDownControl` 和 `Dialog` 组件。
--   实现 `handlePointClick` 事件处理，计算被点击周的数据子集 (`weekData`)。
--   将 `weekData` 传递给 `DrillDownControl`。
+点击导航条左侧的关闭按钮 (X)，即可退出下钻模式，恢复默认视图。
 
 ## 更新日志
 
+### v1.3.0 (2025-12-09)
+- ♻️ **重构交互**：移除弹窗式下钻，采用全局下钻导航条。
+- ✨ **体验优化**：下钻路径可视化更清晰，操作更便捷。
+- 🔧 **趋势图集成**：趋势图点击交互适配新的下钻模式。
+- 🗑️ **代码清理**：移除旧版 `DrillDownControl` 和相关 Dialog 组件。
+
 ### v1.2.0 (2025-12-07)
 - ✅ 趋势分析组件集成多层下钻功能
-- ✅ DrillDownControl 支持 initialData 属性
-- ✅ 实现图表点击交互与数据联动
-
-### v1.1.0 (2025-12-07)
-- ✅ 完整版KPI看板集成下钻功能
-- ✅ 删除紧凑版KPI组件
-- ✅ 统一使用FullKPIDashboard（4x4布局）
 
 ### v1.0.0 (2025-12-07)
 - ✅ 实现多层下钻核心功能
-- ✅ 支持8个维度的下钻分析
-- ✅ 面包屑导航可视化
-- ✅ 维度智能选择器
-- ✅ 状态持久化
-- ✅ 集成到KPI卡片组件

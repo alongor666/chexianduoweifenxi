@@ -115,7 +115,12 @@ export function normalizeBoolean(
 
   if (typeof value === 'string') {
     const lower = value.toLowerCase().trim()
-    if (lower === 'true' || lower === '是' || lower === 'yes' || lower === '1') {
+    if (
+      lower === 'true' ||
+      lower === '是' ||
+      lower === 'yes' ||
+      lower === '1'
+    ) {
       return true
     }
     if (

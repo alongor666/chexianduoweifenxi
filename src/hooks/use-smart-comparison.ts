@@ -192,58 +192,57 @@ export function useSmartComparison(
   const insuranceTypes = useAppStore(state => state.filters.insuranceTypes)
   const businessTypes = useAppStore(state => state.filters.businessTypes)
   const coverageTypes = useAppStore(state => state.filters.coverageTypes)
-  const customerCategories = useAppStore(state => state.filters.customerCategories)
+  const customerCategories = useAppStore(
+    state => state.filters.customerCategories
+  )
   const vehicleGrades = useAppStore(state => state.filters.vehicleGrades)
   const terminalSources = useAppStore(state => state.filters.terminalSources)
   const isNewEnergy = useAppStore(state => state.filters.isNewEnergy)
   const renewalStatuses = useAppStore(state => state.filters.renewalStatuses)
 
   // 重建 filters 对象供内部函数使用
-  const filters = useMemo(() => ({
-    viewMode,
-    dataViewType,
-    singleModeWeek,
-    trendModeWeeks,
-    years,
-    weeks,
-    organizations,
-    insuranceTypes,
-    businessTypes,
-    coverageTypes,
-    customerCategories,
-    vehicleGrades,
-    terminalSources,
-    isNewEnergy,
-    renewalStatuses,
-  }), [
-    viewMode,
-    dataViewType,
-    singleModeWeek,
-    trendModeWeeks,
-    years,
-    weeks,
-    organizations,
-    insuranceTypes,
-    businessTypes,
-    coverageTypes,
-    customerCategories,
-    vehicleGrades,
-    terminalSources,
-    isNewEnergy,
-    renewalStatuses,
-  ])
+  const filters = useMemo(
+    () => ({
+      viewMode,
+      dataViewType,
+      singleModeWeek,
+      trendModeWeeks,
+      years,
+      weeks,
+      organizations,
+      insuranceTypes,
+      businessTypes,
+      coverageTypes,
+      customerCategories,
+      vehicleGrades,
+      terminalSources,
+      isNewEnergy,
+      renewalStatuses,
+    }),
+    [
+      viewMode,
+      dataViewType,
+      singleModeWeek,
+      trendModeWeeks,
+      years,
+      weeks,
+      organizations,
+      insuranceTypes,
+      businessTypes,
+      coverageTypes,
+      customerCategories,
+      vehicleGrades,
+      terminalSources,
+      isNewEnergy,
+      renewalStatuses,
+    ]
+  )
   const filteredData = useMemo(() => {
     return rawData.filter(record => {
-      if (
-        years.length > 0 &&
-        !years.includes(record.policy_start_year)
-      ) {
+      if (years.length > 0 && !years.includes(record.policy_start_year)) {
         return false
       }
-      if (
-        weeks.length > 0 &&
-        !weeks.includes(record.week_number)
-      ) {
+      if (weeks.length > 0 && !weeks.includes(record.week_number)) {
         return false
       }
       if (
@@ -345,9 +344,7 @@ export function useSmartComparison(
 
     // 获取当前年份
     const currentYear =
-      years.length > 0
-        ? Math.max(...years)
-        : new Date().getFullYear()
+      years.length > 0 ? Math.max(...years) : new Date().getFullYear()
 
     // 计算当前KPI（传递完整的计算参数）
     const currentKpi = kpiEngine.calculate(filteredData, {
@@ -367,7 +364,9 @@ export function useSmartComparison(
 
     if (!previousWeekData || previousWeekData.length === 0) {
       const elapsed = performance.now() - startTime
-      console.log(`[useSmartComparison] 计算完成（无环比数据），耗时: ${elapsed.toFixed(2)}ms`)
+      console.log(
+        `[useSmartComparison] 计算完成（无环比数据），耗时: ${elapsed.toFixed(2)}ms`
+      )
       return {
         currentKpi,
         compareKpi: null,
@@ -399,7 +398,17 @@ export function useSmartComparison(
       compareKpi,
       previousWeekNumber,
     }
-  }, [filteredData, rawData, filters, annualTargetYuan, maxJumpBack, viewMode, singleModeWeek, dataViewType, years])
+  }, [
+    filteredData,
+    rawData,
+    filters,
+    annualTargetYuan,
+    maxJumpBack,
+    viewMode,
+    singleModeWeek,
+    dataViewType,
+    years,
+  ])
 
   return comparison
 }

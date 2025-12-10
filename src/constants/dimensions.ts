@@ -74,16 +74,16 @@ export const CANONICAL_THIRD_LEVEL_ORGANIZATIONS: string[] = [
  */
 export const BUSINESS_TYPE_SHORT_LABELS: Record<string, string> = {
   // 非营业客车
-  '非营业客车新车': '非营客-新',
-  '非营业客车旧车非过户': '非营客-旧',
-  '非营业客车旧车过户': '非营客-过户',
-  '非营业客车旧车过户车': '非营客-过户',
+  非营业客车新车: '非营客-新',
+  非营业客车旧车非过户: '非营客-旧',
+  非营业客车旧车过户: '非营客-过户',
+  非营业客车旧车过户车: '非营客-过户',
   // 非营业货车（吨位档）
   '1吨以下非营业货车': '非营货-<1t',
   '1–2吨非营业货车': '非营货-1–2t',
   // 兼容旧分类（新/旧）
-  '非营业货车新车': '非营货-1–2t',
-  '非营业货车旧车': '非营货-1–2t',
+  非营业货车新车: '非营货-1–2t',
+  非营业货车旧车: '非营货-1–2t',
   // 营业货车分档
   '2吨以下营业货车': '营货-<2t',
   '2-9吨营业货车': '营货-2–9t',
@@ -96,16 +96,16 @@ export const BUSINESS_TYPE_SHORT_LABELS: Record<string, string> = {
   '10吨以上营业货车（牵引）': '营货-≥10t牵',
   '10吨以上-牵引': '营货-≥10t牵',
   '10吨以上牵引': '营货-≥10t牵',
-  '自卸车': '营货-≥10t卸',
-  '自卸': '营货-≥10t卸',
-  '特种车': '营货-≥10t特',
-  '其他营业货车': '营货-其他',
+  自卸车: '营货-≥10t卸',
+  自卸: '营货-≥10t卸',
+  特种车: '营货-≥10t特',
+  其他营业货车: '营货-其他',
   // 乘用车与其他
-  '摩托车': '摩托',
-  '出租车': '营客-出租',
-  '网约车': '营客-网约',
-  '车险整体': '车险整体',
-  '其他': '营货-其他',
+  摩托车: '摩托',
+  出租车: '营客-出租',
+  网约车: '营客-网约',
+  车险整体: '车险整体',
+  其他: '营货-其他',
 }
 
 /**
@@ -129,7 +129,10 @@ export function getBusinessTypeLabel(original: string): string {
   // 去除“车”字
   s = s.replace(/车/g, '')
   // 新/旧/过户压缩
-  s = s.replace(/新车/g, '新').replace(/旧车/g, '旧').replace(/过户车/g, '过户')
+  s = s
+    .replace(/新车/g, '新')
+    .replace(/旧车/g, '旧')
+    .replace(/过户车/g, '过户')
   // 吨位表达统一
   s = s.replace(/吨/g, 't')
   s = s.replace(/以上/g, '＞')
@@ -193,17 +196,17 @@ export const CANONICAL_BUSINESS_CODES: BusinessTypeCode[] = [
  */
 export const BUSINESS_TYPE_CODE_FROM_CN: Record<string, BusinessTypeCode> = {
   // 非营业客车
-  '非营业客车新车': 'non_pc_new',
-  '非营业客车旧车非过户': 'non_pc_used',
-  '非营业客车旧车过户': 'non_pc_transfer',
-  '非营业客车旧车过户车': 'non_pc_transfer', // 兼容旧文案
+  非营业客车新车: 'non_pc_new',
+  非营业客车旧车非过户: 'non_pc_used',
+  非营业客车旧车过户: 'non_pc_transfer',
+  非营业客车旧车过户车: 'non_pc_transfer', // 兼容旧文案
 
   // 非营业货车（按吨位分档；数据暂不含吨位时需另行规则）
   '1吨以下非营业货车': 'non_truck_lt1',
   '1–2吨非营业货车': 'non_truck_1_2',
   // 兼容旧分类（新/旧）暂映射到 1–2t 档，待数据补充后细化
-  '非营业货车新车': 'non_truck_1_2',
-  '非营业货车旧车': 'non_truck_1_2',
+  非营业货车新车: 'non_truck_1_2',
+  非营业货车旧车: 'non_truck_1_2',
 
   // 营业货车分档
   '2吨以下营业货车': 'biz_truck_lt2',
@@ -217,16 +220,16 @@ export const BUSINESS_TYPE_CODE_FROM_CN: Record<string, BusinessTypeCode> = {
   '10吨以上营业货车（牵引）': 'biz_truck_10_plus_trac',
   '10吨以上-牵引': 'biz_truck_10_plus_trac',
   '10吨以上牵引': 'biz_truck_10_plus_trac',
-  '自卸车': 'biz_truck_10_plus_dump',
-  '自卸': 'biz_truck_10_plus_dump',
-  '特种车': 'biz_truck_10_plus_special',
-  '其他营业货车': 'biz_truck_other',
+  自卸车: 'biz_truck_10_plus_dump',
+  自卸: 'biz_truck_10_plus_dump',
+  特种车: 'biz_truck_10_plus_special',
+  其他营业货车: 'biz_truck_other',
 
   // 乘用车与其他
-  '摩托车': 'motorcycle',
-  '出租车': 'biz_pc_taxi',
-  '网约车': 'biz_pc_ridehailing',
-  '其他': 'biz_truck_other',
+  摩托车: 'motorcycle',
+  出租车: 'biz_pc_taxi',
+  网约车: 'biz_pc_ridehailing',
+  其他: 'biz_truck_other',
 }
 
 /**
@@ -284,9 +287,7 @@ export function getBusinessTypeCode(original: string): BusinessTypeCode {
   const direct = BUSINESS_TYPE_CODE_FROM_CN[src]
   if (direct) return direct
   // 轻度归一化后再匹配
-  const normalized = src
-    .replace(/\s+/g, '')
-    .replace(/车/g, '车') // 保留“车”以兼容现有Key
+  const normalized = src.replace(/\s+/g, '').replace(/车/g, '车') // 保留“车”以兼容现有Key
   const mapped = BUSINESS_TYPE_CODE_FROM_CN[normalized]
   return mapped || 'OTHER'
 }
@@ -294,7 +295,9 @@ export function getBusinessTypeCode(original: string): BusinessTypeCode {
 /**
  * 根据英文代码获取中文短标签（UI展示）
  */
-export function getBusinessTypeShortLabelByCode(code: BusinessTypeCode): string {
+export function getBusinessTypeShortLabelByCode(
+  code: BusinessTypeCode
+): string {
   return BUSINESS_TYPE_SHORT_BY_CODE[code] || '其他'
 }
 

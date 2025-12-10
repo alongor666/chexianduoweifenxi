@@ -259,14 +259,18 @@ describe('normalizeInsuranceRecord', () => {
     const raw = createValidRawData()
     raw.week_number = 0
 
-    expect(() => normalizeInsuranceRecord(raw)).toThrow('周序号必须在 1-105 之间')
+    expect(() => normalizeInsuranceRecord(raw)).toThrow(
+      '周序号必须在 1-105 之间'
+    )
   })
 
   it('应该拒绝无效的年份', () => {
     const raw = createValidRawData()
     raw.policy_start_year = 1999
 
-    expect(() => normalizeInsuranceRecord(raw)).toThrow('年份必须在 2000-2100 之间')
+    expect(() => normalizeInsuranceRecord(raw)).toThrow(
+      '年份必须在 2000-2100 之间'
+    )
   })
 })
 

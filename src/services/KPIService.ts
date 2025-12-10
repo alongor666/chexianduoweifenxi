@@ -124,9 +124,10 @@ export class KPIService {
       if (weekData.length > 0) {
         const kpi = this.calculate(weekData, {
           currentWeekNumber: week,
-          year: filters.years && filters.years.length > 0
-            ? safeMax(filters.years)
-            : new Date().getFullYear(),
+          year:
+            filters.years && filters.years.length > 0
+              ? safeMax(filters.years)
+              : new Date().getFullYear(),
         })
 
         if (kpi) {
@@ -160,22 +161,26 @@ export class KPIService {
 
     // 获取上一周数据
     const previousWeek = currentWeek - 1
-    const previousWeekData = DataService.getByWeek(rawData, previousWeek, filters)
+    const previousWeekData = DataService.getByWeek(
+      rawData,
+      previousWeek,
+      filters
+    )
 
     const currentKpi = this.calculate(currentWeekData, {
-            annualTargetYuan: annualTarget,
-            currentWeekNumber: currentWeek,
-            mode: 'increment', // 强制使用增量模式计算环比，确保对比的是"周业绩"而非"年达成率"
-          })
+      annualTargetYuan: annualTarget,
+      currentWeekNumber: currentWeek,
+      mode: 'increment', // 强制使用增量模式计算环比，确保对比的是"周业绩"而非"年达成率"
+    })
 
-          const compareKpi =
-            previousWeekData.length > 0
-              ? this.calculate(previousWeekData, {
-                  annualTargetYuan: annualTarget,
-                  currentWeekNumber: previousWeek,
-                  mode: 'increment', // 强制使用增量模式计算环比
-                })
-              : null
+    const compareKpi =
+      previousWeekData.length > 0
+        ? this.calculate(previousWeekData, {
+            annualTargetYuan: annualTarget,
+            currentWeekNumber: previousWeek,
+            mode: 'increment', // 强制使用增量模式计算环比
+          })
+        : null
 
     return {
       currentKpi,

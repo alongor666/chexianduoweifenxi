@@ -14,6 +14,7 @@ import type { DatabaseAdapter } from './adapter'
 import { DatabaseAdapterError } from './adapter'
 import type { InsuranceRecord, FilterState } from '@/types/insurance'
 import { normalizeChineseText } from '@/domain/rules/data-normalization'
+import type { BusinessTypeCode } from '@/constants/dimensions'
 import { getBusinessTypeFullCNByCode } from '@/constants/dimensions'
 
 export class DuckDBAdapter implements DatabaseAdapter {
@@ -60,7 +61,9 @@ export class DuckDBAdapter implements DatabaseAdapter {
       this.conn = await this.db.connect()
 
       // 4. 注册并打开数据库文件
-      console.log(`[DuckDB] 读取文件: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`)
+      console.log(
+        `[DuckDB] 读取文件: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`
+      )
       const buffer = await file.arrayBuffer()
       const uint8Array = new Uint8Array(buffer)
 
@@ -85,14 +88,20 @@ export class DuckDBAdapter implements DatabaseAdapter {
       console.log('[DuckDB] 可用表:', tableList)
 
       // 检查是否存在 insurance_records 表（可能在不同的 schema 中）
-      const hasTable = tableList.some((t: any) => t.name === this.tableName)
+      const hasTable = tableList.some((t: unknown) => {
+        const table = t as { name: string }
+        return table.name === this.tableName
+      })
 
       if (!hasTable) {
         throw new Error(`未找到 ${this.tableName} 表，请检查数据库文件`)
       }
 
       // 记录表所在的 schema 并设置完整表名
-      const tableInfo = tableList.find((t: any) => t.name === this.tableName)
+      const tableInfo = tableList.find((t: unknown) => {
+        const table = t as { name: string }
+        return table.name === this.tableName
+      }) as { table_schema: string } | undefined
       const schema = tableInfo?.table_schema
 
       // 如果表不在 main schema 中，使用完整的 schema.table 格式
@@ -130,7 +139,9 @@ export class DuckDBAdapter implements DatabaseAdapter {
     this.ensureInitialized()
 
     try {
-      const result = await this.conn!.query(`SELECT * FROM ${this.fullTableName}`)
+      const result = await this.conn!.query(
+        `SELECT * FROM ${this.fullTableName}`
+      )
       return this.arrowToRecords(result)
     } catch (error) {
       throw new DatabaseAdapterError(
@@ -168,7 +179,7 @@ export class DuckDBAdapter implements DatabaseAdapter {
   /**
    * 执行 SQL 查询
    */
-  async query<T = any>(sql: string): Promise<T[]> {
+  async query<T = unknown>(sql: string): Promise<T[]> {
     this.ensureInitialized()
 
     try {
@@ -288,20 +299,24 @@ export class DuckDBAdapter implements DatabaseAdapter {
 
     // 机构筛选
     if (filters.organizations && filters.organizations.length > 0) {
-      const orgs = filters.organizations.map(o => `'${this.escapeSql(o)}'`).join(',')
+      const orgs = filters.organizations
+        .map(o => `'${this.escapeSql(o)}'`)
+        .join(',')
       conditions.push(`third_level_organization IN (${orgs})`)
     }
 
     // 保险类型筛选
     if (filters.insuranceTypes && filters.insuranceTypes.length > 0) {
-      const types = filters.insuranceTypes.map(t => `'${this.escapeSql(t)}'`).join(',')
+      const types = filters.insuranceTypes
+        .map(t => `'${this.escapeSql(t)}'`)
+        .join(',')
       conditions.push(`insurance_type IN (${types})`)
     }
 
     // 业务类型筛选（代码端使用英文代码，SQL端按中文全称匹配）
     if (filters.businessTypes && filters.businessTypes.length > 0) {
       const typesCN = filters.businessTypes
-        .map(code => getBusinessTypeFullCNByCode(code as any))
+        .map(code => getBusinessTypeFullCNByCode(code as BusinessTypeCode))
         .map(t => `'${this.escapeSql(t)}'`)
         .join(',')
       conditions.push(`business_type_category IN (${typesCN})`)
@@ -309,25 +324,33 @@ export class DuckDBAdapter implements DatabaseAdapter {
 
     // 险别组合筛选
     if (filters.coverageTypes && filters.coverageTypes.length > 0) {
-      const types = filters.coverageTypes.map(t => `'${this.escapeSql(t)}'`).join(',')
+      const types = filters.coverageTypes
+        .map(t => `'${this.escapeSql(t)}'`)
+        .join(',')
       conditions.push(`coverage_type IN (${types})`)
     }
 
     // 客户类别筛选
     if (filters.customerCategories && filters.customerCategories.length > 0) {
-      const cats = filters.customerCategories.map(c => `'${this.escapeSql(c)}'`).join(',')
+      const cats = filters.customerCategories
+        .map(c => `'${this.escapeSql(c)}'`)
+        .join(',')
       conditions.push(`customer_category_3 IN (${cats})`)
     }
 
     // 车险评级筛选
     if (filters.vehicleGrades && filters.vehicleGrades.length > 0) {
-      const grades = filters.vehicleGrades.map(g => `'${this.escapeSql(g)}'`).join(',')
+      const grades = filters.vehicleGrades
+        .map(g => `'${this.escapeSql(g)}'`)
+        .join(',')
       conditions.push(`vehicle_insurance_grade IN (${grades})`)
     }
 
     // 终端来源筛选
     if (filters.terminalSources && filters.terminalSources.length > 0) {
-      const sources = filters.terminalSources.map(s => `'${this.escapeSql(s)}'`).join(',')
+      const sources = filters.terminalSources
+        .map(s => `'${this.escapeSql(s)}'`)
+        .join(',')
       conditions.push(`terminal_source IN (${sources})`)
     }
 
@@ -338,7 +361,9 @@ export class DuckDBAdapter implements DatabaseAdapter {
 
     // 续保状态筛选
     if (filters.renewalStatuses && filters.renewalStatuses.length > 0) {
-      const statuses = filters.renewalStatuses.map(s => `'${this.escapeSql(s)}'`).join(',')
+      const statuses = filters.renewalStatuses
+        .map(s => `'${this.escapeSql(s)}'`)
+        .join(',')
       conditions.push(`renewal_status IN (${statuses})`)
     }
 
@@ -348,17 +373,30 @@ export class DuckDBAdapter implements DatabaseAdapter {
   /**
    * 转换 Arrow 结果为记录数组
    */
-  private arrowToRecords(result: any): InsuranceRecord[] {
-    return result.toArray().map((row: any) => {
-      const record: any = {}
+  private arrowToRecords(result: unknown): InsuranceRecord[] {
+    // 定义最小化 Arrow Table 接口以避免使用 any
+    interface ArrowField {
+      name: string
+    }
+    interface ArrowTable {
+      toArray: () => Record<string, unknown>[]
+      schema: {
+        fields: ArrowField[]
+      }
+    }
+
+    const table = result as ArrowTable
+
+    return table.toArray().map(row => {
+      const record: Record<string, unknown> = {}
 
       // 遍历所有列
-      for (const field of result.schema.fields) {
+      for (const field of table.schema.fields) {
         const value = row[field.name]
         record[field.name] = value
       }
 
-      return record as InsuranceRecord
+      return record as unknown as InsuranceRecord
     })
   }
 

@@ -6,9 +6,13 @@
 'use client'
 
 import { useMemo } from 'react'
-import { useAppStore, useFilteredData } from '@/store/use-app-store'
+import { useAppStore } from '@/store/use-app-store'
+import { useFilteredData } from '@/hooks/use-filtered-data'
 import type { InsuranceRecord } from '@/types/insurance'
-import { getBusinessTypeCode, getBusinessTypeShortLabelByCode } from '@/constants/dimensions'
+import {
+  getBusinessTypeCode,
+  getBusinessTypeShortLabelByCode,
+} from '@/constants/dimensions'
 
 export interface StructurePoint {
   key: string
@@ -201,14 +205,18 @@ export function useProductStructure(topN = 12): StructurePoint[] {
 
     const currentGrouped = aggregateBy(
       filtered,
-      r => (getBusinessTypeCode(r.business_type_category || '') || 'OTHER') as string
+      r =>
+        (getBusinessTypeCode(r.business_type_category || '') ||
+          'OTHER') as string
     )
 
     let finalGrouped = currentGrouped
     if (dataViewType === 'increment' && previousWeekData.length > 0) {
       const previousGrouped = aggregateBy(
         previousWeekData,
-        r => (getBusinessTypeCode(r.business_type_category || '') || 'OTHER') as string
+        r =>
+          (getBusinessTypeCode(r.business_type_category || '') ||
+            'OTHER') as string
       )
       finalGrouped = calculateIncrement(currentGrouped, previousGrouped)
     }

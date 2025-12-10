@@ -67,7 +67,7 @@ export class UploadDataUseCase {
         validRecords: normalizationResult.success.length,
         invalidRecords: normalizationResult.failed.length,
         warnings: validation.warnings,
-        errors: normalizationResult.failed.map((f) => ({
+        errors: normalizationResult.failed.map(f => ({
           message: f.error.message,
           row: f.index,
         })),

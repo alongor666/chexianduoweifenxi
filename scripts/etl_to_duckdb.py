@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-"""
+# -*- coding: utf-8 -*-
+"""
 数据 ETL (提取、转换、加载) 脚本
 
 功能:
@@ -47,41 +48,84 @@ class DataProcessor:
         
         # 字段别名映射，用于兼容不同语言环境的列名
         self.field_alias_mapping = {
-            'snapshot_date': ['刷新时间', 'Snapshot Date'],
-            'policy_start_year': ['保险起期', 'Policy Start Year'],
-            'business_type_category': ['业务类型分类', 'Business Type Category'],
-            'chengdu_branch': ['成都中支', 'Chengdu Branch'],
-            'second_level_organization': ['二级机构', 'Second Level Organization'],
-            'third_level_organization': ['三级机构', 'Third Level Organization'],
-            'customer_category_3': ['客户类别3', 'Customer Category 3'],
-            'insurance_type': ['险种类', 'Insurance Type'],
-            'is_new_energy_vehicle': ['是否新能源车1', 'Is New Energy Vehicle'],
-            'coverage_type': ['交三/主全', 'Coverage Type'],
-            'is_transferred_vehicle': ['是否过户车', 'Is Transferred Vehicle'],
-            'renewal_status': ['续保情况', 'Renewal Status'],
-            'vehicle_insurance_grade': ['车险分等级', 'Vehicle Insurance Grade'],
-            'highway_risk_grade': ['高速风险等级', 'Highway Risk Grade'],
-            'large_truck_score': ['大货车评分', 'Large Truck Score'],
-            'small_truck_score': ['小货车评分', 'Small Truck Score'],
-            'terminal_source': ['终端来源', 'Terminal Source'],
-            'signed_premium_wan': ['跟单保费(万)', '跟单保费(Ten Thousand)'],
-            'average_premium': ['单均保费', 'Average Premium'],
-            'matured_premium_wan': ['满期净保费(万)', '满期净保费(Ten Thousand)'],
-            'claim_frequency': ['出险频度', 'Claim Frequency'],
-            'claim_case_count': ['案件数', 'Claim Case Count'],
-            'average_claim_amount': ['案均赔款', 'Average Claim Amount'],
-            'total_claim_wan': ['总赔款(万)', '总赔款(Ten Thousand)'],
-            'matured_claim_ratio': ['满期赔付率', 'Matured Claim Ratio'],
-            'expense_ratio': ['费用率', 'Expense Ratio'],
-            'variable_cost_ratio': ['变动成本率', 'Variable Cost Ratio'],
-            'commercial_autonomous_coefficient': ['商业险自主系数', 'Commercial Autonomous Coefficient'],
-            'week_number': ['周次', 'Week Number']
+            'snapshot_date': ['snapshot_date', '刷新时间', 'Snapshot Date'],
+            'policy_start_year': ['policy_start_year', '保险起期', 'Policy Start Year'],
+            'business_type_category': ['business_type_category', '业务类型分类', 'Business Type Category'],
+            'chengdu_branch': ['chengdu_branch', '成都中支', 'Chengdu Branch'],
+            'second_level_organization': ['second_level_organization', '二级机构', 'Second Level Organization'],
+            'third_level_organization': ['third_level_organization', '三级机构', 'Third Level Organization'],
+            'customer_category_3': ['customer_category_3', '客户类别3', 'Customer Category 3'],
+            'insurance_type': ['insurance_type', '险种类', 'Insurance Type'],
+            'is_new_energy_vehicle': ['is_new_energy_vehicle', '是否新能源车1', 'Is New Energy Vehicle'],
+            'coverage_type': ['coverage_type', '交三/主全', 'Coverage Type'],
+            'is_transferred_vehicle': ['is_transferred_vehicle', '是否过户车', 'Is Transferred Vehicle'],
+            'renewal_status': ['renewal_status', '续保情况', 'Renewal Status'],
+            'vehicle_insurance_grade': ['vehicle_insurance_grade', '车险分等级', 'Vehicle Insurance Grade'],
+            'highway_risk_grade': ['highway_risk_grade', '高速风险等级', 'Highway Risk Grade'],
+            'large_truck_score': ['large_truck_score', '大货车评分', 'Large Truck Score'],
+            'small_truck_score': ['small_truck_score', '小货车评分', 'Small Truck Score'],
+            'terminal_source': ['terminal_source', '终端来源', 'Terminal Source'],
+            'signed_premium_wan': ['signed_premium_wan', '跟单保费(万)', '跟单保费(Ten Thousand)'],
+            'average_premium': ['average_premium', '单均保费', 'Average Premium'],
+            'matured_premium_wan': ['matured_premium_wan', '满期净保费(万)', '满期净保费(Ten Thousand)'],
+            'claim_frequency': ['claim_frequency', '出险频度', 'Claim Frequency'],
+            'claim_case_count': ['claim_case_count', '案件数', 'Claim Case Count'],
+            'average_claim_amount': ['average_claim_amount', '案均赔款', 'Average Claim Amount'],
+            'total_claim_wan': ['total_claim_wan', '总赔款(万)', '总赔款(Ten Thousand)'],
+            'matured_claim_ratio': ['matured_claim_ratio', '满期赔付率', 'Matured Claim Ratio'],
+            'expense_ratio': ['expense_ratio', '费用率', 'Expense Ratio'],
+            'variable_cost_ratio': ['variable_cost_ratio', '变动成本率', 'Variable Cost Ratio'],
+            'commercial_autonomous_coefficient': ['commercial_autonomous_coefficient', '商业险自主系数', 'Commercial Autonomous Coefficient'],
+            'week_number': ['week_number', '周次', 'Week Number']
         }
         
         self.boolean_map = {'是': True, '否': False, 'Y': True, 'N': False, 'true': True, 'false': False, True: True, False: False}
 
     def standardize_fields(self, df, original_filename=None, user_week_number=None):
         """标准化字段名和数据类型, 使用别名系统兼容多语言列名"""
+        # 预处理：如果是已处理的数据（包含最终字段），则逆向生成必要的中间字段
+        if 'signed_premium_yuan' in df.columns:
+            # Helper to safely convert to numeric
+            def safe_numeric(col): return pd.to_numeric(df[col], errors='coerce').fillna(0)
+            
+            if 'signed_premium_wan' not in df.columns:
+                df['signed_premium_wan'] = safe_numeric('signed_premium_yuan') / 10000
+            
+            if 'matured_premium_yuan' in df.columns and 'matured_premium_wan' not in df.columns:
+                df['matured_premium_wan'] = safe_numeric('matured_premium_yuan') / 10000
+                
+            if 'reported_claim_payment_yuan' in df.columns and 'total_claim_wan' not in df.columns:
+                df['total_claim_wan'] = safe_numeric('reported_claim_payment_yuan') / 10000
+                
+            if 'expense_amount_yuan' in df.columns and 'expense_ratio' not in df.columns:
+                # expense_ratio = expense_amount / signed_premium
+                # Handle division by zero
+                sp = safe_numeric('signed_premium_yuan')
+                ea = safe_numeric('expense_amount_yuan')
+                df['expense_ratio'] = ea / sp.replace(0, 1) # Avoid div by zero, will be 0/1=0 if sp is 0 but ea is 0. If ea>0 sp=0, it's problematic but let's assume 0.
+                df.loc[sp == 0, 'expense_ratio'] = 0
+
+            if 'marginal_contribution_amount_yuan' in df.columns and 'variable_cost_ratio' not in df.columns:
+                # variable_cost_ratio = 1 - (marginal_contribution / matured_premium)
+                mp = safe_numeric('matured_premium_yuan')
+                mc = safe_numeric('marginal_contribution_amount_yuan')
+                df['variable_cost_ratio'] = 1 - (mc / mp.replace(0, 1))
+                df.loc[mp == 0, 'variable_cost_ratio'] = 0
+                
+            if 'average_premium' not in df.columns and 'policy_count' in df.columns:
+                 # average_premium = matured_premium / policy_count
+                 mp = safe_numeric('matured_premium_yuan')
+                 pc = safe_numeric('policy_count')
+                 df['average_premium'] = mp / pc.replace(0, 1)
+                 df.loc[pc == 0, 'average_premium'] = 0
+
+            if 'commercial_premium_before_discount_yuan' in df.columns and 'commercial_autonomous_coefficient' not in df.columns:
+                # coeff = matured_premium / commercial_premium_before_discount
+                mp = safe_numeric('matured_premium_yuan')
+                cp = safe_numeric('commercial_premium_before_discount_yuan')
+                df['commercial_autonomous_coefficient'] = mp / cp.replace(0, 1)
+                df.loc[cp == 0, 'commercial_autonomous_coefficient'] = 1.0
+
         rename_map = {}
         found_internal_fields = set()
         input_columns = df.columns.tolist()
@@ -99,7 +143,7 @@ class DataProcessor:
             'variable_cost_ratio', 'commercial_autonomous_coefficient'
         }
         
-        missing_fields = [f"'{field}' (别名: {', '.join(self.field_alias_mapping.get(field, []))})") for field in required_for_calc if field not in found_internal_fields]
+        missing_fields = [f"'{field}' (别名: {', '.join(self.field_alias_mapping.get(field, []))})" for field in required_for_calc if field not in found_internal_fields]
 
         if missing_fields:
             raise ValueError(f"处理失败：输入文件 '{original_filename}' 缺少以下必需的列：\n" + "\n".join(missing_fields))
@@ -283,7 +327,7 @@ class ETLConverter:
         result = self.conn.execute(f"""
             DELETE FROM {self.table_name}
             WHERE policy_start_year = 0 OR signed_premium_yuan = 0 OR week_number = 0
-        """")
+        """)
         deleted_count = result.fetchall()[0][0] if result else 0
         if deleted_count > 0: print(f"   ⚠️  删除了 {deleted_count} 条无效记录")
         else: print(f"   ✅ 数据完整，无需清理")
@@ -322,7 +366,7 @@ class ETLConverter:
    签单保费:     {stats[7]/10000:,.2f} 万元
    保单件数:     {stats[8]:,} 件
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        ")
+        """)
 
     def optimize_database(self):
         """优化数据库"""

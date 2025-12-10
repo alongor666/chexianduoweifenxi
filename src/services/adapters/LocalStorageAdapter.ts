@@ -37,7 +37,9 @@ export class LocalStorageAdapter implements IPersistenceAdapter {
       const serialized = JSON.stringify(data)
       localStorage.setItem(fullKey, serialized)
 
-      console.log(`[LocalStorage] 已保存数据: ${key} (${this.formatSize(serialized.length)})`)
+      console.log(
+        `[LocalStorage] 已保存数据: ${key} (${this.formatSize(serialized.length)})`
+      )
     } catch (error) {
       if (error instanceof Error) {
         // 检查是否是存储空间不足
@@ -50,7 +52,10 @@ export class LocalStorageAdapter implements IPersistenceAdapter {
         }
 
         // 序列化错误（可能包含循环引用或不可序列化的对象）
-        if (error.message.includes('circular') || error.message.includes('serialize')) {
+        if (
+          error.message.includes('circular') ||
+          error.message.includes('serialize')
+        ) {
           throw new PersistenceError(
             `数据序列化失败: ${key}`,
             'SERIALIZATION_ERROR',

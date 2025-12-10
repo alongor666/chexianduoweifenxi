@@ -24,25 +24,25 @@ export const CHART_COLORS = {
 
   // 风险等级颜色
   risk: {
-    safe: '#10b981',      // 安全 - 绿色
-    warning: '#f59e0b',   // 预警 - 黄色
-    danger: '#ef4444',    // 危险 - 红色
+    safe: '#10b981', // 安全 - 绿色
+    warning: '#f59e0b', // 预警 - 黄色
+    danger: '#ef4444', // 危险 - 红色
     critical: '#dc2626', // 严重 - 深红色
   },
 
   // 业务指标颜色
   metrics: {
-    premium: '#3b82f6',        // 保费 - 蓝色
-    lossRatio: '#f97316',      // 赔付率 - 橙色
-    contribution: '#10b981',   // 边际贡献 - 绿色
-    trend: '#8b5cf6',          // 趋势 - 紫色
+    premium: '#3b82f6', // 保费 - 蓝色
+    lossRatio: '#f97316', // 赔付率 - 橙色
+    contribution: '#10b981', // 边际贡献 - 绿色
+    trend: '#8b5cf6', // 趋势 - 紫色
   },
 
   // 阈值线颜色
   threshold: {
-    standard: '#ef4444',   // 标准阈值 - 红色
-    target: '#10b981',     // 目标值 - 绿色
-    average: '#9ca3af',    // 平均值 - 灰色
+    standard: '#ef4444', // 标准阈值 - 红色
+    target: '#10b981', // 目标值 - 绿色
+    average: '#9ca3af', // 平均值 - 灰色
   },
 
   // 中性色
@@ -65,14 +65,14 @@ export const CHART_COLORS = {
  */
 export const RISK_ZONES = {
   lossRatio: {
-    safe: { max: 60, color: 'rgba(16, 185, 129, 0.05)' },      // < 60%
-    warning: { min: 60, max: 70, color: 'rgba(245, 158, 11, 0.1)' },  // 60-70%
-    danger: { min: 70, color: 'rgba(239, 68, 68, 0.15)' },     // > 70%
+    safe: { max: 60, color: 'rgba(16, 185, 129, 0.05)' }, // < 60%
+    warning: { min: 60, max: 70, color: 'rgba(245, 158, 11, 0.1)' }, // 60-70%
+    danger: { min: 70, color: 'rgba(239, 68, 68, 0.15)' }, // > 70%
   },
   contribution: {
-    danger: { max: 10, color: 'rgba(239, 68, 68, 0.15)' },     // < 10%
+    danger: { max: 10, color: 'rgba(239, 68, 68, 0.15)' }, // < 10%
     warning: { min: 10, max: 15, color: 'rgba(245, 158, 11, 0.1)' }, // 10-15%
-    safe: { min: 15, color: 'rgba(16, 185, 129, 0.05)' },      // > 15%
+    safe: { min: 15, color: 'rgba(16, 185, 129, 0.05)' }, // > 15%
   },
 } as const
 
@@ -174,7 +174,8 @@ export const CHART_TOOLTIP: EChartsOption['tooltip'] = {
     fontSize: 12,
   },
   padding: 12,
-  extraCssText: 'box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);',
+  extraCssText:
+    'box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);',
 } as const
 
 /**
@@ -275,9 +276,10 @@ export const CHART_DATAZOOM = {
 export function buildBaseTheme(): EChartsOption {
   return {
     backgroundColor: 'transparent',
-    color: [...CHART_COLORS.primary] as any,
+    color: [...CHART_COLORS.primary],
     textStyle: {
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+      fontFamily:
+        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     },
     animation: true,
     animationDuration: CHART_ANIMATION.duration,
@@ -317,7 +319,10 @@ export function getGradientColor(color: string, opacity = 0.3) {
 /**
  * 获取风险等级对应的颜色
  */
-export function getRiskColor(value: number, thresholds: { warning: number; danger: number }): string {
+export function getRiskColor(
+  value: number,
+  thresholds: { warning: number; danger: number }
+): string {
   if (value >= thresholds.danger) return CHART_COLORS.risk.danger
   if (value >= thresholds.warning) return CHART_COLORS.risk.warning
   return CHART_COLORS.risk.safe

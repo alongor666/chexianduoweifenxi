@@ -58,7 +58,7 @@ export function DataExport() {
     const exportFilterState = {
       policyYear: filters.years,
       weekNumber: filters.weeks,
-      thirdLevelOrganization: filters.organizations
+      thirdLevelOrganization: filters.organizations,
     }
     exportFilteredData(filteredData, exportFilterState)
     setOpen(false)
@@ -72,7 +72,7 @@ export function DataExport() {
       const exportFilterState = {
         policyYear: filters.years,
         weekNumber: filters.weeks,
-        thirdLevelOrganization: filters.organizations
+        thirdLevelOrganization: filters.organizations,
       }
       // 将 KPIResult 转换为 KPISummarySnapshot
       const kpiSummary = {
@@ -85,7 +85,7 @@ export function DataExport() {
         variableCostRate: kpiData.variable_cost_ratio,
         autonomyCoefficient: kpiData.autonomy_coefficient,
         signedPremium: kpiData.signed_premium,
-        maturedPremium: kpiData.matured_premium
+        maturedPremium: kpiData.matured_premium,
       }
       exportKPISummary(kpiSummary, exportFilterState)
     }

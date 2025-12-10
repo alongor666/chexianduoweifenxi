@@ -84,7 +84,10 @@ export class InsuranceRecord {
       { name: '赔案件数', value: this.claimCaseCount },
       { name: '已报告赔款', value: this.reportedClaimPaymentYuan },
       { name: '费用金额', value: this.expenseAmountYuan },
-      { name: '商业险折前保费', value: this.commercialPremiumBeforeDiscountYuan },
+      {
+        name: '商业险折前保费',
+        value: this.commercialPremiumBeforeDiscountYuan,
+      },
     ]
 
     for (const field of nonNegativeFields) {
@@ -246,7 +249,8 @@ export class InsuranceRecord {
       claim_case_count: this.claimCaseCount,
       reported_claim_payment_yuan: this.reportedClaimPaymentYuan,
       expense_amount_yuan: this.expenseAmountYuan,
-      commercial_premium_before_discount_yuan: this.commercialPremiumBeforeDiscountYuan,
+      commercial_premium_before_discount_yuan:
+        this.commercialPremiumBeforeDiscountYuan,
       premium_plan_yuan: this.premiumPlanYuan,
       marginal_contribution_amount_yuan: this.marginalContributionAmountYuan,
     }

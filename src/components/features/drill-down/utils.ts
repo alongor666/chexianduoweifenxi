@@ -26,6 +26,8 @@ export function getRecordValue(
       return record.is_transferred_vehicle
     case 'insurance_type':
       return record.insurance_type
+    case 'week_number':
+      return String(record.week_number)
     default:
       return ''
   }

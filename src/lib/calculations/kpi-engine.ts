@@ -464,7 +464,9 @@ export class KPIEngine {
 
     const currentHash = generateDataHash(currentWeekRecords)
     const previousHash = generateDataHash(previousWeekRecords)
-    const targetKey = annualTargetYuan ? `_t${Math.round(annualTargetYuan)}` : ''
+    const targetKey = annualTargetYuan
+      ? `_t${Math.round(annualTargetYuan)}`
+      : ''
     const cacheKey = `inc_${currentYear}w${currentWeek}_${currentHash}_${previousYear}w${previousWeek}_${previousHash}${targetKey}`
 
     if (useCache && this.cache.has(cacheKey)) {
@@ -546,8 +548,10 @@ export class KPIEngine {
 
       // 【时间进度】使用增量数据
       premium_progress: incrementResult.premium_progress,
-      premium_time_progress_achievement_rate: incrementResult.premium_time_progress_achievement_rate,
-      policy_count_time_progress_achievement_rate: incrementResult.policy_count_time_progress_achievement_rate,
+      premium_time_progress_achievement_rate:
+        incrementResult.premium_time_progress_achievement_rate,
+      policy_count_time_progress_achievement_rate:
+        incrementResult.policy_count_time_progress_achievement_rate,
 
       // 【年度目标】
       annual_premium_target: incrementResult.annual_premium_target,

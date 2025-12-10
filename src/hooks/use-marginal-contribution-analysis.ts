@@ -7,10 +7,14 @@
 'use client'
 
 import { useMemo } from 'react'
-import { useAppStore, useFilteredData } from '@/store/use-app-store'
+import { useAppStore } from '@/store/use-app-store'
+import { useFilteredData } from '@/hooks/use-filtered-data'
 import type { InsuranceRecord } from '@/types/insurance'
 import { kpiEngine } from '@/lib/calculations/kpi-engine'
-import { getBusinessTypeCode, getBusinessTypeShortLabelByCode } from '@/constants/dimensions'
+import {
+  getBusinessTypeCode,
+  getBusinessTypeShortLabelByCode,
+} from '@/constants/dimensions'
 
 /**
  * 边贡分析数据项

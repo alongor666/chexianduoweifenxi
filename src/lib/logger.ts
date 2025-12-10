@@ -43,8 +43,8 @@ const LOG_LEVEL_NAMES: Record<LogLevel, string> = {
 /** 日志颜色（仅在开发环境） */
 const LOG_COLORS = {
   [LogLevel.DEBUG]: '#6366f1', // indigo
-  [LogLevel.INFO]: '#3b82f6',  // blue
-  [LogLevel.WARN]: '#f59e0b',  // amber
+  [LogLevel.INFO]: '#3b82f6', // blue
+  [LogLevel.WARN]: '#f59e0b', // amber
   [LogLevel.ERROR]: '#ef4444', // red
 }
 
@@ -144,11 +144,7 @@ class Logger {
   /**
    * 内部日志方法
    */
-  private log(
-    level: LogLevel,
-    message: string,
-    data?: unknown
-  ): void {
+  private log(level: LogLevel, message: string, data?: unknown): void {
     if (!this.shouldLog(level)) {
       return
     }
@@ -159,8 +155,12 @@ class Logger {
     })
 
     // 在浏览器中使用彩色输出
-    if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+    if (
+      typeof window !== 'undefined' &&
+      process.env.NODE_ENV === 'development'
+    ) {
       const color = LOG_COLORS[level]
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const args: any[] = [
         `%c${formatted}`,
         `color: ${color}; font-weight: bold`,

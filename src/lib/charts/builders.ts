@@ -18,7 +18,9 @@ import {
 /**
  * 构建标准网格配置
  */
-export function buildGrid(type: 'default' | 'compact' | 'vertical' = 'default'): EChartsOption['grid'] {
+export function buildGrid(
+  type: 'default' | 'compact' | 'vertical' = 'default'
+): EChartsOption['grid'] {
   return CHART_GRID[type]
 }
 
@@ -49,9 +51,7 @@ export function buildLegend(
 /**
  * 构建标准 X 轴配置
  */
-export function buildXAxis(
-  config?: Partial<any>
-): any {
+export function buildXAxis(config?: Partial<any>): any {
   return {
     type: 'category',
     ...CHART_AXIS.xAxis,
@@ -62,9 +62,7 @@ export function buildXAxis(
 /**
  * 构建标准 Y 轴配置
  */
-export function buildYAxis(
-  config?: Partial<any>
-): any {
+export function buildYAxis(config?: Partial<any>): any {
   return {
     type: 'value',
     ...CHART_AXIS.yAxis,
@@ -75,13 +73,16 @@ export function buildYAxis(
 /**
  * 构建双 Y 轴配置（用于趋势图）
  */
-export function buildDualYAxis(leftConfig?: {
-  name?: string
-  formatter?: (value: number) => string
-}, rightConfig?: {
-  name?: string
-  formatter?: (value: number) => string
-}): any[] {
+export function buildDualYAxis(
+  leftConfig?: {
+    name?: string
+    formatter?: (value: number) => string
+  },
+  rightConfig?: {
+    name?: string
+    formatter?: (value: number) => string
+  }
+): any[] {
   return [
     buildYAxis({
       position: 'left',
@@ -112,7 +113,12 @@ export function buildDataZoom(config?: {
   showSlider?: boolean
   showInside?: boolean
 }): EChartsOption['dataZoom'] {
-  const { start = 0, end = 100, showSlider = true, showInside = true } = config || {}
+  const {
+    start = 0,
+    end = 100,
+    showSlider = true,
+    showInside = true,
+  } = config || {}
 
   const dataZoom: any[] = []
 
@@ -180,13 +186,15 @@ export function buildRiskArea(
     itemStyle: {
       color: options?.color || 'rgba(254, 226, 226, 0.3)',
     },
-    label: options?.label ? {
-      show: true,
-      position: 'insideTop',
-      formatter: options.label,
-      fontSize: 11,
-      color: CHART_COLORS.risk.danger,
-    } : undefined,
+    label: options?.label
+      ? {
+          show: true,
+          position: 'insideTop',
+          formatter: options.label,
+          fontSize: 11,
+          color: CHART_COLORS.risk.danger,
+        }
+      : undefined,
     data: [
       [
         {
@@ -268,15 +276,7 @@ export function buildBarSeries(config: {
   barGap?: string
   stack?: string
 }): any {
-  const {
-    name,
-    data,
-    color,
-    yAxisIndex = 0,
-    barWidth,
-    barGap,
-    stack,
-  } = config
+  const { name, data, color, yAxisIndex = 0, barWidth, barGap, stack } = config
 
   const series: any = {
     name,
@@ -317,13 +317,7 @@ export function buildScatterSeries(config: {
   symbolSize?: number | ((value: any) => number)
   yAxisIndex?: number
 }): any {
-  const {
-    name,
-    data,
-    color,
-    symbolSize = 8,
-    yAxisIndex = 0,
-  } = config
+  const { name, data, color, symbolSize = 8, yAxisIndex = 0 } = config
 
   const series: any = {
     name,
@@ -394,13 +388,7 @@ export function buildRadarSeries(config: {
   areaOpacity?: number
   lineWidth?: number
 }): any {
-  const {
-    name,
-    data,
-    color,
-    areaOpacity = 0.08,
-    lineWidth = 2.5,
-  } = config
+  const { name, data, color, areaOpacity = 0.08, lineWidth = 2.5 } = config
 
   const series: any = {
     name,
@@ -448,13 +436,16 @@ export function buildHeatmapSeries(config: {
         shadowColor: 'rgba(0, 0, 0, 0.5)',
       },
     },
-    visualMap: min !== undefined && max !== undefined ? {
-      min,
-      max,
-      calculable: true,
-      orient: 'horizontal',
-      left: 'center',
-      bottom: '0%',
-    } : undefined,
+    visualMap:
+      min !== undefined && max !== undefined
+        ? {
+            min,
+            max,
+            calculable: true,
+            orient: 'horizontal',
+            left: 'center',
+            bottom: '0%',
+          }
+        : undefined,
   }
 }

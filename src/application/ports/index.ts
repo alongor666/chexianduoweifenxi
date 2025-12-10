@@ -7,11 +7,7 @@
  */
 
 // 数据仓储接口
-export type {
-  IDataRepository,
-  DataFilters,
-  DataStats,
-} from './IDataRepository'
+export type { IDataRepository, DataFilters, DataStats } from './IDataRepository'
 
 // 文件解析器接口
 export type {

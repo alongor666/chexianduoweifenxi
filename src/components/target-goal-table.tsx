@@ -57,7 +57,9 @@ export function TargetGoalTable() {
     )
 
     const displayRows = currentVersion.rows.map(row => {
-      const initRow = initialVersion.rows.find(item => item.bizType === row.bizType)
+      const initRow = initialVersion.rows.find(
+        item => item.bizType === row.bizType
+      )
       const achieved = achievedMap[row.bizType] ?? 0
       const annualTargetInit = initRow?.annualTargetInit ?? row.annualTargetInit
       return buildGoalDisplayRow(
@@ -130,7 +132,7 @@ export function TargetGoalTable() {
 
   return (
     <div className="mt-6 overflow-hidden rounded-lg border">
-        <table className="min-w-full table-fixed">
+      <table className="min-w-full table-fixed">
         <thead className="bg-muted/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
           <tr>
             {columns.map(column => {
@@ -143,11 +145,26 @@ export function TargetGoalTable() {
                   key={column.key}
                   className="cursor-pointer px-4 py-3"
                   onClick={() => handleSort(column.key)}
-                  aria-sort={isActive ? (sortState.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
+                  aria-sort={
+                    isActive
+                      ? sortState.direction === 'asc'
+                        ? 'ascending'
+                        : 'descending'
+                      : 'none'
+                  }
                 >
-                  <span className={cn('flex items-center gap-1 font-semibold', isActive && 'text-primary')}>
+                  <span
+                    className={cn(
+                      'flex items-center gap-1 font-semibold',
+                      isActive && 'text-primary'
+                    )}
+                  >
                     {column.label}
-                    {isActive ? (sortState.direction === 'asc' ? '↑' : '↓') : null}
+                    {isActive
+                      ? sortState.direction === 'asc'
+                        ? '↑'
+                        : '↓'
+                      : null}
                   </span>
                 </th>
               )
@@ -158,11 +175,21 @@ export function TargetGoalTable() {
           {sortedRows.map(row => (
             <tr key={row.bizType} className="border-t">
               <td className="px-4 py-3 font-medium">{row.bizType}</td>
-              <td className="px-4 py-3 text-right">{row.annualTargetInit.toLocaleString('zh-Hans-CN')}</td>
-              <td className="px-4 py-3 text-right">{row.annualTargetTuned.toLocaleString('zh-Hans-CN')}</td>
-              <td className="px-4 py-3 text-right">{(row.achieved || 0).toLocaleString('zh-Hans-CN')}</td>
-              <td className="px-4 py-3 text-right">{renderRateCell(row.initialAchievementRate)}</td>
-              <td className="px-4 py-3 text-right">{renderRateCell(row.tunedAchievementRate)}</td>
+              <td className="px-4 py-3 text-right">
+                {row.annualTargetInit.toLocaleString('zh-Hans-CN')}
+              </td>
+              <td className="px-4 py-3 text-right">
+                {row.annualTargetTuned.toLocaleString('zh-Hans-CN')}
+              </td>
+              <td className="px-4 py-3 text-right">
+                {(row.achieved || 0).toLocaleString('zh-Hans-CN')}
+              </td>
+              <td className="px-4 py-3 text-right">
+                {renderRateCell(row.initialAchievementRate)}
+              </td>
+              <td className="px-4 py-3 text-right">
+                {renderRateCell(row.tunedAchievementRate)}
+              </td>
               <td
                 className={cn(
                   'px-4 py-3 text-right',
@@ -187,7 +214,7 @@ export function TargetGoalTable() {
             </tr>
           ))}
         </tbody>
-        </table>
-      </div>
+      </table>
+    </div>
   )
 }

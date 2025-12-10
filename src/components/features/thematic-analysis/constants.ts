@@ -24,7 +24,8 @@ export const PREMIUM_DIMENSION_OPTIONS: Array<{
 /**
  * 默认保费维度
  */
-export const DEFAULT_PREMIUM_DIMENSION: PremiumDimensionKey = 'customer_category_3'
+export const DEFAULT_PREMIUM_DIMENSION: PremiumDimensionKey =
+  'customer_category_3'
 
 /**
  * 赔付维度选项

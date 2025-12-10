@@ -14,7 +14,11 @@
  * 3. src/hooks/use-persist-data.ts
  */
 
-import type { InsuranceRecord } from '@/types/insurance'
+import type {
+  InsuranceRecord,
+  FilterState,
+  PremiumTargets,
+} from '@/types/insurance'
 import type { IPersistenceAdapter } from './interfaces/IPersistenceAdapter'
 import { LocalStorageAdapter } from './adapters/LocalStorageAdapter'
 import type { BatchUploadResult } from '@/hooks/use-file-upload'
@@ -104,10 +108,14 @@ export class PersistenceService {
    */
   async loadRawData(): Promise<InsuranceRecord[] | null> {
     try {
-      const data = await this.adapter.load<InsuranceRecord[]>(STORAGE_KEYS.RAW_DATA)
+      const data = await this.adapter.load<InsuranceRecord[]>(
+        STORAGE_KEYS.RAW_DATA
+      )
 
       if (data) {
-        console.log(`[PersistenceService] 加载数据成功，共 ${data.length} 条记录`)
+        console.log(
+          `[PersistenceService] 加载数据成功，共 ${data.length} 条记录`
+        )
       }
 
       return data
@@ -229,7 +237,7 @@ export class PersistenceService {
   /**
    * 保存保费目标
    */
-  async savePremiumTargets(targets: any): Promise<void> {
+  async savePremiumTargets(targets: PremiumTargets): Promise<void> {
     await this.adapter.save(STORAGE_KEYS.PREMIUM_TARGETS, targets)
   }
 
@@ -243,7 +251,7 @@ export class PersistenceService {
   /**
    * 保存筛选状态
    */
-  async saveFilterState(filters: any): Promise<void> {
+  async saveFilterState(filters: FilterState): Promise<void> {
     await this.adapter.save(STORAGE_KEYS.FILTER_STATE, filters)
   }
 

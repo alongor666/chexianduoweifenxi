@@ -10,7 +10,9 @@ import { useToast } from '@/hooks/use-toast'
 
 export function DataProcessingPanel() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
-  const [outputFileName, setOutputFileName] = useState<string>('insurance_data.duckdb')
+  const [outputFileName, setOutputFileName] = useState<string>(
+    'insurance_data.duckdb'
+  )
   const [isProcessing, setIsProcessing] = useState<boolean>(false)
   const [logs, setLogs] = useState<string>('')
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
@@ -20,91 +22,94 @@ export function DataProcessingPanel() {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      const filesArray = Array.from(event.target.files);
-      setSelectedFiles(filesArray);
-      setLogs(prev => prev + `已选择 ${filesArray.length} 个文件。\n`);
-      setDownloadUrl(null); // Clear previous download URL
-      setError(null); // Clear previous error
+      const filesArray = Array.from(event.target.files)
+      setSelectedFiles(filesArray)
+      setLogs(prev => prev + `已选择 ${filesArray.length} 个文件。\n`)
+      setDownloadUrl(null) // Clear previous download URL
+      setError(null) // Clear previous error
     }
   }
 
-  const handleOutputFileNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setOutputFileName(event.target.value);
+  const handleOutputFileNameChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setOutputFileName(event.target.value)
   }
 
   const handleProcess = async () => {
     if (selectedFiles.length === 0) {
       toast({
-        title: "错误",
-        description: "请选择至少一个文件进行加工。",
-        variant: "destructive",
-      });
-      return;
+        title: '错误',
+        description: '请选择至少一个文件进行加工。',
+        variant: 'destructive',
+      })
+      return
     }
 
-    setIsProcessing(true);
-    setLogs('');
-    setError(null);
-    setDownloadUrl(null);
+    setIsProcessing(true)
+    setLogs('')
+    setError(null)
+    setDownloadUrl(null)
 
-    const formData = new FormData();
+    const formData = new FormData()
     selectedFiles.forEach(file => {
-      formData.append('files', file);
-    });
-    formData.append('outputFileName', outputFileName);
+      formData.append('files', file)
+    })
+    formData.append('outputFileName', outputFileName)
 
-    setLogs(prev => prev + '开始上传文件并进行数据加工...\n');
+    setLogs(prev => prev + '开始上传文件并进行数据加工...\n')
 
     try {
       const response = await fetch('/api/etl', {
         method: 'POST',
         body: formData,
-      });
+      })
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || '数据加工失败');
+        const errorData = await response.json()
+        throw new Error(errorData.message || '数据加工失败')
       }
 
-      const result = await response.json();
-      setLogs(prev => prev + result.logs + '\n');
+      const result = await response.json()
+      setLogs(prev => prev + result.logs + '\n')
 
       if (result.success) {
-        setDownloadUrl(result.downloadUrl);
+        setDownloadUrl(result.downloadUrl)
         toast({
-          title: "成功",
-          description: "数据加工完成，可以下载数据库文件了。",
-        });
+          title: '成功',
+          description: '数据加工完成，可以下载数据库文件了。',
+        })
       } else {
-        setError(result.message || '数据加工失败');
+        setError(result.message || '数据加工失败')
         toast({
-          title: "错误",
+          title: '错误',
           description: result.message || '数据加工失败',
-          variant: "destructive",
-        });
+          variant: 'destructive',
+        })
       }
-
     } catch (err: any) {
-      setLogs(prev => prev + `错误: ${err.message}\n`);
-      setError(err.message);
+      setLogs(prev => prev + `错误: ${err.message}\n`)
+      setError(err.message)
       toast({
-        title: "错误",
+        title: '错误',
         description: `数据加工过程中发生错误: ${err.message}`,
-        variant: "destructive",
-      });
+        variant: 'destructive',
+      })
     } finally {
-      setIsProcessing(false);
+      setIsProcessing(false)
       if (fileInputRef.current) {
-        fileInputRef.current.value = ''; // Clear file input
+        fileInputRef.current.value = '' // Clear file input
       }
-      setSelectedFiles([]); // Clear selected files state
+      setSelectedFiles([]) // Clear selected files state
     }
   }
 
   return (
     <div className="space-y-6 p-6">
       <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">数据加工设置</h3>
+        <h3 className="text-lg font-semibold text-slate-800 mb-4">
+          数据加工设置
+        </h3>
         <div className="grid w-full items-center gap-4">
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="files">选择源数据文件 (.xlsx, .xls, .csv)</Label>
@@ -158,11 +163,13 @@ export function DataProcessingPanel() {
         <div className="rounded-xl border border-green-200 bg-green-50/60 p-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <FileText className="h-5 w-5 text-green-600" />
-            <p className="text-green-800 font-medium">
-              数据加工成功！
-            </p>
+            <p className="text-green-800 font-medium">数据加工成功！</p>
           </div>
-          <a href={downloadUrl} download className="flex items-center gap-2 text-green-700 hover:underline">
+          <a
+            href={downloadUrl}
+            download
+            className="flex items-center gap-2 text-green-700 hover:underline"
+          >
             <Download className="h-4 w-4" />
             下载 {outputFileName}
           </a>

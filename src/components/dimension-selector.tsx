@@ -2,7 +2,11 @@
 
 import React from 'react'
 
-export type DimensionType = 'businessType' | 'thirdLevelOrganization' | 'customerCategory' | 'insuranceType'
+export type DimensionType =
+  | 'businessType'
+  | 'thirdLevelOrganization'
+  | 'customerCategory'
+  | 'insuranceType'
 
 interface DimensionSelectorProps {
   selectedDimension: DimensionType
@@ -26,7 +30,7 @@ export function DimensionSelector({
     <div className={`flex items-center gap-2 ${className}`}>
       <span className="text-sm font-medium text-slate-700">目标维度:</span>
       <div className="flex gap-2">
-        {DIMENSION_OPTIONS.map((option) => (
+        {DIMENSION_OPTIONS.map(option => (
           <button
             key={option.value}
             className={`px-3 py-1 text-sm rounded-full border transition-colors cursor-pointer ${
