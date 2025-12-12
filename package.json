@@ -9,6 +9,7 @@
     "start": "next start",
     "preview": "npx serve out",
     "lint": "next lint",
+    "validate": "pnpm lint && pnpm tsc --noEmit && pnpm build",
     "test": "vitest -c configs/vitest.config.mts",
     "test:unit": "vitest -c configs/vitest.config.mts",
     "test:e2e": "playwright test",
