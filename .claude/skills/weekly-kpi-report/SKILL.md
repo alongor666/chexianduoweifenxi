@@ -9,6 +9,36 @@ description: Generate McKinsey-style board presentation PPTs from weekly auto in
 
 Transform weekly auto insurance policy cost data into executive-ready board presentation slides using McKinsey consulting design principles. Generate data-driven insights with conclusion-first structure, professional visualization, and actionable recommendations.
 
+## Quick Start
+
+### Three-Step Generation Process
+
+1. **Upload Data**: Provide weekly insurance cost data file (Excel/CSV)
+2. **Automatic Processing**: Skill validates data, calculates KPIs, and generates insights
+3. **Download PPT**: Receive McKinsey-style board presentation ready for executive meeting
+
+### Basic Usage Example
+
+```
+User: "Generate board report from this week's insurance data"
+
+Assistant (using this skill):
+1. Validates uploaded file and extracts week number
+2. Calculates 16+ KPIs (cost rates, premium progress, loss ratios)
+3. Generates 12-13 slide deck with:
+   - Executive summary with key insights
+   - Institutional and customer segment analysis
+   - Problem-oriented headlines with actionable recommendations
+4. Returns: "{Organization}_Week{N}_McKinsey_Report.pptx"
+```
+
+### Minimal Requirements
+
+- **Input**: Excel/CSV file with insurance policy cost data
+- **Week Number**: Extracted from filename or user-provided
+- **Configuration** (optional): Custom thresholds in `references/config.json`
+- **Output**: Professional PPT with charts, insights, and recommendations
+
 ## When to Use This Skill
 
 Trigger this skill when:

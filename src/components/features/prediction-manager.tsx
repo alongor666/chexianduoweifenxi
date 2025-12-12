@@ -5,7 +5,10 @@ import { useAppStore } from '@/store/use-app-store'
 import { useFilteredData } from '@/hooks/use-filtered-data'
 import { usePremiumDimensionAnalysis } from '@/hooks/use-premium-dimension-analysis'
 import { useLossDimensionAnalysis } from '@/hooks/use-loss-dimension-analysis'
-import { kpiEngine } from '@/lib/calculations/kpi-engine'
+import {
+  calculateKPIs,
+  InsuranceRecord as DomainInsuranceRecord,
+} from '@/domain'
 import { safeMax } from '@/lib/utils/array-utils'
 import { Card } from '@/components/ui/card'
 import {
@@ -112,9 +115,12 @@ export function PredictionManagerPanel() {
       if (!groups.has(key)) groups.set(key, [])
       groups.get(key)!.push(r)
     })
-    const map = new Map<string, ReturnType<typeof kpiEngine.calculate>>()
+    const map = new Map<string, ReturnType<typeof calculateKPIs>>()
     groups.forEach((records, key) => {
-      map.set(key, kpiEngine.calculate(records))
+      const domainRecords = records.map(r =>
+        DomainInsuranceRecord.fromRawData(r)
+      )
+      map.set(key, calculateKPIs(domainRecords))
     })
     return map
   }, [filteredData])

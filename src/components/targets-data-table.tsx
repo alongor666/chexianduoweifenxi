@@ -38,7 +38,6 @@ export function TargetsDataTable({ className }: TargetsDataTableProps) {
     achievedMap,
     createTunedVersion,
     currentDimension,
-    getDimensionItems,
   } = useGoalStore()
   // 使用新架构的 Hook
   const { filters, selectedYear } = useFiltering()
@@ -49,13 +48,13 @@ export function TargetsDataTable({ className }: TargetsDataTableProps) {
 
   // 获取当前版本数据和维度项目
   const currentVersion = getCurrentVersion()
-  const dimensionItems = getDimensionItems(currentDimension)
+  // const dimensionItems = getDimensionItems(currentDimension)
 
   // 获取维度标签映射
-  const getDimensionLabel = (key: string): string => {
+  const getDimensionLabel = useCallback((key: string): string => {
     // 直接返回 key 作为标签，因为 getDimensionItems 返回的就是字符串数组
     return key
-  }
+  }, [])
 
   // 计算剩余天数（基于选定的周）
   const remainingDays = useMemo(() => {
@@ -73,6 +72,7 @@ export function TargetsDataTable({ className }: TargetsDataTableProps) {
   // 获取行数据的函数
   const getRowData = useCallback(
     (itemKey: string): RowData => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const row = currentVersion.rows.find((r: any) => r.bizType === itemKey)
       if (!row) {
         return {
@@ -104,6 +104,7 @@ export function TargetsDataTable({ className }: TargetsDataTableProps) {
 
       // 计算总目标占比
       const totalTarget = currentVersion.rows.reduce(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (sum: number, r: any) => sum + r.annualTargetTuned,
         0
       )
@@ -142,18 +143,23 @@ export function TargetsDataTable({ className }: TargetsDataTableProps) {
   // 计算子业务线目标总和（仅在业务类型维度时使用）
   const sumOfSubTargets = useMemo(() => {
     if (currentDimension !== 'businessType') {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return currentVersion.rows.reduce((sum: number, row: any) => {
         const target = editableTargets[row.bizType] ?? row.annualTargetTuned
         return sum + target
       }, 0)
     }
 
-    return currentVersion.rows
-      .filter((row: any) => row.bizType !== '车险整体')
-      .reduce((sum: number, row: any) => {
-        const target = editableTargets[row.bizType] ?? row.annualTargetTuned
-        return sum + target
-      }, 0)
+    return (
+      currentVersion.rows
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .filter((row: any) => row.bizType !== '车险整体')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .reduce((sum: number, row: any) => {
+          const target = editableTargets[row.bizType] ?? row.annualTargetTuned
+          return sum + target
+        }, 0)
+    )
   }, [currentVersion.rows, editableTargets, currentDimension])
 
   // 实时验证警告
@@ -161,6 +167,7 @@ export function TargetsDataTable({ className }: TargetsDataTableProps) {
     const warnings: Array<{ type: 'error' | 'warning'; message: string }> = []
 
     // 检查单个项目目标变化幅度
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     currentVersion.rows.forEach((row: any) => {
       const editedTarget = editableTargets[row.bizType]
       if (
@@ -278,6 +285,7 @@ export function TargetsDataTable({ className }: TargetsDataTableProps) {
 
   // 应用更改
   const handleApplyChanges = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updatedRows = currentVersion.rows.map((row: any) => {
       const editedTarget = editableTargets[row.bizType]
       if (
@@ -292,9 +300,12 @@ export function TargetsDataTable({ className }: TargetsDataTableProps) {
     // 仅在业务类型维度时自动计算车险整体目标
     if (currentDimension === 'businessType') {
       const subBusinessSum = updatedRows
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .filter((row: any) => row.bizType !== '车险整体')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .reduce((sum: number, row: any) => sum + row.annualTargetTuned, 0)
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const finalRows = updatedRows.map((row: any) => {
         if (row.bizType === '车险整体') {
           return { ...row, annualTargetTuned: subBusinessSum }
@@ -312,6 +323,7 @@ export function TargetsDataTable({ className }: TargetsDataTableProps) {
 
   // 表格数据
   const tableData = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return currentVersion.rows.map((row: any) => getRowData(row.bizType))
   }, [currentVersion.rows, getRowData])
 

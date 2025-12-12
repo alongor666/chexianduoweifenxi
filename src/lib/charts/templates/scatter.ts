@@ -118,6 +118,7 @@ export function buildScatterChart(config: ScatterChartConfig): EChartsOption {
     : { 默认: data }
 
   // 构建系列
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const series: any[] = []
 
   Object.entries(groupedData).forEach(([category, points], index) => {
@@ -129,7 +130,8 @@ export function buildScatterChart(config: ScatterChartConfig): EChartsOption {
       name: category,
       type: 'scatter',
       symbolSize: bubble
-        ? (dataItem: any) => {
+        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (dataItem: any) => {
             const sizeValue = dataItem[2] || 0
             const minSize = bubble.minSize || 10
             const maxSize = bubble.maxSize || 80
@@ -143,6 +145,7 @@ export function buildScatterChart(config: ScatterChartConfig): EChartsOption {
           }
         : 12,
       data: points.map(p => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const item: any = [p.x, p.y]
         if (bubble && p.size !== undefined) {
           item.push(p.size)
@@ -175,6 +178,7 @@ export function buildScatterChart(config: ScatterChartConfig): EChartsOption {
       trigger: 'item',
       formatter:
         tooltipFormatter ||
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ((params: any) => {
           const point = params.data.raw as ScatterDataPoint
 
@@ -234,6 +238,7 @@ export function buildScatterChart(config: ScatterChartConfig): EChartsOption {
 
   // 添加参考线
   if (referenceLines) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const markLines: any[] = []
 
     if (referenceLines.xValue !== undefined) {

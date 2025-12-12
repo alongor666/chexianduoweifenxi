@@ -26,10 +26,6 @@ export function OrganizationComparisonChart() {
   const chartRef = useRef<HTMLDivElement>(null)
   const chartInstanceRef = useRef<echarts.ECharts | null>(null)
 
-  if (comparisons.length === 0) {
-    return null
-  }
-
   // 准备图表数据
   const chartData = comparisons.slice(0, 10).map(item => ({
     name: item.organization,
@@ -40,7 +36,8 @@ export function OrganizationComparisonChart() {
 
   // 初始化和更新图表
   useEffect(() => {
-    if (!chartRef.current || chartData.length === 0) return
+    if (!chartRef.current || chartData.length === 0 || comparisons.length === 0)
+      return
 
     // 初始化 ECharts 实例
     if (!chartInstanceRef.current) {
@@ -208,6 +205,10 @@ export function OrganizationComparisonChart() {
     }
   }, [])
 
+  if (comparisons.length === 0) {
+    return null
+  }
+
   return (
     <div className="rounded-2xl border border-white/50 bg-white/40 p-6 shadow-lg backdrop-blur-xl">
       <div className="mb-4 flex items-center justify-between">
@@ -291,10 +292,6 @@ export function InsuranceTypeStructureChart() {
   const pieChartRef = useRef<HTMLDivElement>(null)
   const pieChartInstanceRef = useRef<echarts.ECharts | null>(null)
 
-  if (structures.length === 0) {
-    return null
-  }
-
   // 饼图数据
   const pieData = structures.map(item => ({
     name: item.insuranceType,
@@ -304,7 +301,8 @@ export function InsuranceTypeStructureChart() {
 
   // 初始化和更新饼图
   useEffect(() => {
-    if (!pieChartRef.current || pieData.length === 0) return
+    if (!pieChartRef.current || pieData.length === 0 || structures.length === 0)
+      return
 
     // 初始化 ECharts 实例
     if (!pieChartInstanceRef.current) {
@@ -404,6 +402,10 @@ export function InsuranceTypeStructureChart() {
       }
     }
   }, [])
+
+  if (structures.length === 0) {
+    return null
+  }
 
   return (
     <div className="rounded-2xl border border-white/50 bg-white/40 p-6 shadow-lg backdrop-blur-xl">

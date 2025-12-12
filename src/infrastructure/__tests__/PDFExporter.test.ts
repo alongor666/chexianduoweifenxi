@@ -14,6 +14,7 @@ import type { KPIResult } from '../../domain'
 import { ExportFormat } from '../../application/ports/IExporter'
 
 // Helper to read blob text since blob.text() might be missing in JSDOM
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function readBlobText(blob: Blob): Promise<string> {
   if (blob.text) {
     return blob.text()
@@ -119,6 +120,11 @@ describe('PDFExporter', () => {
       averageClaim: 1000,
       averageExpense: 233.33,
       averageContribution: 3933.33,
+
+      // 进度指标 (添加缺少的属性)
+      premiumProgress: 0.5,
+      premiumTimeProgressAchievementRate: 0.8,
+      policyCountTimeProgressAchievementRate: 0.9,
     }
   })
 

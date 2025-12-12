@@ -9,8 +9,50 @@
  */
 
 import type { IDataRepository, DataFilters } from '../ports/IDataRepository'
-import type { InsuranceRecord, KPIResult } from '../../domain'
-import { calculateKPIs } from '../../domain'
+import type { InsuranceRecord } from '../../domain'
+import { calculateKPIs, calculateIncrementKPIs } from '../../domain'
+
+/**
+ * 将 Domain 层 KPI 结果（snake_case）映射为应用层（camelCase）
+ */
+function mapDomainKPIToApp(
+  k: import('../../domain').KPIResult
+): ApplicationKPIResult {
+  return {
+    // 率值指标
+    lossRatio: k.loss_ratio,
+    expenseRatio: k.expense_ratio,
+    maturityRatio: k.maturity_ratio,
+    contributionMarginRatio: k.contribution_margin_ratio,
+    variableCostRatio: k.variable_cost_ratio,
+    maturedClaimRatio: k.matured_claim_ratio,
+    autonomyCoefficient: k.autonomy_coefficient,
+    premiumProgress: k.premium_progress,
+    premiumTimeProgressAchievementRate:
+      k.premium_time_progress_achievement_rate,
+    policyCountTimeProgressAchievementRate:
+      k.policy_count_time_progress_achievement_rate,
+
+    // 绝对值指标
+    signedPremium: k.signed_premium,
+    maturedPremium: k.matured_premium,
+    policyCount: k.policy_count,
+    claimCaseCount: k.claim_case_count,
+    reportedClaimPayment: k.reported_claim_payment,
+    expenseAmount: k.expense_amount,
+    contributionMarginAmount: k.contribution_margin_amount,
+
+    // 目标相关
+    annualPremiumTarget: k.annual_premium_target,
+    annualPolicyCountTarget: k.annual_policy_count_target,
+
+    // 均值指标
+    averagePremium: k.average_premium,
+    averageClaim: k.average_claim,
+    averageExpense: k.average_expense,
+    averageContribution: k.average_contribution,
+  }
+}
 
 /**
  * 计算 KPI 用例
@@ -41,17 +83,104 @@ export class CalculateKPIUseCase {
       }
 
       // 步骤 2: 计算 KPI（调用 Domain 层）
-      const kpis = calculateKPIs(records)
+      const domainKpis = calculateKPIs(records)
 
       // 返回结果
       return {
         success: true,
-        kpis,
+        kpis: mapDomainKPIToApp(domainKpis),
         recordCount: records.length,
         filters,
       }
     } catch (error) {
       throw new KPICalculationError('CALCULATION_FAILED', 'KPI 计算失败', error)
+    }
+  }
+
+  /**
+   * 计算增量 KPI（对比上周数据）
+   *
+   * @param currentWeek - 当前周次
+   * @param previousWeek - 上周周次
+   * @param year - 年份
+   * @param filters - 额外的数据筛选条件
+   * @returns Promise<IncrementKPIResult> - 增量 KPI 计算结果
+   */
+  async executeIncrement(
+    currentWeek: number,
+    previousWeek: number,
+    year: number,
+    filters?: DataFilters
+  ): Promise<IncrementKPIResult> {
+    try {
+      // 获取当前周数据
+      const currentFilters = {
+        ...filters,
+        weekRange: { start: currentWeek, end: currentWeek },
+        years: [year],
+      }
+      const currentRecords = await this.getRecords(currentFilters)
+
+      // 获取上周数据
+      const previousFilters = {
+        ...filters,
+        weekRange: { start: previousWeek, end: previousWeek },
+        years: [year],
+      }
+      const previousRecords = await this.getRecords(previousFilters)
+
+      if (currentRecords.length === 0) {
+        return {
+          success: true,
+          currentWeekKPIs: this.getEmptyKPIs(),
+          previousWeekKPIs: this.getEmptyKPIs(),
+          incrementKPIs: this.getEmptyKPIs(),
+          currentWeekRecordCount: 0,
+          previousWeekRecordCount: previousRecords.length,
+          message: '当前周没有数据',
+        }
+      }
+
+      if (previousRecords.length === 0) {
+        const currentDomain = calculateKPIs(currentRecords)
+        return {
+          success: true,
+          currentWeekKPIs: mapDomainKPIToApp(currentDomain),
+          previousWeekKPIs: this.getEmptyKPIs(),
+          incrementKPIs: this.getEmptyKPIs(),
+          currentWeekRecordCount: currentRecords.length,
+          previousWeekRecordCount: 0,
+          message: '上周没有数据，无法计算增量',
+        }
+      }
+
+      // 计算当前周 KPI
+      const currentWeekKPIsDomain = calculateKPIs(currentRecords)
+
+      // 计算上周 KPI
+      const previousWeekKPIsDomain = calculateKPIs(previousRecords)
+
+      // 计算增量 KPI
+      const incrementKPIsDomain = calculateIncrementKPIs(
+        currentRecords,
+        previousRecords
+      )
+
+      return {
+        success: true,
+        currentWeekKPIs: mapDomainKPIToApp(currentWeekKPIsDomain),
+        previousWeekKPIs: mapDomainKPIToApp(previousWeekKPIsDomain),
+        incrementKPIs: mapDomainKPIToApp(incrementKPIsDomain),
+        currentWeekRecordCount: currentRecords.length,
+        previousWeekRecordCount: previousRecords.length,
+        filters,
+      }
+    } catch (error) {
+      throw new KPICalculationError(
+        'INCREMENT_CALCULATION_FAILED',
+        '增量 KPI 计算失败',
+        error
+      )
     }
   }
 
@@ -80,11 +209,11 @@ export class CalculateKPIUseCase {
       // 计算每组的 KPI
       const results: GroupedKPIResult[] = []
       for (const [groupValue, groupRecords] of groups) {
-        const kpis = calculateKPIs(groupRecords)
+        const domainKpis = calculateKPIs(groupRecords)
         results.push({
           groupBy,
           groupValue,
-          kpis,
+          kpis: mapDomainKPIToApp(domainKpis),
           recordCount: groupRecords.length,
         })
       }
@@ -156,7 +285,7 @@ export class CalculateKPIUseCase {
   /**
    * 获取空 KPI 结果（当没有数据时）
    */
-  private getEmptyKPIs(): KPIResult {
+  private getEmptyKPIs(): ApplicationKPIResult {
     return {
       lossRatio: null,
       expenseRatio: null,
@@ -179,6 +308,8 @@ export class CalculateKPIUseCase {
       averageClaim: null,
       averageExpense: null,
       averageContribution: null,
+      annualPremiumTarget: null,
+      annualPolicyCountTarget: null,
     }
   }
 }
@@ -191,10 +322,39 @@ export interface KPICalculationResult {
   success: boolean
 
   /** KPI 计算结果 */
-  kpis: KPIResult
+  kpis: ApplicationKPIResult
 
   /** 记录数量 */
   recordCount: number
+
+  /** 应用的筛选条件 */
+  filters?: DataFilters
+
+  /** 消息（如果有） */
+  message?: string
+}
+
+/**
+ * 增量 KPI 结果
+ */
+export interface IncrementKPIResult {
+  /** 是否成功 */
+  success: boolean
+
+  /** 当前周 KPI 结果 */
+  currentWeekKPIs: ApplicationKPIResult
+
+  /** 上周 KPI 结果 */
+  previousWeekKPIs: ApplicationKPIResult
+
+  /** 增量 KPI 结果 */
+  incrementKPIs: ApplicationKPIResult
+
+  /** 当前周记录数量 */
+  currentWeekRecordCount: number
+
+  /** 上周记录数量 */
+  previousWeekRecordCount: number
 
   /** 应用的筛选条件 */
   filters?: DataFilters
@@ -214,7 +374,7 @@ export interface GroupedKPIResult {
   groupValue: string
 
   /** KPI 结果 */
-  kpis: KPIResult
+  kpis: ApplicationKPIResult
 
   /** 记录数量 */
   recordCount: number
@@ -252,3 +412,36 @@ export type KPIErrorCode =
   | 'CALCULATION_FAILED'
   | 'GROUPED_CALCULATION_FAILED'
   | 'NO_DATA'
+  | 'INCREMENT_CALCULATION_FAILED'
+
+/**
+ * 应用层 KPI 结果（camelCase 命名）
+ */
+export interface ApplicationKPIResult {
+  lossRatio: number | null
+  expenseRatio: number | null
+  maturityRatio: number | null
+  contributionMarginRatio: number | null
+  variableCostRatio: number | null
+  maturedClaimRatio: number | null
+  autonomyCoefficient: number | null
+  premiumProgress: number | null
+  premiumTimeProgressAchievementRate: number | null
+  policyCountTimeProgressAchievementRate: number | null
+
+  signedPremium: number
+  maturedPremium: number
+  policyCount: number
+  claimCaseCount: number
+  reportedClaimPayment: number
+  expenseAmount: number
+  contributionMarginAmount: number
+
+  annualPremiumTarget: number | null
+  annualPolicyCountTarget: number | null
+
+  averagePremium: number | null
+  averageClaim: number | null
+  averageExpense: number | null
+  averageContribution: number | null
+}

@@ -381,7 +381,8 @@ export function UploadResultsDetail({
         )}
       </div>
 
-      {/* 周次导入统计 */}
+      {/* 
+      // 周次导入统计 - [已禁用] weekAnalysis 属性已在重构中移除
       {batchResult.weekAnalysis && batchResult.weekAnalysis.totalWeeks > 0 && (
         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-200 p-6">
           <div className="flex items-center gap-3 mb-4">
@@ -393,7 +394,7 @@ export function UploadResultsDetail({
             </h4>
           </div>
 
-          {/* 周次统计卡片 */}
+          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div className="bg-white/80 backdrop-blur-sm p-4 rounded-lg border border-blue-100">
               <div className="text-sm text-slate-600 mb-1">总周次数</div>
@@ -423,7 +424,7 @@ export function UploadResultsDetail({
             </div>
           </div>
 
-          {/* 周次详细列表 */}
+          
           {batchResult.weekAnalysis.weekResults.length > 0 && (
             <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4">
               <h5 className="text-sm font-medium text-slate-700 mb-3">
@@ -461,7 +462,7 @@ export function UploadResultsDetail({
                 )}
               </div>
 
-              {/* 跳过原因说明 */}
+              
               {batchResult.weekAnalysis.skippedWeeks > 0 && (
                 <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
                   <div className="flex items-start gap-2">
@@ -477,6 +478,7 @@ export function UploadResultsDetail({
           )}
         </div>
       )}
+      */}
 
       {/* 错误详情分析 */}
       {errorStats.totalErrors > 0 && (
@@ -645,8 +647,8 @@ export function UploadResultsDetail({
                 <div className="flex items-center gap-4 text-sm text-slate-600">
                   {result.success && result.result && (
                     <>
-                      <span>{result.result.stats.validRows} 条有效</span>
-                      <span>{result.result.stats.invalidRows} 条无效</span>
+                      <span>{result.result.successRecords} 条有效</span>
+                      <span>{result.result.failedRecords} 条无效</span>
                     </>
                   )}
                   <span>{Math.round(result.file.size / 1024)} KB</span>
@@ -657,40 +659,29 @@ export function UploadResultsDetail({
                 <div className="mt-4 ml-7 space-y-3">
                   {result.success && result.result ? (
                     <div className="space-y-2">
-                      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                         <div>
                           <span className="text-slate-600">总记录数：</span>
                           <span className="font-medium">
-                            {result.result.stats.totalRows}
+                            {result.result.processedRecords}
                           </span>
                         </div>
                         <div>
                           <span className="text-slate-600">有效记录：</span>
                           <span className="font-medium text-green-600">
-                            {result.result.stats.validRows}
+                            {result.result.successRecords}
                           </span>
                         </div>
                         <div>
                           <span className="text-slate-600">无效记录：</span>
                           <span className="font-medium text-red-600">
-                            {result.result.stats.invalidRows}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-slate-600">处理速度：</span>
-                          <span className="font-medium">
-                            {result.result.stats.processingSpeed} 行/秒
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-slate-600">文件编码：</span>
-                          <span className="font-medium">
-                            {result.result.stats.encoding || 'UTF-8'}
+                            {result.result.failedRecords}
                           </span>
                         </div>
                       </div>
 
-                      {/* 周次信息 */}
+                      {/*
+                      // 周次信息 - [已禁用] weekInfo 属性已在重构中移除
                       {result.weekInfo &&
                         result.weekInfo.detectedWeeks.length > 0 && (
                           <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
@@ -733,6 +724,7 @@ export function UploadResultsDetail({
                             </div>
                           </div>
                         )}
+                      */}
 
                       {result.result.errors &&
                         result.result.errors.length > 0 && (

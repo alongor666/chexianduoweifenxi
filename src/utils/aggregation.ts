@@ -1,6 +1,7 @@
 import {
   getBusinessTypeCode,
   getBusinessTypeShortLabelByCode,
+  type BusinessTypeCode,
 } from '@/constants/dimensions'
 import type { InsuranceRecord } from '@/types/insurance'
 
@@ -39,7 +40,7 @@ export function getDimensionKey(
  */
 export function getDimensionLabel(key: string, dimension: Dimension): string {
   if (dimension === 'business_type') {
-    return getBusinessTypeShortLabelByCode(key as any)
+    return getBusinessTypeShortLabelByCode(key as BusinessTypeCode)
   }
   return key
 }

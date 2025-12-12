@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo } from 'react'
 import { Plus, X, ChevronRight, Home, Check, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -8,7 +8,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { Badge } from '@/components/ui/badge'
 import { useAppStore } from '@/store/use-app-store'
 import { useDrillDownStore } from '@/store/drill-down-store'
 import { DimensionSelector } from './dimension-selector'
@@ -31,7 +30,6 @@ export function DrillDownBar() {
   const clearDrillDown = useDrillDownStore(state => state.clearDrillDown)
   const applyDrillDown = useDrillDownStore(state => state.applyDrillDown)
   const cancelDrillDown = useDrillDownStore(state => state.cancelDrillDown)
-  const isDimensionUsed = useDrillDownStore(state => state.isDimensionUsed)
 
   const rawData = useAppStore(state => state.rawData)
   const filters = useAppStore(state => state.filters)

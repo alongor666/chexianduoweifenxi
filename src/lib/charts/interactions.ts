@@ -254,7 +254,7 @@ export function buildClickHandler(
   onDrillDown: (data: DrillDownData) => void
 ) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (params: any, chart: ECharts) => {
+  return (params: any) => {
     // 只处理数据点击击事件
     if (params.componentType !== 'series') return
 

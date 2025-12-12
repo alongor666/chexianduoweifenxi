@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import fs from 'fs'
-import path from 'path'
+// path is unused
+// import path from 'path'
 import { CSVParser } from '../adapters/CSVParser'
 import { calculateKPIs } from '../../domain'
 import { InsuranceRecord } from '../../domain/entities/InsuranceRecord'

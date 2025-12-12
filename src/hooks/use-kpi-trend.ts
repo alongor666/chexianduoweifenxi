@@ -5,7 +5,10 @@
 
 import { useMemo, useRef } from 'react'
 import { useAppStore } from '@/store/use-app-store'
-import { calculateKPIs } from '@/lib/calculations/kpi-engine'
+import {
+  calculateKPIs,
+  InsuranceRecord as DomainInsuranceRecord,
+} from '@/domain'
 import type { InsuranceRecord, FilterState } from '@/types/insurance'
 import { getBusinessTypeCode } from '@/constants/dimensions'
 
@@ -111,7 +114,10 @@ function calculateKPITrend(
     }
 
     try {
-      const kpi = calculateKPIs(weekRecords)
+      const domainRecords = weekRecords.map(r =>
+        DomainInsuranceRecord.fromRawData(r)
+      )
+      const kpi = calculateKPIs(domainRecords)
       const value = kpi[kpiKey]
       trendData[i] = typeof value === 'number' ? value : null
     } catch (error) {

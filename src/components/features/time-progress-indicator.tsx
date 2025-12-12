@@ -26,7 +26,7 @@ export interface TimeProgressIndicatorProps {
 /**
  * 格式化日期为 M月D日
  */
-function formatDateShort(date: Date): string {
+function _formatDateShort(date: Date): string {
   const month = date.getMonth() + 1
   const day = date.getDate()
   return `${month}月${day}日`

@@ -4,12 +4,12 @@
  */
 
 import { useMemo } from 'react'
-import {
-  getBusinessTypeCode,
-  getBusinessTypeFullCNByCode,
-} from '@/constants/dimensions'
+import { getBusinessTypeCode } from '@/constants/dimensions'
 import { useAppStore } from '@/store/use-app-store'
-import { kpiEngine } from '@/lib/calculations/kpi-engine'
+import {
+  calculateKPIs,
+  InsuranceRecord as DomainInsuranceRecord,
+} from '@/domain'
 import type { KPIResult, InsuranceRecord } from '@/types/insurance'
 import { safeMax } from '@/lib/utils/array-utils'
 
@@ -140,7 +140,8 @@ export function useOrganizationKPI(organizationName: string): KPIResult | null {
       filters.viewMode === 'single' ? filters.singleModeWeek : null
 
     // 计算KPI
-    return kpiEngine.calculate(orgData, {
+    const domainRecords = orgData.map(r => DomainInsuranceRecord.fromRawData(r))
+    return calculateKPIs(domainRecords, {
       annualTargetYuan: orgTarget ?? undefined,
       mode: 'current',
       currentWeekNumber: currentWeek ?? undefined,
@@ -289,14 +290,17 @@ export function useMultipleOrganizationKPIs(
         premiumTargets?.dimensions.thirdLevelOrganization.entries[orgName]
 
       // 计算KPI
-      const kpi = kpiEngine.calculate(orgData, {
+      const domainRecords = orgData.map(r =>
+        DomainInsuranceRecord.fromRawData(r)
+      )
+      const orgKPI = calculateKPIs(domainRecords, {
         annualTargetYuan: orgTarget ?? undefined,
         mode: 'current',
         currentWeekNumber: currentWeek ?? undefined,
         year: currentYear,
       })
 
-      resultMap.set(orgName, kpi)
+      resultMap.set(orgName, orgKPI)
     })
 
     return resultMap

@@ -17,11 +17,13 @@
 - **代码健康度**: 73% 平均完整度
 
 ### 快速链接
+- **[📖 知识库索引](./KNOWLEDGE_INDEX.md)** - 🆕 自动生成的完整文档导航（推荐）
 - [协作约定](./00_conventions.md) - 必读!理解"代码优先"原则
-- [功能清单](./01_features/) - 7个核心功能模块
-- [架构决策](./02_decisions/) - 技术选型和设计原理
-- [开发日志](./03_logs/) - 变更历史和问题记录
-- [历史归档](./archive/) - 旧文档归档
+- [功能清单](./01_features/) - 13个功能模块（P0/P1/P2）
+- [架构决策](./02_decisions/) - 技术选型和设计原理（ADR）
+- [技术设计](./03_technical_design/) - 数据架构、计算公式、技术栈
+- [重构文档](./04_refactoring/) - 架构演进和代码优化
+- [历史归档](./archive/) - 旧版本文档归档
 
 ---
 
@@ -228,8 +230,11 @@ node analyze-codebase.js
 - ✅ **DO**: 代码变更后立即更新相关功能卡片
 - ✅ **DO**: 重大技术决策创建新ADR文档
 - ✅ **DO**: 每周运行一次 `analyze-codebase.js`
+- ✅ **DO**: 文档更新后运行 `pnpm docs:index` 更新知识库索引
+- ✅ **DO**: 功能发布前确保知识库索引是最新的
 - ❌ **DON'T**: 基于"记忆"标记功能状态
 - ❌ **DON'T**: 保留与代码不符的文档
+- ❌ **DON'T**: 直接修改自动生成的 `KNOWLEDGE_INDEX.md` 文件
 
 详见: [协作约定](./00_conventions.md)
 
@@ -306,6 +311,64 @@ node generate-feature-cards.js
 ```bash
 # 验证所有meta.json格式和链接有效性
 node validate-metadata.js
+```
+
+### 知识库索引生成 ⭐
+```bash
+# 扫描开发文档并生成完整的知识库索引
+pnpm docs:index
+
+# 或直接运行Python脚本
+python3 scripts/generate_docs_index.py 开发文档
+
+# 输出: 开发文档/KNOWLEDGE_INDEX.md
+# - 📊 知识库概览统计
+# - 🔥 最近30天更新的文档
+# - 🎯 功能模块详细索引
+# - 🏗️ ADR技术决策记录
+# - ⚙️ 技术设计文档
+# - 🔧 重构文档
+# - 🏷️ 标签索引（按标签快速查找文档）
+# - 🔗 文档依赖关系图（显示文档间引用关系）
+
+# 建议：每次功能发布前运行，确保索引与文档同步
+```
+
+### 归档清理工具 🗂️
+```bash
+# 分析归档文档（仅报告，不删除）
+pnpm docs:archive:analyze
+
+# 交互式清理归档
+pnpm docs:archive:clean
+
+# 自动清理预览（dry-run，不实际删除）
+pnpm docs:archive:auto-clean
+
+# 输出分析报告：
+# - 📦 归档文档统计（按年龄、大小、引用状态分类）
+# - 🗑️ 清理建议（超过1年未更新且未被引用的文档）
+# - ⚠️ 保留建议（被活跃文档引用的归档文档）
+# - 🔍 审查建议（较旧但仍被引用的文档）
+
+# 建议：定期运行（每月一次），保持归档整洁
+```
+
+### CI/CD 集成 🤖
+```bash
+# GitHub Actions 自动化
+
+# 1. 检查文档索引（PR时触发）
+# .github/workflows/check-docs-index.yml
+# - 验证 KNOWLEDGE_INDEX.md 是否最新
+# - 如过期，PR 检查失败并提示运行 pnpm docs:index
+
+# 2. 自动更新索引（PR时触发）
+# .github/workflows/auto-update-docs-index.yml
+# - 检测到文档变更时自动生成新索引
+# - 自动提交更新的 KNOWLEDGE_INDEX.md 到 PR
+
+# 无需手动操作，CI/CD 会自动维护文档索引
 ```
 
 ---

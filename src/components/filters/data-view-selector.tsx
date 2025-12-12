@@ -13,9 +13,9 @@ export type DataViewType = 'current' | 'increment'
 export function DataViewSelector() {
   const { filters, updateFilters } = useAppStore()
   const { setDataViewType } = useFilterStore()
-  const value = filters.dataViewType
+  const _value = filters.dataViewType
 
-  const options = [
+  const _options = [
     {
       id: 'current' as const,
       label: '年累计',

@@ -9,13 +9,17 @@
     "start": "next start",
     "preview": "npx serve out",
     "lint": "next lint",
-    "test": "vitest -c configs/vitest.config.ts",
-    "test:unit": "vitest -c configs/vitest.config.ts",
+    "test": "vitest -c configs/vitest.config.mts",
+    "test:unit": "vitest -c configs/vitest.config.mts",
     "test:e2e": "playwright test",
     "test:upload": "node scripts/test_upload.js",
     "export": "NODE_OPTIONS='--max-old-space-size=2048' next build && next export",
     "deploy": "pnpm run build:static && touch out/.nojekyll",
-    "deploy:preview": "pnpm run deploy && pnpm run preview"
+    "deploy:preview": "pnpm run deploy && pnpm run preview",
+    "docs:index": "python3 scripts/generate_docs_index.py 开发文档",
+    "docs:archive:analyze": "python3 scripts/clean_archive.py 开发文档",
+    "docs:archive:clean": "python3 scripts/clean_archive.py 开发文档 --interactive",
+    "docs:archive:auto-clean": "python3 scripts/clean_archive.py 开发文档 --auto-clean --dry-run"
   },
   "dependencies": {
     "@duckdb/duckdb-wasm": "^1.30.0",

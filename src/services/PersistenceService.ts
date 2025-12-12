@@ -154,9 +154,9 @@ export class PersistenceService {
             name: file.name,
             size: file.size,
             hash,
-            recordCount: result?.result?.stats.totalRows || 0,
-            validRecords: result?.result?.stats.validRows || 0,
-            invalidRecords: result?.result?.stats.invalidRows || 0,
+            recordCount: result?.result?.processedRecords || 0,
+            validRecords: result?.result?.successRecords || 0,
+            invalidRecords: result?.result?.failedRecords || 0,
           }
         })
       )

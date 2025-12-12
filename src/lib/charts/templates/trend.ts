@@ -120,6 +120,7 @@ export function buildTrendChart(config: TrendChartConfig): EChartsOption {
     : []
 
   // 构建系列
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const series: any[] = []
 
   // 主指标线
@@ -255,6 +256,7 @@ export function buildTrendChart(config: TrendChartConfig): EChartsOption {
       },
       formatter:
         tooltipFormatter ||
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ((params: any) => {
           if (!Array.isArray(params) || params.length === 0) return ''
 

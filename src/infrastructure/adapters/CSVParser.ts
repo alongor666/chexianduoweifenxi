@@ -73,6 +73,7 @@ export class CSVParser implements IFileParser {
       const text = await file.text()
 
       // 2. 使用 PapaParse 解析
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const parseResult = await new Promise<Papa.ParseResult<any>>(
         (resolve, reject) => {
           Papa.parse(text, {
@@ -146,6 +147,7 @@ export class CSVParser implements IFileParser {
 
       // 3. 解析并验证内容
       const text = await file.text()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const parseResult = await new Promise<Papa.ParseResult<any>>(resolve => {
         Papa.parse(text, {
           header: true,
@@ -226,6 +228,7 @@ export class CSVParser implements IFileParser {
    * 验证单行数据
    */
   private validateRow(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     row: any,
     rowIndex: number,
     errors: ValidationError[],
@@ -308,6 +311,7 @@ export class CSVParser implements IFileParser {
    * 解析布尔值
    * 兼容 'True', 'False', 'true', 'false', 1, 0 等格式
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private parseBoolean(value: any): boolean {
     if (typeof value === 'boolean') {
       return value
@@ -325,6 +329,7 @@ export class CSVParser implements IFileParser {
   /**
    * 将 CSV 行映射为 RawInsuranceData
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private mapToRawData(row: any, index: number): RawInsuranceData {
     try {
       return {

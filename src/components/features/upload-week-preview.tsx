@@ -75,7 +75,7 @@ export function UploadWeekPreview({
     (sum, f) => sum + f.conflictWeeks.length,
     0
   )
-  const totalRecords = filesPreviews.reduce(
+  const _totalRecords = filesPreviews.reduce(
     (sum, f) => sum + f.detectedWeeks.reduce((s, w) => s + w.recordCount, 0),
     0
   )

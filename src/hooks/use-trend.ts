@@ -10,7 +10,11 @@ import { useMemo } from 'react'
 import { useAppStore } from '@/store/use-app-store'
 import { useFilteredData } from '@/hooks/use-filtered-data'
 import type { InsuranceRecord } from '@/types/insurance'
-import { kpiEngine } from '@/lib/calculations/kpi-engine'
+import {
+  calculateKPIs,
+  calculateIncrementKPIs,
+  InsuranceRecord as DomainInsuranceRecord,
+} from '@/domain'
 import { normalizeChineseText } from '@/domain/rules/data-normalization'
 import { getBusinessTypeFullCNByCode } from '@/constants/dimensions'
 
@@ -136,12 +140,17 @@ export function useTrendData(records?: InsuranceRecord[]): TrendPoint[] {
         // 周增量模式：计算当前周与前一周的差值
         const previousKey = sortedKeys[index - 1]
         const previousRows = grouped.get(previousKey)!
-        kpi = kpiEngine.calculateIncrement(rows, previousRows, {
+        const domainRows = rows.map(r => DomainInsuranceRecord.fromRawData(r))
+        const domainPreviousRows = previousRows.map(r =>
+          DomainInsuranceRecord.fromRawData(r)
+        )
+        kpi = calculateIncrementKPIs(domainRows, domainPreviousRows, {
           annualTargetYuan: targetForScope ?? undefined,
         })
       } else {
         // 当周值模式 或 第一周（没有前一周可比较）
-        kpi = kpiEngine.calculate(rows, {
+        const domainRows = rows.map(r => DomainInsuranceRecord.fromRawData(r))
+        kpi = calculateKPIs(domainRows, {
           annualTargetYuan: targetForScope ?? undefined,
         })
       }

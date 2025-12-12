@@ -47,18 +47,17 @@ export function FileUpload() {
   const [mounted, setMounted] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
-  const [parallelMode, setParallelMode] = useState(true) // 默认启用并行模式
+
   const [showClearConfirm, setShowClearConfirm] = useState(false)
 
   const {
     progress,
     batchResult,
     uploadFiles,
-    validateFiles,
-    resetUpload,
-    updateValidationOptions,
+    validateFile,
+    reset,
+    setValidationOptions,
     isUploading,
-    hasResults,
   } = useFileUpload()
 
   const { toast } = useToast()
@@ -67,7 +66,7 @@ export function FileUpload() {
   const rawData = useAppStore(state => state.rawData)
   const clearData = useAppStore(state => state.clearData)
   const clearPersistentData = useAppStore(state => state.clearPersistentData)
-  const getStorageStats = useAppStore(state => state.getStorageStats)
+  const _getStorageStats = useAppStore(state => state.getStorageStats)
 
   // 获取已有数据统计
   const existingDataStats = useMemo(() => {
@@ -98,12 +97,13 @@ export function FileUpload() {
 
   // 初始化验证选项
   React.useEffect(() => {
-    updateValidationOptions({
+    setValidationOptions({
       maxFiles: 10,
       maxFileSize: 200 * 1024 * 1024, // 提升到200MB支持大文件
+      allowedExtensions: ['.csv', '.duckdb', '.db'],
       validateFileName: false, // 文件名不再强制要求
     })
-  }, [updateValidationOptions])
+  }, [setValidationOptions])
 
   /**
    * 处理拖拽进入
@@ -158,11 +158,11 @@ export function FileUpload() {
       }
 
       // 验证文件
-      const validation = validateFiles(files)
-      if (!validation.valid) {
+      const validationErrors = files.map(validateFile).filter(Boolean)
+      if (validationErrors.length > 0) {
         toast({
           title: '文件验证失败',
-          description: validation.errors.join('\n'),
+          description: validationErrors.join('\n'),
           variant: 'destructive',
         })
         return
@@ -170,7 +170,7 @@ export function FileUpload() {
 
       setSelectedFiles(files)
     },
-    [isUploading, validateFiles, toast]
+    [isUploading, validateFile, toast]
   )
 
   /**
@@ -183,11 +183,11 @@ export function FileUpload() {
       if (files.length === 0) return
 
       // 验证文件
-      const validation = validateFiles(files)
-      if (!validation.valid) {
+      const validationErrors = files.map(validateFile).filter(Boolean)
+      if (validationErrors.length > 0) {
         toast({
           title: '文件验证失败',
-          description: validation.errors.join('\n'),
+          description: validationErrors.join('\n'),
           variant: 'destructive',
         })
         return
@@ -198,7 +198,7 @@ export function FileUpload() {
       // 重置 input
       e.target.value = ''
     },
-    [validateFiles, toast]
+    [validateFile, toast]
   )
 
   /**
@@ -208,7 +208,7 @@ export function FileUpload() {
     if (selectedFiles.length === 0) return
 
     try {
-      const results = await uploadFiles(selectedFiles, parallelMode)
+      const results = await uploadFiles(selectedFiles, {})
 
       // 显示结果通知
       if (results.failureCount === 0) {
@@ -237,15 +237,15 @@ export function FileUpload() {
         variant: 'destructive',
       })
     }
-  }, [selectedFiles, uploadFiles, toast, parallelMode])
+  }, [selectedFiles, uploadFiles, toast])
 
   /**
    * 重置状态
    */
   const handleReset = useCallback(() => {
     setSelectedFiles([])
-    resetUpload()
-  }, [resetUpload])
+    reset()
+  }, [reset])
 
   /**
    * 移除文件
@@ -320,9 +320,6 @@ export function FileUpload() {
           <div className="flex justify-between text-xs text-slate-500">
             <span>{Math.round(progress.overallProgress)}%</span>
             <div className="flex items-center gap-2">
-              {progress.processingSpeed && (
-                <span>{progress.processingSpeed} 记录/秒</span>
-              )}
               {progress.estimatedTimeRemaining && (
                 <span>剩余 {formatTime(progress.estimatedTimeRemaining)}</span>
               )}
@@ -334,14 +331,14 @@ export function FileUpload() {
   }
 
   // 如果已完成，显示详细结果
-  if (hasResults && batchResult) {
+  if (batchResult) {
     return (
       <UploadResultsDetail batchResult={batchResult} onReset={handleReset} />
     )
   }
 
   // 已选择文件但未上传的状态
-  if (selectedFiles.length > 0 && !hasResults) {
+  if (selectedFiles.length > 0 && !batchResult) {
     return (
       <div className="w-full max-w-2xl mx-auto space-y-6">
         {/* 文件列表 */}
@@ -389,32 +386,6 @@ export function FileUpload() {
               )
             })}
           </div>
-
-          {/* 并行模式开关 */}
-          {selectedFiles.length > 1 && (
-            <div className="mt-4 flex items-center gap-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-              <input
-                type="checkbox"
-                id="parallel-mode"
-                checked={parallelMode}
-                onChange={e => setParallelMode(e.target.checked)}
-                disabled={isUploading}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded"
-              />
-              <label
-                htmlFor="parallel-mode"
-                className="flex-1 text-sm font-medium text-blue-900 cursor-pointer"
-              >
-                并行处理模式
-                <span className="ml-2 text-xs text-blue-700 font-normal">
-                  （{parallelMode ? '已启用' : '已禁用'}）
-                  {parallelMode
-                    ? ` - 同时处理${selectedFiles.length}个文件，速度更快`
-                    : ' - 逐个处理文件，更稳定'}
-                </span>
-              </label>
-            </div>
-          )}
 
           <div className="flex gap-3 mt-6">
             <button

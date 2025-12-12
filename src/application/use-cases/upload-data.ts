@@ -12,7 +12,11 @@
  * @depends Ports (IFileParser, IDataRepository)
  */
 
-import type { IFileParser, ValidationResult } from '../ports/IFileParser'
+import type {
+  IFileParser,
+  ValidationResult,
+  ValidationErrorType,
+} from '../ports/IFileParser'
 import type { IDataRepository } from '../ports/IDataRepository'
 import { normalizeInsuranceRecordsBatch } from '../../domain'
 
@@ -101,7 +105,7 @@ export class UploadDataUseCase {
         isValid: false,
         errors: [
           {
-            type: 'INVALID_FILE_FORMAT' as any,
+            type: 'INVALID_FILE_FORMAT' as ValidationErrorType,
             message: `不支持的文件格式。支持的格式：${supportedTypes.join(', ')}`,
           },
         ],

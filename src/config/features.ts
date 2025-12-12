@@ -29,8 +29,10 @@ export const FEATURE_FLAGS = {
  * 获取当前启用的功能列表
  */
 export function getEnabledFeatures(): string[] {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _ = 'placeholder'
   return Object.entries(FEATURE_FLAGS)
-    .filter(([_, enabled]) => enabled)
+    .filter(([, enabled]) => enabled)
     .map(([feature]) => feature)
 }
 

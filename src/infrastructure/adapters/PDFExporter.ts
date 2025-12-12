@@ -139,15 +139,16 @@ export class PDFExporter implements IExporter {
   async exportKPIReport(
     kpis: KPIResult,
     format: ExportFormat,
-    options?: ExportOptions
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _options?: ExportOptions
   ): Promise<Blob> {
     try {
       console.log(`[PDFExporter] 开始导出 KPI 报告: ${format}`)
 
       if (format === ExportFormat.CSV) {
-        return this.exportKPIToCSV(kpis, options)
+        return this.exportKPIToCSV(kpis)
       } else if (format === ExportFormat.PDF) {
-        return this.exportKPIToPDF(kpis, options)
+        return this.exportKPIToPDF(kpis)
       } else {
         throw new Error(`不支持的导出格式: ${format}`)
       }
@@ -168,12 +169,12 @@ export class PDFExporter implements IExporter {
     doc.text('核心指标摘要', 14, startY)
 
     const summaryData = [
-      ['签单保费', this.formatCurrency(kpis.signedPremium)],
-      ['满期保费', this.formatCurrency(kpis.maturedPremium)],
-      ['保单件数', kpis.policyCount.toString()],
-      ['满期赔付率', this.formatPercentage(kpis.lossRatio)],
-      ['费用率', this.formatPercentage(kpis.expenseRatio)],
-      ['满期边际贡献率', this.formatPercentage(kpis.contributionMarginRatio)],
+      ['签单保费', this.formatCurrency(kpis.signed_premium)],
+      ['满期保费', this.formatCurrency(kpis.matured_premium)],
+      ['保单件数', kpis.policy_count.toString()],
+      ['满期赔付率', this.formatPercentage(kpis.loss_ratio)],
+      ['费用率', this.formatPercentage(kpis.expense_ratio)],
+      ['满期边际贡献率', this.formatPercentage(kpis.contribution_margin_ratio)],
     ]
 
     autoTable(doc, {
@@ -185,108 +186,109 @@ export class PDFExporter implements IExporter {
       theme: 'grid',
     })
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (doc as any).lastAutoTable.finalY
   }
 
   /**
    * 导出 KPI 为 CSV
    */
-  private exportKPIToCSV(kpis: KPIResult, options?: ExportOptions): Blob {
+  private exportKPIToCSV(kpis: KPIResult): Blob {
     const kpiData = [
       // 率值指标
       {
         类别: '率值指标',
         指标: '满期赔付率',
-        数值: this.formatPercentage(kpis.lossRatio),
+        数值: this.formatPercentage(kpis.loss_ratio),
       },
       {
         类别: '率值指标',
         指标: '费用率',
-        数值: this.formatPercentage(kpis.expenseRatio),
+        数值: this.formatPercentage(kpis.expense_ratio),
       },
       {
         类别: '率值指标',
         指标: '满期率',
-        数值: this.formatPercentage(kpis.maturityRatio),
+        数值: this.formatPercentage(kpis.maturity_ratio),
       },
       {
         类别: '率值指标',
         指标: '满期边际贡献率',
-        数值: this.formatPercentage(kpis.contributionMarginRatio),
+        数值: this.formatPercentage(kpis.contribution_margin_ratio),
       },
       {
         类别: '率值指标',
         指标: '变动成本率',
-        数值: this.formatPercentage(kpis.variableCostRatio),
+        数值: this.formatPercentage(kpis.variable_cost_ratio),
       },
       {
         类别: '率值指标',
         指标: '满期出险率',
-        数值: this.formatPercentage(kpis.maturedClaimRatio),
+        数值: this.formatPercentage(kpis.matured_claim_ratio),
       },
       {
         类别: '率值指标',
         指标: '商业险自主系数',
-        数值: kpis.autonomyCoefficient?.toFixed(4) || '-',
+        数值: kpis.autonomy_coefficient?.toFixed(4) || '-',
       },
 
       // 绝对值指标
       {
         类别: '绝对值指标',
         指标: '签单保费（元）',
-        数值: this.formatCurrency(kpis.signedPremium),
+        数值: this.formatCurrency(kpis.signed_premium),
       },
       {
         类别: '绝对值指标',
         指标: '满期保费（元）',
-        数值: this.formatCurrency(kpis.maturedPremium),
+        数值: this.formatCurrency(kpis.matured_premium),
       },
       {
         类别: '绝对值指标',
         指标: '保单件数',
-        数值: kpis.policyCount.toString(),
+        数值: kpis.policy_count.toString(),
       },
       {
         类别: '绝对值指标',
         指标: '赔案件数',
-        数值: kpis.claimCaseCount.toString(),
+        数值: kpis.claim_case_count.toString(),
       },
       {
         类别: '绝对值指标',
         指标: '已报告赔款（元）',
-        数值: this.formatCurrency(kpis.reportedClaimPayment),
+        数值: this.formatCurrency(kpis.reported_claim_payment),
       },
       {
         类别: '绝对值指标',
         指标: '费用金额（元）',
-        数值: this.formatCurrency(kpis.expenseAmount),
+        数值: this.formatCurrency(kpis.expense_amount),
       },
       {
         类别: '绝对值指标',
         指标: '边际贡献额（元）',
-        数值: this.formatCurrency(kpis.contributionMarginAmount),
+        数值: this.formatCurrency(kpis.contribution_margin_amount),
       },
 
       // 均值指标
       {
         类别: '均值指标',
         指标: '单均保费（元）',
-        数值: this.formatCurrency(kpis.averagePremium),
+        数值: this.formatCurrency(kpis.average_premium),
       },
       {
         类别: '均值指标',
         指标: '案均赔款（元）',
-        数值: this.formatCurrency(kpis.averageClaim),
+        数值: this.formatCurrency(kpis.average_claim),
       },
       {
         类别: '均值指标',
         指标: '单均费用（元）',
-        数值: this.formatCurrency(kpis.averageExpense),
+        数值: this.formatCurrency(kpis.average_expense),
       },
       {
         类别: '均值指标',
         指标: '单均边贡额（元）',
-        数值: this.formatCurrency(kpis.averageContribution),
+        数值: this.formatCurrency(kpis.average_contribution),
       },
     ]
 
@@ -301,7 +303,7 @@ export class PDFExporter implements IExporter {
   /**
    * 导出 KPI 为 PDF
    */
-  private exportKPIToPDF(kpis: KPIResult, options?: ExportOptions): Blob {
+  private exportKPIToPDF(kpis: KPIResult): Blob {
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
@@ -321,13 +323,13 @@ export class PDFExporter implements IExporter {
     doc.text('一、率值指标', 14, 40)
 
     const ratioData = [
-      ['满期赔付率', this.formatPercentage(kpis.lossRatio)],
-      ['费用率', this.formatPercentage(kpis.expenseRatio)],
-      ['满期率', this.formatPercentage(kpis.maturityRatio)],
-      ['满期边际贡献率', this.formatPercentage(kpis.contributionMarginRatio)],
-      ['变动成本率', this.formatPercentage(kpis.variableCostRatio)],
-      ['满期出险率', this.formatPercentage(kpis.maturedClaimRatio)],
-      ['商业险自主系数', kpis.autonomyCoefficient?.toFixed(4) || '-'],
+      ['满期赔付率', this.formatPercentage(kpis.loss_ratio)],
+      ['费用率', this.formatPercentage(kpis.expense_ratio)],
+      ['满期率', this.formatPercentage(kpis.maturity_ratio)],
+      ['满期边际贡献率', this.formatPercentage(kpis.contribution_margin_ratio)],
+      ['变动成本率', this.formatPercentage(kpis.variable_cost_ratio)],
+      ['满期出险率', this.formatPercentage(kpis.matured_claim_ratio)],
+      ['商业险自主系数', kpis.autonomy_coefficient?.toFixed(4) || '-'],
     ]
 
     autoTable(doc, {
@@ -340,20 +342,21 @@ export class PDFExporter implements IExporter {
     })
 
     // 绝对值指标表格
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let currentY = (doc as any).lastAutoTable.finalY + 10
     doc.setFontSize(14)
     doc.text('二、绝对值指标', 14, currentY)
 
     const absoluteData = [
-      ['签单保费', this.formatCurrency(kpis.signedPremium) + ' 元'],
-      ['满期保费', this.formatCurrency(kpis.maturedPremium) + ' 元'],
-      ['保单件数', kpis.policyCount.toString() + ' 件'],
-      ['赔案件数', kpis.claimCaseCount.toString() + ' 件'],
-      ['已报告赔款', this.formatCurrency(kpis.reportedClaimPayment) + ' 元'],
-      ['费用金额', this.formatCurrency(kpis.expenseAmount) + ' 元'],
+      ['签单保费', this.formatCurrency(kpis.signed_premium) + ' 元'],
+      ['满期保费', this.formatCurrency(kpis.matured_premium) + ' 元'],
+      ['保单件数', kpis.policy_count.toString() + ' 件'],
+      ['赔案件数', kpis.claim_case_count.toString() + ' 件'],
+      ['已报告赔款', this.formatCurrency(kpis.reported_claim_payment) + ' 元'],
+      ['费用金额', this.formatCurrency(kpis.expense_amount) + ' 元'],
       [
         '边际贡献额',
-        this.formatCurrency(kpis.contributionMarginAmount) + ' 元',
+        this.formatCurrency(kpis.contribution_margin_amount) + ' 元',
       ],
     ]
 
@@ -367,15 +370,16 @@ export class PDFExporter implements IExporter {
     })
 
     // 均值指标表格
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     currentY = (doc as any).lastAutoTable.finalY + 10
     doc.setFontSize(14)
     doc.text('三、均值指标', 14, currentY)
 
     const averageData = [
-      ['单均保费', this.formatCurrency(kpis.averagePremium) + ' 元/件'],
-      ['案均赔款', this.formatCurrency(kpis.averageClaim) + ' 元/案'],
-      ['单均费用', this.formatCurrency(kpis.averageExpense) + ' 元/件'],
-      ['单均边贡额', this.formatCurrency(kpis.averageContribution) + ' 元/件'],
+      ['单均保费', this.formatCurrency(kpis.average_premium) + ' 元/件'],
+      ['案均赔款', this.formatCurrency(kpis.average_claim) + ' 元/案'],
+      ['单均费用', this.formatCurrency(kpis.average_expense) + ' 元/件'],
+      ['单均边贡额', this.formatCurrency(kpis.average_contribution) + ' 元/件'],
     ]
 
     autoTable(doc, {
@@ -388,6 +392,7 @@ export class PDFExporter implements IExporter {
     })
 
     // 添加页脚
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const pageCount = (doc as any).internal.getNumberOfPages()
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i)

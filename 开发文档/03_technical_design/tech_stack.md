@@ -415,7 +415,17 @@ pnpm test:e2e
 - **单元测试**: Vitest 2.1.4
 - **E2E测试**: Playwright 1.49.0
 
+**配置文件**:
+- `configs/vitest.config.mts` - Vitest 主配置（ESM 格式）
+- `configs/vitest.setup.mts` - 测试环境初始化脚本
+- `configs/playwright.config.ts` - Playwright E2E 测试配置
+
+**重要说明**:
+- Vitest 配置使用 `.mts` 扩展名以强制 ESM 模块格式
+- 这避免了 Vite CJS Node API 废弃警告（`The CJS build of Vite's Node API is deprecated`）
+- 根目录的 `vitest.config.mts` 为备用配置，实际使用 `configs/vitest.config.mts`
+
 ---
 
-*最后更新: 2025-12-06*
+*最后更新: 2025-12-12*
 *与代码一致性: ✅ 已验证*

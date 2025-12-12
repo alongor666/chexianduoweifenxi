@@ -29,10 +29,10 @@ export interface KPICardWithDrilldownProps extends KPICardProps {
 }
 
 export function KPICardWithDrilldown({
-  enableDrillDown = true,
-  kpiKey,
+  enableDrillDown: _enableDrillDown = true,
+  kpiKey: _kpiKey,
   onClick,
-  calculateValue,
+  calculateValue: _calculateValue,
   ...kpiCardProps
 }: KPICardWithDrilldownProps) {
   // 全局下钻模式下，KPICardWithDrilldown 仅作为 KPICard 的包装

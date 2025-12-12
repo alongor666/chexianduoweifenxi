@@ -91,6 +91,46 @@ src/
 
 ---
 
+## 🧭 Domain-only 收敛计划（禁止 Supabase）
+
+> 目标：以 Domain 为单一真相源，去除 Supabase 依赖，保持鲁棒且极简。
+
+### 原则
+- Domain 层为唯一业务公式/规范化/DTO 来源；禁止直接依赖 UI/Infra。
+- 应用层只经由 Port 调用 Domain；Infra 仅实现 Port；UI 只调用应用层/Hook。
+- 优先清理重复实现，先合并后替换调用，避免双轨并存。
+
+### 分阶段待办（状态：⬜ 待办｜🔄 进行中｜✅ 完成）
+1) 领域计算与规范化
+   - ⬜ 合并 `src/lib/calculations/kpi-engine.ts` 与 `src/domain/rules/kpi-calculator.ts` 的算子/公式注册表
+   - ⬜ 将雷达评分与归一化/权重抽象为公共算子，统一入口 `src/domain/rules/*`
+   - ⬜ 清理/迁移调用方：`use-kpi*`、`use-smart-comparison`、图表/表格等全部指向 Domain API
+   - ⬜ 增补单元测试覆盖计算与增量模式
+
+2) 数据导入链（上传→解析→规范化→存储）
+   - ⬜ 统一 CSV 解析与校验：合并 `src/lib/parsers/csv-parser.ts` 与 `src/infrastructure/adapters/CSVParser.ts`，保留 Port 实现
+   - ⬜ `use-file-upload.ts` 精简为 UI 状态/反馈，校验/周次分析/错误模型下沉复用模块
+   - ⬜ 应用层 `UploadDataUseCase` 作为唯一入口，前端 Hook 只调用 Use Case；补齐周次冲突/历史记录的接口
+   - ⬜ 测试：解析 + 校验 + 周次分析的集成测试（沿用 `RealDataTest`/上传测试）
+
+3) 存储与导出
+   - ⬜ 选定仓储实现（DuckDB/LocalStorage），废弃旧 `src/lib/database/duckdb-adapter.ts` 双轨；对齐 Port `IDataRepository`
+   - ⬜ PDF/CSV 导出：保留 `IExporter` 接口，合并 `PDFExporter` 数据组装与 UI 映射的重复逻辑，输出 DTO 即可
+   - ⬜ 持久化与上传历史：统一走 `PersistenceService`，淘汰 `src/lib/storage/data-persistence.ts` 的业务逻辑部分
+   - ⬜ 测试：PDF/CSV 导出单元 +快照，仓储读写冒烟
+
+4) UI 与可视化瘦身
+   - ⬜ `targets-data-table.tsx` 拆分列配置/格式化、业务计算 Hook、纯渲染组件，复用格式化工具
+   - ⬜ ECharts 统一主题/交互策略，模板各自文件仅依赖 builder + 主题；移除重复阈值/配色定义
+   - ⬜ 状态流迁移：`DashboardClient`/目标管理切到新 Store & 应用服务，移除对 `use-app-store` 的依赖
+   - ⬜ 回归：关键交互（筛选/分页/导出）与渲染一致性检查
+
+### 交付与同步
+- 每阶段完成：更新对应文档（本计划 + 技术设计）、运行 `pnpm docs:index` 生成索引。
+- 默认测试：`pnpm test`（单元）、`pnpm test:upload`（上传链）、必要时 Playwright 冒烟。
+
+---
+
 ## 📅 重构路线图（3 周计划）
 
 ### 第 1 周：建立核心层（Domain + Application）

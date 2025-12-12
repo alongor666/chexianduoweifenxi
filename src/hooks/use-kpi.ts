@@ -7,7 +7,11 @@
 import { useMemo } from 'react'
 import { useAppStore } from '@/store/use-app-store'
 import { useFilteredData } from '@/hooks/use-filtered-data'
-import { kpiEngine } from '@/lib/calculations/kpi-engine'
+import {
+  calculateKPIs,
+  calculateIncrementKPIs,
+  InsuranceRecord as DomainInsuranceRecord,
+} from '@/domain'
 import type { KPIResult, InsuranceRecord } from '@/types/insurance'
 import { normalizeChineseText } from '@/domain/rules/data-normalization'
 import {
@@ -136,7 +140,10 @@ export function useKPI(): KPIResult | null {
 
     // 当周值模式：直接计算
     if (dataViewType === 'current') {
-      return kpiEngine.calculate(filteredData, {
+      const domainRecords = filteredData.map(r =>
+        DomainInsuranceRecord.fromRawData(r)
+      )
+      return calculateKPIs(domainRecords, {
         annualTargetYuan: currentTargetYuan ?? undefined,
         mode: 'current',
         currentWeekNumber: currentWeek ?? undefined,
@@ -147,7 +154,10 @@ export function useKPI(): KPIResult | null {
     // 周增量模式：需要计算当前周和前一周的差值
     if (!currentWeek) {
       // 如果没有选择具体周次，返回当周值
-      return kpiEngine.calculate(filteredData, {
+      const domainRecords = filteredData.map(r =>
+        DomainInsuranceRecord.fromRawData(r)
+      )
+      return calculateKPIs(domainRecords, {
         annualTargetYuan: currentTargetYuan ?? undefined,
         mode: 'current',
         year: currentYear,
@@ -234,7 +244,13 @@ export function useKPI(): KPIResult | null {
     })
 
     // 计算周增量（使用increment模式）
-    return kpiEngine.calculateIncrement(currentWeekData, previousWeekData, {
+    const currentDomain = currentWeekData.map(r =>
+      DomainInsuranceRecord.fromRawData(r)
+    )
+    const previousDomain = previousWeekData.map(r =>
+      DomainInsuranceRecord.fromRawData(r)
+    )
+    return calculateIncrementKPIs(currentDomain, previousDomain, {
       mode: 'increment',
       annualTargetYuan: currentTargetYuan ?? undefined,
       currentWeekNumber: currentWeek,

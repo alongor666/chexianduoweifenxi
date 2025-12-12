@@ -21,7 +21,10 @@ function resolveWeekSelectionMode(tab: AnalysisTabValue): WeekSelectionMode {
   return 'single-only'
 }
 
-export function TopToolbar({ rawCount, activeTab }: TopToolbarProps) {
+export function TopToolbar({
+  rawCount: _rawCount,
+  activeTab,
+}: TopToolbarProps) {
   const weekSelectionMode = resolveWeekSelectionMode(activeTab)
 
   return (

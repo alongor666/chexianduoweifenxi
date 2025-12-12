@@ -1,0 +1,84 @@
+name: 自动更新文档索引
+
+on:
+  pull_request:
+    paths:
+      - '开发文档/**'
+      - 'scripts/generate_docs_index.py'
+    types: [opened, synchronize]
+  workflow_dispatch: # 允许手动触发
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-index:
+    name: 更新知识库索引
+    runs-on: ubuntu-latest
+    # 只在非机器人提交的PR上运行，避免循环
+    if: github.event.pull_request.user.type != 'Bot'
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 备份当前索引
+        run: |
+          cp 开发文档/KNOWLEDGE_INDEX.md /tmp/KNOWLEDGE_INDEX_BACKUP.md
+
+      - name: 重新生成索引
+        run: |
+          python3 scripts/generate_docs_index.py 开发文档
+
+      - name: 检查是否有变化
+        id: check_changes
+        run: |
+          # 移除时间戳行进行比较
+          grep -v "^> 📅 最后更新:" /tmp/KNOWLEDGE_INDEX_BACKUP.md > /tmp/old.md || true
+          grep -v "^> 📅 最后更新:" 开发文档/KNOWLEDGE_INDEX.md > /tmp/new.md || true
+
+          if ! diff -q /tmp/old.md /tmp/new.md > /dev/null; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "🔄 检测到索引需要更新" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "✅ 索引已是最新" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: 配置 Git
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: 提交更新的索引
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git add 开发文档/KNOWLEDGE_INDEX.md
+          git commit -m "chore: 自动更新文档索引
+
+          📖 文档索引已自动更新以反映最新的文档结构。
+
+          Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+          git push
+
+      - name: 添加评论
+        if: steps.check_changes.outputs.has_changes == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '📖 **文档索引已自动更新**\n\n知识库索引 `KNOWLEDGE_INDEX.md` 已根据文档变更自动更新。'
+            })

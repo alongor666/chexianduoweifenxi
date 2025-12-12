@@ -3,18 +3,23 @@
  */
 
 import { InsuranceRecord, FilterState } from '@/types/insurance'
-import { normalizeChineseText } from '@/domain/rules/data-normalization'
+import { normalizeInsuranceData as normalizeDataFromDomain } from '@/domain/rules/data-normalization'
+import { InsuranceRecord as DomainInsuranceRecord } from '@/domain'
 
+/**
+ * 规范化保险数据（委托给Domain层）
+ * @param data 原始数据
+ * @returns 规范化后的数据
+ */
 export function normalizeInsuranceData(
   data: InsuranceRecord[]
 ): InsuranceRecord[] {
-  return data.map(r => ({
-    ...r,
-    customer_category_3: normalizeChineseText(r.customer_category_3),
-    business_type_category: normalizeChineseText(r.business_type_category),
-    third_level_organization: normalizeChineseText(r.third_level_organization),
-    terminal_source: normalizeChineseText(r.terminal_source),
-  }))
+  // 1. 转换为 domain 类
+  const domainRecords = data.map(r => DomainInsuranceRecord.fromRawData(r))
+  // 2. 规范化
+  const normalized = normalizeDataFromDomain(domainRecords)
+  // 3. 转回 interface（类型断言处理兼容性）
+  return normalized.map(r => r.toRawData()) as InsuranceRecord[]
 }
 
 export function getInitialFilters(

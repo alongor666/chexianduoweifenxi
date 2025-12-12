@@ -32,7 +32,9 @@ class MockDataRepository implements IDataRepository {
     return this.mockData.filter(r => r.policyStartYear === year)
   }
 
-  async findByFilters(filters: any): Promise<InsuranceRecord[]> {
+  async findByFilters(
+    _filters: Record<string, unknown>
+  ): Promise<InsuranceRecord[]> {
     return this.mockData
   }
 
@@ -40,7 +42,12 @@ class MockDataRepository implements IDataRepository {
     this.mockData = []
   }
 
-  async getStats(): Promise<any> {
+  async getStats(): Promise<{
+    totalRecords: number
+    availableYears: number[]
+    weekRange: { min: number; max: number }
+    lastUpdated: Date
+  }> {
     return {
       totalRecords: this.mockData.length,
       availableYears: [],

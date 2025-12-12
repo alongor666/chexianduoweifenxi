@@ -7,7 +7,10 @@
 import { useMemo } from 'react'
 import { getBusinessTypeCode } from '@/constants/dimensions'
 import { useAppStore } from '@/store/use-app-store'
-import { kpiEngine } from '@/lib/calculations/kpi-engine'
+import {
+  calculateKPIs,
+  InsuranceRecord as DomainInsuranceRecord,
+} from '@/domain'
 import type { InsuranceRecord, FilterState } from '@/types/insurance'
 
 /**
@@ -347,7 +350,10 @@ export function useSmartComparison(
       years.length > 0 ? Math.max(...years) : new Date().getFullYear()
 
     // 计算当前KPI（传递完整的计算参数）
-    const currentKpi = kpiEngine.calculate(filteredData, {
+    const domainRecords = filteredData.map(r =>
+      DomainInsuranceRecord.fromRawData(r)
+    )
+    const currentKpi = calculateKPIs(domainRecords, {
       annualTargetYuan,
       mode: dataViewType || 'current',
       currentWeekNumber: currentWeek,
@@ -381,7 +387,10 @@ export function useSmartComparison(
         : 1 // 默认为第1周
 
     // 计算上一周期的KPI（同样传递完整的计算参数）
-    const compareKpi = kpiEngine.calculate(previousWeekData, {
+    const previousDomainRecords = previousWeekData.map(r =>
+      DomainInsuranceRecord.fromRawData(r)
+    )
+    const compareKpi = calculateKPIs(previousDomainRecords, {
       annualTargetYuan,
       mode: dataViewType || 'current',
       currentWeekNumber: previousWeekNumber,

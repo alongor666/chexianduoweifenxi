@@ -5,7 +5,10 @@
 
 import { useMemo } from 'react'
 import { useFilteredData } from './use-filtered-data'
-import { calculateKPIs } from '@/lib/calculations/kpi-engine'
+import {
+  calculateKPIs,
+  InsuranceRecord as DomainInsuranceRecord,
+} from '@/domain'
 import type { InsuranceRecord, KPIResult } from '@/types/insurance'
 
 /**
@@ -56,7 +59,9 @@ export function useOrganizationComparison() {
       orgMap.entries()
     ).map(([organization, records]) => ({
       organization,
-      kpi: calculateKPIs(records),
+      kpi: calculateKPIs(
+        records.map(r => DomainInsuranceRecord.fromRawData(r))
+      ),
       recordCount: records.length,
       rank: 0, // 稍后填充
     }))

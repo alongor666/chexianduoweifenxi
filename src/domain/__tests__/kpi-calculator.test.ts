@@ -217,9 +217,9 @@ describe('aggregateInsuranceRecords', () => {
     const records = [createTestRecord()]
     const result = aggregateInsuranceRecords(records)
 
-    expect(result.signedPremiumYuan).toBe(1000)
-    expect(result.maturedPremiumYuan).toBe(800)
-    expect(result.policyCount).toBe(10)
+    expect(result.signed_premium_yuan).toBe(1000)
+    expect(result.matured_premium_yuan).toBe(800)
+    expect(result.policy_count).toBe(10)
   })
 
   it('应该正确聚合多条记录', () => {
@@ -229,15 +229,15 @@ describe('aggregateInsuranceRecords', () => {
     ]
     const result = aggregateInsuranceRecords(records)
 
-    expect(result.signedPremiumYuan).toBe(3000)
-    expect(result.policyCount).toBe(30)
+    expect(result.signed_premium_yuan).toBe(3000)
+    expect(result.policy_count).toBe(30)
   })
 
   it('应该处理空数组', () => {
     const result = aggregateInsuranceRecords([])
 
-    expect(result.signedPremiumYuan).toBe(0)
-    expect(result.policyCount).toBe(0)
+    expect(result.signed_premium_yuan).toBe(0)
+    expect(result.policy_count).toBe(0)
   })
 })
 
@@ -260,36 +260,36 @@ describe('calculateKPIs', () => {
     const result = calculateKPIs(records)
 
     // 率值指标
-    expect(result.lossRatio).toBe(50) // 400/800 * 100
-    expect(result.expenseRatio).toBe(30) // 300/1000 * 100
-    expect(result.maturityRatio).toBe(80) // 800/1000 * 100
-    expect(result.contributionMarginRatio).toBeCloseTo(12.5, 2) // 100/800 * 100
-    expect(result.variableCostRatio).toBe(70) // (400+300)/1000 * 100
-    expect(result.maturedClaimRatio).toBe(20) // 2/10 * 100
+    expect(result.loss_ratio).toBe(50) // 400/800 * 100
+    expect(result.expense_ratio).toBe(30) // 300/1000 * 100
+    expect(result.maturity_ratio).toBe(80) // 800/1000 * 100
+    expect(result.contribution_margin_ratio).toBeCloseTo(12.5, 2) // 100/800 * 100
+    expect(result.variable_cost_ratio).toBe(70) // (400+300)/1000 * 100
+    expect(result.matured_claim_ratio).toBe(20) // 2/10 * 100
 
-    // 绝对值指标
-    expect(result.signedPremium).toBe(1000)
-    expect(result.maturedPremium).toBe(800)
-    expect(result.policyCount).toBe(10)
+    // 绝对值指标（万元）
+    expect(result.signed_premium).toBe(0) // 1000元 = 0.1万元，Math.round = 0
+    expect(result.matured_premium).toBe(0) // 800元 = 0.08万元，Math.round = 0
+    expect(result.policy_count).toBe(10)
 
     // 均值指标
-    expect(result.averagePremium).toBe(100) // 1000/10
-    expect(result.averageClaim).toBe(200) // 400/2
+    expect(result.average_premium).toBe(100) // 1000/10
+    expect(result.average_claim).toBe(200) // 400/2
   })
 
   it('应该正确计算带目标的KPI', () => {
     const records = [createTestRecord({ signedPremiumYuan: 800 })]
-    const result = calculateKPIs(records, { premiumTarget: 1000 })
+    const result = calculateKPIs(records, { annualTargetYuan: 1000 })
 
-    expect(result.premiumProgress).toBe(80) // 800/1000 * 100
+    expect(result.premium_progress).toBe(80) // 800/1000 * 100
   })
 
   it('应该处理空记录数组', () => {
     const result = calculateKPIs([])
 
-    expect(result.signedPremium).toBe(0)
-    expect(result.policyCount).toBe(0)
-    expect(result.lossRatio).toBeNull() // 除零
-    expect(result.averagePremium).toBeNull() // 除零
+    expect(result.signed_premium).toBe(0)
+    expect(result.policy_count).toBe(0)
+    expect(result.loss_ratio).toBeNull() // 除零
+    expect(result.average_premium).toBeNull() // 除零
   })
 })

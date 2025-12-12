@@ -74,7 +74,7 @@ export class DuckDBRepository implements IDataRepository {
       try {
         await this.conn.query(`ATTACH '${file.name}' AS imported_db`)
         console.log('[DuckDBRepository] 数据库已附加')
-      } catch (e) {
+      } catch {
         console.warn('[DuckDBRepository] 附加数据库失败，尝试直接访问')
       }
 
@@ -118,7 +118,8 @@ export class DuckDBRepository implements IDataRepository {
   /**
    * 保存保险记录
    */
-  async save(records: InsuranceRecord[]): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async save(_records: InsuranceRecord[]): Promise<void> {
     this.ensureInitialized()
 
     try {
@@ -244,6 +245,7 @@ export class DuckDBRepository implements IDataRepository {
       `)
       const availableYears = yearsResult
         .toArray()
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .map((r: any) => Number(r.policy_start_year))
 
       // 获取周次范围
@@ -359,7 +361,9 @@ export class DuckDBRepository implements IDataRepository {
   /**
    * 转换 Arrow 结果为记录数组
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private arrowToRecords(result: any): InsuranceRecord[] {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return result.toArray().map((row: any) => {
       const rawData: RawInsuranceData = {
         snapshot_date: String(row.snapshot_date),

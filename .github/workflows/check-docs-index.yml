@@ -1,0 +1,69 @@
+name: 检查文档索引
+
+on:
+  pull_request:
+    paths:
+      - '开发文档/**'
+      - 'scripts/generate_docs_index.py'
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  check-index:
+    name: 检查 KNOWLEDGE_INDEX.md 是否最新
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 备份当前索引
+        run: |
+          cp 开发文档/KNOWLEDGE_INDEX.md /tmp/KNOWLEDGE_INDEX_BACKUP.md
+
+      - name: 重新生成索引
+        run: |
+          python3 scripts/generate_docs_index.py 开发文档
+
+      - name: 检查索引是否需要更新
+        id: check
+        run: |
+          # 移除时间戳行以避免误报（时间戳总是不同的）
+          grep -v "^> 📅 最后更新:" /tmp/KNOWLEDGE_INDEX_BACKUP.md > /tmp/current_index.md || true
+          grep -v "^> 📅 最后更新:" 开发文档/KNOWLEDGE_INDEX.md > /tmp/new_index.md || true
+
+          if ! diff -q /tmp/current_index.md /tmp/new_index.md > /dev/null; then
+            echo "index_outdated=true" >> $GITHUB_OUTPUT
+            echo "❌ 文档索引已过期！" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### 检测到的变化：" >> $GITHUB_STEP_SUMMARY
+            echo '```diff' >> $GITHUB_STEP_SUMMARY
+            diff -u /tmp/current_index.md /tmp/new_index.md | head -100 >> $GITHUB_STEP_SUMMARY || true
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### 如何修复：" >> $GITHUB_STEP_SUMMARY
+            echo "请在本地运行以下命令更新索引：" >> $GITHUB_STEP_SUMMARY
+            echo '```bash' >> $GITHUB_STEP_SUMMARY
+            echo "pnpm docs:index" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+
+            # 恢复原索引文件（避免 CI 修改工作区）
+            cp /tmp/KNOWLEDGE_INDEX_BACKUP.md 开发文档/KNOWLEDGE_INDEX.md
+            exit 1
+          else
+            echo "index_outdated=false" >> $GITHUB_OUTPUT
+            echo "✅ 文档索引是最新的！" >> $GITHUB_STEP_SUMMARY
+            # 恢复原索引文件
+            cp /tmp/KNOWLEDGE_INDEX_BACKUP.md 开发文档/KNOWLEDGE_INDEX.md
+          fi
+
+      - name: 失败提示
+        if: failure()
+        run: |
+          echo "::error title=文档索引过期::请运行 'pnpm docs:index' 更新文档索引"

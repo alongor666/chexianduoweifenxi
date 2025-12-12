@@ -8,7 +8,7 @@
  * @depends Domain (InsuranceRecord, RawInsuranceData)
  */
 
-import type { InsuranceRecord, RawInsuranceData } from '../../domain'
+import type { RawInsuranceData } from '../../domain'
 
 /**
  * 文件解析器接口

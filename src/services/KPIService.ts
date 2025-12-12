@@ -13,7 +13,12 @@
  * 2. 各个组件中散落的 KPI 计算
  */
 
-import { kpiEngine } from '@/lib/calculations/kpi-engine'
+import {
+  calculateKPIs,
+  calculateIncrementKPIs,
+  aggregateInsuranceRecords,
+  InsuranceRecord as DomainInsuranceRecord,
+} from '@/domain'
 import type { InsuranceRecord, KPIResult, FilterState } from '@/types/insurance'
 import { DataService } from './DataService'
 import { safeMax } from '@/lib/utils/array-utils'
@@ -74,7 +79,8 @@ export class KPIService {
       return null
     }
 
-    return kpiEngine.calculate(data, {
+    const domainRecords = data.map(r => DomainInsuranceRecord.fromRawData(r))
+    return calculateKPIs(domainRecords, {
       annualTargetYuan: options.annualTargetYuan,
       mode: options.mode || 'current',
       currentWeekNumber: options.currentWeekNumber,
@@ -97,7 +103,13 @@ export class KPIService {
       return null
     }
 
-    return kpiEngine.calculateIncrement(currentWeekData, previousWeekData, {
+    const currentDomain = currentWeekData.map(r =>
+      DomainInsuranceRecord.fromRawData(r)
+    )
+    const previousDomain = previousWeekData.map(r =>
+      DomainInsuranceRecord.fromRawData(r)
+    )
+    return calculateIncrementKPIs(currentDomain, previousDomain, {
       mode: 'increment',
       annualTargetYuan: options.annualTargetYuan,
       currentWeekNumber: options.currentWeekNumber,

@@ -11,12 +11,12 @@ import { createTestRawData } from './test-helpers'
 
 // Mock 实现
 class MockFileParser implements IFileParser {
-  async parse(file: File): Promise<RawInsuranceData[]> {
+  async parse(_file: File): Promise<RawInsuranceData[]> {
     // 模拟解析结果
     return [createTestRawData()]
   }
 
-  async validate(file: File) {
+  async validate(_file: File) {
     return {
       isValid: true,
       errors: [],
@@ -50,7 +50,9 @@ class MockDataRepository implements IDataRepository {
     return this.data.filter(r => r.policyStartYear === year)
   }
 
-  async findByFilters(filters: any): Promise<InsuranceRecord[]> {
+  async findByFilters(
+    _filters: Record<string, unknown>
+  ): Promise<InsuranceRecord[]> {
     return this.data
   }
 
@@ -58,7 +60,12 @@ class MockDataRepository implements IDataRepository {
     this.data = []
   }
 
-  async getStats(): Promise<any> {
+  async getStats(): Promise<{
+    totalRecords: number
+    availableYears: number[]
+    weekRange: { min: number; max: number }
+    lastUpdated: Date
+  }> {
     return {
       totalRecords: this.data.length,
       availableYears: [],

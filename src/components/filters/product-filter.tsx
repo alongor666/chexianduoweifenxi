@@ -4,11 +4,9 @@ import { FilterContainer } from './filter-container'
 import { MultiSelectFilter } from './multi-select-filter'
 import { useAppStore } from '@/store/use-app-store'
 import { filterRecordsWithExclusions } from '@/store/use-app-store'
-import { normalizeChineseText } from '@/domain/rules/data-normalization'
 import {
   CANONICAL_INSURANCE_TYPES,
   CANONICAL_COVERAGE_TYPES,
-  CANONICAL_BUSINESS_TYPES,
   getBusinessTypeCode,
   CANONICAL_BUSINESS_CODES,
   getBusinessTypeShortLabelByCode,

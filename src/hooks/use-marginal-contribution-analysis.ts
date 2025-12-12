@@ -10,7 +10,11 @@ import { useMemo } from 'react'
 import { useAppStore } from '@/store/use-app-store'
 import { useFilteredData } from '@/hooks/use-filtered-data'
 import type { InsuranceRecord } from '@/types/insurance'
-import { kpiEngine } from '@/lib/calculations/kpi-engine'
+import {
+  calculateKPIs,
+  calculateIncrementKPIs,
+  InsuranceRecord as DomainInsuranceRecord,
+} from '@/domain'
 import {
   getBusinessTypeCode,
   getBusinessTypeShortLabelByCode,
@@ -175,15 +179,27 @@ export function useMarginalContributionAnalysis(): MarginalContributionItem[] {
       // 计算当前周KPI
       let currentKPI
       if (dataViewType === 'increment' && previousRecords.length > 0) {
-        currentKPI = kpiEngine.calculateIncrement(records, previousRecords)
+        const currentDomain = records.map(r =>
+          DomainInsuranceRecord.fromRawData(r)
+        )
+        const previousDomain = previousRecords.map(r =>
+          DomainInsuranceRecord.fromRawData(r)
+        )
+        currentKPI = calculateIncrementKPIs(currentDomain, previousDomain)
       } else {
-        currentKPI = kpiEngine.calculate(records)
+        const currentDomain = records.map(r =>
+          DomainInsuranceRecord.fromRawData(r)
+        )
+        currentKPI = calculateKPIs(currentDomain)
       }
 
       // 计算上期KPI（用于环比）
       let previousKPI = null
       if (previousRecords.length > 0) {
-        previousKPI = kpiEngine.calculate(previousRecords)
+        const previousDomain = previousRecords.map(r =>
+          DomainInsuranceRecord.fromRawData(r)
+        )
+        previousKPI = calculateKPIs(previousDomain)
       }
 
       items.push({

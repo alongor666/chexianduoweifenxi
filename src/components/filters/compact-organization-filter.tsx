@@ -92,7 +92,7 @@ export function CompactOrganizationFilter() {
   const hasSelection = filters.organizations.length > 0
 
   // 生成标签文本
-  const getLabel = () => {
+  const _getLabel = () => {
     if (!hasSelection) return '机构'
 
     if (filters.organizations.length === 1) {

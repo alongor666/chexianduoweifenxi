@@ -85,6 +85,15 @@
 
 ---
 
+## ✨ 实用指南（导航 / 维护 / 索引）
+
+- **快速导航**：优先通过 `开发文档/KNOWLEDGE_INDEX.md` 跳转；本目录内核心入口依次为 `ARCHITECTURE_RULES.md` → `REFACTORING_PLAN.md` → `REFACTORING_CHECKLIST.md`。
+- **文档维护规范**：修改代码涉及架构/数据/流程时，必须同步更新对应技术设计/重构文档；所有注释与文档保持中文；新增能力需补充到知识库索引。
+- **索引更新命令**：`pnpm docs:index`（等同 `python3 scripts/generate_docs_index.py 开发文档`）；在合并前或发布前必跑一次，保持索引最新。
+- **流程建议**：开始任务前看规则与计划，结束前跑测试 + 更新文档 + 生成索引；在 AGENT 提示或流程文档中引用索引路径，便于导航。
+
+---
+
 ### 2. 实现总结文档
 
 #### [APPLICATION_LAYER_SUMMARY.md](./APPLICATION_LAYER_SUMMARY.md) ⭐⭐⭐⭐

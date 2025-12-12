@@ -3,17 +3,12 @@
 import { Database, HardDrive, Cloud } from 'lucide-react'
 import { FileUpload } from '@/components/features/file-upload'
 import { FullKPIDashboard } from '@/components/features/full-kpi-dashboard'
-import { TimeProgressIndicator } from '@/components/features/time-progress-indicator'
 import { WeeklyOperationalTrend } from '@/components/features/weekly-operational-trend'
-import { PremiumAnalysisBarChart } from '@/components/features/structure-bar-chart'
-import { ClaimAnalysisBarChart } from '@/components/features/claim-analysis-bar-chart'
-import { DistributionPieChart } from '@/components/features/distribution-pie-chart'
 import { ComparisonAnalysisPanel } from '@/components/features/comparison-analysis'
 import { MultiChartTabs } from '@/components/features/multi-chart-tabs'
 import { CustomerSegmentationBubble } from '@/components/features/customer-segmentation-bubble'
 import { ExpenseHeatmap } from '@/components/features/expense-heatmap'
 import { ThematicAnalysis } from '@/components/features/thematic-analysis'
-import { FilterPanel } from '@/components/filters/filter-panel'
 import {
   FilterInteractionManager,
   useFilterPersistence,
@@ -29,22 +24,11 @@ import { useSmartComparison } from '@/hooks/use-smart-comparison'
 import { useState, useEffect, useMemo } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
   AnalysisTabs,
   type AnalysisTabValue,
 } from '@/components/layout/analysis-tabs'
 import { PredictionManagerPanel } from '@/components/features/prediction-manager'
 import { DataManagementPanel } from '@/components/features/data-management-panel'
-import { FilterManagementPanel } from '@/components/features/filter-management-panel'
 import { DrillDownBar } from '@/components/features/drill-down/drill-down-bar'
 import { useDrillDownStore } from '@/store/drill-down-store'
 import type { InsuranceRecord } from '@/types/insurance'

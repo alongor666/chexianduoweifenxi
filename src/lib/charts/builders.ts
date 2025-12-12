@@ -51,7 +51,8 @@ export function buildLegend(
 /**
  * 构建标准 X 轴配置
  */
-export function buildXAxis(config?: Partial<any>): any {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function buildXAxis(config?: Partial<EChartsOption['xAxis']>): any {
   return {
     type: 'category',
     ...CHART_AXIS.xAxis,
@@ -62,7 +63,8 @@ export function buildXAxis(config?: Partial<any>): any {
 /**
  * 构建标准 Y 轴配置
  */
-export function buildYAxis(config?: Partial<any>): any {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function buildYAxis(config?: Partial<EChartsOption['yAxis']>): any {
   return {
     type: 'value',
     ...CHART_AXIS.yAxis,
@@ -82,6 +84,7 @@ export function buildDualYAxis(
     name?: string
     formatter?: (value: number) => string
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any[] {
   return [
     buildYAxis({
@@ -120,6 +123,7 @@ export function buildDataZoom(config?: {
     showInside = true,
   } = config || {}
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dataZoom: any[] = []
 
   if (showSlider) {
@@ -147,6 +151,7 @@ export function buildDataZoom(config?: {
 export function buildThresholdLine(
   type: 'lossRatio' | 'contribution',
   customValue?: number
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any {
   const config = THRESHOLD_LINES[type]
 
@@ -180,6 +185,7 @@ export function buildRiskArea(
     color?: string
     label?: string
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any {
   return {
     silent: true,
@@ -213,6 +219,7 @@ export function buildRiskArea(
  */
 export function buildLineSeries(config: {
   name: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any[]
   color?: string
   yAxisIndex?: number
@@ -221,6 +228,7 @@ export function buildLineSeries(config: {
   areaStyle?: boolean
   lineWidth?: number
   symbolSize?: number
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }): any {
   const {
     name,
@@ -234,6 +242,7 @@ export function buildLineSeries(config: {
     symbolSize = 6,
   } = config
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const series: any = {
     name,
     type: 'line',
@@ -269,15 +278,18 @@ export function buildLineSeries(config: {
  */
 export function buildBarSeries(config: {
   name: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any[]
   color?: string
   yAxisIndex?: number
   barWidth?: string | number
   barGap?: string
   stack?: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }): any {
   const { name, data, color, yAxisIndex = 0, barWidth, barGap, stack } = config
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const series: any = {
     name,
     type: 'bar',
@@ -312,13 +324,17 @@ export function buildBarSeries(config: {
  */
 export function buildScatterSeries(config: {
   name: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any[]
   color?: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   symbolSize?: number | ((value: any) => number)
   yAxisIndex?: number
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }): any {
   const { name, data, color, symbolSize = 8, yAxisIndex = 0 } = config
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const series: any = {
     name,
     type: 'scatter',
@@ -347,6 +363,7 @@ export function buildPieSeries(config: {
   center?: [string, string]
   showLabel?: boolean
   labelPosition?: 'outside' | 'inside' | 'center'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }): any {
   const {
     name,
@@ -383,13 +400,16 @@ export function buildPieSeries(config: {
  */
 export function buildRadarSeries(config: {
   name: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any[]
   color?: string
   areaOpacity?: number
   lineWidth?: number
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }): any {
   const { name, data, color, areaOpacity = 0.08, lineWidth = 2.5 } = config
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const series: any = {
     name,
     type: 'radar',
@@ -419,6 +439,7 @@ export function buildHeatmapSeries(config: {
   data: Array<[number, number, number]>
   min?: number
   max?: number
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }): any {
   const { name, data, min, max } = config
 

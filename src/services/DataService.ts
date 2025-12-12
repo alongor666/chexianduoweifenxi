@@ -16,7 +16,11 @@
 
 import type { InsuranceRecord, FilterState } from '@/types/insurance'
 import { getBusinessTypeCode } from '@/constants/dimensions'
-import { normalizeChineseText } from '@/domain/rules/data-normalization'
+import {
+  normalizeInsuranceData,
+  normalizeChineseText,
+} from '@/domain/rules/data-normalization'
+import { InsuranceRecord as DomainInsuranceRecord } from '@/domain'
 import {
   supabase,
   isSupabaseEnabled,
@@ -357,22 +361,17 @@ export class DataService {
   }
 
   /**
-   * 规范化数据（统一中文文本格式）
+   * 规范化数据（委托给Domain层）
    * @param data 原始数据
    * @returns 规范化后的数据
    */
   static normalize(data: InsuranceRecord[]): InsuranceRecord[] {
-    return data.map(record => ({
-      ...record,
-      customer_category_3: normalizeChineseText(record.customer_category_3),
-      business_type_category: normalizeChineseText(
-        record.business_type_category
-      ),
-      third_level_organization: normalizeChineseText(
-        record.third_level_organization
-      ),
-      terminal_source: normalizeChineseText(record.terminal_source),
-    }))
+    // 1. 转换为 domain 类
+    const domainRecords = data.map(r => DomainInsuranceRecord.fromRawData(r))
+    // 2. 规范化
+    const normalized = normalizeInsuranceData(domainRecords)
+    // 3. 转回 interface（RawInsuranceData 与 InsuranceRecord 结构兼容，只是类型定义严格程度不同）
+    return normalized.map(r => r.toRawData()) as InsuranceRecord[]
   }
 
   /**

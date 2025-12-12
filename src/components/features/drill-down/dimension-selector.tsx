@@ -6,7 +6,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { ChevronDown, Filter } from 'lucide-react'
+import { Filter } from 'lucide-react'
 import {
   Select,
   SelectContent,

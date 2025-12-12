@@ -11,7 +11,10 @@ import {
 } from '@/utils/format'
 import type { KPIResult } from '@/types/insurance'
 import { KPICardWithDrilldown } from './kpi-card-with-drilldown'
-import { kpiEngine } from '@/lib/calculations/kpi-engine'
+import {
+  calculateKPIs,
+  InsuranceRecord as DomainInsuranceRecord,
+} from '@/domain'
 import { getComparisonMetrics } from '@/utils/comparison'
 
 export interface FullKPIDashboardProps {
@@ -284,7 +287,8 @@ export function FullKPIDashboard({
         kpiKey={config.key as string}
         enableDrillDown={true}
         calculateValue={data => {
-          const result = kpiEngine.calculate(data)
+          const records = data.map(d => DomainInsuranceRecord.fromRawData(d))
+          const result = calculateKPIs(records)
           return result[config.key] as number | null
         }}
       />

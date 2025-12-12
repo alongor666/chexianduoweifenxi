@@ -7,19 +7,19 @@
 
 import React, { useMemo, useState, useRef, useEffect } from 'react'
 import * as echarts from 'echarts'
-import { Info } from 'lucide-react'
+import { Info as _Info } from 'lucide-react'
 import {
   RADAR_DIMENSIONS,
-  convertKPIToRadarScores,
-  type RadarScoreResult,
-} from '@/utils/radar-score'
+  calculateRadarScores,
+  type RadarScoreResult as _RadarScoreResult,
+} from '@/domain'
 import { formatPercent, formatNumber } from '@/utils/format'
 import { cn } from '@/lib/utils'
 import { getOrganizationColor } from '@/utils/organization-config'
 import { OrganizationSelector } from './organization-selector'
 import { useMultipleOrganizationKPIs } from '@/hooks/use-organization-kpi'
 import { getAllQuickFilters } from '@/utils/quick-filters'
-import type { KPIResult } from '@/types/insurance'
+import type { KPIResult as _KPIResult } from '@/types/insurance'
 import { ALL_ORGANIZATIONS } from '@/utils/organization-config'
 
 interface MultiDimensionRadarProps {
@@ -58,7 +58,9 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
   ])
 
   // 悬停状态
-  const [hoveredDimension, setHoveredDimension] = useState<string | null>(null)
+  const [_hoveredDimension, _setHoveredDimension] = useState<string | null>(
+    null
+  )
 
   // 图表引用
   const chartRef = useRef<HTMLDivElement>(null)
@@ -93,7 +95,7 @@ export function MultiDimensionRadar({ className }: MultiDimensionRadarProps) {
       // 为每个已选机构添加评分
       selectedOrganizations.forEach(orgName => {
         const kpi = selectedOrgKPIs.get(orgName)
-        const scores = kpi ? convertKPIToRadarScores(kpi) : new Map()
+        const scores = kpi ? calculateRadarScores(kpi) : new Map()
         const scoreResult = scores.get(dim.key)
 
         // 添加评分（使用机构名作为key）

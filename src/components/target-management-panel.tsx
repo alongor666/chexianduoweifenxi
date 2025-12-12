@@ -33,6 +33,7 @@ export function TargetManagementPanel() {
   const [isImporting, setIsImporting] = useState(false)
   const [issues, setIssues] = useState<CsvIssue[]>([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [ignoredUnknownCount, setIgnoredUnknownCount] = useState(0)
 
   const createTunedVersion = useGoalStore(state => state.createTunedVersion)

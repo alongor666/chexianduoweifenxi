@@ -7,14 +7,22 @@
  * - 防御性编程（处理各种异常情况）
  *
  * 这个模块负责将外部数据转换为符合系统规范的格式。
+ * 现在使用抽象算子实现，保持向后兼容性。
  */
 
 import { InsuranceRecord, RawInsuranceData } from '../entities/InsuranceRecord'
+import {
+  normalizeText,
+  normalizeNumber as normalizeNumberAdvanced,
+  normalizeBoolean as normalizeBooleanAdvanced,
+  normalizeDate,
+} from '../shared'
 
 /**
  * 规范化中文文本
  *
  * 清理中文文本中的不可见字符、多余空格等，确保数据一致性。
+ * 现在使用抽象算子实现，保持向后兼容性。
  *
  * 业务背景：
  * CSV 文件可能包含：
@@ -30,27 +38,20 @@ import { InsuranceRecord, RawInsuranceData } from '../entities/InsuranceRecord'
  * normalizeChineseText("武侯　区") // "武侯区"
  */
 export function normalizeChineseText(text: string): string {
-  if (!text || typeof text !== 'string') {
-    return ''
-  }
-
-  return (
-    text
-      // 1. 移除零宽字符和替换字符
-      .replace(/[\u200B-\u200D\uFEFF\uFFFD]/g, '')
-      // 2. 将全角空格替换为半角空格
-      .replace(/\u3000/g, ' ')
-      // 3. 移除首尾空格
-      .trim()
-      // 4. 将多个连续空格替换为单个空格
-      .replace(/\s+/g, ' ')
-  )
+  const result = normalizeText(text, {
+    removeZeroWidth: true,
+    normalizeSpaces: true,
+    trim: true,
+    collapseSpaces: true,
+  })
+  return result.value
 }
 
 /**
  * 规范化数字
  *
  * 将各种可能的数字表示（字符串、null、undefined）转换为有效数字。
+ * 现在使用抽象算子实现，保持向后兼容性。
  *
  * @param value - 原始值
  * @param defaultValue - 默认值（当无法转换时使用）
@@ -65,31 +66,15 @@ export function normalizeNumber(
   value: unknown,
   defaultValue: number = 0
 ): number {
-  // 如果已经是有效数字，直接返回
-  if (typeof value === 'number' && Number.isFinite(value)) {
-    return value
-  }
-
-  // 尝试将字符串转换为数字
-  if (typeof value === 'string') {
-    const trimmed = value.trim()
-    if (trimmed === '') {
-      return defaultValue
-    }
-    const parsed = Number(trimmed)
-    if (Number.isFinite(parsed)) {
-      return parsed
-    }
-  }
-
-  // 无法转换，返回默认值
-  return defaultValue
+  const result = normalizeNumberAdvanced(value, { defaultValue })
+  return result.value
 }
 
 /**
  * 规范化布尔值
  *
  * 将各种可能的布尔表示转换为标准布尔值。
+ * 现在使用抽象算子实现，保持向后兼容性。
  *
  * @param value - 原始值
  * @param defaultValue - 默认值
@@ -105,41 +90,15 @@ export function normalizeBoolean(
   value: unknown,
   defaultValue: boolean = false
 ): boolean {
-  if (typeof value === 'boolean') {
-    return value
-  }
-
-  if (typeof value === 'number') {
-    return value !== 0
-  }
-
-  if (typeof value === 'string') {
-    const lower = value.toLowerCase().trim()
-    if (
-      lower === 'true' ||
-      lower === '是' ||
-      lower === 'yes' ||
-      lower === '1'
-    ) {
-      return true
-    }
-    if (
-      lower === 'false' ||
-      lower === '否' ||
-      lower === 'no' ||
-      lower === '0'
-    ) {
-      return false
-    }
-  }
-
-  return defaultValue
+  const result = normalizeBooleanAdvanced(value, { defaultValue })
+  return result.value
 }
 
 /**
  * 规范化日期字符串
  *
  * 确保日期格式为 YYYY-MM-DD。
+ * 现在使用抽象算子实现，保持向后兼容性。
  *
  * @param value - 原始值
  * @param defaultValue - 默认值
@@ -153,23 +112,12 @@ export function normalizeDateString(
   value: unknown,
   defaultValue: string = ''
 ): string {
-  if (typeof value !== 'string') {
-    return defaultValue
-  }
-
-  const trimmed = value.trim()
-
-  // 已经是 YYYY-MM-DD 格式
-  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
-    return trimmed
-  }
-
-  // 转换 YYYY/MM/DD 或 YYYY.MM.DD 格式
-  if (/^\d{4}[\/\.]\d{2}[\/\.]\d{2}$/.test(trimmed)) {
-    return trimmed.replace(/[\/\.]/g, '-')
-  }
-
-  return defaultValue
+  const result = normalizeDate(value, {
+    defaultValue,
+    format: 'YYYY-MM-DD',
+    autoFix: true,
+  })
+  return result.value
 }
 
 /**
@@ -348,4 +296,49 @@ export function normalizeInsuranceRecordsBatch(
   })
 
   return { success, failed }
+}
+
+/**
+ * 规范化已存在的保险记录数组
+ *
+ * 对已经存在的 InsuranceRecord 数组进行文本字段规范化，
+ * 主要用于从外部加载的数据清理。
+ *
+ * @param data - 已存在的保险记录数组
+ * @returns 规范化后的保险记录数组
+ */
+export function normalizeInsuranceData(
+  data: InsuranceRecord[]
+): InsuranceRecord[] {
+  return data.map(
+    r =>
+      new InsuranceRecord(
+        r.snapshotDate,
+        r.policyStartYear,
+        r.weekNumber,
+        r.chengduBranch,
+        normalizeChineseText(r.thirdLevelOrganization), // Normalized
+        normalizeChineseText(r.customerCategory), // Normalized
+        r.insuranceType,
+        normalizeChineseText(r.businessTypeCategory), // Normalized
+        r.coverageType,
+        r.renewalStatus,
+        r.isNewEnergyVehicle,
+        r.isTransferredVehicle,
+        r.vehicleInsuranceGrade,
+        r.highwayRiskGrade,
+        r.largeTruckScore,
+        r.smallTruckScore,
+        normalizeChineseText(r.terminalSource), // Normalized
+        r.signedPremiumYuan,
+        r.maturedPremiumYuan,
+        r.policyCount,
+        r.claimCaseCount,
+        r.reportedClaimPaymentYuan,
+        r.expenseAmountYuan,
+        r.commercialPremiumBeforeDiscountYuan,
+        r.premiumPlanYuan,
+        r.marginalContributionAmountYuan
+      )
+  )
 }

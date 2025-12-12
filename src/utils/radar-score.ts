@@ -1,3 +1,5 @@
+import { type KPIResult } from '@/types/insurance'
+
 /**
  * 多维雷达图评分转换工具
  * 将各业务指标的实际值转换为 0-100 的标准化评分
@@ -349,7 +351,7 @@ export function convertClaimFrequencyToScore(
  * 维度定义
  */
 export interface RadarDimension {
-  key: string
+  key: keyof KPIResult
   label: string
   shortLabel: string
   description: string
@@ -407,12 +409,12 @@ export const RADAR_DIMENSIONS: RadarDimension[] = [
  * 批量转换 KPI 数据为雷达图评分
  */
 export function convertKPIToRadarScores(
-  kpiData: any
+  kpiData: KPIResult | null | undefined
 ): Map<string, RadarScoreResult | null> {
   const scores = new Map<string, RadarScoreResult | null>()
 
   RADAR_DIMENSIONS.forEach(dim => {
-    const rawValue = kpiData?.[dim.key]
+    const rawValue = kpiData?.[dim.key] as number | null | undefined
     const scoreResult = dim.converter(rawValue)
     scores.set(dim.key, scoreResult)
   })

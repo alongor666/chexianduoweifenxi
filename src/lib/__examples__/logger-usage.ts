@@ -93,13 +93,13 @@ log.table(records)
 export class ExampleDataService {
   private log = logger.create('ExampleDataService')
 
-  async loadData(filters: unknown): Promise<unknown[]> {
+  async loadData(_filters: unknown): Promise<unknown[]> {
     this.log.time('loadData')
-    this.log.info('开始加载数据', { filters })
+    this.log.info('开始加载数据', { filters: _filters })
 
     try {
       // 模拟数据加载
-      const data = await this.fetchFromAPI(filters)
+      const data = await this.fetchFromAPI(_filters)
 
       this.log.debug('原始数据', { count: data.length })
 
@@ -120,7 +120,7 @@ export class ExampleDataService {
     }
   }
 
-  private async fetchFromAPI(filters: unknown): Promise<unknown[]> {
+  private async fetchFromAPI(_filters: unknown): Promise<unknown[]> {
     // 实现细节...
     return []
   }
@@ -135,6 +135,12 @@ export class ExampleDataService {
     }
 
     return data
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public filterLogs(_filters: Record<string, unknown>): void {
+    // 过滤逻辑实现
+    console.log('Filtering logs...')
   }
 }
 

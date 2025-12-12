@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
     // 检查 Python 脚本是否存在
     try {
       await fs.access(pythonScriptPath, fs.constants.F_OK)
-    } catch (e) {
+    } catch {
       return NextResponse.json(
         { success: false, message: `Python 脚本不存在: ${pythonScriptPath}` },
         { status: 500 }
@@ -112,7 +112,7 @@ export async function POST(req: NextRequest) {
     // 检查生成的 DuckDB 文件是否存在
     try {
       await fs.access(outputDbPath, fs.constants.F_OK)
-    } catch (e) {
+    } catch {
       return NextResponse.json(
         {
           success: false,
@@ -131,12 +131,10 @@ export async function POST(req: NextRequest) {
       logs: scriptOutput,
       downloadUrl,
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('ETL API 错误:', error)
-    return NextResponse.json(
-      { success: false, message: error.message || '服务器内部错误。' },
-      { status: 500 }
-    )
+    const message = error instanceof Error ? error.message : '服务器内部错误。'
+    return NextResponse.json({ success: false, message }, { status: 500 })
   } finally {
     // 清理临时上传文件
     try {

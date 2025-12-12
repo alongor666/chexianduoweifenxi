@@ -24,8 +24,7 @@ import { Button } from '@/components/ui/button'
  */
 export function NewArchitectureExample() {
   // 1. 使用聚合Hooks获取数据和状态
-  const { filteredData, stats, hasData, filterPercentage, isLoading } =
-    useInsuranceData()
+  const { stats, hasData, filterPercentage, isLoading } = useInsuranceData()
 
   const { currentKpi } = useKPICalculation()
 
