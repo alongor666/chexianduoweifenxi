@@ -253,24 +253,33 @@ class ETLConverter:
         self.data_processor = DataProcessor()
 
     def find_files(self) -> list:
-        """查找所有支持的文件 (Excel, CSV)"""
+        """
+        查找所有支持的文件 (Excel, CSV)。
+        逻辑：直接返回所有找到的文件，不进行任何筛选或去重。
+        因为每个文件代表一周的独立数据（分片模式），需要全部导入。
+        """
         patterns = ["*.xlsx", "*.xls", "*.csv"]
-        files = []
+        all_files = []
         for pattern in patterns:
-            files.extend(glob.glob(os.path.join(self.input_dir, pattern)))
+            all_files.extend(glob.glob(os.path.join(self.input_dir, pattern)))
         
-        if not files:
+        if not all_files:
             print(f"❌ 错误: 在目录 '{self.input_dir}' 中未找到任何 .xlsx, .xls, 或 .csv 文件")
             sys.exit(1)
 
-        print(f"📁 找到 {len(files)} 个待处理文件:")
+        # 按文件名排序，保证处理顺序一致
+        all_files.sort()
+
+        print(f"📁 找到 {len(all_files)} 个数据文件 (分周次明细):")
         total_size_mb = 0
-        for i, file in enumerate(files, 1):
+        for i, file in enumerate(all_files, 1):
             size_mb = os.path.getsize(file) / (1024 * 1024)
             total_size_mb += size_mb
             print(f"   {i}. {Path(file).name} ({size_mb:.2f} MB)")
         print(f"   总大小: {total_size_mb:.2f} MB")
-        return files
+        print(f"   ℹ️  将合并所有文件到同一张表中。")
+        
+        return all_files
 
     def create_database(self):
         """创建或覆盖数据库"""
@@ -283,7 +292,7 @@ class ETLConverter:
 
     def process_and_import_files(self, files: list):
         """处理并导入所有文件"""
-        print(f"\n📥 开始处理和导入文件...")
+        print(f"\n📥 开始批量合并导入...")
         total_start = datetime.now()
 
         for i, file_path in enumerate(files, 1):
@@ -319,7 +328,30 @@ class ETLConverter:
                 raise
 
         total_elapsed = (datetime.now() - total_start).total_seconds()
-        print(f"\n✅ 所有文件导入完成，总耗时: {total_elapsed:.2f}秒")
+        print(f"\n✅ 所有文件合并完成，总耗时: {total_elapsed:.2f}秒")
+        
+        # 创建方便查询的视图
+        self.create_views()
+
+    def create_views(self):
+        """创建基础分析视图"""
+        print(f"\n👀 创建分析视图...")
+        
+        # v_trend_weekly: 按周次汇总，方便直接看趋势
+        self.conn.execute(f"""
+            CREATE OR REPLACE VIEW v_trend_weekly AS 
+            SELECT 
+                week_number,
+                COUNT(*) as policy_count,
+                SUM(signed_premium_yuan)/10000 as signed_premium_wan,
+                SUM(matured_premium_yuan)/10000 as matured_premium_wan,
+                SUM(reported_claim_payment_yuan)/10000 as total_claim_wan,
+                SUM(reported_claim_payment_yuan) / NULLIF(SUM(matured_premium_yuan), 0) as claim_ratio
+            FROM {self.table_name}
+            GROUP BY week_number
+            ORDER BY week_number
+        """)
+        print(f"   ✅ 视图 'v_trend_weekly' (按周汇总的关键指标)")
 
     def clean_data(self):
         """数据清洗：删除关键指标为空的记录"""

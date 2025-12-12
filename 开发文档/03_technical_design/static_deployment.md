@@ -164,6 +164,23 @@ jobs:
 
 3. 配置 Pages 从 `gh-pages` 分支部署
 
+#### GitHub Pages 路径配置（重要）
+
+当使用 `output: 'export'` 静态导出并部署到 GitHub Pages 的“子路径”（`https://{user}.github.io/{repo}/`）时，必须配置 `basePath/assetPrefix` 与仓库名一致。
+
+当前项目在生产环境固定为：
+
+- `basePath`: `/chexianduoweifenxi`
+- `assetPrefix`: `/chexianduoweifenxi/`
+
+对应实现见 `next.config.mjs`。如果仓库名发生变化，需同步调整这两个值，否则会出现静态资源 404。
+
+#### 常见故障排查
+
+- 页面 404：检查 GitHub Pages 的 Source 分支是否为 `gh-pages`，并确认工作流产物发布目录为 `out/`
+- 资源加载失败：检查 `basePath/assetPrefix` 是否与仓库名一致（尤其是更换仓库名后）
+- 本地预览正常但线上异常：对比线上 URL 前缀是否包含仓库名路径
+
 ### 选项 2: Vercel 静态部署
 
 **优点**: 零配置、自动 HTTPS、全球 CDN

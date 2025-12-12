@@ -17,6 +17,8 @@
     "export": "NODE_OPTIONS='--max-old-space-size=2048' next build && next export",
     "deploy": "pnpm run build:static && touch out/.nojekyll",
     "deploy:preview": "pnpm run deploy && pnpm run preview",
+    "readme:sync": "node scripts/sync_readme.js",
+    "readme:check": "node scripts/sync_readme.js --check",
     "docs:index": "python3 scripts/generate_docs_index.py 开发文档",
     "docs:archive:analyze": "python3 scripts/clean_archive.py 开发文档",
     "docs:archive:clean": "python3 scripts/clean_archive.py 开发文档 --interactive",

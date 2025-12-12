@@ -1,0 +1,26 @@
+name: 检查 README 自动生成段落
+
+on:
+  pull_request:
+    paths:
+      - 'README.md'
+      - 'package.json'
+      - 'scripts/sync_readme.js'
+  workflow_dispatch:
+
+jobs:
+  check-readme:
+    name: 检查 README 是否最新
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 检查 README 自动生成段落
+        run: node scripts/sync_readme.js --check
