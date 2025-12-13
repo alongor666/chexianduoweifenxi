@@ -1,6 +1,6 @@
 # 车险数据分析平台 - 知识库索引
 
-> 📅 最后更新: 2025-12-11 21:29:01
+> 📅 最后更新: 2025-12-13 07:01:53
 > 🔄 自动生成 by `scripts/generate_docs_index.py`
 
 ---
@@ -12,24 +12,24 @@
 | 🎯 功能模块 | 13 | 产品功能文档（P0/P1/P2优先级） |
 | 🏗️ 技术决策 | 3 | ADR架构决策记录 |
 | ⚙️ 技术设计 | 10 | 数据架构、计算公式、技术栈 |
-| 🔧 重构文档 | 8 | 架构优化和重构计划 |
+| 🔧 重构文档 | 9 | 架构优化和重构计划 |
 | 📦 历史归档 | 39 | 旧版本文档归档 |
-| **📝 总计** | **34** | **活跃文档总数** |
+| **📝 总计** | **35** | **活跃文档总数** |
 
 ---
 
 ## 🔥 最近更新（30天内）
 
-- 🎯 [F015: KPI多层下钻功能](01_features/F015_kpi_multi_level_drilldown/README.md) - *2天前*
-- ⚙️ [核心指标计算引擎 V2.0](03_technical_design/core_calculations.md) - *2天前*
-- 🎯 [数据上传与解析模块](01_features/F001_data_import/README.md) - *5天前*
-- ⚙️ [技术栈与开发环境](03_technical_design/tech_stack.md) - *5天前*
-- ⚙️ [数据架构](03_technical_design/data_architecture.md) - *5天前*
-- ⚙️ [纯静态部署指南](03_technical_design/static_deployment.md) - *5天前*
-- ⚙️ [DuckDB 集成验证与边界指南](03_technical_design/duckdb_validation_guide.md) - *5天前*
-- ⚙️ [Store架构迁移计划](03_technical_design/store_migration_plan.md) - *11天前*
-- ⚙️ [DuckDB 集成文档](03_technical_design/duckdb_integration.md) - *11天前*
-- ⚙️ [维度字典与枚举值（Insuralytics）](03_technical_design/dimensions_dictionary.md) - *11天前*
+- ⚙️ [技术栈与开发环境](03_technical_design/tech_stack.md) - *今天*
+- 🎯 [F015: KPI多层下钻功能](01_features/F015_kpi_multi_level_drilldown/README.md) - *今天*
+- 🏗️ [ADR-001: 状态管理选型 - Zustand](02_decisions/ADR-001_状态管理选型-Zustand.md) - *今天*
+- 🏗️ [ADR-002: CSV解析策略 - 流式处理](02_decisions/ADR-002_CSV解析策略-流式处理.md) - *今天*
+- 🏗️ [ADR-003: 数据持久化策略 - LocalStorage](02_decisions/ADR-003_数据持久化策略-LocalStorage.md) - *今天*
+- ⚙️ [架构重构阶段2完成报告](03_technical_design/PHASE2_COMPLETION_REPORT.md) - *今天*
+- ⚙️ [架构重构指南 - 模块化升级](03_technical_design/architecture_refactoring.md) - *今天*
+- ⚙️ [核心指标计算引擎 V2.0](03_technical_design/core_calculations.md) - *今天*
+- ⚙️ [数据架构](03_technical_design/data_architecture.md) - *今天*
+- ⚙️ [维度字典与枚举值（Insuralytics）](03_technical_design/dimensions_dictionary.md) - *今天*
 
 ---
 
@@ -42,91 +42,91 @@
 - **优先级**: P0
 - **路径**: [`01_features/F001_data_import/README.md`](01_features/F001_data_import/README.md)
 - **说明**: > **状态**: ✅ stable > **优先级**: P0 > **完整度**: 95% > **版本**: v2.2.0 > **最后验证**: 2025-10-20...
-- **最后更新**: 2025-12-06
+- **最后更新**: 2025-12-13
 
 ### [F003_trend_analysis] 趋势分析图表模块
 
 - **优先级**: P0
 - **路径**: [`01_features/F003_trend_analysis/README.md`](01_features/F003_trend_analysis/README.md)
 - **说明**: > **状态**: ✅ beta > **优先级**: P0 > **完整度**: 95% > **版本**: v2.0.0 > **最后验证**: 2025-10-21...
-- **最后更新**: 2025-11-29
+- **最后更新**: 2025-12-13
 
 ### [F004_filters] 多维度数据筛选与切片模块
 
 - **优先级**: P0
 - **路径**: [`01_features/F004_filters/README.md`](01_features/F004_filters/README.md)
 - **说明**: > **状态**: ✅ stable > **优先级**: P0 > **完整度**: 100% > **版本**: v3.1.0 > **最后验证**: 2025-11-02...
-- **最后更新**: 2025-11-29
+- **最后更新**: 2025-12-13
 
 ### [F005_structure_analysis] 结构分析与对比模块
 
 - **优先级**: P1/P2
 - **路径**: [`01_features/F005_structure_analysis/README.md`](01_features/F005_structure_analysis/README.md)
 - **说明**: > **状态**: ✅ stable > **优先级**: P0 > **完整度**: 100% > **版本**: v3.1.0 > **最后验证**: 2025-10-20...
-- **最后更新**: 2025-11-29
+- **最后更新**: 2025-12-13
 
 ### [F006_data_export] 数据导出与分享模块
 
 - **优先级**: P1/P2
 - **路径**: [`01_features/F006_data_export/README.md`](01_features/F006_data_export/README.md)
 - **说明**: > **状态**: ✅ stable > **优先级**: P2 > **完整度**: 100% > **版本**: v2.2.0 > **最后验证**: 2025-10-20...
-- **最后更新**: 2025-11-29
+- **最后更新**: 2025-12-13
 
 ### [F008_data_persistence] F008 - 数据持久化与上传历史模块
 
 - **优先级**: P1/P2
 - **路径**: [`01_features/F008_data_persistence/README.md`](01_features/F008_data_persistence/README.md)
 - **说明**: 数据持久化与上传历史模块为车险多维数据分析平台提供了完整的数据本地存储和历史记录管理功能。该模块确保用户数据的安全性和可追溯性，提升用户体验。 - **自动保存**: 数据上传成功后自动保存到浏览器本地存储 - **数据恢复**: 页面刷新或重新访问时自动恢复之前的数据 - **数据完整性**: 使用哈希值验证数据完整性 - **存储优化**: 智能管理存储空间，避免数据冗余...
-- **最后更新**: 2025-11-29
+- **最后更新**: 2025-12-13
 
 ### [F009_multi_dimension_radar] F009 多维健康度雷达图
 
 - **优先级**: P1/P2
 - **路径**: [`01_features/F009_multi_dimension_radar/README.md`](01_features/F009_multi_dimension_radar/README.md)
 - **说明**: **功能标识**: F009 **功能名称**: 多维健康度雷达图 **状态**: ✅ 已实现 **优先级**: P1 **创建日期**: 2025-10-26...
-- **最后更新**: 2025-11-29
+- **最后更新**: 2025-12-13
 
 ### [F010_multi_week_import] F010 - 多周同时导入功能
 
 - **优先级**: P1/P2
 - **路径**: [`01_features/F010_multi_week_import/README.md`](01_features/F010_multi_week_import/README.md)
 - **说明**: > **状态**: 🚧 开发中 > **优先级**: P0 > **版本**: v1.0.0 > **创建日期**: 2025-10-26 多周同时导入功能增强了数据管理模块，支持一次性导入多个周的业管数据。该功能支持两种导入方式：多个CSV文件（每个文件包含一周或多周数据）和单个CSV文件包含多周数据，大幅提升数据导入效率和用户体验。...
-- **最后更新**: 2025-11-29
+- **最后更新**: 2025-12-13
 
 ### [F011_weekly_operational_trend] 周度经营趋势分析模块
 
 - **优先级**: P1/P2
 - **路径**: [`01_features/F011_weekly_operational_trend/README.md`](01_features/F011_weekly_operational_trend/README.md)
 - **说明**: > **状态**: ✅ 完成 > **优先级**: P0 > **完整度**: 100% > **版本**: v1.0.0 > **最后验证**: 2025-10-26...
-- **最后更新**: 2025-11-29
+- **最后更新**: 2025-12-13
 
 ### [F012_data_source_selection] F012 - 数据源选择功能
 
 - **优先级**: P1/P2
 - **路径**: [`01_features/F012_data_source_selection/README.md`](01_features/F012_data_source_selection/README.md)
 - **说明**: 支持用户自由选择数据来源，实现 Supabase 云数据库和本地 CSV 文件两种数据源模式的无缝切换。 - **Supabase 模式**: 从云数据库自动加载数据 - **本地模式**: 仅使用 CSV 文件上传的数据（默认） - Supabase 连接失败时自动降级到本地模式 - 不会因数据库配置问题导致应用无法启动...
-- **最后更新**: 2025-11-29
+- **最后更新**: 2025-12-13
 
 ### [F013_premium_claim_bar_charts] 保费与赔付分析条形图模块
 
 - **优先级**: P1/P2
 - **路径**: [`01_features/F013_premium_claim_bar_charts/README.md`](01_features/F013_premium_claim_bar_charts/README.md)
 - **说明**: > **状态**: ✅ active > **优先级**: P1 > **完整度**: 100% > **版本**: v1.0.0 > **最后验证**: 2025-11-02...
-- **最后更新**: 2025-11-29
+- **最后更新**: 2025-12-13
 
 ### [F014_multi_chart_tabs] F014 多维图表标签页优化
 
 - **优先级**: P1/P2
 - **路径**: [`01_features/F014_multi_chart_tabs/README.md`](01_features/F014_multi_chart_tabs/README.md)
 - **说明**: **功能标识**: F014 **功能名称**: 多维图表标签页优化 **状态**: ✅ 已实现 **优先级**: P1 **创建日期**: 2025-11-03...
-- **最后更新**: 2025-11-29
+- **最后更新**: 2025-12-13
 
 ### [F015_kpi_multi_level_drilldown] F015: KPI多层下钻功能
 
 - **优先级**: P1/P2
 - **路径**: [`01_features/F015_kpi_multi_level_drilldown/README.md`](01_features/F015_kpi_multi_level_drilldown/README.md)
 - **说明**: 在KPI卡片和趋势图中实现多层下钻功能，支持用户按多个维度逐层深入分析数据。下钻交互已从弹窗模式升级为**全局下钻导航条**，位于筛选器与内容区域之间，提供更清晰、直观的可视化分析体验。 支持以下9个维度的下钻分析： - **三级机构**（`third_level_organization`）：按机构进行下钻 - **业务类型**（`business_type_category`）：按业务类型进行...
-- **最后更新**: 2025-12-09
+- **最后更新**: 2025-12-13
 
 ---
 
@@ -150,61 +150,61 @@
 
 - **路径**: [`03_technical_design/PHASE2_COMPLETION_REPORT.md`](03_technical_design/PHASE2_COMPLETION_REPORT.md)
 - **内容**: 2025-10-22 **文件**: `src/store/domains/cacheStore.ts` (203行) **功能**: - KPI计算结果缓存管理 - 缓存命中率统计（hits/misses/hitRate）...
-- **最后更新**: 2025-11-29
+- **最后更新**: 2025-12-13
 
 ### 架构重构指南 - 模块化升级
 
 - **路径**: [`03_technical_design/architecture_refactoring.md`](03_technical_design/architecture_refactoring.md)
 - **内容**: - **创建日期**: 2025-10-22 - **版本**: 1.0.0 - **状态**: 🚧 实施中 - 阶段1 - **负责人**: AI助手 + 开发团队 ```...
-- **最后更新**: 2025-11-29
+- **最后更新**: 2025-12-13
 
 ### 核心指标计算引擎 V2.0
 
 - **路径**: [`03_technical_design/core_calculations.md`](03_technical_design/core_calculations.md)
 - **内容**: 本文件定义了平台的KPI体系架构、计算公式、业务逻辑和显示规则。 **KPI体系说明**: - **核心展示KPI**: 16个（4x4网格布局） - **辅助计算字段**: 7个（用于计算但不直接展示） - **总计**: 23个指标字段...
-- **最后更新**: 2025-12-09
+- **最后更新**: 2025-12-13
 
 ### 数据架构
 
 - **路径**: [`03_technical_design/data_architecture.md`](03_technical_design/data_architecture.md)
 - **内容**: > **[warning] 警告：数据库模型缺失** > 截至文档更新时（2025-10-21），项目尚未建立数据库持久化层。`prisma` 目录及 `schema.prisma` 文件不存在。当前所有数据处理均在客户端内存中完成。以下数据结构规范基于CSV导入标准，是未来数据库建模的唯一事实来源。 > **[info] 数据持久化更新** > 截至 2025-01-20，项目已实现基于 Loc...
-- **最后更新**: 2025-12-06
+- **最后更新**: 2025-12-13
 
 ### 维度字典与枚举值（Insuralytics）
 
 - **路径**: [`03_technical_design/dimensions_dictionary.md`](03_technical_design/dimensions_dictionary.md)
 - **内容**: 本文档汇总平台内所有可选维度及其对应的枚举值，作为代码与数据规范的统一参考。适用于：目标管理、筛选器系统、CSV 导入、统计分析模块。 - 单一事实来源（SoT）：`src/constants/dimensions.ts`（客户类别、业务类型） - 规范参考：`开发文档/archive/CSV导入规范.md`（完整字段与枚举清单） - 规范化策略：`normalizeChineseText` 与 ...
-- **最后更新**: 2025-11-29
+- **最后更新**: 2025-12-13
 
 ### DuckDB 集成文档
 
 - **路径**: [`03_technical_design/duckdb_integration.md`](03_technical_design/duckdb_integration.md)
 - **内容**: > 📅 创建日期: 2025-01-12 > 📝 版本: v1.0 > 🎯 目标: 通过 DuckDB-WASM 实现高性能数据分析 本项目集成了 DuckDB-WASM，一个基于 WebAssembly 的列式数据库，用于替代原有的 CSV 解析 + IndexedDB 方案，实现以下目标： 1. **性能提升**: 查询速度提升 10-20 倍...
-- **最后更新**: 2025-11-29
+- **最后更新**: 2025-12-13
 
 ### DuckDB 集成验证与边界指南
 
 - **路径**: [`03_technical_design/duckdb_validation_guide.md`](03_technical_design/duckdb_validation_guide.md)
 - **内容**: > 📅 创建日期: 2025-01-12 > 📝 版本: v1.0 > 🎯 目标: 确保 DuckDB 数据符合项目要求并能正常运行 项目**已经完成** DuckDB-WASM 集成，具备以下能力： 1. **数据转换工具** (`scripts/etl_to_duckdb.py`)...
-- **最后更新**: 2025-12-06
+- **最后更新**: 2025-12-13
 
 ### 纯静态部署指南
 
 - **路径**: [`03_technical_design/static_deployment.md`](03_technical_design/static_deployment.md)
 - **内容**: 本文档说明如何将车险分析平台配置为纯静态部署模式，实现零服务器成本、快速访问的静态网站部署。 车险分析平台采用 **LocalStorage + DuckDB WASM** 架构，天然支持纯静态部署： - ✅ 所有数据处理在浏览器中完成（DuckDB WASM） - ✅ 数据持久化使用 LocalStorage - ✅ 无需后端服务器或数据库...
-- **最后更新**: 2025-12-06
+- **最后更新**: 2025-12-13
 
 ### Store架构迁移计划
 
 - **路径**: [`03_technical_design/store_migration_plan.md`](03_technical_design/store_migration_plan.md)
 - **内容**: > 生成时间：2025-11-25 > 状态：进行中 > 预计完成时间：16个工作日 项目存在新旧两套状态管理系统并存，需要系统性迁移： - **旧架构**：`use-app-store.ts`（813行单体Store）...
-- **最后更新**: 2025-11-29
+- **最后更新**: 2025-12-13
 
 ### 技术栈与开发环境
 
 - **路径**: [`03_technical_design/tech_stack.md`](03_technical_design/tech_stack.md)
-- **内容**: 本文档概述了车险分析平台所采用的技术栈、关键库以及本地开发环境的配置指南。 - **前端**: Next.js 14.2.33 (React 18 框架) - **UI 库**: shadcn/ui (基于 Radix UI 和 Tailwind CSS 3.4.1) - **图表**: - **主要**: Recharts 3.3.0 (React 原生图表)...
-- **最后更新**: 2025-12-06
+- **内容**: 本文档概述了车险分析平台所采用的技术栈、关键库以及本地开发环境的配置指南。 - **前端**: Next.js 14.2.33 (React 18 框架) - **UI 库**: shadcn/ui (基于 Radix UI 和 Tailwind CSS 3.4.1) - **图表**: ECharts 6.0.0 + echarts-for-react 3.0.5 【已对齐当前代码事实】 - *...
+- **最后更新**: 2025-12-13
 
 ---
 
@@ -219,6 +219,7 @@
 - [重构文档目录](04_refactoring/README.md)
 - [✅ 重构检查清单](04_refactoring/REFACTORING_CHECKLIST.md)
 - [🔧 车险分析平台重构计划](04_refactoring/REFACTORING_PLAN.md)
+- [仓库结构治理与迁移跟踪（Repo Structure Migration）](04_refactoring/REPO_STRUCTURE_MIGRATION.md)
 - [统一可视化引擎架构文档（ECharts）](04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md)
 
 ---
