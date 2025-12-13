@@ -1,7 +1,8 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
-import * as echarts from 'echarts'
+import React, { useState, useMemo } from 'react'
+import type { EChartsOption } from 'echarts'
+import { BaseEChart } from '@/components/charts/BaseEChart'
 import {
   useCustomerDistribution,
   useChannelDistribution,
@@ -30,43 +31,25 @@ export const DistributionPieChart = React.memo(function DistributionPieChart() {
   const channel = useChannelDistribution()
   const data: PiePoint[] = mode === 'customer' ? customer : channel
 
-  const chartRef = useRef<HTMLDivElement>(null)
-  const chartInstanceRef = useRef<echarts.ECharts | null>(null)
-
-  // 初始化和更新图表
-  useEffect(() => {
-    if (!chartRef.current || !data || data.length === 0) return
-
-    // 初始化 ECharts 实例
-    if (!chartInstanceRef.current) {
-      chartInstanceRef.current = echarts.init(chartRef.current, undefined, {
-        renderer: 'canvas',
-      })
-    }
-
-    const chart = chartInstanceRef.current
-
-    // 计算总计
+  // 构建图表配置
+  const option: EChartsOption | null = useMemo(() => {
+    if (!data || data.length === 0) return null
     const total = data.reduce((s, d) => s + d.value, 0)
-
-    // 准备数据：ECharts 饼图需要 name 和 value 字段
-    const chartData = data.map(item => ({
-      name: item.label,
-      value: item.value,
-    }))
-
-    // ECharts 配置
-    const option: echarts.EChartsOption = {
+    const chartData = [...data]
+      .sort((a, b) => a.value - b.value)
+      .map(item => ({
+        name: item.label,
+        value: item.value,
+      }))
+    const opt: EChartsOption = {
       backgroundColor: 'transparent',
+      color: COLORS,
       tooltip: {
         trigger: 'item',
         backgroundColor: 'rgba(255, 255, 255, 0.98)',
         borderColor: '#e2e8f0',
         borderWidth: 1,
-        textStyle: {
-          color: '#334155',
-          fontSize: 12,
-        },
+        textStyle: { color: '#334155', fontSize: 12, fontWeight: 'bold' },
         padding: 12,
         formatter: (params: any) => {
           const percent = params.percent.toFixed(1)
@@ -87,9 +70,7 @@ export const DistributionPieChart = React.memo(function DistributionPieChart() {
         orient: 'vertical',
         right: '5%',
         top: 'center',
-        textStyle: {
-          fontSize: 12,
-        },
+        textStyle: { fontSize: 12, fontWeight: 'bold' },
         formatter: (name: string) => {
           const item = data.find(d => d.label === name)
           if (!item) return name
@@ -101,26 +82,19 @@ export const DistributionPieChart = React.memo(function DistributionPieChart() {
         {
           name: '满期保费',
           type: 'pie',
-          radius: ['40%', '70%'], // 环形饼图
+          radius: ['40%', '70%'],
           center: ['40%', '50%'],
           avoidLabelOverlap: true,
-          itemStyle: {
-            borderRadius: 8,
-            borderColor: '#fff',
-            borderWidth: 2,
-          },
+          itemStyle: { borderRadius: 8, borderColor: '#fff', borderWidth: 2 },
           label: {
             show: true,
             formatter: '{b}\n{d}%',
             fontSize: 11,
             color: '#334155',
+            fontWeight: 'bold',
           },
           emphasis: {
-            label: {
-              show: true,
-              fontSize: 14,
-              fontWeight: 'bold',
-            },
+            label: { show: true, fontSize: 14, fontWeight: 'bold' },
             itemStyle: {
               shadowBlur: 10,
               shadowOffsetX: 0,
@@ -128,36 +102,11 @@ export const DistributionPieChart = React.memo(function DistributionPieChart() {
             },
           },
           data: chartData,
-          color: COLORS,
         },
       ],
     }
-
-    chart.setOption(option, true)
-
-    // 响应式调整
-    const resizeObserver = new ResizeObserver(() => {
-      chart.resize()
-    })
-
-    if (chartRef.current) {
-      resizeObserver.observe(chartRef.current)
-    }
-
-    return () => {
-      resizeObserver.disconnect()
-    }
+    return opt
   }, [data])
-
-  // 清理
-  useEffect(() => {
-    return () => {
-      if (chartInstanceRef.current) {
-        chartInstanceRef.current.dispose()
-        chartInstanceRef.current = null
-      }
-    }
-  }, [])
 
   if (!data || data.length === 0) return null
 
@@ -185,7 +134,7 @@ export const DistributionPieChart = React.memo(function DistributionPieChart() {
           </button>
         </div>
       </div>
-      <div ref={chartRef} className="h-80" />
+      {option && <BaseEChart option={option} height={320} />}
       <div className="mt-3 text-right text-xs text-slate-600">
         总计：{formatNumber(total, 2)} 万
       </div>

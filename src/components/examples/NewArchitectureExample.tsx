@@ -143,11 +143,16 @@ export function NewArchitectureExample() {
                 </div>
               </div>
 
-              {currentKpi.premium_progress !== null && (
+              {currentKpi.premium_time_progress_achievement_rate !== null && (
                 <div>
-                  <div className="text-sm text-slate-600">目标达成率</div>
+                  <div className="text-sm text-slate-600">
+                    保费时间进度达成率
+                  </div>
                   <div className="text-xl font-bold">
-                    {(currentKpi.premium_progress * 100).toFixed(1)}%
+                    {currentKpi.premium_time_progress_achievement_rate.toFixed(
+                      1
+                    )}
+                    %
                   </div>
                 </div>
               )}

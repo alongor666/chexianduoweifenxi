@@ -31,9 +31,9 @@ export function createTestInsuranceRecord(
     overrides?.weekNumber || 1,
     '成都',
     '测试机构',
-    '个人',
+    '非营业个人客车',
     '商业险',
-    '车险',
+    '非营业客车新车',
     '主全',
     '新保',
     false, // isNewEnergyVehicle
@@ -79,9 +79,10 @@ export function createTestRawData(
     week_number: overrides?.week_number || 1,
     chengdu_branch: overrides?.chengdu_branch || '成都',
     third_level_organization: overrides?.third_level_organization || '测试机构',
-    customer_category_3: overrides?.customer_category_3 || '个人',
+    customer_category_3: overrides?.customer_category_3 || '非营业个人客车',
     insurance_type: overrides?.insurance_type || '商业险',
-    business_type_category: overrides?.business_type_category || '车险',
+    business_type_category:
+      overrides?.business_type_category || '非营业客车新车',
     coverage_type: overrides?.coverage_type || '主全',
     renewal_status: overrides?.renewal_status || '新保',
     is_new_energy_vehicle:

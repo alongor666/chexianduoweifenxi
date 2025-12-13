@@ -18,9 +18,9 @@ function createMockRecord(
     week_number: 11,
     policy_start_year: 2025,
     third_level_organization: '测试机构',
-    customer_category_3: '个人客户',
+    customer_category_3: '非营业个人客车',
     insurance_type: '车险',
-    business_type_category: '新车',
+    business_type_category: '非营业客车新车',
     coverage_type: '全险',
     vehicle_insurance_grade: 'A',
     terminal_source: '直销',
@@ -127,9 +127,9 @@ describe('DataService', () => {
         week_number: 11,
         policy_start_year: 2025,
         third_level_organization: '机构A',
-        customer_category_3: '个人',
+        customer_category_3: '非营业个人客车',
         insurance_type: '车险',
-        business_type_category: '新车',
+        business_type_category: '非营业客车新车',
       })
 
       // 完全相同的记录
@@ -227,15 +227,15 @@ describe('DataService', () => {
     test('应规范化中文文本', () => {
       const mockData = [
         createMockRecord({
-          customer_category_3: '个人客户 ', // 有空格
-          business_type_category: ' 新车', // 有空格
+          customer_category_3: '非营业个人客车 ', // 有空格
+          business_type_category: ' 非营业客车新车', // 有空格
         }),
       ]
 
       const result = DataService.normalize(mockData)
 
-      expect(result[0].customer_category_3).toBe('个人客户')
-      expect(result[0].business_type_category).toBe('新车')
+      expect(result[0].customer_category_3).toBe('非营业个人客车')
+      expect(result[0].business_type_category).toBe('非营业客车新车')
     })
   })
 

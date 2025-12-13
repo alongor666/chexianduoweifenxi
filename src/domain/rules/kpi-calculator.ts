@@ -35,7 +35,6 @@ export {
   calculateVariableCostRatio,
   calculateMaturedClaimRatio,
   calculateAutonomyCoefficient,
-  calculatePremiumProgress,
 
   // 均值指标计算
   calculateAveragePremium,

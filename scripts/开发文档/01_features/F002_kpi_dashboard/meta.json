@@ -1,0 +1,21 @@
+{
+  "id": "F002",
+  "name": "核心KPI看板模块",
+  "status": "in_progress",
+  "priority": "P0",
+  "completeness": 10,
+  "version": "v2.3.0",
+  "last_updated": "2025-12-13",
+  "last_verified": "2025-12-13",
+  "core_files": [],
+  "related_decisions": [
+    "ADR-001",
+    "ADR-004"
+  ],
+  "related_issues": [],
+  "tags": [
+    "数据可视化",
+    "核心功能",
+    "P0"
+  ]
+}

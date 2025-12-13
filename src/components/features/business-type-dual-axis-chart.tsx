@@ -222,6 +222,14 @@ export function BusinessTypeDualAxisChart() {
       })
     })
 
+    // 从最差到最好排序：逆向指标按高到低，正向指标按低到高
+    const metricConf = METRIC_CONFIG[selectedMetric]
+    items.sort((a, b) => {
+      const av = a.metricValue ?? 0
+      const bv = b.metricValue ?? 0
+      return metricConf.isInverse ? bv - av : av - bv
+    })
+
     return items
   }, [filteredData, selectedMetric])
 
@@ -286,8 +294,10 @@ export function BusinessTypeDualAxisChart() {
         data: xAxisData,
         axisLabel: {
           interval: 0,
-          rotate: chartData.length > 10 ? 30 : 0,
+          rotate: 0,
           fontSize: 11,
+          fontWeight: 'bold',
+          hideOverlap: true,
         },
       }),
       yAxis: [
@@ -297,6 +307,7 @@ export function BusinessTypeDualAxisChart() {
           position: 'left',
           axisLabel: {
             formatter: (value: number) => formatNumber(value, 0),
+            fontWeight: 'bold',
           },
         }),
         // 右Y轴: 百分比
@@ -305,6 +316,7 @@ export function BusinessTypeDualAxisChart() {
           position: 'right',
           axisLabel: {
             formatter: (value: number) => `${value}%`,
+            fontWeight: 'bold',
           },
           splitLine: {
             show: false,
@@ -319,6 +331,13 @@ export function BusinessTypeDualAxisChart() {
           color: CHART_COLORS.primary[0],
           yAxisIndex: 0,
           barWidth: '40%',
+          // @ts-expect-error ECharts 系列扩展
+          label: {
+            show: true,
+            position: 'top',
+            fontWeight: 'bold',
+            formatter: (p: any) => formatNumber(p.value, 0),
+          },
         }),
         // 折线1: 保费占比
         buildLineSeries({
@@ -330,6 +349,13 @@ export function BusinessTypeDualAxisChart() {
           showSymbol: true,
           lineWidth: 2,
           symbolSize: 6,
+          // @ts-expect-error ECharts 系列扩展
+          label: {
+            show: true,
+            position: 'top',
+            fontWeight: 'bold',
+            formatter: (p: any) => `${(p.value as number).toFixed(1)}%`,
+          },
         }),
         // 折线2: 可切换指标
         buildLineSeries({
@@ -341,6 +367,13 @@ export function BusinessTypeDualAxisChart() {
           showSymbol: true,
           lineWidth: 3,
           symbolSize: 7,
+          // @ts-expect-error ECharts 系列扩展
+          label: {
+            show: true,
+            position: 'top',
+            fontWeight: 'bold',
+            formatter: (p: any) => `${(p.value as number).toFixed(1)}%`,
+          },
         }),
       ],
     }

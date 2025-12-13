@@ -85,7 +85,7 @@ export function MultiChartTabs({ className }: MultiChartTabsProps) {
         <div className="rounded-2xl border border-white/50 bg-white/40 p-4 shadow-lg backdrop-blur-xl">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h3 className="text-xl font-semibold text-slate-800">
+              <h3 className="text-xl font-bold text-blue-600 text-left">
                 多维图表分析
               </h3>
               <p className="text-sm text-slate-600 mt-1">
@@ -109,36 +109,71 @@ export function MultiChartTabs({ className }: MultiChartTabsProps) {
 
         {/* 智能洞察看板 */}
         <TabsContent value="insights" className="mt-0">
+          <div className="mb-3">
+            <h4 className="text-lg font-bold text-blue-600 text-left">
+              智能洞察
+            </h4>
+          </div>
           <BusinessInsightsNarrative />
         </TabsContent>
 
         {/* 健康度热力图 */}
         <TabsContent value="heatmap" className="mt-0">
+          <div className="mb-3">
+            <h4 className="text-lg font-bold text-blue-600 text-left">
+              健康度热力图
+            </h4>
+          </div>
           <BusinessTypeHeatmap />
         </TabsContent>
 
         {/* 机构雷达图 */}
         <TabsContent value="radar" className="mt-0">
+          <div className="mb-3">
+            <h4 className="text-lg font-bold text-blue-600 text-left">
+              机构雷达图
+            </h4>
+          </div>
           <MultiDimensionRadar />
         </TabsContent>
 
         {/* 保费分析图 */}
         <TabsContent value="premium" className="mt-0">
+          <div className="mb-3">
+            <h4 className="text-lg font-bold text-blue-600 text-left">
+              保费分析
+            </h4>
+          </div>
           <PremiumAnalysisBarChart />
         </TabsContent>
 
         {/* 赔付分析图 */}
         <TabsContent value="claim" className="mt-0">
+          <div className="mb-3">
+            <h4 className="text-lg font-bold text-blue-600 text-left">
+              赔付分析
+            </h4>
+          </div>
           <ClaimAnalysisBarChart />
         </TabsContent>
 
         {/* 占比分析图 */}
         <TabsContent value="distribution" className="mt-0">
+          <div className="mb-3">
+            <h4 className="text-lg font-bold text-blue-600 text-left">
+              占比分析
+            </h4>
+          </div>
           <DistributionPieChart />
         </TabsContent>
 
         {/* 业务类型经营分析图 */}
         <TabsContent value="businessType" className="mt-0">
+          <div className="mb-3">
+            <h4 className="text-lg font-bold text-blue-600 text-left">
+              业务类型经营
+            </h4>
+          </div>
           <BusinessTypeDualAxisChart />
         </TabsContent>
       </Tabs>

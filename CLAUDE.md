@@ -74,15 +74,67 @@ pnpm lint && pnpm tsc --noEmit && pnpm build
 ↓  
 确认所有检查通过
 
+## 开发新功能前的强制检查清单 ⚠️
+
+**在开始任何新功能开发之前，必须按顺序完成以下检查：**
+
+### 1️⃣ 阅读架构规范（强制）
+
+```bash
+# 必读文档顺序：
+1. 开发文档/03_technical_design/core_calculations.md  # KPI计算规则
+2. 开发文档/03_technical_design/architecture_refactoring.md  # 分层架构
+3. 开发文档/03_technical_design/data_architecture.md  # 数据模型
+```
+
+### 2️⃣ 确认遵循分层架构
+
+- ✅ **Hook层**：只能调用Domain层函数，不得直接进行数学计算
+- ✅ **组件层**：只能调用Hook，不得包含业务逻辑
+- ✅ **Domain层**：所有KPI计算必须在 `src/domain/rules/kpi-calculator-enhanced.ts`
+- ❌ **禁止**：在Hook或组件中直接写 `(a / b) * 100` 等计算公式
+
+### 3️⃣ 检查是否需要新增指标
+
+如果需要计算新的指标：
+
+1. 先在 `core_calculations.md` 中定义指标的计算公式和业务含义
+2. 在Domain层的 `kpi-calculator-enhanced.ts` 中实现计算函数
+3. 导出函数供Hook和组件使用
+4. **禁止**在多个文件中重复实现相同的计算逻辑
+
+### 4️⃣ 命名规范检查
+
+- Domain层使用 `camelCase`（例如：`lossRatio`）
+- Types/数据库层使用 `snake_case`（例如：`loss_ratio`）
+- 使用映射工具进行双向转换，不要手动重命名
+
+### 5️⃣ 参考正确的代码模式
+
+**✅ 正确示例**（Hook调用Domain层）：
+```typescript
+import { calculateLossRatio } from '@/domain/rules/kpi-calculator-enhanced'
+
+const lossRatio = calculateLossRatio(reportedClaim, maturedPremium)
+```
+
+**❌ 错误示例**（直接计算）：
+```typescript
+const lossRatio = maturedPremium > 0
+  ? (reportedClaim / maturedPremium) * 100
+  : null
+```
+
 ## 最小化工作流
 
-`阅读代码` -> `提议修改` -> `执行修改` -> `本地验证` -> `更新文档`
+`阅读架构文档` -> `阅读代码` -> `提议修改` -> `执行修改` -> `本地验证` -> `更新文档`
 
-1. **阅读代码**：在开始修改之前，先彻底理解代码的功能、上下文和潜在影响。
-2. **提议修改**：根据理解，提出具体的修改建议，包括代码变更、架构调整或文档更新。
-3. **执行修改**：将 AI 建议的修改直接应用到代码中，确保符合项目的编码规范和最佳实践。
-4. **本地验证**：在本地运行项目，验证修改后的功能是否按预期工作，没有引入新的错误或问题。
-5. **更新文档**：根据修改内容，同步更新 `开发文档/` 目录下的相关文档，确保文档与代码保持一致。
+1. **阅读架构文档**：先阅读上述强制检查清单中的架构规范文档。
+2. **阅读代码**：在开始修改之前，先彻底理解代码的功能、上下文和潜在影响。
+3. **提议修改**：根据理解，提出具体的修改建议，包括代码变更、架构调整或文档更新。
+4. **执行修改**：将 AI 建议的修改直接应用到代码中，确保符合项目的编码规范和最佳实践。
+5. **本地验证**：在本地运行项目，验证修改后的功能是否按预期工作，没有引入新的错误或问题。
+6. **更新文档**：根据修改内容，同步更新 `开发文档/` 目录下的相关文档，确保文档与代码保持一致。
 
 ## 关键入口点
 

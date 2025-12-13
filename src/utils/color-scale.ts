@@ -372,14 +372,14 @@ export function getDynamicColorByVariableCostRatio(
  */
 export function getDynamicColorByKPI(
   kpiType:
-    | 'premium_progress'
+    | 'premium_time_progress_achievement_rate'
     | 'loss_ratio'
     | 'contribution_margin'
     | 'variable_cost',
   value: number | null | undefined
 ): ColorScale {
   switch (kpiType) {
-    case 'premium_progress':
+    case 'premium_time_progress_achievement_rate':
       return getDynamicColorByPremiumProgress(value)
     case 'loss_ratio':
       return getDynamicColorByLossRatio(value)

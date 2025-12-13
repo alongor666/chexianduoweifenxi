@@ -314,38 +314,13 @@ globalChartEventManager.triggerLinkage({
 
 ### Phase 1: 基础设施（✅ 已完成）
 
-- [x] 建立统一 ECharts 基础组件体系
-- [x] 创建主题配置系统（theme.ts）
-- [x] 创建配置构建函数（builders.ts）
-- [x] 创建标准图表模板（trend/scatter/heatmap）
-- [x] 创建联动与下钻机制（interactions.ts）
+- [X] 建立统一 ECharts 基础组件体系
+- [X] 创建主题配置系统（theme.ts）
+- [X] 创建配置构建函数（builders.ts）
+- [X] 创建标准图表模板（trend/scatter/heatmap）
+- [X] 创建联动与下钻机制（interactions.ts）
 
-### Phase 2: 组件迁移（进行中）
-
-**迁移优先级**：
-
-1. ✅ **Sparkline** - 微型趋势图（已完成）
-2. ⏳ **DistributionPieChart** - 分布饼图（待迁移）
-3. ⏳ **DimensionBarChart** - 维度柱状图（待迁移）
-4. ⏳ **CustomerSegmentationBubble** - 气泡图（待迁移）
-5. ⏳ **ForecastPanel** - 预测趋势线（待迁移）
-6. ⏳ **ComparisonAnalysis** - 对比分析图表（待迁移）
-7. ⏳ **MultiDimensionRadar** - 雷达图（待迁移）
-
-**迁移步骤**（每个组件）：
-
-1. 在 `src/components/charts/` 创建新组件
-2. 使用 `BaseEChart` 和标准模板实现
-3. 更新原组件文件为重新导出（向后兼容）
-4. 本地测试验证
-5. 更新相关文档
-
-### Phase 3: 清理（计划中）
-
-- [ ] 删除 Recharts 依赖
-- [ ] 清理旧组件文件
-- [ ] 更新导入引用
-- [ ] 性能优化和测试
+### n p
 
 ---
 
@@ -377,6 +352,29 @@ globalChartEventManager.triggerLinkage({
 - **字体**：统一字号、字重、颜色（CHART_FONTS）
 - **间距**：统一网格间距（CHART_GRID）
 - **动画**：统一动画时长和缓动函数（CHART_ANIMATION）
+
+### 基础样式统一规范（0.1）
+
+- 去掉全部网格线：统一关闭 `splitLine`/`splitArea`
+- 所有文字使用粗体：轴标签、图例、Tooltip 文本加粗
+- 预警线清晰可见：使用统一 `markLine`（红色虚线/绿色目标线）
+- X 轴文字不可倾斜：`rotate=0`；启用 `hideOverlap` 避免遮挡
+- X 轴文字自动缩小适应间距：通过 `hideOverlap` 与截断策略
+- X 轴文字不允许交叉：截断与隐藏重叠策略结合
+- 气泡图坐标轴名称可见：保证 `nameLocation='middle'` 与 `containLabel=true`
+- 固定值标签：柱/折/热力图格内统一开启 `label.show=true`
+- 页面主体框架采用 16:9：主内容容器 `aspect-[16/9]`，滚动适配
+
+### 排序规范（0.2）
+
+- 所有图表统一从“最差 → 最好”
+- 异常程度越高越靠前（逆向指标按高→低，正向指标按低→高）
+- 图表排序与标题说明保持一致
+
+### 标题规范（0.3）
+
+- 每个标签页必须配置标题，左对齐，主色一致（蓝色系）
+- 标题遵循排序逻辑，必要时在副标题说明排序依据与指标口径
 
 ### 交互一致性
 
@@ -495,17 +493,18 @@ const handleDrillDown = data => {
 **完成内容**：
 
 1. ✅ 创建基础架构
+
    - BaseEChart 组件
    - 主题配置系统（theme.ts）
    - 配置构建函数（builders.ts）
    - 联动与下钻机制（interactions.ts）
-
 2. ✅ 创建标准模板
+
    - 趋势类图模板（trend.ts）
    - 散点/气泡图模板（scatter.ts）
    - 热力图模板（heatmap.ts）
-
 3. ✅ 迁移首个组件
+
    - Sparkline 组件（微型趋势图）
    - 向后兼容旧接口
 

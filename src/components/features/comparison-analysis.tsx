@@ -27,12 +27,17 @@ export function OrganizationComparisonChart() {
   const chartInstanceRef = useRef<echarts.ECharts | null>(null)
 
   // 准备图表数据
-  const chartData = comparisons.slice(0, 10).map(item => ({
-    name: item.organization,
-    满期保费: item.kpi.matured_premium,
-    签单保费: item.kpi.signed_premium,
-    边际贡献率: item.kpi.contribution_margin_ratio || 0,
-  }))
+  const chartData = comparisons
+    .slice(0, 50)
+    .map(item => ({
+      name: item.organization,
+      满期保费: item.kpi.matured_premium,
+      签单保费: item.kpi.signed_premium,
+      边际贡献率: item.kpi.contribution_margin_ratio || 0,
+    }))
+    // 从最差到最好排序（以边际贡献率为排序依据，越低越差）
+    .sort((a, b) => a.边际贡献率 - b.边际贡献率)
+    .slice(0, 10)
 
   // 初始化和更新图表
   useEffect(() => {
@@ -60,7 +65,7 @@ export function OrganizationComparisonChart() {
         left: '5%',
         right: '10%',
         top: '12%',
-        bottom: '25%',
+        bottom: '15%',
         containLabel: true,
       },
       tooltip: {
@@ -74,6 +79,7 @@ export function OrganizationComparisonChart() {
         textStyle: {
           color: '#334155',
           fontSize: 12,
+          fontWeight: 'bold',
         },
         padding: 12,
       },
@@ -82,6 +88,7 @@ export function OrganizationComparisonChart() {
         top: '2%',
         textStyle: {
           fontSize: 12,
+          fontWeight: 'bold',
         },
       },
       xAxis: {
@@ -90,8 +97,10 @@ export function OrganizationComparisonChart() {
         axisLabel: {
           fontSize: 11,
           color: '#64748b',
-          rotate: 45,
+          fontWeight: 'bold',
+          rotate: 0,
           interval: 0,
+          hideOverlap: true,
         },
         axisLine: {
           lineStyle: {
@@ -107,10 +116,12 @@ export function OrganizationComparisonChart() {
           nameTextStyle: {
             color: '#64748b',
             fontSize: 12,
+            fontWeight: 'bold',
           },
           axisLabel: {
             fontSize: 11,
             color: '#64748b',
+            fontWeight: 'bold',
           },
           axisLine: {
             lineStyle: {
@@ -118,9 +129,7 @@ export function OrganizationComparisonChart() {
             },
           },
           splitLine: {
-            lineStyle: {
-              color: '#f1f5f9',
-            },
+            show: false,
           },
         },
         {
@@ -130,10 +139,12 @@ export function OrganizationComparisonChart() {
           nameTextStyle: {
             color: '#64748b',
             fontSize: 12,
+            fontWeight: 'bold',
           },
           axisLabel: {
             fontSize: 11,
             color: '#64748b',
+            fontWeight: 'bold',
           },
           axisLine: {
             lineStyle: {
@@ -151,6 +162,12 @@ export function OrganizationComparisonChart() {
           type: 'bar',
           yAxisIndex: 0,
           data: premiumData,
+          label: {
+            show: true,
+            position: 'top',
+            fontWeight: 'bold',
+            formatter: (p: any) => formatNumber(p.value, 0),
+          },
           itemStyle: {
             color: '#3b82f6',
           },
@@ -166,6 +183,12 @@ export function OrganizationComparisonChart() {
           type: 'bar',
           yAxisIndex: 1,
           data: marginData,
+          label: {
+            show: true,
+            position: 'top',
+            fontWeight: 'bold',
+            formatter: (p: any) => `${(p.value as number).toFixed(1)}%`,
+          },
           itemStyle: {
             color: '#10b981',
           },
@@ -174,6 +197,23 @@ export function OrganizationComparisonChart() {
               shadowBlur: 10,
               shadowColor: 'rgba(0, 0, 0, 0.3)',
             },
+          },
+          markLine: {
+            symbol: 'none',
+            lineStyle: {
+              type: 'dashed',
+              color: '#10b981',
+              width: 2,
+            },
+            label: {
+              show: true,
+              position: 'end',
+              fontSize: 11,
+              fontWeight: 'bold',
+              color: '#10b981',
+              formatter: '目标 15%',
+            },
+            data: [{ yAxis: 15 }],
           },
         },
       ],
@@ -293,11 +333,14 @@ export function InsuranceTypeStructureChart() {
   const pieChartInstanceRef = useRef<echarts.ECharts | null>(null)
 
   // 饼图数据
-  const pieData = structures.map(item => ({
-    name: item.insuranceType,
-    value: item.signedPremium,
-    percentage: item.percentage,
-  }))
+  const pieData = structures
+    .map(item => ({
+      name: item.insuranceType,
+      value: item.signedPremium,
+      percentage: item.percentage,
+    }))
+    // 从最差到最好排序（占比越低视为越差）
+    .sort((a, b) => a.percentage - b.percentage)
 
   // 初始化和更新饼图
   useEffect(() => {
@@ -337,6 +380,7 @@ export function InsuranceTypeStructureChart() {
         textStyle: {
           color: '#334155',
           fontSize: 12,
+          fontWeight: 'bold',
         },
         padding: 12,
         formatter: (params: any) => {
@@ -365,6 +409,7 @@ export function InsuranceTypeStructureChart() {
             formatter: '{b}\n{d}%',
             fontSize: 11,
             color: '#334155',
+            fontWeight: 'bold',
           },
           emphasis: {
             itemStyle: {

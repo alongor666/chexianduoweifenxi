@@ -109,7 +109,7 @@ describe('CSVParser', () => {
 
     it('应该接受有效的 CSV 文件', async () => {
       const csvContent = `snapshot_date,policy_start_year,week_number,chengdu_branch,third_level_organization,customer_category_3,insurance_type,business_type_category,coverage_type,renewal_status,is_new_energy_vehicle,is_transferred_vehicle,terminal_source,signed_premium_yuan,matured_premium_yuan,policy_count,claim_case_count,reported_claim_payment_yuan,expense_amount_yuan,commercial_premium_before_discount_yuan,marginal_contribution_amount_yuan
-2024-01-01,2024,1,成都,测试机构,个人,商业险,非车险,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500`
+2024-01-01,2024,1,成都,测试机构,非营业个人客车,商业险,非营业客车新车,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500`
 
       const file = createTestFile([csvContent], 'test.csv', {
         type: 'text/csv',
@@ -122,7 +122,7 @@ describe('CSVParser', () => {
 
     it('应该检测数据类型错误', async () => {
       const csvContent = `snapshot_date,policy_start_year,week_number,chengdu_branch,third_level_organization,customer_category_3,insurance_type,business_type_category,coverage_type,renewal_status,is_new_energy_vehicle,is_transferred_vehicle,terminal_source,signed_premium_yuan,matured_premium_yuan,policy_count,claim_case_count,reported_claim_payment_yuan,expense_amount_yuan,commercial_premium_before_discount_yuan,marginal_contribution_amount_yuan
-2024-01-01,invalid_year,1,成都,测试机构,个人,商业险,非车险,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500`
+2024-01-01,invalid_year,1,成都,测试机构,非营业个人客车,商业险,非营业客车新车,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500`
 
       const file = createTestFile([csvContent], 'test.csv', {
         type: 'text/csv',
@@ -138,7 +138,7 @@ describe('CSVParser', () => {
 
     it('应该对异常周次生成警告', async () => {
       const csvContent = `snapshot_date,policy_start_year,week_number,chengdu_branch,third_level_organization,customer_category_3,insurance_type,business_type_category,coverage_type,renewal_status,is_new_energy_vehicle,is_transferred_vehicle,terminal_source,signed_premium_yuan,matured_premium_yuan,policy_count,claim_case_count,reported_claim_payment_yuan,expense_amount_yuan,commercial_premium_before_discount_yuan,marginal_contribution_amount_yuan
-2024-01-01,2024,200,成都,测试机构,个人,商业险,非车险,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500`
+2024-01-01,2024,200,成都,测试机构,非营业个人客车,商业险,非营业客车新车,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500`
 
       const file = createTestFile([csvContent], 'test.csv', {
         type: 'text/csv',
@@ -153,8 +153,8 @@ describe('CSVParser', () => {
   describe('parse', () => {
     it('应该正确解析有效的 CSV 文件', async () => {
       const csvContent = `snapshot_date,policy_start_year,week_number,chengdu_branch,third_level_organization,customer_category_3,insurance_type,business_type_category,coverage_type,renewal_status,is_new_energy_vehicle,is_transferred_vehicle,terminal_source,signed_premium_yuan,matured_premium_yuan,policy_count,claim_case_count,reported_claim_payment_yuan,expense_amount_yuan,commercial_premium_before_discount_yuan,marginal_contribution_amount_yuan
-2024-01-01,2024,1,成都,测试机构,个人,商业险,非车险,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500
-2024-01-08,2024,2,成都,测试机构,企业,交强险,车险,交三,续保,true,false,渠道,5000,4500,2,1,1000,200,5200,3300`
+2024-01-01,2024,1,成都,测试机构,非营业个人客车,商业险,非营业客车新车,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500
+2024-01-08,2024,2,成都,测试机构,营业货车,交强险,2吨以下营业货车,交三,续保,true,false,渠道,5000,4500,2,1,1000,200,5200,3300`
 
       const file = createTestFile([csvContent], 'test.csv', {
         type: 'text/csv',
@@ -170,9 +170,9 @@ describe('CSVParser', () => {
         week_number: 1,
         chengdu_branch: '成都',
         third_level_organization: '测试机构',
-        customer_category_3: '个人',
+        customer_category_3: '非营业个人客车',
         insurance_type: '商业险',
-        business_type_category: '非车险',
+        business_type_category: '非营业客车新车',
         coverage_type: '主全',
         renewal_status: '新保',
         is_new_energy_vehicle: false,
@@ -199,7 +199,7 @@ describe('CSVParser', () => {
 
     it('应该处理可选字段', async () => {
       const csvContent = `snapshot_date,policy_start_year,week_number,chengdu_branch,third_level_organization,customer_category_3,insurance_type,business_type_category,coverage_type,renewal_status,is_new_energy_vehicle,is_transferred_vehicle,vehicle_insurance_grade,highway_risk_grade,large_truck_score,small_truck_score,terminal_source,signed_premium_yuan,matured_premium_yuan,policy_count,claim_case_count,reported_claim_payment_yuan,expense_amount_yuan,commercial_premium_before_discount_yuan,premium_plan_yuan,marginal_contribution_amount_yuan
-2024-01-01,2024,1,成都,测试机构,个人,商业险,非车险,主全,新保,false,false,A,低,90,85,直销,10000,9000,1,0,0,500,10500,10000,8500`
+2024-01-01,2024,1,成都,测试机构,非营业个人客车,商业险,非营业客车新车,主全,新保,false,false,A,低,90,85,直销,10000,9000,1,0,0,500,10500,10000,8500`
 
       const file = createTestFile([csvContent], 'test.csv', {
         type: 'text/csv',
@@ -218,7 +218,7 @@ describe('CSVParser', () => {
 
     it('应该正确处理空值', async () => {
       const csvContent = `snapshot_date,policy_start_year,week_number,chengdu_branch,third_level_organization,customer_category_3,insurance_type,business_type_category,coverage_type,renewal_status,is_new_energy_vehicle,is_transferred_vehicle,vehicle_insurance_grade,terminal_source,signed_premium_yuan,matured_premium_yuan,policy_count,claim_case_count,reported_claim_payment_yuan,expense_amount_yuan,commercial_premium_before_discount_yuan,marginal_contribution_amount_yuan
-2024-01-01,2024,1,成都,测试机构,个人,商业险,非车险,主全,新保,false,false,,直销,10000,9000,1,0,0,500,10500,8500`
+2024-01-01,2024,1,成都,测试机构,非营业个人客车,商业险,非营业客车新车,主全,新保,false,false,,直销,10000,9000,1,0,0,500,10500,8500`
 
       const file = createTestFile([csvContent], 'test.csv', {
         type: 'text/csv',
@@ -231,7 +231,7 @@ describe('CSVParser', () => {
 
     it('应该规范化中文文本', async () => {
       const csvContent = `snapshot_date,policy_start_year,week_number,chengdu_branch,third_level_organization,customer_category_3,insurance_type,business_type_category,coverage_type,renewal_status,is_new_energy_vehicle,is_transferred_vehicle,terminal_source,signed_premium_yuan,matured_premium_yuan,policy_count,claim_case_count,reported_claim_payment_yuan,expense_amount_yuan,commercial_premium_before_discount_yuan,marginal_contribution_amount_yuan
-2024-01-01,2024,1,成都,　测试机构　,个人,商业险,非车险,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500`
+2024-01-01,2024,1,成都,　测试机构　,非营业个人客车,商业险,非营业客车新车,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500`
 
       const file = createTestFile([csvContent], 'test.csv', {
         type: 'text/csv',
@@ -267,7 +267,7 @@ describe('CSVParser', () => {
       const rows = []
       for (let i = 0; i < 1000; i++) {
         rows.push(
-          `2024-01-01,2024,${(i % 105) + 1},成都,测试机构,个人,商业险,非车险,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500`
+          `2024-01-01,2024,${(i % 105) + 1},成都,测试机构,非营业个人客车,商业险,非营业客车新车,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500`
         )
       }
 
@@ -287,7 +287,7 @@ describe('CSVParser', () => {
 
     it('应该处理特殊字符', async () => {
       const csvContent = `snapshot_date,policy_start_year,week_number,chengdu_branch,third_level_organization,customer_category_3,insurance_type,business_type_category,coverage_type,renewal_status,is_new_energy_vehicle,is_transferred_vehicle,terminal_source,signed_premium_yuan,matured_premium_yuan,policy_count,claim_case_count,reported_claim_payment_yuan,expense_amount_yuan,commercial_premium_before_discount_yuan,marginal_contribution_amount_yuan
-2024-01-01,2024,1,成都,"包含,逗号的机构",个人,商业险,非车险,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500`
+2024-01-01,2024,1,成都,"包含,逗号的机构",非营业个人客车,商业险,非营业客车新车,主全,新保,false,false,直销,10000,9000,1,0,0,500,10500,8500`
 
       const file = createTestFile([csvContent], 'test.csv', {
         type: 'text/csv',

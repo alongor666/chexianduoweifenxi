@@ -205,11 +205,12 @@ export const CHART_AXIS = {
     axisLabel: {
       fontSize: CHART_FONTS.axis.fontSize,
       color: CHART_FONTS.axis.color,
+      fontWeight: 'bold',
+      rotate: 0,
+      hideOverlap: true,
     },
     splitLine: {
-      lineStyle: {
-        color: CHART_COLORS.neutral[100],
-      },
+      show: false,
     },
   },
   yAxis: {
@@ -222,15 +223,16 @@ export const CHART_AXIS = {
     axisLabel: {
       fontSize: CHART_FONTS.axis.fontSize,
       color: CHART_FONTS.axis.color,
+      fontWeight: 'bold',
+      hideOverlap: true,
     },
     splitLine: {
-      lineStyle: {
-        color: CHART_COLORS.neutral[100],
-      },
+      show: false,
     },
     nameTextStyle: {
       color: CHART_FONTS.axis.color,
       fontSize: 12,
+      fontWeight: 'bold',
     },
   },
 } as const

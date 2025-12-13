@@ -119,7 +119,7 @@ export interface InsuranceRecord {
 export interface KPIResult {
   // 率值指标
   loss_ratio: number | null // 满期赔付率
-  premium_progress: number | null // 保费达成率
+
   premium_time_progress_achievement_rate: number | null // 保费时间进度达成率 = (保费达成率 / 时间进度) × 100
   policy_count_time_progress_achievement_rate: number | null // 件数时间进度达成率
   maturity_ratio: number | null // 满期率

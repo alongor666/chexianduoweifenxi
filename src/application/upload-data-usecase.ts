@@ -326,7 +326,7 @@ export class UploadDataUseCase {
       r =>
         r.signedPremiumYuan < 0 ||
         r.maturedPremiumYuan < 0 ||
-        r.reportedClaimPaymentYuan < 0 ||
+        // r.reportedClaimPaymentYuan < 0 || // 允许为负数
         r.expenseAmountYuan < 0
     )
     if (negativeAmounts.length > 0) {

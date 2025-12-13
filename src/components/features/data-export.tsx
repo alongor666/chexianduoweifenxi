@@ -77,7 +77,7 @@ export function DataExport() {
       // 将 KPIResult 转换为 KPISummarySnapshot
       const kpiSummary = {
         maturedMarginRate: kpiData.contribution_margin_ratio,
-        premiumAchievementRate: kpiData.premium_progress,
+        premiumAchievementRate: kpiData.premium_time_progress_achievement_rate,
         maturedClaimRate: kpiData.loss_ratio,
         expenseRate: kpiData.expense_ratio,
         maturityRate: kpiData.maturity_ratio,

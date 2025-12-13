@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import type { FilterState, InsuranceRecord } from '@/types/insurance'
 import { formatNumber, formatPercent } from '@/utils/format'
 import {
-  LOSS_RISK_THRESHOLD,
+  // LOSS_RISK_THRESHOLD,
   describeFilters,
   createWeekScopedFilters,
   aggregateTotals,

@@ -1,6 +1,6 @@
 # 车险数据分析平台 - 知识库索引
 
-> 📅 最后更新: 2025-12-13 08:00:08
+> 📅 最后更新: 2025-12-13 21:59:26
 > 🔄 自动生成 by `scripts/generate_docs_index.py`
 
 ---
@@ -9,27 +9,27 @@
 
 | 类别 | 数量 | 说明 |
 |------|------|------|
-| 🎯 功能模块 | 13 | 产品功能文档（P0/P1/P2优先级） |
-| 🏗️ 技术决策 | 3 | ADR架构决策记录 |
+| 🎯 功能模块 | 14 | 产品功能文档（P0/P1/P2优先级） |
+| 🏗️ 技术决策 | 4 | ADR架构决策记录 |
 | ⚙️ 技术设计 | 10 | 数据架构、计算公式、技术栈 |
 | 🔧 重构文档 | 9 | 架构优化和重构计划 |
 | 📦 历史归档 | 39 | 旧版本文档归档 |
-| **📝 总计** | **35** | **活跃文档总数** |
+| **📝 总计** | **37** | **活跃文档总数** |
 
 ---
 
 ## 🔥 最近更新（30天内）
 
-- ⚙️ [技术栈与开发环境](03_technical_design/tech_stack.md) - *今天*
-- 🎯 [F015: KPI多层下钻功能](01_features/F015_kpi_multi_level_drilldown/README.md) - *今天*
-- 🏗️ [ADR-001: 状态管理选型 - Zustand](02_decisions/ADR-001_状态管理选型-Zustand.md) - *今天*
-- 🏗️ [ADR-002: CSV解析策略 - 流式处理](02_decisions/ADR-002_CSV解析策略-流式处理.md) - *今天*
-- 🏗️ [ADR-003: 数据持久化策略 - LocalStorage](02_decisions/ADR-003_数据持久化策略-LocalStorage.md) - *今天*
-- ⚙️ [架构重构阶段2完成报告](03_technical_design/PHASE2_COMPLETION_REPORT.md) - *今天*
-- ⚙️ [架构重构指南 - 模块化升级](03_technical_design/architecture_refactoring.md) - *今天*
+- 🎯 [F016: 企业驾驶舱 (Enterprise Cockpit)](01_features/F016_enterprise_cockpit/README.md) - *今天*
+- 🏗️ [ADR-007: 现代驾驶舱架构 (Modern Cockpit Architecture)](02_decisions/ADR-007_现代驾驶舱架构.md) - *今天*
 - ⚙️ [核心指标计算引擎 V2.0](03_technical_design/core_calculations.md) - *今天*
 - ⚙️ [数据架构](03_technical_design/data_architecture.md) - *今天*
-- ⚙️ [维度字典与枚举值（Insuralytics）](03_technical_design/dimensions_dictionary.md) - *今天*
+- ⚙️ [技术栈与开发环境](03_technical_design/tech_stack.md) - *今天*
+- ⚙️ [Store架构迁移计划](03_technical_design/store_migration_plan.md) - *今天*
+- ⚙️ [纯静态部署指南](03_technical_design/static_deployment.md) - *今天*
+- ⚙️ [架构重构阶段2完成报告](03_technical_design/PHASE2_COMPLETION_REPORT.md) - *今天*
+- ⚙️ [DuckDB 集成验证与边界指南](03_technical_design/duckdb_validation_guide.md) - *今天*
+- ⚙️ [DuckDB 集成文档](03_technical_design/duckdb_integration.md) - *今天*
 
 ---
 
@@ -128,6 +128,13 @@
 - **说明**: 在KPI卡片和趋势图中实现多层下钻功能，支持用户按多个维度逐层深入分析数据。下钻交互已从弹窗模式升级为**全局下钻导航条**，位于筛选器与内容区域之间，提供更清晰、直观的可视化分析体验。 支持以下9个维度的下钻分析： - **三级机构**（`third_level_organization`）：按机构进行下钻 - **业务类型**（`business_type_category`）：按业务类型进行...
 - **最后更新**: 2025-12-13
 
+### [F016_enterprise_cockpit] F016: 企业驾驶舱 (Enterprise Cockpit)
+
+- **优先级**: P1/P2
+- **路径**: [`01_features/F016_enterprise_cockpit/README.md`](01_features/F016_enterprise_cockpit/README.md)
+- **说明**: 统一驾驶舱布局与可视化规范，提供业务健康快照与经营观察入口。替换旧版驾驶舱渲染为 `EnterpriseCockpit`，并接入统一的排序与阈值体系。 - 统一 5 级阈值（卓越/优秀/健康/预警/危险）与颜色映射 - 所有图表遵循“最差 → 最好”排序 - 布局采用 16:9 页面主体框架，一行一个图，去网格线、文字加粗、值标签固定 1. 第一行：核心 KPI（时间进度达成率-保费/件数、变动成...
+- **最后更新**: 2025-12-13
+
 ---
 
 ## 🏗️ 技术决策记录（ADR）
@@ -139,6 +146,7 @@
 | ADR-001 | ADR-001: 状态管理选型 - Zustand | > **状态**: ✅ 已采纳 > **决策日期**: 2025-01-20 (推断) > **决策人**: 开发团队 **选择 Zustand 作为全局状态管... | [`ADR-001_状态管理选型-Zustand.md`](02_decisions/ADR-001_状态管理选型-Zustand.md) |
 | ADR-002 | ADR-002: CSV解析策略 - 流式处理 | > **状态**: ✅ 已采纳 > **决策日期**: 2025-01-20 > **决策人**: 开发团队 **采用Papa Parse库的流式解析 (Wor... | [`ADR-002_CSV解析策略-流式处理.md`](02_decisions/ADR-002_CSV解析策略-流式处理.md) |
 | ADR-003 | ADR-003: 数据持久化策略 - LocalStorage | 已接受 (2025-01-20) 车险多维数据分析平台需要实现数据的本地持久化存储，以提升用户体验和数据安全性。用户上传的CSV数据需要在页面刷新或重新访问时能... | [`ADR-003_数据持久化策略-LocalStorage.md`](02_decisions/ADR-003_数据持久化策略-LocalStorage.md) |
+| ADR-007 | ADR-007: 现代驾驶舱架构 (Modern Cockpit Architecture) | 已采纳 (Accepted) 原有的仪表盘设计存在三个主要问题： 1. **Tab Trap (标签页陷阱)**: 核心图表（热力图、趋势图）被隐藏在多层 Ta... | [`ADR-007_现代驾驶舱架构.md`](02_decisions/ADR-007_现代驾驶舱架构.md) |
 
 ---
 
@@ -267,6 +275,7 @@
 | #f59e0b | 1 | [统一可视化引擎架构文档（ECharts）](04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md) |
 | #f97316 | 2 | [周度经营趋势分析模块](01_features/F011_weekly_operational_trend/README.md), [统一可视化引擎架构文档（ECharts）](04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md) |
 | #上下文注入模板 | 1 | [🤖 AI 协作约定](04_refactoring/AI_COLLABORATION.md) |
+| #业务类型枚举值详细说明 | 1 | [核心指标计算引擎 V2.0](03_technical_design/core_calculations.md) |
 | #为什么需要 | 1 | [🤖 AI 协作约定](04_refactoring/AI_COLLABORATION.md) |
 | #常见场景的标准提示词 | 1 | [🤖 AI 协作约定](04_refactoring/AI_COLLABORATION.md) |
 | #提示词工程 | 1 | [🤖 AI 协作约定](04_refactoring/AI_COLLABORATION.md) |
@@ -296,6 +305,7 @@
 - `03_technical_design/core_calculations.md` - 被引用 **4** 次
 - `03_technical_design/data_architecture.md` - 被引用 **4** 次
 - `02_decisions/ADR-002_CSV解析策略-流式处理.md` - 被引用 **3** 次
+- `data_architecture.md` - 被引用 **3** 次
 - `AI_COLLABORATION.md` - 被引用 **3** 次
 
 ### 文档引用关系
@@ -378,6 +388,7 @@
   - `./tech_stack.md`
 
 **03_technical_design/core_calculations.md** 引用:
+  - `./data_architecture.md`
   - `../archive/KPI看板-4x4网格布局-测试记录.md`
   - `../archive/紧凑版KPI看板测试记录-V2.md`
   - `../archive/边贡分析模块改造测试记录.md`

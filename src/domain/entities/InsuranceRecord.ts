@@ -82,7 +82,7 @@ export class InsuranceRecord {
       { name: '满期保费', value: this.maturedPremiumYuan },
       { name: '保单件数', value: this.policyCount },
       { name: '赔案件数', value: this.claimCaseCount },
-      { name: '已报告赔款', value: this.reportedClaimPaymentYuan },
+      // { name: '已报告赔款', value: this.reportedClaimPaymentYuan }, // 允许为负数（如追偿）
       { name: '费用金额', value: this.expenseAmountYuan },
       {
         name: '商业险折前保费',

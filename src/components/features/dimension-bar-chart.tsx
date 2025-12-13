@@ -1,10 +1,12 @@
 'use client'
 
-import React, { useMemo, useState, useRef, useEffect } from 'react'
-import * as echarts from 'echarts'
+import React, { useMemo, useState } from 'react'
+import type { EChartsOption } from 'echarts'
+import { BaseEChart } from '@/components/charts/BaseEChart'
 import { useFilteredData } from '@/hooks/use-filtered-data'
 import type { InsuranceRecord } from '@/types/insurance'
 import { getContributionMarginHexColor } from '@/utils/color-scale'
+import { getMetricThresholds } from '@/config/thresholds'
 
 // Y轴维度类型
 export type YAxisDimension = 'business_type' | 'organization' | 'coverage_type'
@@ -95,82 +97,71 @@ export function DimensionBarChart<T extends string>({
     aggregated.sort((a, b) => {
       const aVal = a[metricConfig.sortKey] as number
       const bVal = b[metricConfig.sortKey] as number
-      return bVal - aVal
+      const threshold = getMetricThresholds(metricConfig.dataKey)
+      const isHigherBetter = threshold?.isHigherBetter ?? false
+      // 从最差到最好：如果越高越好，则升序；否则降序
+      return isHigherBetter ? aVal - bVal : bVal - aVal
     })
 
     return aggregated.slice(0, Math.max(1, Math.min(50, topN)))
-  }, [filteredData, yDimension, topN, aggregateFunction, metricConfig.sortKey])
+  }, [
+    filteredData,
+    yDimension,
+    topN,
+    aggregateFunction,
+    metricConfig.sortKey,
+    metricConfig.dataKey,
+  ])
 
-  const chartRef = useRef<HTMLDivElement>(null)
-  const chartInstanceRef = useRef<echarts.ECharts | null>(null)
-
-  // 初始化和更新图表
-  useEffect(() => {
-    if (!chartRef.current || !chartData || chartData.length === 0) return
-
-    // 初始化 ECharts 实例
-    if (!chartInstanceRef.current) {
-      chartInstanceRef.current = echarts.init(chartRef.current, undefined, {
-        renderer: 'canvas',
-      })
-    }
-
-    const chart = chartInstanceRef.current
-
-    // 准备数据：横向条形图需要反转数据顺序（从下到上显示）
-    const reversedData = [...chartData].reverse()
-
-    // 提取 Y 轴标签和 X 轴数值
-    const yAxisLabels = reversedData.map(d => d.label)
-    const xAxisValues = reversedData.map(d => d[metricConfig.dataKey] as number)
-
-    // 为每个条形设置颜色
-    const itemColors = reversedData.map(d =>
+  const option: EChartsOption | null = useMemo(() => {
+    if (!chartData || chartData.length === 0) return null
+    const yAxisLabels = chartData.map(d => d.label)
+    const xAxisValues = chartData.map(d => d[metricConfig.dataKey] as number)
+    const itemColors = chartData.map(d =>
       getContributionMarginHexColor(d.contribution_margin_ratio)
     )
-
-    // ECharts 配置
-    const option: echarts.EChartsOption = {
+    const metricThreshold = getMetricThresholds(metricConfig.dataKey)
+    const warningRange = metricThreshold?.ranges.find(
+      r => r.level === 'warning'
+    )
+    const warningLineValue =
+      warningRange?.min !== undefined
+        ? warningRange.min
+        : warningRange?.max !== undefined
+          ? warningRange.max
+          : undefined
+    const opt: EChartsOption = {
       backgroundColor: 'transparent',
       grid: {
         left: '15%',
         right: '5%',
-        top: '5%',
-        bottom: '5%',
+        top: '8%',
+        bottom: '8%',
         containLabel: true,
       },
       tooltip: {
         trigger: 'axis',
-        axisPointer: {
-          type: 'shadow',
-        },
+        axisPointer: { type: 'shadow' },
         backgroundColor: 'rgba(255, 255, 255, 0.98)',
         borderColor: '#e2e8f0',
         borderWidth: 1,
-        textStyle: {
-          color: '#334155',
-          fontSize: 12,
-        },
+        textStyle: { color: '#334155', fontSize: 12, fontWeight: 'bold' },
         padding: 12,
         formatter: (params: any) => {
           if (!Array.isArray(params) || params.length === 0) return ''
-          const param = params[0]
-          const dataIndex = param.dataIndex
-          const originalIndex = chartData.length - 1 - dataIndex
-          const dataPoint = chartData[originalIndex]
-
+          const p = params[0]
+          const dataIndex = p.dataIndex
+          const dataPoint = chartData[dataIndex]
           if (!dataPoint) return ''
-
           const contributionText =
             dataPoint.contribution_margin_ratio !== null
               ? `${(dataPoint.contribution_margin_ratio * 100).toFixed(1)}%`
               : '—'
-
           return `<div style="min-width: 200px;">
-            <div style="font-weight: 600; margin-bottom: 6px; font-size: 13px;">${param.name}</div>
+            <div style="font-weight: 600; margin-bottom: 6px; font-size: 13px;">${p.name}</div>
             <div style="margin-bottom: 4px;">
               <span style="color: #64748b;">${metricConfig.name}：</span>
-              <span style="font-weight: 600;">${metricConfig.formatter(param.value)}</span>
+              <span style="font-weight: 600;">${metricConfig.formatter(p.value)}</span>
             </div>
             <div>
               <span style="color: #64748b;">边际贡献率：</span>
@@ -185,17 +176,10 @@ export function DimensionBarChart<T extends string>({
           formatter: (value: number) => metricConfig.formatter(value),
           fontSize: 11,
           color: '#64748b',
+          fontWeight: 'bold',
         },
-        axisLine: {
-          lineStyle: {
-            color: '#cbd5e1',
-          },
-        },
-        splitLine: {
-          lineStyle: {
-            color: '#f1f5f9',
-          },
-        },
+        axisLine: { lineStyle: { color: '#cbd5e1' } },
+        splitLine: { show: false },
       },
       yAxis: {
         type: 'category',
@@ -203,63 +187,54 @@ export function DimensionBarChart<T extends string>({
         axisLabel: {
           fontSize: 12,
           color: '#334155',
+          fontWeight: 'bold',
           width: 110,
           overflow: 'truncate',
           ellipsis: '...',
         },
-        axisLine: {
-          lineStyle: {
-            color: '#cbd5e1',
-          },
-        },
+        axisLine: { lineStyle: { color: '#cbd5e1' } },
       },
       series: [
         {
           name: metricConfig.name,
           type: 'bar',
           data: xAxisValues,
+          label: {
+            show: true,
+            position: 'right',
+            fontWeight: 'bold',
+            color: '#334155',
+            formatter: (p: any) => metricConfig.formatter(p.value),
+          },
           itemStyle: {
             borderRadius: [0, 4, 4, 0],
-            color: (params: any) => {
-              return itemColors[params.dataIndex] || '#94a3b8'
-            },
+            color: (params: any) => itemColors[params.dataIndex] || '#94a3b8',
           },
           emphasis: {
-            itemStyle: {
-              shadowBlur: 10,
-              shadowColor: 'rgba(0, 0, 0, 0.3)',
-            },
+            itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0, 0, 0, 0.3)' },
           },
           barMaxWidth: 30,
+          markLine:
+            warningLineValue !== undefined
+              ? {
+                  symbol: 'none',
+                  lineStyle: { type: 'dashed', color: '#ef4444', width: 2 },
+                  label: {
+                    show: true,
+                    position: 'end',
+                    fontSize: 11,
+                    fontWeight: 'bold',
+                    color: '#ef4444',
+                    formatter: '预警线',
+                  },
+                  data: [{ xAxis: warningLineValue }],
+                }
+              : undefined,
         },
       ],
     }
-
-    chart.setOption(option, true)
-
-    // 响应式调整
-    const resizeObserver = new ResizeObserver(() => {
-      chart.resize()
-    })
-
-    if (chartRef.current) {
-      resizeObserver.observe(chartRef.current)
-    }
-
-    return () => {
-      resizeObserver.disconnect()
-    }
-  }, [chartData, metricConfig, chartId])
-
-  // 清理
-  useEffect(() => {
-    return () => {
-      if (chartInstanceRef.current) {
-        chartInstanceRef.current.dispose()
-        chartInstanceRef.current = null
-      }
-    }
-  }, [])
+    return opt
+  }, [chartData, metricConfig, metricConfig.dataKey])
 
   if (!chartData || chartData.length === 0) return null
 
@@ -320,7 +295,7 @@ export function DimensionBarChart<T extends string>({
         </div>
       </div>
 
-      <div ref={chartRef} className="h-80" />
+      {option && <BaseEChart option={option} height={320} />}
     </div>
   )
 }

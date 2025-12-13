@@ -23,6 +23,7 @@ import { usePersistData } from '@/hooks/use-persist-data'
 import { useSmartComparison } from '@/hooks/use-smart-comparison'
 import { useState, useEffect, useMemo } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { EnterpriseCockpit } from '@/components/features/enterprise-cockpit'
 import {
   AnalysisTabs,
   type AnalysisTabValue,
@@ -70,6 +71,7 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
     (searchParams?.get('tab') as AnalysisTabValue | null) ?? 'kpi'
   const validTabs: AnalysisTabValue[] = [
     'data-management',
+    'cockpit',
     'kpi',
     'trend',
     'thematic',
@@ -210,82 +212,89 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
         </div>
       </header>
 
-      {/* 主内容 */}
-      <main className="max-w-7xl mx-auto">
-        {/* 下钻导航条 - 位于筛选器和内容区之间，Sticky 定位 */}
-        {hasData && (activeTab === 'kpi' || activeTab === 'trend') && (
-          <div className="sticky top-0 z-40 mb-6 bg-slate-50/95 backdrop-blur supports-[backdrop-filter]:bg-slate-50/60 pb-4 pt-2 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 border-b border-slate-200/60 transition-all duration-200">
-            <DrillDownBar />
-          </div>
-        )}
+      {/* 主内容（16:9 比例容器） */}
+      <div className="max-w-7xl mx-auto w-full">
+        <div className="aspect-[16/9] w-full overflow-auto rounded-xl">
+          <main className="h-full w-full">
+            {/* 下钻导航条 - 位于筛选器和内容区之间，Sticky 定位 */}
+            {hasData && (activeTab === 'kpi' || activeTab === 'trend') && (
+              <div className="sticky top-0 z-40 mb-6 bg-slate-50/95 backdrop-blur supports-[backdrop-filter]:bg-slate-50/60 pb-4 pt-2 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 border-b border-slate-200/60 transition-all duration-200">
+                <DrillDownBar />
+              </div>
+            )}
 
-        {!hasData && (
-          <div className="space-y-6">
-            <FileUpload />
-          </div>
-        )}
-
-        {hasData && (
-          <div className="space-y-8">
-            {/* 数据管理页面 */}
-            {activeTab === 'data-management' && (
+            {!hasData && (
               <div className="space-y-6">
-                <DataManagementPanel />
+                <FileUpload />
               </div>
             )}
 
-            {/* KPI 看板 - 使用完整版 */}
-            {activeTab === 'kpi' && (
-              <FullKPIDashboard
-                kpiData={currentKpi || kpiData}
-                compareData={compareKpi}
-                compareWeekNumber={previousWeekNumber}
-              />
-            )}
-
-            {/* 多周趋势分析 */}
-            {activeTab === 'trend' && (
-              <div className="space-y-6">
-                <WeeklyOperationalTrend />
-              </div>
-            )}
-
-            {/* 预测管理 */}
-            {activeTab === 'prediction' && <PredictionManagerPanel />}
-
-            {/* 专题分析模块 */}
-            {activeTab === 'thematic' && (
+            {hasData && (
               <div className="space-y-8">
-                <ThematicAnalysis
-                  currentKpis={kpiData}
-                  timeProgress={timeProgress}
-                  compact={false}
-                />
-                <CustomerSegmentationBubble />
-                <ExpenseHeatmap />
+                {/* 数据管理页面 */}
+                {activeTab === 'data-management' && (
+                  <div className="space-y-6">
+                    <DataManagementPanel />
+                  </div>
+                )}
+
+                {/* 🚀 驾驶舱 */}
+                {activeTab === 'cockpit' && <EnterpriseCockpit />}
+
+                {/* KPI 看板 - 使用完整版 */}
+                {activeTab === 'kpi' && (
+                  <FullKPIDashboard
+                    kpiData={currentKpi || kpiData}
+                    compareData={compareKpi}
+                    compareWeekNumber={previousWeekNumber}
+                  />
+                )}
+
+                {/* 多周趋势分析 */}
+                {activeTab === 'trend' && (
+                  <div className="space-y-6">
+                    <WeeklyOperationalTrend />
+                  </div>
+                )}
+
+                {/* 预测管理 */}
+                {activeTab === 'prediction' && <PredictionManagerPanel />}
+
+                {/* 专题分析模块 */}
+                {activeTab === 'thematic' && (
+                  <div className="space-y-8">
+                    <ThematicAnalysis
+                      currentKpis={kpiData}
+                      timeProgress={timeProgress}
+                      compact={false}
+                    />
+                    <CustomerSegmentationBubble />
+                    <ExpenseHeatmap />
+                  </div>
+                )}
+
+                {/* 多维图表展示 */}
+                {activeTab === 'multichart' && (
+                  <div className="space-y-8">
+                    <MultiChartTabs />
+                    <ComparisonAnalysisPanel />
+                  </div>
+                )}
+
+                {/* 说明区块 */}
+                <div className="rounded-2xl border border-slate-200 p-6 bg-white/60 backdrop-blur-sm">
+                  <h3 className="text-lg font-semibold text-slate-800 mb-2">
+                    数据可视化
+                  </h3>
+                  <p className="text-sm text-slate-600">
+                    趋势图表、结构分析，让数据洞察更直观易懂
+                  </p>
+                </div>
               </div>
             )}
-
-            {/* 多维图表展示 */}
-            {activeTab === 'multichart' && (
-              <div className="space-y-8">
-                <MultiChartTabs />
-                <ComparisonAnalysisPanel />
-              </div>
-            )}
-
-            {/* 说明区块 */}
-            <div className="rounded-2xl border border-slate-200 p-6 bg-white/60 backdrop-blur-sm">
-              <h3 className="text-lg font-semibold text-slate-800 mb-2">
-                数据可视化
-              </h3>
-              <p className="text-sm text-slate-600">
-                趋势图表、结构分析，让数据洞察更直观易懂
-              </p>
-            </div>
-          </div>
-        )}
-      </main>
+          </main>
+        </div>
+      </div>
 
       <Toaster />
     </div>

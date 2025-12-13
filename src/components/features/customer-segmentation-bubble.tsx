@@ -13,8 +13,9 @@
  * PRD位置：2.2.5 结构分析与对比模块 - 客户分群气泡图（P1）
  */
 
-import { useMemo, useState, useRef, useEffect } from 'react'
-import * as echarts from 'echarts'
+import { useMemo, useState } from 'react'
+import type { EChartsOption } from 'echarts'
+import { BaseEChart } from '@/components/charts/BaseEChart'
 import { useFilteredData } from '@/hooks/use-filtered-data'
 import { InsuranceRecord } from '@/types/insurance'
 import { formatNumber, formatPercent } from '@/utils/format'
@@ -65,6 +66,14 @@ interface BubbleDataPoint {
 
 interface Props {
   className?: string
+}
+
+// 客户群标签（供 tooltip 使用）
+const segmentLabels = {
+  'high-value': '💎 高价值客户',
+  'high-risk': '⚠️ 高风险客户',
+  'low-value': '📉 低价值客户',
+  normal: '✓ 正常客户',
 }
 
 export function CustomerSegmentationBubble({ className }: Props) {
@@ -180,43 +189,18 @@ export function CustomerSegmentationBubble({ className }: Props) {
     }
   }, [bubbleData])
 
-  const chartRef = useRef<HTMLDivElement>(null)
-  const chartInstanceRef = useRef<echarts.ECharts | null>(null)
+  // 客户群标签已移至组件外部
 
-  // 客户群标签
-  const segmentLabels = {
-    'high-value': '💎 高价值客户',
-    'high-risk': '⚠️ 高风险客户',
-    'low-value': '📉 低价值客户',
-    normal: '✓ 正常客户',
-  }
-
-  // 初始化和更新图表
-  useEffect(() => {
-    if (!chartRef.current || bubbleData.length === 0) return
-
-    // 初始化 ECharts 实例
-    if (!chartInstanceRef.current) {
-      chartInstanceRef.current = echarts.init(chartRef.current, undefined, {
-        renderer: 'canvas',
-      })
-    }
-
-    const chart = chartInstanceRef.current
-
-    // 准备数据：ECharts scatter 需要 [x, y, size] 格式
+  const option: EChartsOption | null = useMemo(() => {
+    if (bubbleData.length === 0) return null
     const chartData = bubbleData.map(d => ({
       value: [d.averagePremium, d.lossRatio, d.policyCount],
       name: d.name,
-      itemStyle: {
-        color: d.color,
-      },
+      itemStyle: { color: d.color },
       segment: d.segment,
       policyCount: d.policyCount,
     }))
-
-    // ECharts 配置
-    const option: echarts.EChartsOption = {
+    const opt: EChartsOption = {
       backgroundColor: 'transparent',
       grid: {
         left: '10%',
@@ -229,16 +213,12 @@ export function CustomerSegmentationBubble({ className }: Props) {
         backgroundColor: 'rgba(255, 255, 255, 0.98)',
         borderColor: '#e2e8f0',
         borderWidth: 1,
-        textStyle: {
-          color: '#334155',
-          fontSize: 12,
-        },
+        textStyle: { color: '#334155', fontSize: 12, fontWeight: 'bold' },
         padding: 16,
         formatter: (params: any) => {
           const data = params.data
           const segment = data.segment as BubbleDataPoint['segment']
           const segmentLabel = segmentLabels[segment]
-
           return `<div style="min-width: 220px;">
             <div style="font-weight: 600; margin-bottom: 8px; font-size: 14px;">${data.name}</div>
             <div style="margin-bottom: 4px;">
@@ -264,60 +244,46 @@ export function CustomerSegmentationBubble({ className }: Props) {
         name: '单均保费（元）',
         nameLocation: 'middle',
         nameGap: 35,
-        nameTextStyle: {
-          fontSize: 13,
-          fontWeight: 500,
-          color: '#334155',
-        },
+        nameTextStyle: { fontSize: 13, fontWeight: 'bold', color: '#334155' },
         axisLabel: {
           formatter: (value: number) => `${(value / 1000).toFixed(1)}k`,
           fontSize: 11,
           color: '#64748b',
+          fontWeight: 'bold',
+          hideOverlap: true,
+          rotate: 0,
         },
-        axisLine: {
-          lineStyle: {
-            color: '#cbd5e1',
-          },
-        },
-        splitLine: {
-          lineStyle: {
-            color: '#f1f5f9',
-          },
-        },
+        axisLine: { lineStyle: { color: '#cbd5e1' } },
+        splitLine: { show: false },
       },
       yAxis: {
         type: 'value',
         name: '赔付率（%）',
         nameLocation: 'middle',
         nameGap: 45,
-        nameTextStyle: {
-          fontSize: 13,
-          fontWeight: 500,
-          color: '#334155',
-        },
+        nameTextStyle: { fontSize: 13, fontWeight: 'bold', color: '#334155' },
         axisLabel: {
           formatter: (value: number) => `${value.toFixed(0)}%`,
           fontSize: 11,
           color: '#64748b',
+          fontWeight: 'bold',
+          hideOverlap: true,
         },
-        axisLine: {
-          lineStyle: {
-            color: '#cbd5e1',
-          },
-        },
-        splitLine: {
-          lineStyle: {
-            color: '#f1f5f9',
-          },
-        },
+        axisLine: { lineStyle: { color: '#cbd5e1' } },
+        splitLine: { show: false },
       },
       series: [
         {
           name: '客户群',
           type: 'scatter',
           data: chartData,
+          label: {
+            show: true,
+            position: 'top',
+            fontWeight: 'bold',
+            formatter: (p: any) => `${p.value[1].toFixed(0)}%`,
+          },
           symbolSize: (data: number[]) => {
-            // 根据保单件数动态设置气泡大小
             const policyCount = data[2]
             const minSize = 10
             const maxSize = 40
@@ -332,96 +298,31 @@ export function CustomerSegmentationBubble({ className }: Props) {
           },
           emphasis: {
             focus: 'series',
-            itemStyle: {
-              shadowBlur: 15,
-              shadowColor: 'rgba(0, 0, 0, 0.3)',
-            },
+            itemStyle: { shadowBlur: 15, shadowColor: 'rgba(0, 0, 0, 0.3)' },
           },
-        },
-      ],
-      // 添加参考线标记
-      graphic: [
-        // 垂直参考线（平均单均保费）
-        {
-          type: 'line',
-          shape: {
-            x1: 0,
-            y1: 0,
-            x2: 0,
-            y2: 0,
-          },
-          style: {
-            stroke: '#9ca3af',
-            lineDash: [3, 3],
-          },
-          z: 0,
-        },
-      ],
-    }
-
-    // 添加参考线（需要在 setOption 后动态添加）
-    chart.setOption(option, true)
-
-    // 添加平均值参考线
-    chart.setOption({
-      series: [
-        {
           markLine: {
             silent: true,
             symbol: 'none',
-            lineStyle: {
-              type: 'dashed',
-              color: '#9ca3af',
-              width: 1,
-            },
-            label: {
-              fontSize: 11,
-              color: '#6b7280',
-            },
+            lineStyle: { type: 'dashed', color: '#9ca3af', width: 1 },
+            label: { fontSize: 11, color: '#6b7280', fontWeight: 'bold' },
             data: [
               {
                 xAxis: references.avgPremium,
-                label: {
-                  formatter: '平均单均保费',
-                  position: 'end',
-                },
+                label: { formatter: '平均单均保费', position: 'end' },
               },
               {
                 yAxis: references.avgLossRatio,
-                label: {
-                  formatter: '平均赔付率',
-                  position: 'end',
-                },
+                label: { formatter: '平均赔付率', position: 'end' },
               },
             ],
           },
         },
       ],
-    })
-
-    // 响应式调整
-    const resizeObserver = new ResizeObserver(() => {
-      chart.resize()
-    })
-
-    if (chartRef.current) {
-      resizeObserver.observe(chartRef.current)
     }
-
-    return () => {
-      resizeObserver.disconnect()
-    }
+    return opt
   }, [bubbleData, references])
 
-  // 清理
-  useEffect(() => {
-    return () => {
-      if (chartInstanceRef.current) {
-        chartInstanceRef.current.dispose()
-        chartInstanceRef.current = null
-      }
-    }
-  }, [])
+  // 使用 BaseEChart 渲染
 
   if (bubbleData.length === 0) {
     return (
@@ -473,7 +374,7 @@ export function CustomerSegmentationBubble({ className }: Props) {
 
       {/* 图表区域 */}
       <div className="p-4">
-        <div ref={chartRef} style={{ width: '100%', height: '500px' }} />
+        {option && <BaseEChart option={option} height={500} />}
 
         {/* 智能洞察 */}
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">

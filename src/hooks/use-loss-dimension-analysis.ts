@@ -8,6 +8,10 @@ import type { InsuranceRecord } from '@/types/insurance'
 import { useFilteredData, applyFilters } from './use-filtered-data'
 import { buildPreviousFilters } from './utils/filter-helpers'
 import { normalizeChineseText } from '@/domain/rules/data-normalization'
+import {
+  calculateLossRatio,
+  calculateAverageClaim,
+} from '@/domain/rules/kpi-calculator-enhanced'
 
 export type LossDimensionKey =
   | 'customer_category_3'
@@ -108,16 +112,17 @@ function aggregateLossMetrics(
   const result = new Map<string, LossMetrics & { label: string }>()
 
   groups.forEach((group, key) => {
-    const lossRatio =
-      group.maturedPremiumYuan > 0
-        ? (group.reportedClaimPaymentYuan / group.maturedPremiumYuan) * 100
-        : null
+    // 使用Domain层函数进行计算
+    const lossRatio = calculateLossRatio(
+      group.reportedClaimPaymentYuan,
+      group.maturedPremiumYuan
+    )
     const reportedClaimPayment = group.reportedClaimPaymentYuan / 10000
     const claimCaseCount = group.claimCaseCount
-    const averageClaim =
-      group.claimCaseCount > 0
-        ? group.reportedClaimPaymentYuan / group.claimCaseCount
-        : null
+    const averageClaim = calculateAverageClaim(
+      group.reportedClaimPaymentYuan,
+      group.claimCaseCount
+    )
 
     result.set(key, {
       label: group.label,

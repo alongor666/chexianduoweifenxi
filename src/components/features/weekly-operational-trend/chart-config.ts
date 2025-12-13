@@ -1,6 +1,6 @@
 import * as echarts from 'echarts'
 import { formatNumber } from '@/utils/format'
-import { LOSS_RISK_THRESHOLD } from './utils'
+// import { LOSS_RISK_THRESHOLD } from './utils'
 import type { ChartDataPoint } from './types'
 import { getTooltipFormatter, getChartSeries } from './chart-helpers'
 

@@ -142,6 +142,18 @@ export function useMarginalContributionAnalysis(): MarginalContributionItem[] {
   const previousWeekData = usePreviousWeekData()
   const filters = useAppStore(state => state.filters)
   const dataViewType = filters.dataViewType
+  const premiumTargets = useAppStore(state => state.premiumTargets)
+
+  // 获取当前周次和年份（用于KPI计算选项）
+  const currentWeek =
+    filters.viewMode === 'single' ? filters.singleModeWeek : null
+  const currentYear =
+    filters.years.length > 0
+      ? Math.max(...filters.years)
+      : new Date().getFullYear()
+
+  // 获取当前筛选条件下的年度目标保费（简化版，使用总体目标）
+  const currentTargetYuan = premiumTargets?.overall ?? null
 
   return useMemo(() => {
     if (filteredData.length === 0) {
@@ -185,12 +197,22 @@ export function useMarginalContributionAnalysis(): MarginalContributionItem[] {
         const previousDomain = previousRecords.map(r =>
           DomainInsuranceRecord.fromRawData(r)
         )
-        currentKPI = calculateIncrementKPIs(currentDomain, previousDomain)
+        currentKPI = calculateIncrementKPIs(currentDomain, previousDomain, {
+          mode: 'increment',
+          currentWeekNumber: currentWeek ?? undefined,
+          annualTargetYuan: currentTargetYuan ?? undefined,
+          year: currentYear,
+        })
       } else {
         const currentDomain = records.map(r =>
           DomainInsuranceRecord.fromRawData(r)
         )
-        currentKPI = calculateKPIs(currentDomain)
+        currentKPI = calculateKPIs(currentDomain, {
+          mode: 'current',
+          currentWeekNumber: currentWeek ?? undefined,
+          annualTargetYuan: currentTargetYuan ?? undefined,
+          year: currentYear,
+        })
       }
 
       // 计算上期KPI（用于环比）
@@ -229,5 +251,12 @@ export function useMarginalContributionAnalysis(): MarginalContributionItem[] {
 
     // 返回前16个业务类型（2环比恶化 + 其他14个）
     return items.slice(0, 16)
-  }, [filteredData, previousWeekData, dataViewType])
+  }, [
+    filteredData,
+    previousWeekData,
+    dataViewType,
+    currentWeek,
+    currentYear,
+    currentTargetYuan,
+  ])
 }

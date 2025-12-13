@@ -19,7 +19,6 @@ export {
   calculateVariableCostRatio,
   calculateMaturedClaimRatio,
   calculateAutonomyCoefficient,
-  calculatePremiumProgress,
   calculateAveragePremium,
   calculateAverageClaim,
   calculateAverageExpense,

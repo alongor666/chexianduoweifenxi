@@ -12,8 +12,8 @@ import {
   normalizeNumber,
   normalizeBoolean,
   normalizeDate,
-  normalizeBatch,
-  type NormalizationResult,
+  // normalizeBatch,
+  // type NormalizationResult,
 } from '../shared/normalization-operators'
 import { normalizeInsuranceRecord } from '../rules/data-normalization'
 

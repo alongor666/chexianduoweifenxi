@@ -27,7 +27,7 @@ function mapDomainKPIToApp(
     variableCostRatio: k.variable_cost_ratio,
     maturedClaimRatio: k.matured_claim_ratio,
     autonomyCoefficient: k.autonomy_coefficient,
-    premiumProgress: k.premium_progress,
+    premiumProgress: k.premium_time_progress_achievement_rate,
     premiumTimeProgressAchievementRate:
       k.premium_time_progress_achievement_rate,
     policyCountTimeProgressAchievementRate:

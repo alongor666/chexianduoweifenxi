@@ -286,6 +286,10 @@ export function BusinessTypeHeatmap() {
     return {
       tooltip: {
         position: 'top',
+        textStyle: {
+          fontSize: 12,
+          fontWeight: 'bold',
+        },
         formatter: (params: any) => {
           const weekIndex = params.data[0]
           const bizIndex = params.data[1]
@@ -307,29 +311,33 @@ export function BusinessTypeHeatmap() {
       grid: {
         left: 120,
         right: 80,
-        top: 60,
-        bottom: 60,
+        top: 40,
+        bottom: 40,
       },
       xAxis: {
         type: 'category',
         data: weekNumbers.map(w => `周${w}`),
         splitArea: {
-          show: true,
+          show: false,
         },
         axisLabel: {
           interval: 0,
-          rotate: weekNumbers.length > 20 ? 45 : 0,
+          rotate: 0,
           fontSize: 11,
+          fontWeight: 'bold',
+          hideOverlap: true,
         },
       },
       yAxis: {
         type: 'category',
         data: CANONICAL_BUSINESS_TYPES.map(bt => getBusinessTypeLabel(bt)),
         splitArea: {
-          show: true,
+          show: false,
         },
         axisLabel: {
           fontSize: 11,
+          fontWeight: 'bold',
+          hideOverlap: true,
         },
       },
       visualMap: {
@@ -351,6 +359,7 @@ export function BusinessTypeHeatmap() {
         text: ['高', '低'],
         textStyle: {
           fontSize: 11,
+          fontWeight: 'bold',
         },
       },
       series: [
@@ -359,7 +368,11 @@ export function BusinessTypeHeatmap() {
           type: 'heatmap',
           data: heatmapData,
           label: {
-            show: false,
+            show: true,
+            fontSize: 10,
+            fontWeight: 'bold',
+            formatter: (p: any) =>
+              p.data[2] === -1 ? '' : `${Number(p.data[2]).toFixed(0)}%`,
           },
           emphasis: {
             itemStyle: {

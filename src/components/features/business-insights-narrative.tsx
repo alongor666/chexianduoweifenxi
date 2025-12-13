@@ -29,7 +29,6 @@ import {
 } from '@/constants/dimensions'
 import { formatNumber, formatPercent } from '@/utils/formatters'
 import {
-  TrendingUp,
   TrendingDown,
   AlertTriangle,
   CheckCircle2,
@@ -549,7 +548,7 @@ export function BusinessInsightsNarrative() {
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {insights.slice(0, 3).map((insight, index) => (
+              {insights.slice(0, 3).map(insight => (
                 <Alert key={insight.id} className="border-slate-200">
                   <AlertDescription className="flex items-start gap-2">
                     <input

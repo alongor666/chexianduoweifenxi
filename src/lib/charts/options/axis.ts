@@ -15,6 +15,9 @@ export const XAXIS_PRESETS = {
     axisLabel: {
       fontSize: 11,
       color: TEXT_COLORS.secondary,
+      fontWeight: 'bold',
+      rotate: 0,
+      hideOverlap: true,
     },
     axisLine: {
       lineStyle: {
@@ -30,6 +33,8 @@ export const XAXIS_PRESETS = {
       fontSize: 11,
       rotate: 45,
       color: TEXT_COLORS.secondary,
+      fontWeight: 'bold',
+      hideOverlap: true,
     },
     axisLine: {
       lineStyle: {
@@ -47,6 +52,9 @@ export const XAXIS_PRESETS = {
     axisLabel: {
       fontSize: 11,
       color: TEXT_COLORS.secondary,
+      fontWeight: 'bold',
+      rotate: 0,
+      hideOverlap: true,
     },
     axisLine: {
       lineStyle: {
@@ -66,6 +74,8 @@ export const YAXIS_PRESETS = {
     axisLabel: {
       fontSize: 11,
       color: TEXT_COLORS.secondary,
+      fontWeight: 'bold',
+      hideOverlap: true,
     },
     axisLine: {
       lineStyle: {
@@ -73,10 +83,7 @@ export const YAXIS_PRESETS = {
       },
     },
     splitLine: {
-      lineStyle: {
-        color: BORDER_COLORS.light,
-        type: 'dashed' as const,
-      },
+      show: false,
     },
   },
 
@@ -87,6 +94,8 @@ export const YAXIS_PRESETS = {
     axisLabel: {
       fontSize: 11,
       color: TEXT_COLORS.secondary,
+      fontWeight: 'bold',
+      hideOverlap: true,
     },
     axisLine: {
       show: true,
@@ -95,10 +104,7 @@ export const YAXIS_PRESETS = {
       },
     },
     splitLine: {
-      lineStyle: {
-        color: BORDER_COLORS.light,
-        type: 'dashed' as const,
-      },
+      show: false,
     },
   },
 
@@ -109,6 +115,8 @@ export const YAXIS_PRESETS = {
     axisLabel: {
       fontSize: 11,
       color: TEXT_COLORS.secondary,
+      fontWeight: 'bold',
+      hideOverlap: true,
     },
     axisLine: {
       show: true,
@@ -128,6 +136,8 @@ export const YAXIS_PRESETS = {
       fontSize: 11,
       color: TEXT_COLORS.secondary,
       formatter: '{value}%',
+      fontWeight: 'bold',
+      hideOverlap: true,
     },
     axisLine: {
       lineStyle: {
@@ -135,10 +145,7 @@ export const YAXIS_PRESETS = {
       },
     },
     splitLine: {
-      lineStyle: {
-        color: BORDER_COLORS.light,
-        type: 'dashed' as const,
-      },
+      show: false,
     },
   },
 } satisfies Record<string, Partial<YAXisComponentOption>>

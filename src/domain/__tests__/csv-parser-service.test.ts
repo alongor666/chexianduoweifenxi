@@ -16,8 +16,8 @@ import {
 
 describe('CSV 解析服务', () => {
   const validCSVContent = `snapshot_date,policy_start_year,week_number,chengdu_branch,third_level_organization,business_type_category,customer_category_3,insurance_type,coverage_type,is_new_energy_vehicle,is_transferred_vehicle,renewal_status,vehicle_insurance_grade,highway_risk_grade,large_truck_score,small_truck_score,terminal_source,signed_premium_yuan,matured_premium_yuan,policy_count,claim_case_count,reported_claim_payment_yuan,expense_amount_yuan,commercial_premium_before_discount_yuan,premium_plan_yuan,marginal_contribution_amount_yuan
-2025-01-14,2025,45,成都,武侯,个人客户,车险,交强险,false,false,新保,A级,低风险,80,85,直销,10000,8000,10,2,1600,1200,11000,9000,800
-2025-01-14,2025,45,成都,高新,企业客户,车险,商业险,true,true,续保,B级,中风险,75,80,代理,20000,18000,20,3,2700,2000,22000,18000,2000`
+2025-01-14,2025,45,成都,武侯,非营业客车新车,非营业个人客车,交强险,false,false,新保,A级,低风险,80,85,直销,10000,8000,10,2,1600,1200,11000,9000,800
+2025-01-14,2025,45,成都,高新,10吨以上营业货车（普货）,营业货车,商业险,true,true,续保,B级,中风险,75,80,代理,20000,18000,20,3,2700,2000,22000,18000,2000`
 
   const invalidCSVContent = `snapshot_date,policy_start_year,week_number,chengdu_branch
 2025-01-14,2025,45,成都
@@ -58,9 +58,9 @@ describe('CSV 解析服务', () => {
 
     it('应该处理空行', () => {
       const csvWithEmptyLines = `snapshot_date,policy_start_year,week_number,chengdu_branch,third_level_organization,business_type_category,customer_category_3,insurance_type,coverage_type,is_new_energy_vehicle,is_transferred_vehicle,renewal_status,vehicle_insurance_grade,highway_risk_grade,large_truck_score,small_truck_score,terminal_source,signed_premium_yuan,matured_premium_yuan,policy_count,claim_case_count,reported_claim_payment_yuan,expense_amount_yuan,commercial_premium_before_discount_yuan,premium_plan_yuan,marginal_contribution_amount_yuan
-2025-01-14,2025,45,成都,武侯,个人客户,车险,交强险,false,false,新保,A级,低风险,80,85,直销,10000,8000,10,2,1600,1200,11000,9000,800
+2025-01-14,2025,45,成都,武侯,非营业客车新车,非营业个人客车,交强险,false,false,新保,A级,低风险,80,85,直销,10000,8000,10,2,1600,1200,11000,9000,800
 
-2025-01-14,2025,45,成都,高新,企业客户,车险,商业险,true,true,续保,B级,中风险,75,80,代理,20000,18000,20,3,2700,2000,22000,18000,2000`
+2025-01-14,2025,45,成都,高新,10吨以上营业货车（普货）,营业货车,商业险,true,true,续保,B级,中风险,75,80,代理,20000,18000,20,3,2700,2000,22000,18000,2000`
 
       const result = parseCSV(csvWithEmptyLines)
 

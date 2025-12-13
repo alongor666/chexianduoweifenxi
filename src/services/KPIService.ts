@@ -16,7 +16,7 @@
 import {
   calculateKPIs,
   calculateIncrementKPIs,
-  aggregateInsuranceRecords,
+  // aggregateInsuranceRecords,
   InsuranceRecord as DomainInsuranceRecord,
 } from '@/domain'
 import type { InsuranceRecord, KPIResult, FilterState } from '@/types/insurance'

@@ -23,7 +23,7 @@ import { InsuranceRecord } from '../entities/InsuranceRecord'
 export interface KPIResult {
   // 率值指标
   loss_ratio: number | null // 满期赔付率
-  premium_progress: number | null // 保费达成率
+
   premium_time_progress_achievement_rate: number | null // 保费时间进度达成率 = (保费达成率 / 时间进度) × 100
   policy_count_time_progress_achievement_rate: number | null // 件数时间进度达成率
   maturity_ratio: number | null // 满期率
@@ -243,19 +243,6 @@ export function calculateAutonomyCoefficient(
   return safeDivide(signedPremium, commercialPremiumBeforeDiscount)
 }
 
-/**
- * 计算保费达成率
- */
-export function calculatePremiumProgress(
-  signedPremium: number,
-  premiumTarget: number | null
-): number | null {
-  if (premiumTarget === null) {
-    return null
-  }
-  return toPercentage(safeDivide(signedPremium, premiumTarget))
-}
-
 // ============= 均值指标计算 =============
 
 /**
@@ -356,11 +343,6 @@ export function calculateKPIs(
     aggregated.commercial_premium_before_discount_yuan
   )
 
-  const premium_progress = calculatePremiumProgress(
-    aggregated.signed_premium_yuan,
-    premiumPlanYuan
-  )
-
   // 4. 计算时间进度达成率
   const yearProgress = calculateYearProgress(options.currentWeekNumber)
   const completionRatio = safeDivide(
@@ -421,7 +403,6 @@ export function calculateKPIs(
     variable_cost_ratio,
     matured_claim_ratio,
     autonomy_coefficient,
-    premium_progress,
     premium_time_progress_achievement_rate,
     policy_count_time_progress_achievement_rate,
 
@@ -540,7 +521,6 @@ export function calculateIncrementKPIs(
     average_contribution: incrementResult.average_contribution,
 
     // 【时间进度】使用增量数据
-    premium_progress: incrementResult.premium_progress,
     premium_time_progress_achievement_rate:
       incrementResult.premium_time_progress_achievement_rate,
     policy_count_time_progress_achievement_rate:
@@ -607,11 +587,6 @@ function calculateKPIsFromAggregation(
     aggregated.commercial_premium_before_discount_yuan
   )
 
-  const premium_progress = calculatePremiumProgress(
-    aggregated.signed_premium_yuan,
-    premiumPlanYuan
-  )
-
   // 时间进度达成率
   const yearProgress = calculateYearProgress(options.currentWeekNumber)
   const completionRatio = safeDivide(
@@ -668,7 +643,6 @@ function calculateKPIsFromAggregation(
     variable_cost_ratio,
     matured_claim_ratio,
     autonomy_coefficient,
-    premium_progress,
     premium_time_progress_achievement_rate,
     policy_count_time_progress_achievement_rate,
     signed_premium: Math.round(aggregated.signed_premium_yuan / 10000),
@@ -722,7 +696,6 @@ export function getEmptyKPIResult(): KPIResult {
     variable_cost_ratio: null,
     matured_claim_ratio: null,
     autonomy_coefficient: null,
-    premium_progress: null,
     premium_time_progress_achievement_rate: null,
     policy_count_time_progress_achievement_rate: null,
     signed_premium: 0,
