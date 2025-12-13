@@ -8,6 +8,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { getKPIFormulaDefinition } from '@/constants/kpi-definitions'
 
 export interface CompactKPICardProps {
   /**
@@ -88,6 +89,7 @@ export function CompactKPICard({
   icon,
   numeratorValue,
   denominatorValue,
+  kpiKey,
   isCore = false,
 }: CompactKPICardProps) {
   const [showDetail, setShowDetail] = useState(false)
@@ -125,7 +127,7 @@ export function CompactKPICard({
     : null
 
   // 获取 KPI 公式定义
-  const formulaDefinition = undefined
+  const formulaDefinition = getKPIFormulaDefinition(kpiKey)
 
   return (
     <div className="relative">

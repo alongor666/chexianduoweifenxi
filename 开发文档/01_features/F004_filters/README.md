@@ -24,6 +24,7 @@
   - 保险类型：基于 `CANONICAL_INSURANCE_TYPES`（2种：商业险、交强险）
   - 业务类型：基于 `CANONICAL_BUSINESS_TYPES`（16种，严格符合CSV规范）
   - 险别组合：基于 `CANONICAL_COVERAGE_TYPES`（3种：主全、交三、单交）
+- ✅ **机构级联**: 三级机构选择变化时，自动收敛产品、客户与渠道筛选值到该机构实际存在的选项，避免空数据口径。
 - ✅ **客户维度筛选**: 按客户类型、评级、新续转等属性筛选。
   - 客户分类：基于 `CANONICAL_CUSTOMER_CATEGORIES`（11种，严格符合CSV规范）
   - 车险评级：从数据中动态提取（排除X和空值）

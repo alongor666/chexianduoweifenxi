@@ -27,6 +27,8 @@ export interface UploadConfig {
   maxErrorRows?: number
   /** 是否跳过验证 */
   skipValidation?: boolean
+  /** 并行上传的并发度（UI层使用，默认值为2，最大3） */
+  concurrency?: number
 }
 
 /**

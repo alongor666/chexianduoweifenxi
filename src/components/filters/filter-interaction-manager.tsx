@@ -4,7 +4,7 @@ import { useEffect, useCallback } from 'react'
 import { useAppStore } from '@/store/use-app-store'
 import type { FilterState } from '@/types/insurance'
 
-const areArraysEqual = (a: ReadonlyArray<number>, b: ReadonlyArray<number>) =>
+const areArraysEqual = <T,>(a: ReadonlyArray<T>, b: ReadonlyArray<T>) =>
   a.length === b.length && a.every((value, index) => value === b[index])
 
 /**
@@ -267,9 +267,101 @@ export function FilterInteractionManager() {
    * 当选择特定组织时，自动筛选相关的业务数据
    */
   const handleOrganizationChange = useCallback(() => {
-    // 这里可以添加组织级联逻辑
-    // 例如：某些业务类型只在特定组织中存在
-  }, [])
+    if (!rawData || rawData.length === 0) return
+    if (filters.organizations.length === 0) return
+
+    const scopedRecords = rawData.filter(record =>
+      filters.organizations.includes(record.third_level_organization)
+    )
+
+    if (scopedRecords.length === 0) return
+
+    const collectValues = (
+      selector: (record: (typeof rawData)[number]) => string
+    ) => new Set(scopedRecords.map(selector).filter(Boolean))
+
+    const nextBusinessTypes = collectValues(
+      record => record.business_type_category
+    )
+    const nextInsuranceTypes = collectValues(record => record.insurance_type)
+    const nextCoverageTypes = collectValues(record => record.coverage_type)
+    const nextCustomerCategories = collectValues(
+      record => record.customer_category_3
+    )
+    const nextTerminalSources = collectValues(record => record.terminal_source)
+    const availableNewEnergy = new Set(
+      scopedRecords.map(record => record.is_new_energy_vehicle)
+    )
+
+    const ensureWithinScope = (current: string[], available: Set<string>) => {
+      const filtered = current.filter(value => available.has(value))
+      if (filtered.length > 0) return filtered
+      return Array.from(available).sort((a, b) => a.localeCompare(b, 'zh-CN'))
+    }
+
+    const updates: Partial<FilterState> = {}
+
+    const scopedBusinessTypes = ensureWithinScope(
+      filters.businessTypes,
+      nextBusinessTypes
+    )
+    if (!areArraysEqual(filters.businessTypes, scopedBusinessTypes)) {
+      updates.businessTypes = scopedBusinessTypes
+    }
+
+    const scopedInsuranceTypes = ensureWithinScope(
+      filters.insuranceTypes,
+      nextInsuranceTypes
+    )
+    if (!areArraysEqual(filters.insuranceTypes, scopedInsuranceTypes)) {
+      updates.insuranceTypes = scopedInsuranceTypes
+    }
+
+    const scopedCoverageTypes = ensureWithinScope(
+      filters.coverageTypes,
+      nextCoverageTypes
+    )
+    if (!areArraysEqual(filters.coverageTypes, scopedCoverageTypes)) {
+      updates.coverageTypes = scopedCoverageTypes
+    }
+
+    const scopedCustomerCategories = ensureWithinScope(
+      filters.customerCategories,
+      nextCustomerCategories
+    )
+    if (!areArraysEqual(filters.customerCategories, scopedCustomerCategories)) {
+      updates.customerCategories = scopedCustomerCategories
+    }
+
+    const scopedTerminalSources = ensureWithinScope(
+      filters.terminalSources,
+      nextTerminalSources
+    )
+    if (!areArraysEqual(filters.terminalSources, scopedTerminalSources)) {
+      updates.terminalSources = scopedTerminalSources
+    }
+
+    if (
+      filters.isNewEnergy != null &&
+      !availableNewEnergy.has(filters.isNewEnergy)
+    ) {
+      updates.isNewEnergy = null
+    }
+
+    if (Object.keys(updates).length > 0) {
+      updateFilters(updates)
+    }
+  }, [
+    rawData,
+    filters.organizations,
+    filters.businessTypes,
+    filters.insuranceTypes,
+    filters.coverageTypes,
+    filters.customerCategories,
+    filters.terminalSources,
+    filters.isNewEnergy,
+    updateFilters,
+  ])
 
   // 监听数据加载，设置智能默认值
   useEffect(() => {
