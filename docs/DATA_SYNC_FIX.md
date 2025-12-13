@@ -11,11 +11,13 @@
 ### 数据流程分析
 
 **迁移前**：
+
 ```
 CSV上传 → useAppStore.setRawData → rawData 更新 → 页面显示数据 ✅
 ```
 
 **迁移后（问题状态）**：
+
 ```
 CSV上传 → useAppStore.setRawData → 旧Store.rawData 更新
                                     ↓
@@ -127,6 +129,7 @@ CSV上传 → useAppStore.setRawData → 旧Store.rawData 更新
 ## 向后兼容性
 
 此修复保持100%向后兼容：
+
 - ✅ 旧组件仍然可以使用 `useAppStore`
 - ✅ 新组件可以使用新架构 Hooks
 - ✅ 数据在两个 Store 中保持同步
@@ -135,6 +138,7 @@ CSV上传 → useAppStore.setRawData → 旧Store.rawData 更新
 ## 后续计划
 
 在完成所有组件迁移后，可以：
+
 1. 移除旧的 `useAppStore` 中的数据存储逻辑
 2. 将其作为 `DataStore` 的代理层
 3. 最终完全废弃 `useAppStore`

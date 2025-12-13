@@ -7,6 +7,7 @@ allowed-tools: Bash, Read, Grep
 # Git 同步状态检查器
 
 ## 目标
+
 在多台电脑（公司、家里）之间切换开发时,自动检查代码同步状态,确保不会丢失代码或产生冲突。
 
 ## 快速开始
@@ -34,18 +35,22 @@ AI：提供安全拉取命令
 ## 何时使用
 
 ### 📍 下班前（公司电脑）
+
 - 准备离开公司,需要确保所有代码已推送到 GitHub
 - 触发词: "准备下班"、"检查同步"、"推送代码"
 
 ### 🏠 到家后（家里电脑）
+
 - 刚回到家,准备继续开发
 - 触发词: "开始工作"、"拉取最新代码"、"检查同步"
 
 ### 🏢 上班前（公司电脑）
+
 - 刚到公司,准备继续开发
 - 触发词: "开始工作"、"检查同步"
 
 ### 🔄 任何时候
+
 - 想知道当前代码与远程仓库的差异
 - 触发词: "检查同步状态"、"git状态"
 
@@ -97,6 +102,7 @@ git branch -vv
 ```
 
 **识别问题**:
+
 - ✅ 工作区干净: `nothing to commit, working tree clean`
 - ⚠️ 有未暂存的修改: `Changes not staged for commit`
 - ⚠️ 有未提交的修改: `Changes to be committed`
@@ -115,6 +121,7 @@ git log --oneline HEAD..origin/main  # 远程领先的提交
 ```
 
 **识别问题**:
+
 - ✅ 本地领先: `Your branch is ahead of 'origin/main' by X commits`
 - ⚠️ 远程领先: `Your branch is behind 'origin/main' by X commits`
 - 🔴 分叉了: `Your branch and 'origin/main' have diverged`
@@ -143,10 +150,11 @@ git diff --name-only $(git merge-base HEAD origin/main)..origin/main
 
 ### 场景 A: 准备下班（公司电脑）
 
-```markdown
+````markdown
 # 🏢 → 🏠 同步检查报告
 
 ## 📊 当前状态
+
 - 分支: main
 - 本地提交: 3 个未推送
 - 工作区: 2 个文件有修改
@@ -154,9 +162,10 @@ git diff --name-only $(git merge-base HEAD origin/main)..origin/main
 ## ⚠️ 需要处理的问题
 
 ### 1. 未提交的修改（2个文件）
+
 \```
-M  src/components/dashboard-client.tsx
-M  src/hooks/use-smart-comparison.ts
+M src/components/dashboard-client.tsx
+M src/hooks/use-smart-comparison.ts
 \```
 
 **建议操作**:
@@ -166,6 +175,7 @@ git commit -m "feat: 完成XXX功能开发"
 \```
 
 ### 2. 未推送的提交（3个）
+
 \```
 e18cf2e feat: 添加多图表标签页功能
 a1b2c3d fix: 修复KPI计算精度问题
@@ -180,24 +190,27 @@ git push origin main
 ## ✅ 推送清单
 
 在离开公司前,请完成以下步骤:
+
 - [ ] 提交所有未保存的修改
 - [ ] 推送所有提交到 GitHub
 - [ ] 验证 GitHub 上能看到最新代码
 - [ ] 记录当前工作状态（可选）
 
 ## 🎯 推送后验证命令
+
 \```bash
-git status  # 应显示 "nothing to commit, working tree clean"
-git log --oneline origin/main..HEAD  # 应无输出（表示已完全同步）
+git status # 应显示 "nothing to commit, working tree clean"
+git log --oneline origin/main..HEAD # 应无输出（表示已完全同步）
 \```
-```
+````
 
 ### 场景 B: 开始工作（家里/公司电脑）
 
-```markdown
+````markdown
 # 🏠/🏢 开始工作 - 同步检查报告
 
 ## 📊 当前状态
+
 - 分支: main
 - 远程领先: 3 个提交
 - 工作区: 干净
@@ -205,6 +218,7 @@ git log --oneline origin/main..HEAD  # 应无输出（表示已完全同步）
 ## 📥 需要拉取的更新
 
 ### 远程新增的提交（3个）
+
 \```
 e18cf2e feat: 添加多图表标签页功能
 a1b2c3d fix: 修复KPI计算精度问题
@@ -212,52 +226,62 @@ d4e5f6g docs: 更新开发文档
 \```
 
 ### 变更的文件
+
 \```
-src/components/features/multi-chart-tabs.tsx   (新文件)
-src/hooks/use-smart-comparison.ts              (修改)
-开发文档/01_features/F014_multi_chart_tabs/    (新增)
+src/components/features/multi-chart-tabs.tsx (新文件)
+src/hooks/use-smart-comparison.ts (修改)
+开发文档/01_features/F014_multi_chart_tabs/ (新增)
 \```
 
 ## ✅ 拉取建议
 
 **安全拉取命令**:
 \```bash
+
 # 1. 确认本地工作区干净
+
 git status
 
 # 2. 拉取最新代码
+
 git pull origin main
 
 # 3. 验证拉取成功
+
 git status
-pnpm dev  # 启动项目验证
+pnpm dev # 启动项目验证
 \```
 
 ## ⚠️ 注意事项
+
 - ✅ 工作区干净,可以安全拉取
 - 📝 拉取后建议运行 `pnpm dev` 验证项目正常
 - 📚 查看更新的开发文档了解新功能
-```
+````
 
 ### 场景 C: 代码分叉警告
 
-```markdown
+````markdown
 # 🔴 代码分叉警告
 
 ## 问题描述
+
 本地分支和远程分支已经分叉:
+
 - 本地独有提交: 2 个
 - 远程独有提交: 3 个
 
 ## 📊 分叉详情
 
 ### 本地独有的提交
+
 \```
 a1b2c3d feat: 添加XXX功能（在家里电脑上提交）
 d4e5f6g fix: 修复YYY问题
 \```
 
 ### 远程独有的提交
+
 \```
 e18cf2e feat: 添加ZZZ功能（在公司电脑上提交）
 f7g8h9i fix: 修复AAA问题
@@ -267,70 +291,90 @@ j0k1l2m docs: 更新文档
 ## 🔧 解决方案
 
 ### 方案 1: Rebase（推荐，保持线性历史）
+
 \```bash
+
 # 1. 备份当前分支
+
 git branch backup-$(date +%Y%m%d-%H%M%S)
 
 # 2. 获取最新远程代码
+
 git fetch origin
 
 # 3. Rebase 到远程分支
+
 git rebase origin/main
 
 # 4. 如果有冲突，解决后继续
+
 git rebase --continue
 
 # 5. 强制推送（仅当确定本地更改正确时）
+
 git push origin main --force-with-lease
 \```
 
 ### 方案 2: Merge（保留完整历史）
+
 \```bash
+
 # 1. 拉取并合并
+
 git pull origin main
 
 # 2. 解决冲突（如果有）
+
 # 编辑有冲突的文件
 
 # 3. 提交合并
+
 git add .
 git commit -m "merge: 合并远程更改"
 
 # 4. 推送
+
 git push origin main
 \```
 
 ## ⚠️ 预防措施
+
 1. **始终在下班前推送代码**
 2. **始终在开始工作前拉取代码**
 3. **避免在多台电脑同时开发同一功能**
 4. **使用功能分支隔离不同的开发任务**
-```
+````
 
 ## 常见场景处理
 
 ### 场景 1: 忘记推送就下班了
+
 **症状**: 在家里电脑上拉取时，发现没有公司的最新代码
 
 **解决**:
+
 1. 第二天到公司后，运行检查命令
 2. 发现未推送的提交
 3. 推送到 GitHub
 4. 回家后重新拉取
 
 ### 场景 2: 两台电脑都有未推送的提交
+
 **症状**: 代码分叉，本地和远程都有独有的提交
 
 **解决**:
+
 1. 运行检查命令，识别分叉
 2. 选择 Rebase 或 Merge 方案
 3. 解决冲突（如果有）
 4. 推送合并后的代码
 
 ### 场景 3: 不确定当前在哪台电脑上工作过
+
 **症状**: 混淆了工作进度
 
 **解决**:
+
 1. 运行检查命令
 2. 查看未推送的提交信息
 3. 查看提交时间和作者信息
@@ -341,6 +385,7 @@ git push origin main
 ### ✅ 推荐的工作流程
 
 **下班前（公司电脑）**:
+
 ```bash
 # 1. 运行同步检查
 <使用此 skill>
@@ -357,6 +402,7 @@ git log --oneline origin/main..HEAD  # 应无输出
 ```
 
 **开始工作前（家里/公司电脑）**:
+
 ```bash
 # 1. 运行同步检查
 <使用此 skill>
@@ -377,12 +423,14 @@ pnpm dev
    - 使用 `--force-with-lease` 更安全
 
 2. **提交前先拉取**
+
    ```bash
    git fetch origin
    git status  # 检查是否有冲突
    ```
 
 3. **使用功能分支**
+
    ```bash
    # 在公司开发新功能
    git checkout -b feature/new-dashboard

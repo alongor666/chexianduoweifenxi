@@ -50,11 +50,13 @@
 ```
 
 **违反的后果**：
+
 - 业务逻辑无法复用（绑死在 UI 框架上）
 - 无法测试（依赖外部系统）
 - 技术栈迁移成本巨大（改 UI 框架要重写所有逻辑）
 
 **检测方法**：
+
 ```bash
 # 检查 Domain 层是否导入了 React
 grep -r "from 'react'" src/domain/
@@ -72,6 +74,7 @@ grep -r "fetch\|axios\|supabase" src/domain/
 **定义**：一个模块只有一个改变的理由（一个变化点）。
 
 **判断公式**：
+
 ```
 如果你能用"和"来描述一个模块的功能 → 违反 SRP
 
@@ -81,11 +84,13 @@ grep -r "fetch\|axios\|supabase" src/domain/
 ```
 
 **实践规则**：
+
 - 一个文件 < 300 行（超过需要拆分）
 - 一个函数 < 50 行（超过需要拆分）
 - 一个类/模块的 import 数量 < 10（超过可能职责过多）
 
 **检测方法**：
+
 ```bash
 # 统计文件行数
 find src -name "*.ts" -o -name "*.tsx" | xargs wc -l | sort -rn | head -10
@@ -102,13 +107,14 @@ grep -c "^import" src/store/use-app-store.ts
 
 **三个必须分离的关注点**：
 
-| 关注点 | 职责 | 不允许包含 |
-|--------|------|-----------|
-| **数据层（Data）** | 获取、存储、序列化数据 | 业务规则、UI 状态 |
-| **业务层（Domain）** | 业务规则、计算逻辑 | HTTP 请求、DOM 操作 |
-| **展示层（View）** | 渲染 UI、处理交互 | 业务计算、数据存储 |
+| 关注点               | 职责                   | 不允许包含          |
+| -------------------- | ---------------------- | ------------------- |
+| **数据层（Data）**   | 获取、存储、序列化数据 | 业务规则、UI 状态   |
+| **业务层（Domain）** | 业务规则、计算逻辑     | HTTP 请求、DOM 操作 |
+| **展示层（View）**   | 渲染 UI、处理交互      | 业务计算、数据存储  |
 
 **反模式识别**：
+
 ```typescript
 // ❌ 反模式：UI 组件包含业务逻辑
 function ProductList() {
@@ -130,6 +136,7 @@ function ProductList() {
 ### 规律 4：高内聚，低耦合（Cohesion & Coupling）
 
 **定义**：
+
 - **内聚**：模块内部的元素关联程度（越高越好）
 - **耦合**：模块之间的依赖程度（越低越好）
 
@@ -139,9 +146,9 @@ function ProductList() {
 // 内聚度测试：如果删除模块中的一个函数，其他函数是否还有意义？
 // ❌ 低内聚
 export const utils = {
-  formatDate,      // 时间相关
-  validateEmail,   // 校验相关
-  calculateKPI,    // 业务相关
+  formatDate, // 时间相关
+  validateEmail, // 校验相关
+  calculateKPI, // 业务相关
 }
 
 // ✅ 高内聚
@@ -171,6 +178,7 @@ class OrderService {
 ```
 
 **定量测量**：
+
 - **扇入（Fan-in）**：有多少模块依赖这个模块（越高越好，说明复用度高）
 - **扇出（Fan-out）**：这个模块依赖多少其他模块（越低越好，说明独立性强）
 
@@ -187,6 +195,7 @@ class OrderService {
 **三种重复类型**：
 
 1. **知识重复**（最危险）
+
    ```typescript
    // ❌ 业务规则散落各处
    // 文件 A
@@ -200,6 +209,7 @@ class OrderService {
    ```
 
 2. **结构重复**
+
    ```typescript
    // ❌ 相似的数据转换逻辑
    function transformUserData(data) { ... }
@@ -212,11 +222,12 @@ class OrderService {
 3. **实现重复**（可以容忍）
    ```typescript
    // ✅ 允许：两个不同场景恰好实现相同
-   const formatCurrency = (n) => `¥${n.toFixed(2)}`  // 用于展示
-   const serializeMoney = (n) => n.toFixed(2)        // 用于存储
+   const formatCurrency = n => `¥${n.toFixed(2)}` // 用于展示
+   const serializeMoney = n => n.toFixed(2) // 用于存储
    ```
 
 **执行标准**：
+
 - 复制粘贴代码 **超过 3 行** → 必须提取
 - 相同逻辑出现 **超过 2 次** → 必须抽象
 - **例外**：单元测试允许重复（可读性优先）
@@ -228,23 +239,25 @@ class OrderService {
 **定义**：只实现当前需要的功能，不要为未来可能的需求预留。
 
 **反模式识别**：
+
 ```typescript
 // ❌ 过度设计
 interface IDataSource {
   fetchFromDatabase(): Data
   fetchFromAPI(): Data
   fetchFromCache(): Data
-  fetchFromFile(): Data      // 当前不需要
+  fetchFromFile(): Data // 当前不需要
   fetchFromBlockchain(): Data // 完全不需要
 }
 
 // ✅ 按需设计
 interface IDataSource {
-  fetch(): Data  // 简单清晰
+  fetch(): Data // 简单清晰
 }
 ```
 
 **执行规则**：
+
 - 如果功能在 **下一个迭代** 中不会用到 → 不要实现
 - 如果抽象层在 **当前代码** 中没有 2 个以上的实现 → 不要抽象
 - 如果配置项在 **现有场景** 中只有一个值 → 不要做成配置
@@ -257,14 +270,15 @@ interface IDataSource {
 
 **简单性度量**：
 
-| 维度 | 简单 | 复杂 |
-|------|------|------|
-| **理解时间** | < 5分钟读懂 | > 30分钟才理解 |
-| **依赖数量** | < 3个外部依赖 | > 10个依赖 |
-| **抽象层级** | < 3层调用 | > 5层嵌套 |
-| **配置项** | < 5个参数 | > 10个配置 |
+| 维度         | 简单          | 复杂           |
+| ------------ | ------------- | -------------- |
+| **理解时间** | < 5分钟读懂   | > 30分钟才理解 |
+| **依赖数量** | < 3个外部依赖 | > 10个依赖     |
+| **抽象层级** | < 3层调用     | > 5层嵌套      |
+| **配置项**   | < 5个参数     | > 10个配置     |
 
 **示例**：
+
 ```typescript
 // ❌ 过度复杂
 class DataProcessor<T, U, V> {
@@ -326,6 +340,7 @@ interface IDataExporter {
 ```
 
 **检测方法**：
+
 - 如果你的组件只用到接口的 **< 30%** 方法 → 接口过大
 - 如果你需要写 `// @ts-ignore` 来忽略某些属性 → 接口设计错误
 
@@ -338,6 +353,7 @@ interface IDataExporter {
 **实现策略**：
 
 **策略 1：策略模式**
+
 ```typescript
 // ❌ 每次新增类型都要改 if-else
 function calculatePrice(type: string, base: number) {
@@ -352,9 +368,9 @@ interface IPriceStrategy {
 }
 
 const strategies = {
-  vip: (base) => base * 0.8,
-  new: (base) => base * 0.9,
-  regular: (base) => base,
+  vip: base => base * 0.8,
+  new: base => base * 0.9,
+  regular: base => base,
 }
 
 function calculatePrice(type: string, base: number) {
@@ -363,6 +379,7 @@ function calculatePrice(type: string, base: number) {
 ```
 
 **策略 2：插件系统**
+
 ```typescript
 // ✅ 通过插件扩展功能
 interface IPlugin {
@@ -468,7 +485,7 @@ import { useInsuranceData } from '@/features/insurance-management'
 
 // ✅ 正确：通过 shared 或 application 层通信
 // features/analytics/model/useAnalytics.ts
-import { useDataStore } from '@/application/stores'  // 共享状态
+import { useDataStore } from '@/application/stores' // 共享状态
 ```
 
 #### 规则 3：需求驱动（Needs Driven）
@@ -476,6 +493,7 @@ import { useDataStore } from '@/application/stores'  // 共享状态
 **定义**：只有真实的业务需求才创建新的 feature。
 
 **创建 feature 的标准**：
+
 - [ ] 是否是一个完整的用户故事？
 - [ ] 是否可以独立交付？
 - [ ] 是否有明确的业务边界？
@@ -595,12 +613,14 @@ src/
 **目标**：快速验证产品方向
 
 **允许的"坏习惯"**：
+
 - ✅ 所有逻辑写在组件里
 - ✅ 没有类型定义
 - ✅ 没有测试
 - ✅ 重复代码
 
 **必须做的**：
+
 - ✅ Git 提交记录清晰
 - ✅ 文件夹按功能分组
 - ✅ 关键业务逻辑加注释
@@ -614,6 +634,7 @@ src/
 **目标**：建立可维护的架构基础
 
 **必须完成的重构**：
+
 - ✅ 分离 Domain、Application、Infrastructure 三层
 - ✅ 提取所有业务逻辑到 Domain 层
 - ✅ 建立 Repository 模式
@@ -622,6 +643,7 @@ src/
 - ✅ 核心业务逻辑有单元测试
 
 **目录结构**：
+
 ```
 src/
 ├── domain/           ← 必须有
@@ -631,6 +653,7 @@ src/
 ```
 
 **检查清单**：
+
 - [ ] 所有业务计算都在 `domain/rules/` 中
 - [ ] 所有外部调用都在 `infrastructure/` 中
 - [ ] 没有组件直接调用 API
@@ -644,6 +667,7 @@ src/
 **目标**：支持多团队并行开发
 
 **架构升级**：
+
 - ✅ 完整采用 Feature-Sliced Design
 - ✅ 每个 feature 有独立的 Store
 - ✅ 引入 Event Bus 解耦 feature 间通信
@@ -651,6 +675,7 @@ src/
 - ✅ E2E 测试覆盖核心流程
 
 **目录结构**：
+
 ```
 src/
 ├── domain/
@@ -662,6 +687,7 @@ src/
 ```
 
 **协作规则**：
+
 - Feature 之间通过 Event 通信
 - 共享代码必须经过 Code Review
 - 每个 feature 有独立的测试覆盖率要求
@@ -673,6 +699,7 @@ src/
 **目标**：模块化、可独立部署
 
 **架构升级**：
+
 - ✅ Monorepo（pnpm workspace）
 - ✅ 微前端架构（Module Federation）
 - ✅ 独立的 npm 包
@@ -680,6 +707,7 @@ src/
 - ✅ 性能监控和告警
 
 **目录结构**：
+
 ```
 packages/
 ├── core/             ← 核心库
@@ -700,23 +728,27 @@ packages/
 
 ```markdown
 ## 文件职责检查
+
 - [ ] 这个文件能用一句话描述职责吗？
 - [ ] 这个文件的 import 数量 < 10 吗？
 - [ ] 这个文件的代码行数 < 300 吗？
 - [ ] 这个文件的函数数量 < 10 吗？
 
 ## 依赖方向检查
+
 - [ ] 如果在 domain/ 层，没有 import React 吗？
 - [ ] 如果在 domain/ 层，没有 import API 客户端吗？
 - [ ] 如果在 application/ 层，没有 import UI 组件吗？
 
 ## 命名规范检查
+
 - [ ] 文件名是 kebab-case 吗？（data-service.ts）
 - [ ] 类型名是 PascalCase 吗？（InsuranceRecord）
 - [ ] 函数名是 camelCase 吗？（calculateKPI）
 - [ ] 常量名是 UPPER_SNAKE_CASE 吗？（MAX_RETRY）
 
 ## 导出检查
+
 - [ ] 只导出必要的符号吗？
 - [ ] 有明确的 Public API 吗？（index.ts）
 ```
@@ -729,21 +761,25 @@ packages/
 
 ```markdown
 ## 业务逻辑检查
+
 - [ ] 所有计算逻辑都在 domain/rules/ 中吗？
 - [ ] 业务规则是纯函数吗？（无副作用）
 - [ ] 业务规则有单元测试吗？
 
 ## 数据流检查
+
 - [ ] UI 组件通过 Hook 获取数据吗？
 - [ ] 数据修改通过 Use Case 吗？
 - [ ] 没有组件直接调用 API 吗？
 
 ## 状态管理检查
+
 - [ ] Store 只负责存储状态吗？（不包含业务逻辑）
 - [ ] 状态修改有明确的 Action 吗？
 - [ ] 状态是 immutable 的吗？
 
 ## 错误处理检查
+
 - [ ] 关键路径有错误处理吗？
 - [ ] 错误信息对用户友好吗？
 - [ ] 错误有日志记录吗？
@@ -802,20 +838,24 @@ echo "✅ 所有检查通过！"
 
 ```markdown
 ## 架构一致性
+
 - [ ] 新代码符合现有分层结构吗？
 - [ ] 依赖方向正确吗？
 - [ ] 没有引入循环依赖吗？
 
 ## 代码质量
+
 - [ ] 有重复代码吗？（DRY）
 - [ ] 函数职责单一吗？（SRP）
 - [ ] 变量命名清晰吗？
 
 ## 测试覆盖
+
 - [ ] 新增的业务逻辑有单元测试吗？
 - [ ] 关键路径有集成测试吗？
 
 ## 文档
+
 - [ ] 复杂逻辑有注释吗？
 - [ ] 公开接口有 JSDoc 吗？
 - [ ] README 更新了吗？
@@ -837,18 +877,21 @@ echo "✅ 所有检查通过！"
 你正在协助一个遵循 Clean Architecture + Feature-Sliced Design 的项目。
 
 **核心规则**：
+
 1. 依赖只能从外向内（Infrastructure → Application → Domain）
 2. Domain 层不能依赖任何框架（包括 React）
 3. 每个 feature 通过 index.ts 暴露公开接口
 4. 同层 feature 之间不能相互依赖
 
 **目录结构**：
+
 - `src/domain/` - 业务实体和规则（纯 TypeScript）
 - `src/application/` - 用例和接口定义
 - `src/infrastructure/` - 框架相关实现
 - `src/features/` - 功能切片（按业务划分）
 
 **在编写代码前，请先说明**：
+
 1. 这段代码属于哪一层？
 2. 会依赖哪些模块？
 3. 是否符合依赖方向规则？
@@ -868,11 +911,13 @@ echo "✅ 所有检查通过！"
 **任务**：[描述具体任务]
 
 **架构约束**：
+
 - 层级：[domain/application/infrastructure]
 - 依赖规则：[只能依赖 xxx 层]
 - 职责：[单一职责描述]
 
 **质量要求**：
+
 - [ ] 函数 < 50 行
 - [ ] 文件 < 300 行
 - [ ] 包含单元测试
@@ -881,6 +926,7 @@ echo "✅ 所有检查通过！"
 **示例**：
 
 请在 domain/rules/ 中创建 KPI 计算函数：
+
 - 层级：domain
 - 依赖规则：只能依赖 domain/entities
 - 职责：根据保险记录计算满期赔付率
@@ -899,21 +945,25 @@ echo "✅ 所有检查通过！"
 请按照以下步骤重构代码：
 
 **第一步：分析现状**
+
 - 识别违反的架构规则
 - 列出职责混乱的模块
 - 找出重复代码
 
 **第二步：制定计划**
+
 - 确定目标架构（哪些代码应该在哪一层）
 - 规划重构步骤（先后顺序）
 - 评估风险（是否需要测试保护）
 
 **第三步：执行重构**
+
 - 一次只重构一个模块
 - 每个步骤保持代码可运行
 - 提交前运行测试
 
 **第四步：验证结果**
+
 - 检查依赖方向是否正确
 - 确认单元测试通过
 - 更新文档
@@ -929,16 +979,21 @@ echo "✅ 所有检查通过！"
 # ADR-001: 采用 Clean Architecture 三层模型
 
 ## 状态
+
 已接受
 
 ## 上下文
+
 当前项目代码规模达到 38K 行，面临以下问题：
+
 - 状态管理混乱（新旧 Store 并存）
 - 业务逻辑散落在 UI 组件中
 - 重复代码多（normalizeChineseText 调用 10+ 次）
 
 ## 决策
+
 采用 Clean Architecture 三层模型重构项目：
+
 - Domain 层：纯业务逻辑（不依赖框架）
 - Application 层：用例和接口定义
 - Infrastructure 层：React 组件、API、存储
@@ -946,22 +1001,27 @@ echo "✅ 所有检查通过！"
 ## 后果
 
 ### 正面影响
+
 - 业务逻辑可复用（不绑定 React）
 - 易于测试（纯函数）
 - 技术栈迁移成本低
 
 ### 负面影响
+
 - 初期重构成本高（约 1-2 周）
 - 代码量增加约 20%（抽象层增加）
 - 团队需要学习新模式
 
 ## 合规性
+
 遵循的原则：
+
 - ✅ 依赖方向法则
 - ✅ 单一职责原则
 - ✅ 关注点分离
 
 ## 替代方案
+
 1. 保持现状（不重构） - 拒绝原因：技术债务累积
 2. 微前端架构 - 拒绝原因：过度设计
 ```
@@ -973,6 +1033,7 @@ echo "✅ 所有检查通过！"
 ### 自动化工具
 
 1. **ESLint 规则**
+
 ```json
 // .eslintrc.json
 {
@@ -998,12 +1059,14 @@ echo "✅ 所有检查通过！"
 ```
 
 2. **Dependency Cruiser**（检查循环依赖）
+
 ```bash
 pnpm add -D dependency-cruiser
 depcruise --validate .dependency-cruiser.js src
 ```
 
 3. **SonarQube**（代码质量检查）
+
 ```yaml
 # sonar-project.properties
 sonar.projectKey=insurance-analytics

@@ -31,7 +31,7 @@ test.describe('数据流完整性测试', () => {
 
     // 或者查找拖拽上传提示
     const dragDropHint = page.getByText(/拖拽.*文件|选择文件/i)
-    if (await dragDropHint.count() > 0) {
+    if ((await dragDropHint.count()) > 0) {
       await expect(dragDropHint.first()).toBeVisible()
     }
   })
@@ -265,12 +265,7 @@ test.describe('数据持久化测试', () => {
     const afterRefreshText = await page.textContent('body')
 
     // 应该包含数据相关的文本（而不仅仅是空白状态）
-    const hasDataIndicators = [
-      /\d+.*万元/,
-      /\d+.*件/,
-      /保费/,
-      /保单/,
-    ]
+    const hasDataIndicators = [/\d+.*万元/, /\d+.*件/, /保费/, /保单/]
 
     let foundIndicators = 0
     for (const pattern of hasDataIndicators) {

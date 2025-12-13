@@ -1,6 +1,7 @@
 # 架构重构指南 - 模块化升级
 
 ## 📅 文档信息
+
 - **创建日期**: 2025-10-22
 - **版本**: 1.0.0
 - **状态**: 🚧 实施中 - 阶段1
@@ -13,6 +14,7 @@
 基于**"非必要不耦合，防止单点引发全局坍塌"**的核心原则，将当前的单体Store架构重构为**模块化、可测试、可扩展**的分层架构。
 
 ### 核心问题
+
 1. ❌ **useAppStore** 成为991行的超级仓库，承担过多职责
 2. ❌ **双Store并存**但职责重叠（premiumTargets vs goalStore）
 3. ❌ **逻辑重复**：筛选逻辑在Store和Hook中重复实现
@@ -20,6 +22,7 @@
 5. ❌ **持久化分散**：3处不同的实现
 
 ### 重构目标
+
 - ✅ **降低耦合**：组件通过Hooks访问，而非直接依赖Store
 - ✅ **单一职责**：每个Store/Service只负责一个领域
 - ✅ **易于测试**：纯函数+依赖注入
@@ -79,6 +82,7 @@
 ### 1. 服务层（Services）
 
 #### ✅ IPersistenceAdapter (接口)
+
 **位置**: `src/services/interfaces/IPersistenceAdapter.ts`
 
 **职责**: 定义持久化操作的标准接口
@@ -90,11 +94,12 @@ interface IPersistenceAdapter {
   remove(key: string): Promise<void>
   clear(): Promise<void>
   has(key: string): Promise<boolean>
-  getStats(): Promise<{ totalKeys, totalSize, availableSpace }>
+  getStats(): Promise<{ totalKeys; totalSize; availableSpace }>
 }
 ```
 
 **优点**:
+
 - 🔌 方便未来从LocalStorage迁移到IndexedDB
 - 🧪 易于Mock进行单元测试
 - 📦 符合依赖倒置原则
@@ -102,11 +107,13 @@ interface IPersistenceAdapter {
 ---
 
 #### ✅ LocalStorageAdapter (实现)
+
 **位置**: `src/services/adapters/LocalStorageAdapter.ts`
 
 **职责**: 基于浏览器LocalStorage的持久化实现
 
 **特性**:
+
 - 自动JSON序列化/反序列化
 - 存储空间检测和quota错误处理
 - 数据完整性校验
@@ -115,16 +122,19 @@ interface IPersistenceAdapter {
 ---
 
 #### ✅ PersistenceService (统一服务)
+
 **位置**: `src/services/PersistenceService.ts`
 
 **职责**: 应用数据持久化的统一入口
 
 **替代以下3处分散实现**:
+
 1. `src/lib/storage/data-persistence.ts` (273行)
 2. `src/store/use-app-store.ts` (637-690行的持久化方法)
 3. `src/hooks/use-persist-data.ts`
 
 **核心方法**:
+
 ```typescript
 class PersistenceService {
   // 原始数据
@@ -135,7 +145,7 @@ class PersistenceService {
   // 上传历史
   async addUploadHistory(batchResult, files): Promise<void>
   async getUploadHistory(): Promise<UploadHistoryRecord[]>
-  async checkFileExists(file: File): Promise<{exists, uploadRecord, fileInfo}>
+  async checkFileExists(file: File): Promise<{ exists; uploadRecord; fileInfo }>
 
   // 其他数据
   async savePremiumTargets(targets): Promise<void>
@@ -155,16 +165,19 @@ export const persistenceService = new PersistenceService()
 ---
 
 #### ✅ DataService (数据管理)
+
 **位置**: `src/services/DataService.ts`
 
 **职责**: 保险数据的过滤、聚合、统计等核心业务逻辑
 
 **统一以下散落逻辑**:
+
 1. `use-app-store.ts` 中的 `useFilteredData` (698-843行)
 2. `use-app-store.ts` 中的 `filterRecordsWithExclusions` (848-973行)
 3. `use-kpi.ts` 中重复的筛选逻辑 (95-247行)
 
 **核心方法**:
+
 ```typescript
 class DataService {
   // 核心筛选（消除重复逻辑）
@@ -189,6 +202,7 @@ class DataService {
 ```
 
 **优点**:
+
 - 🔁 消除逻辑重复：筛选逻辑只在一处维护
 - 🧪 纯函数：所有方法无副作用，易于测试
 - 📊 可复用：任何地方都可以调用，不依赖Store
@@ -196,11 +210,13 @@ class DataService {
 ---
 
 #### ✅ KPIService (计算服务)
+
 **位置**: `src/services/KPIService.ts`
 
 **职责**: 封装所有KPI计算逻辑，提供统一计算接口
 
 **核心方法**:
+
 ```typescript
 class KPIService {
   // 基础计算
@@ -223,6 +239,7 @@ class KPIService {
 ```
 
 **优点**:
+
 - 📦 复用现有kpi-engine，作为适配层
 - 🎯 统一接口，消除Hook中的重复计算
 - 🧮 纯函数，100%可测试
@@ -232,17 +249,20 @@ class KPIService {
 ### 2. 状态层（Domain Stores）
 
 #### ✅ DataStore (数据管理)
+
 **位置**: `src/store/domains/dataStore.ts`
 
 **职责**: 专注于保险数据的存储和基本操作
 
 **从useAppStore拆分出的部分**:
+
 - `rawData: InsuranceRecord[]`
 - `isLoading, error, uploadProgress`
 - `setRawData, appendRawData, clearData`
 - 数据持久化相关方法
 
 **核心接口**:
+
 ```typescript
 interface DataStore {
   // 状态
@@ -265,6 +285,7 @@ interface DataStore {
 ```
 
 **优点**:
+
 - 🎯 单一职责：只管理原始数据
 - 🔄 自动规范化：使用DataService.normalize()
 - 💾 自动持久化：调用PersistenceService
@@ -273,16 +294,19 @@ interface DataStore {
 ---
 
 #### ✅ FilterStore (筛选管理)
+
 **位置**: `src/store/domains/filterStore.ts`
 
 **职责**: 专注于筛选条件的管理
 
 **从useAppStore拆分出的部分**:
+
 - `filters: FilterState`
 - `updateFilters, resetFilters`
 - `setViewMode`
 
 **核心接口**:
+
 ```typescript
 interface FilterStore {
   // 状态
@@ -301,6 +325,7 @@ interface FilterStore {
 ```
 
 **特性**:
+
 - 📦 持久化：使用Zustand的persist中间件
 - 🔄 自动规范化：中文文本自动标准化
 - 📊 状态计算：提供激活筛选器数量等派生状态
@@ -314,6 +339,7 @@ interface FilterStore {
 **目标**: 创建新架构，保持100%向后兼容
 
 **已完成**:
+
 - ✅ 创建服务层（PersistenceService, DataService, KPIService）
 - ✅ 创建领域Stores（DataStore, FilterStore）
 - ✅ 保留原有useAppStore和goalStore
@@ -325,19 +351,25 @@ interface FilterStore {
 ### 阶段2：渐进式迁移（下一步）
 
 **计划**:
+
 1. **创建聚合Hooks**
+
    ```typescript
    // src/hooks/domains/useInsuranceData.ts
    export function useInsuranceData() {
      const rawData = useDataStore(s => s.rawData)
      const filters = useFilterStore(s => s.filters)
 
-     const filteredData = useMemo(() =>
-       DataService.filter(rawData, filters),
+     const filteredData = useMemo(
+       () => DataService.filter(rawData, filters),
        [rawData, filters]
      )
 
-     return { rawData, filteredData, stats: DataService.getStatistics(filteredData) }
+     return {
+       rawData,
+       filteredData,
+       stats: DataService.getStatistics(filteredData),
+     }
    }
    ```
 
@@ -347,6 +379,7 @@ interface FilterStore {
    - 确保功能无损
 
 3. **组件示例**（迁移前 vs 迁移后）
+
    ```typescript
    // ❌ 旧代码：直接依赖Store
    function Dashboard() {
@@ -375,6 +408,7 @@ interface FilterStore {
 ### 阶段3：清理遗留代码
 
 **计划**:
+
 - 删除旧Store中已迁移的代码
 - 更新所有文档和开发指南
 - 性能基准测试对比
@@ -400,10 +434,14 @@ await persistenceService.saveRawData(data)
 ```typescript
 // ❌ 旧方式（逻辑重复）
 // 在 useAppStore.ts 中
-const filteredData = rawData.filter(record => { /* 150行筛选逻辑 */ })
+const filteredData = rawData.filter(record => {
+  /* 150行筛选逻辑 */
+})
 
 // 在 use-kpi.ts 中
-const filteredData = rawData.filter(record => { /* 又是150行筛选逻辑 */ })
+const filteredData = rawData.filter(record => {
+  /* 又是150行筛选逻辑 */
+})
 
 // ✅ 新方式（单一来源）
 import { DataService } from '@/services/DataService'
@@ -426,7 +464,9 @@ export function useKPICalculation(data: InsuranceRecord[]) {
 
 // 在测试中
 test('KPI计算正确性', () => {
-  const mockData = [/* ... */]
+  const mockData = [
+    /* ... */
+  ]
   const result = KPIService.calculate(mockData, { annualTargetYuan: 100000 })
   expect(result.achievementRate).toBe(0.8)
 })
@@ -485,30 +525,33 @@ describe('DataStore', () => {
 
 ## 📊 重构效果对比
 
-| 指标 | 重构前 | 重构后 | 改善 |
-|------|--------|--------|------|
-| **单个Store行数** | 991行 | <200行/Store | ↓ 80% |
-| **Store数量** | 2个（职责重叠） | 5个（领域明确） | +150% 内聚性 |
-| **逻辑重复** | 150行筛选逻辑重复2次 | 0行重复 | ✅ 完全消除 |
-| **持久化实现** | 3处分散 | 1处统一 | ↓ 67% |
-| **可测试性** | 困难（依赖全局状态） | 优秀（纯函数） | ⭐⭐⭐⭐⭐ |
-| **单点故障风险** | ⚡⚡⚡⚡⚡ | ⚡⚡ | ↓ 60% |
+| 指标              | 重构前               | 重构后          | 改善         |
+| ----------------- | -------------------- | --------------- | ------------ |
+| **单个Store行数** | 991行                | <200行/Store    | ↓ 80%        |
+| **Store数量**     | 2个（职责重叠）      | 5个（领域明确） | +150% 内聚性 |
+| **逻辑重复**      | 150行筛选逻辑重复2次 | 0行重复         | ✅ 完全消除  |
+| **持久化实现**    | 3处分散              | 1处统一         | ↓ 67%        |
+| **可测试性**      | 困难（依赖全局状态） | 优秀（纯函数）  | ⭐⭐⭐⭐⭐   |
+| **单点故障风险**  | ⚡⚡⚡⚡⚡           | ⚡⚡            | ↓ 60%        |
 
 ---
 
 ## 🚀 下一步行动
 
 ### 优先级1（立即）
+
 - [ ] 创建聚合Hooks（useInsuranceData, useKPICalculation）
 - [ ] 为新服务层编写单元测试
 - [ ] 在`targets`页面试点使用新架构
 
 ### 优先级2（本周）
+
 - [ ] 迁移KPI页面
 - [ ] 迁移趋势分析页面
 - [ ] 编写迁移文档
 
 ### 优先级3（下周）
+
 - [ ] 逐步移除对旧useAppStore的依赖
 - [ ] 性能测试和优化
 - [ ] 更新开发指南
@@ -526,12 +569,14 @@ describe('DataStore', () => {
 ## ✅ 最佳实践
 
 ### Do's（推荐）
+
 1. ✅ **组件通过Hooks访问数据**，而非直接调用Store
 2. ✅ **业务逻辑放在Service层**，保持纯函数
 3. ✅ **Store只管理状态**，不包含复杂业务逻辑
 4. ✅ **新功能优先使用新架构**
 
 ### Don'ts（避免）
+
 1. ❌ 不要在组件中直接调用`useDataStore`
 2. ❌ 不要在Store中编写数据过滤逻辑（应调用DataService）
 3. ❌ 不要在Hook中重复实现Service已有的逻辑

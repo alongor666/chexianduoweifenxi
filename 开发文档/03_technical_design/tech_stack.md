@@ -28,18 +28,21 @@
 ## 关键第三方库
 
 ### 数据处理
+
 - **`papaparse` 5.5.3**: 用于在前端解析 CSV 文件，实现客户端数据预览与初步验证。
 - **`zod` 4.1.12**: 用于定义数据结构（Schema）并执行严格的数据验证，确保进入系统的数据符合预设格式。
 - **`@duckdb/duckdb-wasm` 1.30.0**: WebAssembly 编译的列式数据库，支持大数据量的高性能 SQL 查询。
-【已对齐当前代码事实】
+  【已对齐当前代码事实】
 
 ### 可视化与导出
+
 - **`echarts` 6.0.0**: 百度开源的专业级数据可视化库，用于雷达图、热力图等高级图表。 【已对齐当前代码事实】
 - **`echarts-for-react` 3.0.5**: ECharts 的 React 封装。 【已对齐当前代码事实】
 - **`jspdf` 3.0.3**: 在浏览器端生成 PDF 文档，用于导出报告。
 - **`html2canvas` 1.4.1**: 将 HTML 元素转换为 Canvas 图像，配合 jsPDF 实现图表导出。
 
 ### UI组件库
+
 - **`@radix-ui/*`**: 无头UI组件库（Headless UI），提供可访问性优秀的底层组件。
 - **`tailwindcss` 3.4.1**: 实用优先的 CSS 框架。
 - **`tailwindcss-animate` 1.0.7**: Tailwind CSS 动画插件。
@@ -48,22 +51,22 @@
 ## 数据持久化技术
 
 ### LocalStorage 存储策略
+
 - **存储引擎**: 浏览器原生 LocalStorage API
 - **存储容量**: 通常 5-10MB，适合中等规模数据集
 - **数据完整性**: 使用 SHA-256 哈希值验证数据完整性
 - **存储结构**: 分层存储（主数据 + 元信息），优化读写性能
 
 ### 核心功能模块
+
 - **数据持久化**: `src/lib/storage/data-persistence.ts`
   - 自动保存上传数据到本地存储
   - 页面刷新时自动恢复数据状态
   - 智能容量管理和错误处理
-  
 - **上传历史**: `src/components/features/upload-history.tsx`
   - 记录每次文件上传的详细信息
   - 可视化展示上传状态和统计数据
   - 支持时间倒序浏览和状态筛选
-  
 - **重复检测**: 基于文件内容哈希的重复文件检测
   - 使用 Web Crypto API 生成 SHA-256 哈希
   - 上传前自动检测重复文件
@@ -76,7 +79,7 @@
 1.  **安装 Node.js**: 确保已安装 Node.js 18.x 或更高版本。
 2.  **安装 pnpm**: 使用 `npm install -g pnpm` 安装 pnpm 包管理器。
 3.  **安装依赖**: 在项目根目录下运行 `pnpm install`。
-4.  **配置环境变量**: 
+4.  **配置环境变量**:
     - 复制 `.env.example` 文件为 `.env.local`。
     - 填入 Supabase 数据库连接字符串 (`DATABASE_URL`)。
 
@@ -97,6 +100,7 @@
 **问题背景**: 当上传大数据量文件（如 16 万+行、30MB+）时，会触发堆栈溢出错误（`RangeError: Maximum call stack size exceeded`），导致应用崩溃。
 
 **根本原因**:
+
 1. **Math.max 展开运算符问题**（主要原因）:
    - 代码使用 `Math.max(...filteredData.map(r => r.week_number))`
    - 对 16万+ 行数据创建临时数组，然后使用展开运算符 `...`
@@ -111,16 +115,21 @@
 **解决方案**:
 
 1. **替换 Math.max 展开运算符为 reduce**（核心修复）:
+
    ```typescript
    // ❌ 错误：使用展开运算符（调用栈限制约10万参数）
    const maxWeek = Math.max(...filteredData.map(r => r.week_number))
 
    // ✅ 正确：使用 reduce（线性复杂度，无调用栈限制）
-   const maxWeek = filteredData.reduce((max, r) => Math.max(max, r.week_number), 0)
+   const maxWeek = filteredData.reduce(
+     (max, r) => Math.max(max, r.week_number),
+     0
+   )
    ```
 
 2. **细粒度选择器模式**（性能优化）:
    所有 Hooks 必须采用**细粒度选择器**模式，避免依赖整个 store 对象：
+
    ```typescript
    // ❌ 错误示例：依赖整个对象
    const filters = useAppStore(state => state.filters)
@@ -133,11 +142,13 @@
    ```
 
 **已应用优化的模块**:
+
 - `src/hooks/use-kpi.ts` - KPI 计算 Hook
 - `src/hooks/use-smart-comparison.ts` - 智能环比 Hook
 - `src/store/use-app-store.ts` - 状态管理（`useFilteredData` 选择器）
 
 **优化效果**:
+
 - ✅ 支持 16 万+行数据文件上传
 - ✅ 避免堆栈溢出错误
 - ✅ 减少不必要的重渲染
@@ -149,29 +160,37 @@
 **额外优化措施**:
 
 ### 1. 缺失周次处理（智能跳跃）
+
 处理数据中缺失的周次（如第32周、38周），确保环比计算正确：
+
 - 自动查找最近的有数据周次
 - 检查跳跃范围是否在允许范围内（默认5周）
 - 详细日志输出，便于排查问题
 
 示例：数据包含 28-31, 33-37, 39-41 周（缺32和38）
+
 - 当前周 = 39 → 环比周 = 37（自动跳过38）
 - 当前周 = 33 → 环比周 = 31（自动跳过32）
 
 ### 2. 自动初始化周次筛选
+
 上传数据后自动选中最新周次，避免 `singleModeWeek = null` 导致的性能问题：
+
 - `setRawData`：首次上传自动选中最新周
 - `appendRawData`：追加数据时智能更新周次
 - 避免初始加载时处理全量数据
 
 ### 3. 性能监控与日志
+
 添加详细的性能监控和日志输出：
+
 - 计算耗时统计（`performance.now()`）
 - 数据量提示
 - 缺失周次警告
 - 便于性能优化和问题排查
 
 **最佳实践**:
+
 1. **禁止在大数组上使用展开运算符**：
    - ❌ 避免 `Math.max(...largeArray)`
    - ❌ 避免 `fn(...largeArray.map())`
@@ -204,6 +223,7 @@
 **用途**: 接收前端上传的已解析数据并持久化到数据库
 
 **请求格式**:
+
 ```typescript
 POST /api/ingest-file
 Content-Type: application/json
@@ -214,6 +234,7 @@ Content-Type: application/json
 ```
 
 **响应格式**:
+
 ```typescript
 // 成功 (200)
 {
@@ -230,6 +251,7 @@ Content-Type: application/json
 **实现文件**: `src/app/api/ingest-file/route.ts`
 
 **待完成事项**:
+
 - [ ] 连接 DataService 实现数据持久化
 - [ ] 实现数据验证和去重逻辑
 - [ ] 添加错误处理和日志记录
@@ -243,6 +265,7 @@ Content-Type: application/json
 **用途**: 批量ETL处理多个CSV文件，合并后输出单个文件
 
 **请求格式**:
+
 ```typescript
 POST /api/etl
 Content-Type: multipart/form-data
@@ -252,6 +275,7 @@ outputFileName: string
 ```
 
 **响应格式**:
+
 ```typescript
 // 成功 (200)
 {
@@ -272,6 +296,7 @@ outputFileName: string
 **实现文件**: `src/app/api/etl/route.ts`
 
 **待完成事项**:
+
 - [ ] 集成 DuckDB-WASM 进行 SQL 聚合
 - [ ] 实现多文件合并逻辑
 - [ ] 优化大文件处理性能
@@ -331,16 +356,17 @@ outputFileName: string
 
 ### 存储方案选择
 
-| 场景 | 推荐方案 | 说明 |
-|------|---------|------|
-| **个人单机使用** | IndexedDB + LocalStorage | 无需配置，离线可用 |
-| **多设备同步** | + Supabase | 需要配置环境变量 |
-| **大数据查询** | + DuckDB-WASM | 自动启用，支持百万行数据 SQL 查询 |
-| **数据备份** | 导出CSV/PDF | 通过导出功能实现 |
+| 场景             | 推荐方案                 | 说明                              |
+| ---------------- | ------------------------ | --------------------------------- |
+| **个人单机使用** | IndexedDB + LocalStorage | 无需配置，离线可用                |
+| **多设备同步**   | + Supabase               | 需要配置环境变量                  |
+| **大数据查询**   | + DuckDB-WASM            | 自动启用，支持百万行数据 SQL 查询 |
+| **数据备份**     | 导出CSV/PDF              | 通过导出功能实现                  |
 
 ### 数据流程
 
 #### 上传流程
+
 ```
 CSV文件 → Papa Parse解析
        → Zod验证
@@ -349,6 +375,7 @@ CSV文件 → Papa Parse解析
 ```
 
 #### 查询流程
+
 ```
 用户筛选 → Zustand Store
         → DuckDB SQL查询（大数据集）
@@ -392,6 +419,7 @@ NEXT_PUBLIC_DATA_SOURCE=local
 ```
 
 **注意**:
+
 - 默认使用本地存储（`NEXT_PUBLIC_DATA_SOURCE=local`）
 - Supabase为可选功能，不影响核心功能使用
 - 无需配置数据库连接字符串（已移除Prisma依赖）
@@ -409,20 +437,23 @@ pnpm test:e2e
 ```
 
 **测试工具**:
+
 - **单元测试**: Vitest 2.1.4
 - **E2E测试**: Playwright 1.49.0
 
 **配置文件**:
+
 - `configs/vitest.config.mts` - Vitest 主配置（ESM 格式）
 - `configs/vitest.setup.mts` - 测试环境初始化脚本
 - `configs/playwright.config.ts` - Playwright E2E 测试配置
 
 **重要说明**:
+
 - Vitest 配置使用 `.mts` 扩展名以强制 ESM 模块格式
 - 这避免了 Vite CJS Node API 废弃警告（`The CJS build of Vite's Node API is deprecated`）
 - 根目录的 `vitest.config.mts` 为备用配置，实际使用 `configs/vitest.config.mts`
 
 ---
 
-*最后更新: 2025-12-12*
-*与代码一致性: ✅ 已验证*
+_最后更新: 2025-12-12_
+_与代码一致性: ✅ 已验证_

@@ -11,13 +11,13 @@
 
 ### 当前痛点
 
-| 问题 | 严重程度 | 影响 |
-|------|----------|------|
-| 状态管理混乱 | 🔴 高 | 数据流不可预测，难以调试 |
-| 重复代码多 | 🔴 高 | 修改一处需要改多处，容易遗漏 |
-| 业务逻辑散落 | 🟡 中 | 无法复用，无法测试 |
-| 组件过大 | 🟡 中 | 难以理解，修改风险高 |
-| 缺乏测试 | 🟢 低 | 重构缺乏安全网 |
+| 问题         | 严重程度 | 影响                         |
+| ------------ | -------- | ---------------------------- |
+| 状态管理混乱 | 🔴 高    | 数据流不可预测，难以调试     |
+| 重复代码多   | 🔴 高    | 修改一处需要改多处，容易遗漏 |
+| 业务逻辑散落 | 🟡 中    | 无法复用，无法测试           |
+| 组件过大     | 🟡 中    | 难以理解，修改风险高         |
+| 缺乏测试     | 🟢 低    | 重构缺乏安全网               |
 
 ### 违反的架构规则
 
@@ -80,14 +80,14 @@ src/
 
 ### 质量目标
 
-| 指标 | 当前 | 目标 |
-|------|------|------|
+| 指标                 | 当前 | 目标  |
+| -------------------- | ---- | ----- |
 | **单个文件最大行数** | 1007 | < 300 |
-| **组件最大行数** | 548 | < 200 |
-| **函数最大行数** | 150+ | < 50 |
-| **代码重复率** | ~15% | < 5% |
-| **单元测试覆盖率** | 0% | > 60% |
-| **依赖方向违规** | 多处 | 0 |
+| **组件最大行数**     | 548  | < 200 |
+| **函数最大行数**     | 150+ | < 50  |
+| **代码重复率**       | ~15% | < 5%  |
+| **单元测试覆盖率**   | 0%   | > 60% |
+| **依赖方向违规**     | 多处 | 0     |
 
 ---
 
@@ -96,36 +96,39 @@ src/
 > 目标：以 Domain 为单一真相源，去除 Supabase 依赖，保持鲁棒且极简。
 
 ### 原则
+
 - Domain 层为唯一业务公式/规范化/DTO 来源；禁止直接依赖 UI/Infra。
 - 应用层只经由 Port 调用 Domain；Infra 仅实现 Port；UI 只调用应用层/Hook。
 - 优先清理重复实现，先合并后替换调用，避免双轨并存。
 
 ### 分阶段待办（状态：⬜ 待办｜🔄 进行中｜✅ 完成）
-1) 领域计算与规范化
+
+1. 领域计算与规范化
    - ⬜ 合并 `src/lib/calculations/kpi-engine.ts` 与 `src/domain/rules/kpi-calculator.ts` 的算子/公式注册表
    - ⬜ 将雷达评分与归一化/权重抽象为公共算子，统一入口 `src/domain/rules/*`
    - ⬜ 清理/迁移调用方：`use-kpi*`、`use-smart-comparison`、图表/表格等全部指向 Domain API
    - ⬜ 增补单元测试覆盖计算与增量模式
 
-2) 数据导入链（上传→解析→规范化→存储）
+2. 数据导入链（上传→解析→规范化→存储）
    - ⬜ 统一 CSV 解析与校验：合并 `src/lib/parsers/csv-parser.ts` 与 `src/infrastructure/adapters/CSVParser.ts`，保留 Port 实现
    - ⬜ `use-file-upload.ts` 精简为 UI 状态/反馈，校验/周次分析/错误模型下沉复用模块
    - ⬜ 应用层 `UploadDataUseCase` 作为唯一入口，前端 Hook 只调用 Use Case；补齐周次冲突/历史记录的接口
    - ⬜ 测试：解析 + 校验 + 周次分析的集成测试（沿用 `RealDataTest`/上传测试）
 
-3) 存储与导出
+3. 存储与导出
    - ⬜ 选定仓储实现（DuckDB/LocalStorage），废弃旧 `src/lib/database/duckdb-adapter.ts` 双轨；对齐 Port `IDataRepository`
    - ⬜ PDF/CSV 导出：保留 `IExporter` 接口，合并 `PDFExporter` 数据组装与 UI 映射的重复逻辑，输出 DTO 即可
    - ⬜ 持久化与上传历史：统一走 `PersistenceService`，淘汰 `src/lib/storage/data-persistence.ts` 的业务逻辑部分
    - ⬜ 测试：PDF/CSV 导出单元 +快照，仓储读写冒烟
 
-4) UI 与可视化瘦身
+4. UI 与可视化瘦身
    - ⬜ `targets-data-table.tsx` 拆分列配置/格式化、业务计算 Hook、纯渲染组件，复用格式化工具
    - ⬜ ECharts 统一主题/交互策略，模板各自文件仅依赖 builder + 主题；移除重复阈值/配色定义
    - ⬜ 状态流迁移：`DashboardClient`/目标管理切到新 Store & 应用服务，移除对 `use-app-store` 的依赖
    - ⬜ 回归：关键交互（筛选/分页/导出）与渲染一致性检查
 
 ### 交付与同步
+
 - 每阶段完成：更新对应文档（本计划 + 技术设计）、运行 `pnpm docs:index` 生成索引。
 - 默认测试：`pnpm test`（单元）、`pnpm test:upload`（上传链）、必要时 Playwright 冒烟。
 
@@ -146,7 +149,7 @@ export class InsuranceRecord {
     public readonly id: string,
     public readonly policyNumber: string,
     public readonly premium: number,
-    public readonly weekNumber: number,
+    public readonly weekNumber: number
     // ... 其他 26 个字段
   ) {}
 
@@ -200,13 +203,14 @@ export function normalizeInsuranceRecord(
     raw.week_number,
     // 统一在入口处规范化
     normalizeChineseText(raw.customer_category_3),
-    normalizeChineseText(raw.business_type_category),
+    normalizeChineseText(raw.business_type_category)
     // ...
   )
 }
 ```
 
 **检查清单**：
+
 - [ ] 所有业务计算移到 `domain/rules/`
 - [ ] 所有实体定义移到 `domain/entities/`
 - [ ] Domain 层没有任何 React 导入
@@ -299,6 +303,7 @@ export class DataService {
 ```
 
 **检查清单**：
+
 - [ ] 所有 Use Case 编排清晰
 - [ ] 依赖通过构造函数注入（DI）
 - [ ] Application 层不依赖具体实现
@@ -330,6 +335,7 @@ describe('calculateMaturityContributionRate', () => {
 ```
 
 **检查清单**：
+
 - [ ] Domain 层所有业务规则有测试
 - [ ] Application 层所有 Use Case 有测试
 - [ ] 测试覆盖率 > 80%
@@ -390,6 +396,7 @@ export class CSVParser implements IFileParser {
 ```
 
 **检查清单**：
+
 - [ ] 所有适配器实现了对应的 Port 接口
 - [ ] 具体技术实现（DuckDB、CSV）只在 Infrastructure 层
 - [ ] 适配器可以轻松替换（如 DuckDB → PostgreSQL）
@@ -406,7 +413,7 @@ export const useDataStore = create<DataState>((set, get) => ({
   // 只负责数据存储
   records: [],
 
-  setRecords: (records) => set({ records }),
+  setRecords: records => set({ records }),
 
   clearRecords: () => set({ records: [] }),
 
@@ -423,25 +430,25 @@ export const useDataStore = create<DataState>((set, get) => ({
 }))
 
 // src/infrastructure/store/filterStore.ts
-export const useFilterStore = create<FilterState>((set) => ({
+export const useFilterStore = create<FilterState>(set => ({
   // 只负责筛选状态
   filters: defaultFilters,
 
-  updateFilters: (newFilters) =>
-    set((state) => ({ filters: { ...state.filters, ...newFilters } })),
+  updateFilters: newFilters =>
+    set(state => ({ filters: { ...state.filters, ...newFilters } })),
 
   resetFilters: () => set({ filters: defaultFilters }),
 }))
 
 // src/infrastructure/store/uiStore.ts
-export const useUIStore = create<UIState>((set) => ({
+export const useUIStore = create<UIState>(set => ({
   // 只负责 UI 状态
   isLoading: false,
   expandedPanels: new Set(),
 
-  setLoading: (loading) => set({ isLoading: loading }),
-  togglePanel: (id) =>
-    set((state) => {
+  setLoading: loading => set({ isLoading: loading }),
+  togglePanel: id =>
+    set(state => {
       const newPanels = new Set(state.expandedPanels)
       if (newPanels.has(id)) {
         newPanels.delete(id)
@@ -454,6 +461,7 @@ export const useUIStore = create<UIState>((set) => ({
 ```
 
 **检查清单**：
+
 - [ ] 每个 Store 职责单一
 - [ ] Store 不包含业务逻辑（调用 Use Case）
 - [ ] Store 文件 < 200 行
@@ -517,6 +525,7 @@ const uploadUseCase = container.resolve<UploadDataUseCase>('uploadDataUseCase')
 ```
 
 **检查清单**：
+
 - [ ] 所有依赖通过 DI 容器管理
 - [ ] 便于切换实现（如测试时用 Mock）
 
@@ -580,6 +589,7 @@ export function useFileUpload() {
 ```
 
 **检查清单**：
+
 - [ ] 每个组件 < 200 行
 - [ ] UI 组件不包含业务逻辑
 - [ ] Hook 只调用 Use Case
@@ -607,8 +617,8 @@ src/features/kpi-dashboard/
 ```typescript
 // src/features/kpi-dashboard/model/useKPIData.ts
 export function useKPIData() {
-  const records = useDataStore((state) => state.records)
-  const filters = useFilterStore((state) => state.filters)
+  const records = useDataStore(state => state.records)
+  const filters = useFilterStore(state => state.filters)
 
   // 使用 Domain 层的计算规则
   const kpis = useMemo(() => {
@@ -626,6 +636,7 @@ export function useKPIData() {
 ```
 
 **检查清单**：
+
 - [ ] KPI 计算逻辑在 Domain 层
 - [ ] UI 组件只负责展示
 - [ ] 使用 useMemo 优化性能
@@ -680,23 +691,27 @@ pnpm test:coverage
 
 ```markdown
 ## 架构验证
+
 - [ ] Domain 层不依赖任何外部框架
 - [ ] Application 层只依赖 Domain 层
 - [ ] Infrastructure 层实现了所有 Port 接口
 - [ ] 没有循环依赖
 
 ## 代码质量
+
 - [ ] 所有文件 < 300 行
 - [ ] 所有函数 < 50 行
 - [ ] 没有重复代码（< 5%）
 - [ ] 命名清晰一致
 
 ## 测试覆盖
+
 - [ ] Domain 层测试覆盖率 > 80%
 - [ ] Application 层测试覆盖率 > 60%
 - [ ] 关键路径有集成测试
 
 ## 文档
+
 - [ ] 架构文档更新
 - [ ] ADR 记录重大决策
 - [ ] README 更新
@@ -708,15 +723,16 @@ pnpm test:coverage
 
 ### 风险识别
 
-| 风险 | 概率 | 影响 | 缓解措施 |
-|------|------|------|----------|
-| 重构引入 Bug | 高 | 高 | 先写测试，再重构 |
-| 工期延误 | 中 | 中 | 分阶段交付，每阶段可运行 |
-| 团队学习成本 | 中 | 低 | 提供培训文档和示例代码 |
+| 风险         | 概率 | 影响 | 缓解措施                 |
+| ------------ | ---- | ---- | ------------------------ |
+| 重构引入 Bug | 高   | 高   | 先写测试，再重构         |
+| 工期延误     | 中   | 中   | 分阶段交付，每阶段可运行 |
+| 团队学习成本 | 中   | 低   | 提供培训文档和示例代码   |
 
 ### 回滚策略
 
 每个重构阶段完成后：
+
 1. 创建 Git Tag（如 `refactor-week1-complete`）
 2. 验证所有功能正常
 3. 如果出现问题，可以快速回滚到上一个稳定版本
@@ -743,12 +759,12 @@ pnpm test:coverage
 
 ### 定量指标
 
-| 指标 | 重构前 | 目标 | 测量方式 |
-|------|--------|------|----------|
-| 平均文件行数 | 450 | < 200 | `find src -name "*.ts" \| xargs wc -l` |
-| 代码重复率 | 15% | < 5% | SonarQube |
-| 测试覆盖率 | 0% | > 60% | Jest Coverage |
-| 构建时间 | 45s | < 30s | `pnpm build` |
+| 指标         | 重构前 | 目标  | 测量方式                               |
+| ------------ | ------ | ----- | -------------------------------------- |
+| 平均文件行数 | 450    | < 200 | `find src -name "*.ts" \| xargs wc -l` |
+| 代码重复率   | 15%    | < 5%  | SonarQube                              |
+| 测试覆盖率   | 0%     | > 60% | Jest Coverage                          |
+| 构建时间     | 45s    | < 30s | `pnpm build`                           |
 
 ### 定性指标
 

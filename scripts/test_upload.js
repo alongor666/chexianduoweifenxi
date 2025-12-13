@@ -136,7 +136,7 @@ function parseNumber(value, fieldName, errors, opts = {}) {
 function parseEnum(value, validValues, def) {
   const str = String(value ?? '').trim()
   if (!str) return def
-  const mappings = { '商业保险': '商业险' }
+  const mappings = { 商业保险: '商业险' }
   const mapped = mappings[str] || str
   return validValues.includes(mapped) ? mapped : def
 }
@@ -144,7 +144,7 @@ function parseEnum(value, validValues, def) {
 function parseOptionalEnum(value, validValues) {
   const str = String(value ?? '').trim()
   if (!str) return undefined
-  const mappings = { '商业保险': '商业险' }
+  const mappings = { 商业保险: '商业险' }
   const mapped = mappings[str] || str
   return validValues.includes(mapped) ? mapped : undefined
 }
@@ -174,33 +174,134 @@ function transformRow(row, index, warnOut) {
   const warnings = warnOut || []
   const data = {
     snapshot_date: String(row.snapshot_date ?? '').trim(),
-    policy_start_year: parseNumber(row.policy_start_year, 'policy_start_year', errors, { min: 2020, max: 2030, integer: true }),
-    week_number: parseNumber(row.week_number, 'week_number', errors, { min: 1, max: 105, integer: true }),
+    policy_start_year: parseNumber(
+      row.policy_start_year,
+      'policy_start_year',
+      errors,
+      { min: 2020, max: 2030, integer: true }
+    ),
+    week_number: parseNumber(row.week_number, 'week_number', errors, {
+      min: 1,
+      max: 105,
+      integer: true,
+    }),
     chengdu_branch: parseEnum(row.chengdu_branch, ['成都', '中支'], '成都'),
     third_level_organization: String(row.third_level_organization ?? '').trim(),
     customer_category_3: String(row.customer_category_3 ?? '').trim(),
-    insurance_type: parseEnum(row.insurance_type, ['商业险', '交强险'], '商业险'),
+    insurance_type: parseEnum(
+      row.insurance_type,
+      ['商业险', '交强险'],
+      '商业险'
+    ),
     business_type_category: String(row.business_type_category ?? '').trim(),
-    coverage_type: parseEnum(row.coverage_type, ['主全', '交三', '单交'], '主全'),
-    renewal_status: parseEnum(row.renewal_status, ['新保', '续保', '转保'], '新保'),
-    is_new_energy_vehicle: parseBoolean(row.is_new_energy_vehicle, 'is_new_energy_vehicle', warnings),
-    is_transferred_vehicle: parseBoolean(row.is_transferred_vehicle, 'is_transferred_vehicle', warnings),
-    vehicle_insurance_grade: parseOptionalEnum(row.vehicle_insurance_grade, ['A', 'B', 'C', 'D', 'E', 'F', 'G']),
-    highway_risk_grade: parseOptionalEnum(row.highway_risk_grade, ['A', 'B', 'C', 'D', 'E', 'F', 'X']),
-    large_truck_score: parseOptionalEnum(row.large_truck_score, ['A', 'B', 'C', 'D', 'E', 'X']),
-    small_truck_score: parseOptionalEnum(row.small_truck_score, ['A', 'B', 'C', 'D', 'E', 'X']),
+    coverage_type: parseEnum(
+      row.coverage_type,
+      ['主全', '交三', '单交'],
+      '主全'
+    ),
+    renewal_status: parseEnum(
+      row.renewal_status,
+      ['新保', '续保', '转保'],
+      '新保'
+    ),
+    is_new_energy_vehicle: parseBoolean(
+      row.is_new_energy_vehicle,
+      'is_new_energy_vehicle',
+      warnings
+    ),
+    is_transferred_vehicle: parseBoolean(
+      row.is_transferred_vehicle,
+      'is_transferred_vehicle',
+      warnings
+    ),
+    vehicle_insurance_grade: parseOptionalEnum(row.vehicle_insurance_grade, [
+      'A',
+      'B',
+      'C',
+      'D',
+      'E',
+      'F',
+      'G',
+    ]),
+    highway_risk_grade: parseOptionalEnum(row.highway_risk_grade, [
+      'A',
+      'B',
+      'C',
+      'D',
+      'E',
+      'F',
+      'X',
+    ]),
+    large_truck_score: parseOptionalEnum(row.large_truck_score, [
+      'A',
+      'B',
+      'C',
+      'D',
+      'E',
+      'X',
+    ]),
+    small_truck_score: parseOptionalEnum(row.small_truck_score, [
+      'A',
+      'B',
+      'C',
+      'D',
+      'E',
+      'X',
+    ]),
     terminal_source: String(row.terminal_source ?? '').trim(),
-    signed_premium_yuan: parseNumber(row.signed_premium_yuan, 'signed_premium_yuan', errors, { min: 0, max: 1e7 }),
-    matured_premium_yuan: parseNumber(row.matured_premium_yuan, 'matured_premium_yuan', errors, { min: 0, max: 1e7 }),
-    policy_count: parseNumber(row.policy_count, 'policy_count', errors, { min: 0, integer: true }),
-    claim_case_count: parseNumber(row.claim_case_count, 'claim_case_count', errors, { min: 0, integer: true }),
-    reported_claim_payment_yuan: parseNumber(row.reported_claim_payment_yuan, 'reported_claim_payment_yuan', errors, { min: 0 }),
-    expense_amount_yuan: parseNumber(row.expense_amount_yuan, 'expense_amount_yuan', errors, { min: 0 }),
-    commercial_premium_before_discount_yuan: parseNumber(row.commercial_premium_before_discount_yuan, 'commercial_premium_before_discount_yuan', errors, { min: 0 }),
-    premium_plan_yuan: row.premium_plan_yuan !== null && row.premium_plan_yuan !== undefined && row.premium_plan_yuan !== ''
-      ? parseNumber(row.premium_plan_yuan, 'premium_plan_yuan', errors, { min: 0 })
-      : null,
-    marginal_contribution_amount_yuan: parseNumber(row.marginal_contribution_amount_yuan, 'marginal_contribution_amount_yuan', errors),
+    signed_premium_yuan: parseNumber(
+      row.signed_premium_yuan,
+      'signed_premium_yuan',
+      errors,
+      { min: 0, max: 1e7 }
+    ),
+    matured_premium_yuan: parseNumber(
+      row.matured_premium_yuan,
+      'matured_premium_yuan',
+      errors,
+      { min: 0, max: 1e7 }
+    ),
+    policy_count: parseNumber(row.policy_count, 'policy_count', errors, {
+      min: 0,
+      integer: true,
+    }),
+    claim_case_count: parseNumber(
+      row.claim_case_count,
+      'claim_case_count',
+      errors,
+      { min: 0, integer: true }
+    ),
+    reported_claim_payment_yuan: parseNumber(
+      row.reported_claim_payment_yuan,
+      'reported_claim_payment_yuan',
+      errors,
+      { min: 0 }
+    ),
+    expense_amount_yuan: parseNumber(
+      row.expense_amount_yuan,
+      'expense_amount_yuan',
+      errors,
+      { min: 0 }
+    ),
+    commercial_premium_before_discount_yuan: parseNumber(
+      row.commercial_premium_before_discount_yuan,
+      'commercial_premium_before_discount_yuan',
+      errors,
+      { min: 0 }
+    ),
+    premium_plan_yuan:
+      row.premium_plan_yuan !== null &&
+      row.premium_plan_yuan !== undefined &&
+      row.premium_plan_yuan !== ''
+        ? parseNumber(row.premium_plan_yuan, 'premium_plan_yuan', errors, {
+            min: 0,
+          })
+        : null,
+    marginal_contribution_amount_yuan: parseNumber(
+      row.marginal_contribution_amount_yuan,
+      'marginal_contribution_amount_yuan',
+      errors
+    ),
   }
 
   // 轻量级规则校验（与前端 zod 核心一致）
@@ -209,7 +310,11 @@ function transformRow(row, index, warnOut) {
     errors.push('snapshot_date: 快照日期格式必须为 YYYY-MM-DD')
   }
   const d = new Date(data.snapshot_date)
-  if (Number.isNaN(d.getTime()) || d < new Date('2020-01-01') || d > new Date()) {
+  if (
+    Number.isNaN(d.getTime()) ||
+    d < new Date('2020-01-01') ||
+    d > new Date()
+  ) {
     errors.push('snapshot_date: 快照日期必须在 2020-01-01 至今之间')
   }
   if (data.matured_premium_yuan > data.signed_premium_yuan) {
@@ -234,7 +339,9 @@ function checkHeaders(rows) {
 async function main() {
   const file = process.argv[2]
   if (!file) {
-    console.error('请提供 CSV 文件路径，如：node scripts/test_upload.js test/测试数据2024.csv')
+    console.error(
+      '请提供 CSV 文件路径，如：node scripts/test_upload.js test/测试数据2024.csv'
+    )
     process.exit(1)
   }
   const abs = path.resolve(file)
@@ -247,15 +354,25 @@ async function main() {
   const buffer = fs.readFileSync(abs)
   const { text: content, encoding } = decodeCSVBuffer(buffer)
   console.log(`检测到文件编码: ${encoding}`)
-  const parsed = Papa.parse(content, { header: true, dynamicTyping: false, skipEmptyLines: true })
-  const rows = Array.isArray(parsed.data) ? parsed.data.filter(r => r && Object.keys(r).length > 0) : []
+  const parsed = Papa.parse(content, {
+    header: true,
+    dynamicTyping: false,
+    skipEmptyLines: true,
+  })
+  const rows = Array.isArray(parsed.data)
+    ? parsed.data.filter(r => r && Object.keys(r).length > 0)
+    : []
   const headerCheck = checkHeaders(rows)
   if (!headerCheck.ok) {
-    console.error(`CSV 表头缺失必需字段 (${headerCheck.missing.length} 个)：${headerCheck.missing.join(', ')}`)
+    console.error(
+      `CSV 表头缺失必需字段 (${headerCheck.missing.length} 个)：${headerCheck.missing.join(', ')}`
+    )
     process.exit(2)
   }
   if (headerCheck.extra && headerCheck.extra.length > 0) {
-    console.warn(`发现额外字段 (${headerCheck.extra.length} 个)：${headerCheck.extra.join(', ')}`)
+    console.warn(
+      `发现额外字段 (${headerCheck.extra.length} 个)：${headerCheck.extra.join(', ')}`
+    )
   }
   let valid = 0
   let invalid = 0
@@ -283,7 +400,9 @@ async function main() {
   console.log(`解析耗时: ${ms} ms`)
   console.log(`平均处理速度: ${(rows.length / (ms / 1000)).toFixed(0)} 行/秒`)
   if (warningsCount > 0) {
-    console.log(`注意: 解析过程中产生 ${warningsCount} 条非致命警告（布尔值规范等）`)
+    console.log(
+      `注意: 解析过程中产生 ${warningsCount} 条非致命警告（布尔值规范等）`
+    )
   }
   if (errors.length > 0) {
     console.log('\n前若干条错误示例:')

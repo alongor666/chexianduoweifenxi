@@ -143,23 +143,23 @@ const tabItems = [
   {
     value: 'radar' as const,
     label: '机构雷达图',
-    description: '多机构健康度对比分析'
+    description: '多机构健康度对比分析',
   },
   {
     value: 'premium' as const,
     label: '保费分析',
-    description: '保费数据多维度分析'
+    description: '保费数据多维度分析',
   },
   {
     value: 'claim' as const,
     label: '赔付分析',
-    description: '赔付数据多维度分析'
+    description: '赔付数据多维度分析',
   },
   {
     value: 'distribution' as const,
     label: '占比分析',
-    description: '客户与渠道占比分析'
-  }
+    description: '客户与渠道占比分析',
+  },
 ]
 ```
 
@@ -168,6 +168,7 @@ const tabItems = [
 ## 📊 图表功能保持
 
 ### 机构雷达图 (MultiDimensionRadar)
+
 - ✅ 机构选择器
 - ✅ 5维度健康评分
 - ✅ 悬停交互效果
@@ -175,6 +176,7 @@ const tabItems = [
 - ✅ 颜色预警系统
 
 ### 保费分析图 (PremiumAnalysisBarChart)
+
 - ✅ Y轴维度选择（业务类型/机构/险别）
 - ✅ X轴指标选择（签单保费/满期保费/单均保费/保单件数/满期率）
 - ✅ TopN 筛选
@@ -182,6 +184,7 @@ const tabItems = [
 - ✅ 垂直条形图布局
 
 ### 赔付分析图 (ClaimAnalysisBarChart)
+
 - ✅ Y轴维度选择（业务类型/机构/险别）
 - ✅ X轴指标选择（已报告赔款/赔案件数/案均赔款/满期出险率/满期赔付率）
 - ✅ TopN 筛选
@@ -189,6 +192,7 @@ const tabItems = [
 - ✅ 垂直条形图布局
 
 ### 占比分析图 (DistributionPieChart)
+
 - ✅ 客户/渠道切换
 - ✅ 满期保费占比
 - ✅ 颜色编码
@@ -210,6 +214,7 @@ useFilteredData() (筛选数据)
 ```
 
 所有图表仍然：
+
 - ✅ 响应筛选器变化
 - ✅ 支持实时数据更新
 - ✅ 保持独立的计算逻辑
@@ -240,6 +245,7 @@ useFilteredData() (筛选数据)
 **需求来源**: 用户反馈 - 多维图表页面需要大量滚动，使用不便
 
 **实现内容**:
+
 1. ✅ 创建 `MultiChartTabs` 组件
 2. ✅ 集成4个原有图表组件
 3. ✅ 实现标签页导航功能
@@ -247,6 +253,7 @@ useFilteredData() (筛选数据)
 5. ✅ 集成到 dashboard-client 页面
 
 **技术亮点**:
+
 - 使用 Radix UI Tabs 组件确保可访问性
 - 保持原有组件功能完整性
 - 响应式设计适配各种屏幕

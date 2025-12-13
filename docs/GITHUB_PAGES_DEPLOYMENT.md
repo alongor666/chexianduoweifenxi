@@ -6,7 +6,7 @@
 
 ## 部署要求
 
-- Node.js 18+ 
+- Node.js 18+
 - GitHub 仓库
 - GitHub Pages 功能已启用
 
@@ -28,7 +28,8 @@ const nextConfig = {
     unoptimized: true,
   },
   basePath: process.env.NODE_ENV === 'production' ? '/chexianduoweifenxi' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/chexianduoweifenxi/' : '',
+  assetPrefix:
+    process.env.NODE_ENV === 'production' ? '/chexianduoweifenxi/' : '',
 }
 ```
 
@@ -43,6 +44,7 @@ const nextConfig = {
 ### 方法二：手动部署
 
 1. 本地构建静态文件：
+
    ```bash
    npm run build
    ```
@@ -118,6 +120,7 @@ npx serve out
 ## 联系支持
 
 如遇到部署问题，请检查：
+
 1. GitHub Actions 构建日志
 2. 浏览器开发者工具控制台
 3. GitHub Pages 设置页面状态

@@ -13,6 +13,7 @@
 创建了三个核心端口接口，定义了 Application 层与 Infrastructure 层之间的契约：
 
 #### **[IDataRepository.ts](../src/application/ports/IDataRepository.ts)** (99 行)
+
 - 数据仓储接口
 - 定义了数据的 CRUD 操作
 - 包含筛选、统计等高级查询功能
@@ -31,6 +32,7 @@ export interface IDataRepository {
 ```
 
 #### **[IFileParser.ts](../src/application/ports/IFileParser.ts)** (135 行)
+
 - 文件解析器接口
 - 支持文件解析和验证
 - 定义了详细的错误和警告类型
@@ -45,6 +47,7 @@ export interface IFileParser {
 ```
 
 #### **[IExporter.ts](../src/application/ports/IExporter.ts)** (128 行)
+
 - 数据导出器接口
 - 支持多种导出格式（CSV, PDF, Excel, JSON）
 - 包含丰富的导出配置选项
@@ -53,8 +56,16 @@ export interface IFileParser {
 ```typescript
 export interface IExporter {
   exportToCSV(data: InsuranceRecord[], options?: ExportOptions): Promise<Blob>
-  exportToPDF(data: InsuranceRecord[], kpis?: KPIResult, options?: ExportOptions): Promise<Blob>
-  exportKPIReport(kpis: KPIResult, format: ExportFormat, options?: ExportOptions): Promise<Blob>
+  exportToPDF(
+    data: InsuranceRecord[],
+    kpis?: KPIResult,
+    options?: ExportOptions
+  ): Promise<Blob>
+  exportKPIReport(
+    kpis: KPIResult,
+    format: ExportFormat,
+    options?: ExportOptions
+  ): Promise<Blob>
 }
 ```
 
@@ -65,6 +76,7 @@ export interface IExporter {
 实现了三个核心用例，编排业务流程：
 
 #### **[UploadDataUseCase](../src/application/use-cases/upload-data.ts)** (154 行)
+
 处理文件上传的完整流程：
 
 1. **验证文件** - 检查文件格式和内容
@@ -89,6 +101,7 @@ class UploadDataUseCase {
 ```
 
 #### **[CalculateKPIUseCase](../src/application/use-cases/calculate-kpi.ts)** (253 行)
+
 计算 KPI 指标：
 
 - 支持基础 KPI 计算
@@ -99,11 +112,15 @@ class UploadDataUseCase {
 ```typescript
 class CalculateKPIUseCase {
   async execute(filters?: DataFilters): Promise<KPICalculationResult>
-  async executeGrouped(groupBy: GroupByDimension, filters?: DataFilters): Promise<GroupedKPIResult[]>
+  async executeGrouped(
+    groupBy: GroupByDimension,
+    filters?: DataFilters
+  ): Promise<GroupedKPIResult[]>
 }
 ```
 
 #### **[ExportReportUseCase](../src/application/use-cases/export-report.ts)** (257 行)
+
 处理数据和报告导出：
 
 - 导出原始数据（CSV, PDF）
@@ -113,8 +130,14 @@ class CalculateKPIUseCase {
 
 ```typescript
 class ExportReportUseCase {
-  async exportData(format: ExportFormat, filters?: DataFilters): Promise<ExportResult>
-  async exportKPIReport(format: ExportFormat, filters?: DataFilters): Promise<ExportResult>
+  async exportData(
+    format: ExportFormat,
+    filters?: DataFilters
+  ): Promise<ExportResult>
+  async exportKPIReport(
+    format: ExportFormat,
+    filters?: DataFilters
+  ): Promise<ExportResult>
   async exportComprehensiveReport(filters?: DataFilters): Promise<ExportResult>
 }
 ```
@@ -124,6 +147,7 @@ class ExportReportUseCase {
 ### 3. 应用服务（Services）
 
 #### **[DataService](../src/application/services/data-service.ts)** (108 行)
+
 提供数据访问的统一接口：
 
 ```typescript
@@ -147,6 +171,7 @@ class DataService {
 编写了 22 个单元测试，覆盖所有核心功能：
 
 #### **[upload-data.test.ts](../src/application/__tests__/upload-data.test.ts)** - 5 个测试
+
 - ✅ 应该成功上传有效的文件
 - ✅ 当文件验证失败时应该抛出错误
 - ✅ 当文件为空时应该抛出错误
@@ -154,6 +179,7 @@ class DataService {
 - ✅ 应该调用仓储保存数据
 
 #### **[calculate-kpi.test.ts](../src/application/__tests__/calculate-kpi.test.ts)** - 6 个测试
+
 - ✅ 应该成功计算 KPI
 - ✅ 当没有数据时应该返回空 KPI
 - ✅ 应该支持按条件筛选数据
@@ -162,6 +188,7 @@ class DataService {
 - ✅ 当分组后没有数据时应该返回空数组
 
 #### **[data-service.test.ts](../src/application/__tests__/data-service.test.ts)** - 11 个测试
+
 - ✅ 应该返回所有数据
 - ✅ 当没有数据时应该返回空数组
 - ✅ 应该根据筛选条件获取数据
@@ -175,6 +202,7 @@ class DataService {
 - ✅ 应该返回周次范围
 
 **测试结果**：
+
 ```
 Test Files  3 passed (3)
 Tests  22 passed (22)
@@ -231,7 +259,7 @@ Application 层通过定义抽象接口（Ports）来依赖 Domain 层，而不�
 // ✅ 正确：依赖抽象
 class UploadDataUseCase {
   constructor(
-    private readonly parser: IFileParser,      // 接口
+    private readonly parser: IFileParser, // 接口
     private readonly repository: IDataRepository // 接口
   ) {}
 }
@@ -239,7 +267,7 @@ class UploadDataUseCase {
 // ❌ 错误：依赖具体实现
 class UploadDataUseCase {
   constructor(
-    private readonly parser: CSVParser,        // 具体类
+    private readonly parser: CSVParser, // 具体类
     private readonly repository: DuckDBRepository // 具体类
   ) {}
 }
@@ -310,6 +338,7 @@ class UploadDataUseCase {
 ```
 
 **优势**：
+
 - 易于测试（可以注入 Mock）
 - 依赖明确（一眼就能看出依赖关系）
 - 符合 SOLID 原则
@@ -330,6 +359,7 @@ class UploadError extends Error {
 ```
 
 **优势**：
+
 - 错误信息结构化
 - 便于错误追踪和调试
 - 支持国际化
@@ -368,17 +398,20 @@ class DuckDBRepository implements IDataRepository {
 根据重构计划 [REFACTORING_PLAN.md](./REFACTORING_PLAN.md)，接下来的任务是：
 
 ### Day 5：编写更多单元测试
+
 - [ ] 增加边界测试用例
 - [ ] 增加异常处理测试
 - [ ] 提高测试覆盖率到 > 80%
 
 ### Day 6-7：实现适配器（Infrastructure 层）
+
 - [ ] 实现 DuckDBRepository
 - [ ] 实现 CSVParser
 - [ ] 实现 PDFExporter
 - [ ] 编写适配器测试
 
 ### Day 8-9：重构 Store
+
 - [ ] 拆分巨型 Store
 - [ ] 整合 Use Case 到 Store
 - [ ] 测试 Store 集成

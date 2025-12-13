@@ -102,15 +102,16 @@ pnpm build
 
 > **警告**: 状态判断必须基于代码审查,而非文档声明!
 
-| 状态 | 英文标识 | 判断标准 | 图标 |
-|------|---------|---------|------|
-| **待实现** | `to_be_implemented` | - 核心文件不存在<br>- 或完整度 < 20% | ⏳ |
-| **开发中** | `in_progress` | - 核心文件部分存在<br>- 完整度 20%-49% | 🚧 |
-| **已实现** | `implemented` | - 核心文件全部存在<br>- 核心功能可用<br>- 完整度 ≥ 50% | ✅ |
-| **已修改** | `modified` | - 原有实现被重构<br>- API发生破坏性变更 | 🔄 |
-| **已废弃** | `deprecated` | - 功能不再维护<br>- 计划移除 | ⚠️ |
+| 状态       | 英文标识            | 判断标准                                               | 图标 |
+| ---------- | ------------------- | ------------------------------------------------------ | ---- |
+| **待实现** | `to_be_implemented` | - 核心文件不存在<br>- 或完整度 < 20%                   | ⏳   |
+| **开发中** | `in_progress`       | - 核心文件部分存在<br>- 完整度 20%-49%                 | 🚧   |
+| **已实现** | `implemented`       | - 核心文件全部存在<br>- 核心功能可用<br>- 完整度 ≥ 50% | ✅   |
+| **已修改** | `modified`          | - 原有实现被重构<br>- API发生破坏性变更                | 🔄   |
+| **已废弃** | `deprecated`        | - 功能不再维护<br>- 计划移除                           | ⚠️   |
 
 **状态更新流程:**
+
 1. 开发者完成代码提交
 2. 运行 `node scripts/analyze-codebase.js` 生成分析报告 【已对齐当前代码事实】
 3. 根据报告更新 `meta.json` 中的 `status` 和 `completeness`
@@ -123,6 +124,7 @@ pnpm build
 ### 功能卡片 (Feature Card)
 
 **文件结构:**
+
 ```
 01_features/F{序号}_{功能ID}/
 ├── README.md       # 功能主文档
@@ -131,6 +133,7 @@ pnpm build
 ```
 
 **`README.md` 模板:**
+
 ```markdown
 # F{序号}: {功能名称}
 
@@ -140,28 +143,35 @@ pnpm build
 > **最后验证**: {日期}
 
 ## 功能概述
+
 [1-2句话描述功能目的]
 
 ## 核心能力
+
 - [ ] 能力1 ({状态})
 - [ ] 能力2 ({状态})
 
 ## 实现文件
+
 - `src/path/to/file1.ts` - 描述
 - `src/path/to/file2.tsx` - 描述
 
 ## 相关决策
+
 - [ADR-001](../../02_decisions/ADR-001_xxx.md) - 决策标题
 
 ## 测试覆盖
+
 - [ ] 单元测试: {文件路径}
 - [ ] 集成测试: {测试场景}
 
 ## 已知问题
+
 - [ISSUE-001](../../archive/问题记录表.md#issue-001) - 问题描述 【已对齐当前代码事实】
 ```
 
 **`meta.json` 模板:**
+
 ```json
 {
   "id": "F001",
@@ -187,7 +197,8 @@ pnpm build
 **命名规范**: `ADR-{序号}_{简短描述}.md`
 
 **模板:**
-```markdown
+
+````markdown
 # ADR-{序号}: {决策标题}
 
 > **状态**: {提议|已采纳|已废弃}
@@ -195,48 +206,63 @@ pnpm build
 > **决策人**: {姓名}
 
 ## 上下文 (Context)
+
 [为什么需要做这个决策?当前面临什么问题?]
 
 ## 决策 (Decision)
+
 [我们决定做什么?]
 
 ## 理由 (Rationale)
+
 [为什么这么决定?考虑了哪些因素?]
 
 ## 替代方案 (Alternatives)
+
 ### 方案A: {名称}
+
 - 优点: ...
 - 缺点: ...
 
 ### 方案B: {名称}
+
 - 优点: ...
 - 缺点: ...
 
 ## 影响的功能 (Affects)
+
 - [F001](../01_features/F001_data-import/README.md)
 - [F003](../01_features/F003_trend-analysis/README.md)
 
 ## 后果 (Consequences)
+
 ### 正面影响
+
 - ...
 
 ### 负面影响
+
 - ...
 
 ### 技术债务
+
 - ...
 
 ## 代码证据 (Code Evidence)
+
 ```typescript
 // 实际代码示例
-import { create } from 'zustand';
+import { create } from 'zustand'
 ```
+````
 
 **文件路径**: `src/store/use-data-store.ts:5-20`
 
 ## 参考资料
+
 - [Zustand 官方文档](https://docs.pmnd.rs/zustand)
-```
+
+````
 
 ### 开发日志 (Development Log)
 
@@ -278,7 +304,7 @@ import { create } from 'zustand';
 
 ## 问题记录
 [遇到的问题和解决方法]
-```
+````
 
 ---
 
@@ -322,12 +348,14 @@ graph LR
 **文件**: `scripts/analyze-codebase.js` 【已对齐当前代码事实】
 
 **功能**:
+
 - 扫描 `src/` 目录检测实际实现
 - 生成功能完整度报告
 - 识别架构模式采用情况
 - 输出 `codebase-analysis.json`
 
 **使用方法**:
+
 ```bash
 node scripts/analyze-codebase.js
 【已对齐当前代码事实】
@@ -336,6 +364,7 @@ node scripts/analyze-codebase.js
 ### 元数据验证脚本 (待开发)
 
 **功能**:
+
 - 检查所有 `meta.json` 格式正确性
 - 验证关联链接有效性
 - 检测过期的 `last_verified` 日期
@@ -363,16 +392,21 @@ node scripts/analyze-codebase.js
 ## 📞 问题反馈
 
 如果发现文档与代码不符,请:
+
 1. 运行 `node scripts/analyze-codebase.js` 确认差异 【已对齐当前代码事实】
 2. 创建 Issue 记录到 `archive/问题记录表.md` 【已对齐当前代码事实】
 3. 更新相关文档
 
 ---
 
-*本文档版本: v1.0.0*
-*最后更新: 2025-01-20*
-*维护者: 开发团队*
+_本文档版本: v1.0.0_
+_最后更新: 2025-01-20_
+_维护者: 开发团队_
+
 ### 文档现实对齐流程
+
 当发现文档与当前代码事实不一致且不涉及设计重写时，应执行“现实对齐（Reality Alignment）”：仅进行事实性修正，确保描述与现状一致；完成后在 `开发文档/开发记录表.md` 增加记录，并注明验证状态。 【已对齐当前代码事实】
+
 ### 分析报告产物
+
 `codebase-analysis.json` 为 `node scripts/analyze-codebase.js` 生成的分析产物，建议在关键里程碑随代码一同提交；如需更新，应先运行该脚本再提交最新报告。 【已对齐当前代码事实】

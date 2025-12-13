@@ -7,15 +7,18 @@
 ## 功能特性
 
 ### 1. 双数据源支持
+
 - **Supabase 模式**: 从云数据库自动加载数据
 - **本地模式**: 仅使用 CSV 文件上传的数据（默认）
 
 ### 2. 优雅降级
+
 - Supabase 连接失败时自动降级到本地模式
 - 不会因数据库配置问题导致应用无法启动
 - 提供清晰的数据源指示器
 
 ### 3. 环境变量配置
+
 通过 `.env.local` 文件轻松切换数据源:
 
 ```bash
@@ -58,10 +61,12 @@ NEXT_PUBLIC_DATA_SOURCE=local
 ### 关键代码
 
 #### 数据源检测
+
 ```typescript
 // src/lib/supabase/client.ts
 const dataSource = process.env.NEXT_PUBLIC_DATA_SOURCE || 'local'
-export const isSupabaseEnabled = dataSource === 'supabase' && !!supabaseUrl && !!supabaseAnonKey
+export const isSupabaseEnabled =
+  dataSource === 'supabase' && !!supabaseUrl && !!supabaseAnonKey
 
 export function getDataSource(): 'supabase' | 'local' {
   return isSupabaseEnabled ? 'supabase' : 'local'
@@ -69,6 +74,7 @@ export function getDataSource(): 'supabase' | 'local' {
 ```
 
 #### 条件数据加载
+
 ```typescript
 // src/app/page.tsx
 const dataSource = getDataSource()
@@ -90,11 +96,13 @@ if (dataSource === 'supabase') {
 ### 本地模式（默认）
 
 1. 创建 `.env.local` 文件:
+
    ```bash
    NEXT_PUBLIC_DATA_SOURCE=local
    ```
 
 2. 启动应用:
+
    ```bash
    pnpm dev
    ```
@@ -104,6 +112,7 @@ if (dataSource === 'supabase') {
 ### Supabase 模式
 
 1. 配置 `.env.local`:
+
    ```bash
    NEXT_PUBLIC_DATA_SOURCE=supabase
    NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
@@ -117,11 +126,14 @@ if (dataSource === 'supabase') {
 ## UI 变化
 
 ### 数据源指示器
+
 在页面标题下方显示当前数据模式:
+
 - **本地模式**: 蓝色图标 + "本地模式"
 - **Supabase**: 绿色图标 + "Supabase"
 
 ### 落地页改进
+
 - 移除了数据库连接失败的错误页面
 - 即使没有数据也能正常进入应用
 - 用户可以直接上传 CSV 文件开始使用
@@ -129,17 +141,20 @@ if (dataSource === 'supabase') {
 ## 测试场景
 
 ### 场景 1: 纯本地模式
+
 - ✅ 配置 `DATA_SOURCE=local`
 - ✅ 应用正常启动
 - ✅ 显示 "本地模式" 指示器
 - ✅ 可以上传 CSV 文件
 
 ### 场景 2: Supabase 模式（正常）
+
 - ✅ 配置 `DATA_SOURCE=supabase` 和有效凭证
 - ✅ 应用启动时自动加载数据
 - ✅ 显示 "Supabase" 指示器
 
 ### 场景 3: Supabase 模式（连接失败）
+
 - ✅ 配置 `DATA_SOURCE=supabase` 但凭证无效
 - ✅ 应用正常启动（不崩溃）
 - ✅ 自动降级到本地模式
@@ -147,6 +162,7 @@ if (dataSource === 'supabase') {
 - ✅ 用户可以上传 CSV 文件
 
 ### 场景 4: 未配置环境变量
+
 - ✅ 默认使用本地模式
 - ✅ 应用正常运行
 

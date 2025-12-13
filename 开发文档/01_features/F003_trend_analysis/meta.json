@@ -13,13 +13,7 @@
     "src/lib/analytics/trend-fitting.ts",
     "src/hooks/use-trend.ts"
   ],
-  "related_decisions": [
-    "ADR-004"
-  ],
+  "related_decisions": ["ADR-004"],
   "related_issues": [],
-  "tags": [
-    "数据可视化",
-    "智能分析",
-    "P0"
-  ]
+  "tags": ["数据可视化", "智能分析", "P0"]
 }

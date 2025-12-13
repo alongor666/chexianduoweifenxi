@@ -5,6 +5,7 @@
 ---
 
 **版本信息**
+
 - 版本号：V1.3
 - 状态：开发中
 - 产品负责人：[待填写]
@@ -15,13 +16,13 @@
 
 ## 文档修订历史
 
-| 版本 | 日期 | 修订内容 | 修订人 |
-|------|------|----------|--------|
-| V0.1 | 2025-10-18 | 初始版本创建 | Alongor666 |
-| V1.0 | 2025-10-18 | 完善结构，新增智能分析、数据驱动设计等章节 | 待填写 |
-| V1.1 | 2025-01-20 | CSV上传功能优化，解决字段顺序匹配和大文件解析问题 | Claude |
-| V1.2 | 2025-10-19 | 新增双模式分析架构（单周表现+多周趋势），重构页面布局和导航 | Claude |
-| V1.3 | 2025-10-19 | 全局筛选器UI重构：时间/机构筛选器提升至工具栏中间，采用紧凑弹出式设计 | Claude |
+| 版本 | 日期       | 修订内容                                                              | 修订人     |
+| ---- | ---------- | --------------------------------------------------------------------- | ---------- |
+| V0.1 | 2025-10-18 | 初始版本创建                                                          | Alongor666 |
+| V1.0 | 2025-10-18 | 完善结构，新增智能分析、数据驱动设计等章节                            | 待填写     |
+| V1.1 | 2025-01-20 | CSV上传功能优化，解决字段顺序匹配和大文件解析问题                     | Claude     |
+| V1.2 | 2025-10-19 | 新增双模式分析架构（单周表现+多周趋势），重构页面布局和导航           | Claude     |
+| V1.3 | 2025-10-19 | 全局筛选器UI重构：时间/机构筛选器提升至工具栏中间，采用紧凑弹出式设计 | Claude     |
 
 ---
 
@@ -47,6 +48,7 @@
 车险多维可视化智能数据分析网页是一款专为保险业务管理团队打造的**数据驱动型决策支持平台**。通过现代化的Web技术和智能分析算法，将复杂的车险业务数据转化为直观、可交互的可视化洞察，帮助业务团队快速识别问题、发现机会、优化决策。
 
 **产品核心价值主张：**
+
 - **数据民主化**：让非技术人员也能轻松进行专业级数据分析
 - **洞察实时化**：从数据上传到洞察生成，全程不超过30秒
 - **决策智能化**：AI驱动的异常检测和归因分析，主动发现业务问题
@@ -56,15 +58,16 @@
 
 **主要用户群体（约100人）：**
 
-| 用户角色 | 典型场景 | 核心诉求 | 使用频率 |
-|---------|---------|---------|---------|
-| **高层管理者** | 战略决策、绩效评估 | 快速了解业务整体状况，识别关键风险和机会 | 周度/月度 |
-| **业务分析师** | 深度分析、报告撰写 | 多维度下钻分析，发现问题根因，生成分析报告 | 日常高频 |
-| **区域经理** | 区域绩效监控、团队管理 | 对比分析各机构表现，识别优秀和落后单位 | 周度 |
-| **产品经理** | 产品优化、定价策略 | 分析不同险种、客户类型的经营效益 | 周度/月度 |
-| **风控专员** | 风险监控、预警响应 | 监控赔付率、出险率等风险指标异常变化 | 日常高频 |
+| 用户角色       | 典型场景               | 核心诉求                                   | 使用频率  |
+| -------------- | ---------------------- | ------------------------------------------ | --------- |
+| **高层管理者** | 战略决策、绩效评估     | 快速了解业务整体状况，识别关键风险和机会   | 周度/月度 |
+| **业务分析师** | 深度分析、报告撰写     | 多维度下钻分析，发现问题根因，生成分析报告 | 日常高频  |
+| **区域经理**   | 区域绩效监控、团队管理 | 对比分析各机构表现，识别优秀和落后单位     | 周度      |
+| **产品经理**   | 产品优化、定价策略     | 分析不同险种、客户类型的经营效益           | 周度/月度 |
+| **风控专员**   | 风险监控、预警响应     | 监控赔付率、出险率等风险指标异常变化       | 日常高频  |
 
 **用户能力特征：**
+
 - ✅ 熟悉Excel基本操作，具备基础数据分析能力
 - ✅ 理解车险业务逻辑和核心指标含义
 - ❌ 不具备编程能力，不熟悉数据库操作
@@ -75,26 +78,28 @@
 #### 1.3.1 业务目标
 
 **短期目标（3-6个月）：**
+
 1. **效率提升**：将周度经营分析报告生成时间从8小时缩短至30分钟，效率提升94%
 2. **覆盖广度**：支持100名业务人员日常使用，替代80%的手工报表需求
 3. **决策质量**：通过智能归因功能，使问题定位准确率提升至85%以上
 
 **中期目标（6-12个月）：**
+
 1. **业务价值**：通过数据洞察驱动的决策优化，实现边际贡献率提升1-2个百分点
 2. **用户满意度**：NPS（净推荐值）达到50+，用户满意度超过85%
 3. **数据文化**：培养数据驱动决策文化，使数据分析成为日常工作标配
 
 #### 1.3.2 产品目标
 
-| 目标维度 | 具体指标 | 衡量标准 |
-|---------|---------|---------|
-| **性能体验** | 首屏加载时间 | < 2.5秒（LCP） |
-| **性能体验** | 筛选响应时间 | < 500ms |
-| **性能体验** | 大数据集处理 | 支持10万+行数据流畅分析 |
-| **易用性** | 新用户上手时间 | < 15分钟（无需培训） |
-| **易用性** | 核心任务完成率 | > 90% |
-| **稳定性** | 系统可用性 | > 99.5% |
-| **准确性** | 数据计算准确率 | 100%（零容忍） |
+| 目标维度     | 具体指标       | 衡量标准                |
+| ------------ | -------------- | ----------------------- |
+| **性能体验** | 首屏加载时间   | < 2.5秒（LCP）          |
+| **性能体验** | 筛选响应时间   | < 500ms                 |
+| **性能体验** | 大数据集处理   | 支持10万+行数据流畅分析 |
+| **易用性**   | 新用户上手时间 | < 15分钟（无需培训）    |
+| **易用性**   | 核心任务完成率 | > 90%                   |
+| **稳定性**   | 系统可用性     | > 99.5%                 |
+| **准确性**   | 数据计算准确率 | 100%（零容忍）          |
 
 ### 1.4 产品愿景与设计理念
 
@@ -106,21 +111,25 @@
 #### 1.4.2 设计理念（Apple-Inspired）
 
 **1. 简约至上（Simplicity First）**
+
 - **少即是多**：每个界面元素都必须有明确的功能目的，无冗余设计
 - **信息层级**：通过视觉层级引导用户注意力，核心信息一眼可见
 - **克制动效**：动画仅用于强调状态变化和引导注意力，避免炫技
 
 **2. 数据为王（Data-First）**
+
 - **计算透明**：所有指标计算逻辑公开透明，可追溯可验证
 - **准确优先**：宁可显示"无数据"，也不呈现不准确的结果
 - **上下文丰富**：数据展示始终附带必要的上下文信息（时间范围、对比基准等）
 
 **3. 体验驱动（Experience-Driven）**
+
 - **性能至上**：追求极致的响应速度，让等待时间趋近于零
 - **反馈及时**：每个操作都有即时的视觉反馈，让用户始终清楚系统状态
 - **容错友好**：预测用户可能的错误操作，提供清晰的引导和恢复路径
 
 **4. 智能助手（AI-Augmented）**
+
 - **主动洞察**：系统主动发现数据异常和业务问题，而非等待用户询问
 - **上下文理解**：AI分析基于用户当前选择的筛选条件，提供个性化洞察
 - **持续学习**：根据用户反馈优化推荐算法，越用越智能
@@ -176,16 +185,16 @@
 
 **核心能力：**
 
-| 功能点 | 详细说明 | 优先级 |
-|--------|---------|--------|
-| **文件上传** | 支持拖拽上传、点击上传，单文件最大10MB | P0 |
-| **格式校验** | 自动识别CSV/JSON格式，检查编码（UTF-8）、分隔符、字段完整性 | P0 |
-| **数据预览** | 上传后展示前100行数据预览，允许用户确认数据正确性 | P0 |
-| **智能纠错** | 自动识别常见错误（如枚举值拼写错误），提供修正建议 | P1 |
-| **增量更新** | 支持同一周数据的覆盖上传，自动去重合并 | P0 |
-| **批量导入** | 支持一次性上传多个文件（如28-41周的14个文件） | P1 |
-| **模板下载** | 提供标准CSV/JSON模板下载，内置示例数据 | P0 |
-| **导入历史** | 记录导入历史，支持查看/回滚到历史版本 | P2 |
+| 功能点       | 详细说明                                                    | 优先级 |
+| ------------ | ----------------------------------------------------------- | ------ |
+| **文件上传** | 支持拖拽上传、点击上传，单文件最大10MB                      | P0     |
+| **格式校验** | 自动识别CSV/JSON格式，检查编码（UTF-8）、分隔符、字段完整性 | P0     |
+| **数据预览** | 上传后展示前100行数据预览，允许用户确认数据正确性           | P0     |
+| **智能纠错** | 自动识别常见错误（如枚举值拼写错误），提供修正建议          | P1     |
+| **增量更新** | 支持同一周数据的覆盖上传，自动去重合并                      | P0     |
+| **批量导入** | 支持一次性上传多个文件（如28-41周的14个文件）               | P1     |
+| **模板下载** | 提供标准CSV/JSON模板下载，内置示例数据                      | P0     |
+| **导入历史** | 记录导入历史，支持查看/回滚到历史版本                       | P2     |
 
 **数据校验规则：**
 
@@ -194,50 +203,68 @@
 const validationRules = {
   // 必填字段检查
   requiredFields: [
-    'snapshot_date', 'policy_start_year', 'week_number',
-    'third_level_organization', 'insurance_type', 
-    'signed_premium_yuan', 'matured_premium_yuan'
+    'snapshot_date',
+    'policy_start_year',
+    'week_number',
+    'third_level_organization',
+    'insurance_type',
+    'signed_premium_yuan',
+    'matured_premium_yuan',
   ],
-  
+
   // 字段类型校验
   fieldTypes: {
-    'week_number': 'integer',
-    'signed_premium_yuan': 'number',
-    'is_new_energy_vehicle': 'boolean'
+    week_number: 'integer',
+    signed_premium_yuan: 'number',
+    is_new_energy_vehicle: 'boolean',
   },
-  
+
   // 枚举值校验
   enumFields: {
-    'insurance_type': ['商业险', '交强险'],
-    'renewal_status': ['新保', '续保', '转保'],
-    'third_level_organization': ['本部', '达州', '德阳', '高新', '乐山', 
-                                   '泸州', '青羊', '天府', '武侯', '新都', 
-                                   '宜宾', '资阳', '自贡']
+    insurance_type: ['商业险', '交强险'],
+    renewal_status: ['新保', '续保', '转保'],
+    third_level_organization: [
+      '本部',
+      '达州',
+      '德阳',
+      '高新',
+      '乐山',
+      '泸州',
+      '青羊',
+      '天府',
+      '武侯',
+      '新都',
+      '宜宾',
+      '资阳',
+      '自贡',
+    ],
   },
-  
+
   // 数值范围校验
   rangeValidation: {
-    'week_number': { min: 1, max: 105 },
-    'signed_premium_yuan': { min: 0 },
-    'matured_premium_yuan': { min: 0 }
+    week_number: { min: 1, max: 105 },
+    signed_premium_yuan: { min: 0 },
+    matured_premium_yuan: { min: 0 },
   },
-  
+
   // 业务逻辑校验
   businessRules: [
     '保单年度必须与快照日期年份一致',
     '满期保费不应大于签单保费的150%（警告而非错误）',
-    '边际贡献额可为负值，但异常大的负值需警告'
-  ]
-};
+    '边际贡献额可为负值，但异常大的负值需警告',
+  ],
+}
 ```
 
 **用户体验设计：**
+
 - **进度可视化**：大文件上传时显示实时进度条（已上传行数/总行数）
 - **错误定位**：校验失败时精确定位到出错的行号和字段名
 - **批量处理**：允许"跳过错误行继续导入"或"全部拒绝"两种模式
 - **导入反馈**：导入完成后显示统计摘要（成功X行，跳过Y行，错误Z行）
 
 **交互流程：**
+
 ```
 用户上传文件
     ↓
@@ -263,10 +290,10 @@ const validationRules = {
 
 **双模式分析框架：**
 
-| 分析模式 | 适用场景 | 核心视图 | 周次选择 |
-|---------|---------|---------|---------|
-| **单周表现分析** | 关注某一周的详细表现，深度下钻 | KPI看板 + 结构分析 | 单选 |
-| **多周趋势分析** | 观察多个周期的变化趋势，识别规律 | 趋势折线图/柱状图 | 多选 |
+| 分析模式         | 适用场景                         | 核心视图           | 周次选择 |
+| ---------------- | -------------------------------- | ------------------ | -------- |
+| **单周表现分析** | 关注某一周的详细表现，深度下钻   | KPI看板 + 结构分析 | 单选     |
+| **多周趋势分析** | 观察多个周期的变化趋势，识别规律 | 趋势折线图/柱状图  | 多选     |
 
 **筛选维度体系（四级级联）：**
 
@@ -327,9 +354,9 @@ const validationRules = {
     </div>
   </div>
   <div class="week-checkboxes">
-    <label><input type="checkbox" checked> 第28周</label>
-    <label><input type="checkbox"> 第29周</label>
-    <label><input type="checkbox" checked> 第30周</label>
+    <label><input type="checkbox" checked /> 第28周</label>
+    <label><input type="checkbox" /> 第29周</label>
+    <label><input type="checkbox" checked /> 第30周</label>
     ...
   </div>
 </div>
@@ -425,21 +452,23 @@ const validationRules = {
 
 **满期边际贡献率色彩映射（特殊设计）：**
 
-| 数值范围 | 颜色系 | 视觉处理 | 业务含义 |
-|---------|--------|---------|---------|
-| > 12% | 绿色系 | 数值越高颜色越深 | 优秀，超额完成目标 |
-| 8% - 12% | 蓝色系 | 适中饱和度 | 良好，符合预期 |
-| 4% - 8% | 黄色系 | 数值越低颜色越深 | 关注，需要改进 |
-| < 4% | 红色系 | 数值越低颜色越深 | 异常，需立即介入 |
+| 数值范围 | 颜色系 | 视觉处理         | 业务含义           |
+| -------- | ------ | ---------------- | ------------------ |
+| > 12%    | 绿色系 | 数值越高颜色越深 | 优秀，超额完成目标 |
+| 8% - 12% | 蓝色系 | 适中饱和度       | 良好，符合预期     |
+| 4% - 8%  | 黄色系 | 数值越低颜色越深 | 关注，需要改进     |
+| < 4%     | 红色系 | 数值越低颜色越深 | 异常，需立即介入   |
 
 **对比分析功能：**
 
 用户可选择对比方式：
+
 - **环比**：与上一周对比（默认）
 - **同比**：与去年同期对比
 - **自定义**：与用户指定的基准周对比
 
 **KPI卡片交互：**
+
 - **点击卡片**：展开该指标的详细分析面板（趋势图 + 维度拆解）
 - **右键菜单**：复制数值、查看计算公式、添加到收藏
 - **拖拽排序**（P2）：允许用户自定义KPI卡片的显示顺序
@@ -453,12 +482,12 @@ const validationRules = {
 
 **图表类型与适用场景：**
 
-| 图表类型 | 适用指标 | 设计要点 |
-|---------|---------|---------|
-| **折线图** | 保费、赔款、费用等连续性指标 | 支持多险种对比，最多5条线 |
-| **柱状图** | 保单件数、赔案件数等计数指标 | 支持堆叠显示（如按机构堆叠） |
-| **面积图** | 累计保费、累计贡献额等累积指标 | 使用半透明填充，突出总量变化 |
-| **组合图** | 保费（柱状）+ 费用率（折线）双轴 | 左右双Y轴，清晰标注单位 |
+| 图表类型   | 适用指标                         | 设计要点                     |
+| ---------- | -------------------------------- | ---------------------------- |
+| **折线图** | 保费、赔款、费用等连续性指标     | 支持多险种对比，最多5条线    |
+| **柱状图** | 保单件数、赔案件数等计数指标     | 支持堆叠显示（如按机构堆叠） |
+| **面积图** | 累计保费、累计贡献额等累积指标   | 使用半透明填充，突出总量变化 |
+| **组合图** | 保费（柱状）+ 费用率（折线）双轴 | 左右双Y轴，清晰标注单位      |
 
 **趋势图核心功能：**
 
@@ -488,37 +517,37 @@ const validationRules = {
 const chartInteractions = {
   // 基础交互
   hover: {
-    showTooltip: true,  // 显示详细数值
+    showTooltip: true, // 显示详细数值
     highlightLine: true, // 高亮当前系列
-    crosshair: true      // 显示十字准星
+    crosshair: true, // 显示十字准星
   },
-  
+
   // 缩放与平移
   zoom: {
     enabled: true,
-    type: 'x',  // 仅允许X轴缩放
-    minRange: 3 // 最小显示3周
+    type: 'x', // 仅允许X轴缩放
+    minRange: 3, // 最小显示3周
   },
-  
+
   // 数据点点击
-  onClick: (dataPoint) => {
+  onClick: dataPoint => {
     // 跳转到该周的单周分析视图
-    switchToSingleWeekMode(dataPoint.week);
+    switchToSingleWeekMode(dataPoint.week)
   },
-  
+
   // 图例交互
   legend: {
-    clickToToggle: true,  // 点击图例显示/隐藏系列
-    hoverToHighlight: true // 悬停图例高亮对应系列
+    clickToToggle: true, // 点击图例显示/隐藏系列
+    hoverToHighlight: true, // 悬停图例高亮对应系列
   },
-  
+
   // 数据导出
   export: {
-    copyToClipboard: true,  // 复制图表数据
-    downloadCSV: true,       // 下载为CSV
-    downloadImage: true      // 下载为PNG图片
-  }
-};
+    copyToClipboard: true, // 复制图表数据
+    downloadCSV: true, // 下载为CSV
+    downloadImage: true, // 下载为PNG图片
+  },
+}
 ```
 
 **趋势图布局：**
@@ -601,15 +630,16 @@ const chartInteractions = {
 
 **导出功能清单：**
 
-| 导出类型 | 格式 | 内容 | 优先级 |
-|---------|------|------|--------|
-| **KPI概览** | CSV | 当前筛选条件下的8个核心指标 | P0 |
-| **明细数据** | CSV | 聚合后的明细数据（可指定维度） | P0 |
-| **图表图片** | PNG | 当前显示的图表（高清，适合PPT） | P1 |
-| **分析报告** | PDF | 自动生成的分析报告（KPI+图表+洞察） | P2 |
-| **筛选快照** | JSON | 当前筛选条件配置，可分享给他人 | P2 |
+| 导出类型     | 格式 | 内容                                | 优先级 |
+| ------------ | ---- | ----------------------------------- | ------ |
+| **KPI概览**  | CSV  | 当前筛选条件下的8个核心指标         | P0     |
+| **明细数据** | CSV  | 聚合后的明细数据（可指定维度）      | P0     |
+| **图表图片** | PNG  | 当前显示的图表（高清，适合PPT）     | P1     |
+| **分析报告** | PDF  | 自动生成的分析报告（KPI+图表+洞察） | P2     |
+| **筛选快照** | JSON | 当前筛选条件配置，可分享给他人      | P2     |
 
 **分享功能（P2）：**
+
 - **生成分享链接**：包含当前筛选条件和视图配置，有效期7天
 - **邮件推送**：定期将指定分析结果发送到邮箱（如每周一早上）
 - **报告模板**：预设常用分析场景（如月度经营分析报告），一键生成
@@ -673,15 +703,15 @@ const chartInteractions = {
 
 ### 2.3 功能优先级矩阵
 
-| 功能模块 | P0（MVP必需） | P1（V1.0增强） | P2（V2.0规划） |
-|---------|--------------|---------------|---------------|
+| 功能模块       | P0（MVP必需）        | P1（V1.0增强）       | P2（V2.0规划）       |
+| -------------- | -------------------- | -------------------- | -------------------- |
 | 数据上传与解析 | ✓ 基础上传、格式校验 | ✓ 批量导入、智能纠错 | ✓ 导入历史、版本回滚 |
-| 多维筛选与切片 | ✓ 11个维度、双模式 | ✓ 筛选组合保存 | ✓ 智能推荐筛选 |
-| 核心KPI看板 | ✓ 8个KPI卡片、对比 | ✓ 微型趋势图 | ✓ 自定义KPI |
-| 趋势分析图表 | ✓ 折线图、柱状图 | ✓ 异常高亮、趋势拟合 | ✓ 预测模型 |
-| 结构分析 | - | ✓ 机构对比、险种结构 | ✓ 客户分群、热力图 |
-| 数据导出 | ✓ CSV导出 | ✓ 图表导出 | ✓ PDF报告、分享 |
-| 计算核对 | - | ✓ 公式展示、溯源 | ✓ 差异分析 |
+| 多维筛选与切片 | ✓ 11个维度、双模式   | ✓ 筛选组合保存       | ✓ 智能推荐筛选       |
+| 核心KPI看板    | ✓ 8个KPI卡片、对比   | ✓ 微型趋势图         | ✓ 自定义KPI          |
+| 趋势分析图表   | ✓ 折线图、柱状图     | ✓ 异常高亮、趋势拟合 | ✓ 预测模型           |
+| 结构分析       | -                    | ✓ 机构对比、险种结构 | ✓ 客户分群、热力图   |
+| 数据导出       | ✓ CSV导出            | ✓ 图表导出           | ✓ PDF报告、分享      |
+| 计算核对       | -                    | ✓ 公式展示、溯源     | ✓ 差异分析           |
 
 ---
 
@@ -764,6 +794,7 @@ const chartInteractions = {
 - **定义**：业务经营的三级组织单元
 - **数据类型**：枚举字符串
 - **实际枚举值**（13个）：
+
   ```
   乐山、天府、宜宾、德阳、新都、本部、武侯、
   泸州、自贡、资阳、达州、青羊、高新
@@ -776,7 +807,8 @@ const chartInteractions = {
   - 区域市场竞争力分析
   - 资源分配和目标设定依据
 
-- **层级关系**  
+- **层级关系**
+
   ```
   四川分公司
   ├── 成都（chengdu_branch = '成都'）
@@ -795,12 +827,12 @@ const chartInteractions = {
       └── 乐山
   ```
 
-- **地理维度扩展**  
-  - 现有字段：`chengdu_branch`  
+- **地理维度扩展**
+  - 现有字段：`chengdu_branch`
   - 取值范围：'成都' | '中支'
 
-- **数据来源字段**  
-  - `third_level_organization`  
+- **数据来源字段**
+  - `third_level_organization`
   - `chengdu_branch`
 
 ---
@@ -841,6 +873,7 @@ const chartInteractions = {
 - **定义**：基于车辆类型和吨位的细分业务分类
 - **数据类型**：枚举字符串（16个类别）
 - **实际枚举值**：
+
   ```
   10吨以上-普货          10吨以上-牵引          2-9吨营业货车
   2吨以下营业货车        9-10吨营业货车         出租车
@@ -867,6 +900,7 @@ const chartInteractions = {
 - **定义**：基于车辆使用性质的客户类型分类
 - **数据类型**：枚举字符串（11个类别）
 - **实际枚举值**：
+
   ```
   挂车                  摩托车               特种车
   营业公路客运          营业出租租赁         营业城市公交
@@ -974,6 +1008,7 @@ const chartInteractions = {
 - **定义**：保单出单的渠道来源
 - **数据类型**：枚举字符串
 - **实际枚举值**（8个渠道）：
+
   ```
   0101柜面           0106移动展业(App)   0107B2B
   0110融合销售       0112AI出单          0201PC
@@ -1020,12 +1055,12 @@ const chartInteractions = {
 
 **维度适用性矩阵：**
 
-| 业务维度 | 适用客户类别 | 联动触发条件 | 数据完整性 |
-|---------|------------|------------|-----------|
-| 车险评级 | 非营业个人客车 | `customer_category_3 = '非营业个人客车'` | 可选（允许为空） |
-| 小货车评分 | 非营业货车 或 2吨以下营业货车 | `customer_category_3 IN ('非营业货车', ...)` | 可选（允许为空） |
-| 大货车评分 | 10吨以上营业货车 | `business_type_category LIKE '10吨以上%'` | 可选（允许为空） |
-| 高速风险等级 | 全部 | 无条件 | 可选（允许为空） |
+| 业务维度     | 适用客户类别                  | 联动触发条件                                 | 数据完整性       |
+| ------------ | ----------------------------- | -------------------------------------------- | ---------------- |
+| 车险评级     | 非营业个人客车                | `customer_category_3 = '非营业个人客车'`     | 可选（允许为空） |
+| 小货车评分   | 非营业货车 或 2吨以下营业货车 | `customer_category_3 IN ('非营业货车', ...)` | 可选（允许为空） |
+| 大货车评分   | 10吨以上营业货车              | `business_type_category LIKE '10吨以上%'`    | 可选（允许为空） |
+| 高速风险等级 | 全部                          | 无条件                                       | 可选（允许为空） |
 
 **维度组合分析场景示例：**
 
@@ -1082,6 +1117,7 @@ const chartInteractions = {
    - 推荐人追踪
 
 **维度扩展原则：**
+
 - ✅ 业务价值优先：新增维度必须有明确的业务分析价值
 - ✅ 数据可得性：数据源系统能够稳定提供
 - ✅ 向后兼容：不破坏现有维度和计算逻辑
@@ -1118,58 +1154,58 @@ const chartInteractions = {
 
 ```css
 /* 主题色 - 低饱和蓝 */
---primary-50:  #E3F2FD;
---primary-100: #BBDEFB;
---primary-500: #2196F3;  /* 主色 */
---primary-700: #1976D2;
---primary-900: #0D47A1;
+--primary-50: #e3f2fd;
+--primary-100: #bbdefb;
+--primary-500: #2196f3; /* 主色 */
+--primary-700: #1976d2;
+--primary-900: #0d47a1;
 
 /* 中性色 - 灰度系统 */
---gray-50:  #FAFAFA;
---gray-100: #F5F5F5;
---gray-200: #EEEEEE;
---gray-300: #E0E0E0;
---gray-500: #9E9E9E;
+--gray-50: #fafafa;
+--gray-100: #f5f5f5;
+--gray-200: #eeeeee;
+--gray-300: #e0e0e0;
+--gray-500: #9e9e9e;
 --gray-700: #616161;
 --gray-900: #212121;
 
 /* 语义色 - 状态反馈 */
---success: #4CAF50;   /* 绿色：正向指标 */
---warning: #FF9800;   /* 橙色：需关注 */
---error:   #F44336;   /* 红色：异常告警 */
---info:    #2196F3;   /* 蓝色：提示信息 */
+--success: #4caf50; /* 绿色：正向指标 */
+--warning: #ff9800; /* 橙色：需关注 */
+--error: #f44336; /* 红色：异常告警 */
+--info: #2196f3; /* 蓝色：提示信息 */
 
 /* 满期边际贡献率专用色谱 */
---contribution-excellent: #2E7D32;  /* >12% 深绿 */
---contribution-good:      #4CAF50;  /* 8-12% 浅绿 */
---contribution-medium:    #1976D2;  /* 8% 蓝色 */
---contribution-fair:      #FBC02D;  /* 4-8% 黄色 */
---contribution-poor:      #F57C00;  /* <4% 橙色 */
---contribution-critical:  #D32F2F;  /* <0% 红色 */
+--contribution-excellent: #2e7d32; /* >12% 深绿 */
+--contribution-good: #4caf50; /* 8-12% 浅绿 */
+--contribution-medium: #1976d2; /* 8% 蓝色 */
+--contribution-fair: #fbc02d; /* 4-8% 黄色 */
+--contribution-poor: #f57c00; /* <4% 橙色 */
+--contribution-critical: #d32f2f; /* <0% 红色 */
 
 /* 玻璃态面板 */
---panel-bg:     rgba(255, 255, 255, 0.8);
+--panel-bg: rgba(255, 255, 255, 0.8);
 --panel-border: rgba(255, 255, 255, 0.6);
 --panel-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
---panel-blur:   blur(12px);
+--panel-blur: blur(12px);
 ```
 
 **深色模式（P1）：**
 
 ```css
 /* 深色主题色 */
---dark-bg-primary:   #121212;  /* 主背景 */
---dark-bg-secondary: #1E1E1E;  /* 次背景 */
---dark-bg-elevated:  #2C2C2C;  /* 卡片背景 */
+--dark-bg-primary: #121212; /* 主背景 */
+--dark-bg-secondary: #1e1e1e; /* 次背景 */
+--dark-bg-elevated: #2c2c2c; /* 卡片背景 */
 
---dark-text-primary:   rgba(255, 255, 255, 0.95);
---dark-text-secondary: rgba(255, 255, 255, 0.70);
---dark-text-disabled:  rgba(255, 255, 255, 0.40);
+--dark-text-primary: rgba(255, 255, 255, 0.95);
+--dark-text-secondary: rgba(255, 255, 255, 0.7);
+--dark-text-disabled: rgba(255, 255, 255, 0.4);
 
 /* 深色玻璃态 */
---dark-panel-bg:     rgba(255, 255, 255, 0.05);
---dark-panel-border: rgba(255, 255, 255, 0.10);
---dark-panel-shadow: 0 8px 32px rgba(0, 0, 0, 0.40);
+--dark-panel-bg: rgba(255, 255, 255, 0.05);
+--dark-panel-border: rgba(255, 255, 255, 0.1);
+--dark-panel-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 ```
 
 **字体系统：**
@@ -1181,39 +1217,39 @@ const chartInteractions = {
 --font-family-number: 'SF Pro Display', 'Helvetica Neue', sans-serif;
 
 /* 字体尺寸 */
---text-xs:   0.75rem;  /* 12px - 辅助信息 */
---text-sm:   0.875rem; /* 14px - 正文 */
---text-base: 1rem;     /* 16px - 基础 */
---text-lg:   1.125rem; /* 18px - 小标题 */
---text-xl:   1.25rem;  /* 20px - 标题 */
---text-2xl:  1.5rem;   /* 24px - 大标题 */
---text-3xl:  1.875rem; /* 30px - 特大号 */
---text-4xl:  2.25rem;  /* 36px - KPI数值 */
+--text-xs: 0.75rem; /* 12px - 辅助信息 */
+--text-sm: 0.875rem; /* 14px - 正文 */
+--text-base: 1rem; /* 16px - 基础 */
+--text-lg: 1.125rem; /* 18px - 小标题 */
+--text-xl: 1.25rem; /* 20px - 标题 */
+--text-2xl: 1.5rem; /* 24px - 大标题 */
+--text-3xl: 1.875rem; /* 30px - 特大号 */
+--text-4xl: 2.25rem; /* 36px - KPI数值 */
 
 /* 字重 */
---font-normal:   400;
---font-medium:   500;
+--font-normal: 400;
+--font-medium: 500;
 --font-semibold: 600;
---font-bold:     700;
+--font-bold: 700;
 
 /* 行高 */
---leading-tight:  1.25;  /* 标题 */
---leading-normal: 1.5;   /* 正文 */
+--leading-tight: 1.25; /* 标题 */
+--leading-normal: 1.5; /* 正文 */
 --leading-relaxed: 1.75; /* 舒适阅读 */
 ```
 
 **间距系统（8px基准）：**
 
 ```css
---spacing-1:  0.25rem;  /* 2px */
---spacing-2:  0.5rem;   /* 4px */
---spacing-3:  0.75rem;  /* 6px */
---spacing-4:  1rem;     /* 8px  - 基准单位 */
---spacing-6:  1.5rem;   /* 12px */
---spacing-8:  2rem;     /* 16px */
---spacing-12: 3rem;     /* 24px */
---spacing-16: 4rem;     /* 32px */
---spacing-24: 6rem;     /* 48px */
+--spacing-1: 0.25rem; /* 2px */
+--spacing-2: 0.5rem; /* 4px */
+--spacing-3: 0.75rem; /* 6px */
+--spacing-4: 1rem; /* 8px  - 基准单位 */
+--spacing-6: 1.5rem; /* 12px */
+--spacing-8: 2rem; /* 16px */
+--spacing-12: 3rem; /* 24px */
+--spacing-16: 4rem; /* 32px */
+--spacing-24: 6rem; /* 48px */
 ```
 
 ---
@@ -1249,14 +1285,14 @@ const chartInteractions = {
 
 #### 4.2.2 响应式断点
 
-| 断点 | 尺寸范围 | 布局调整 | 目标设备 |
-|------|---------|---------|---------|
-| xs | < 640px | 不支持（显示升级提示） | 手机竖屏 |
-| sm | 640-768px | 不支持（显示升级提示） | 手机横屏 |
-| md | 768-1024px | 简化版（仅核心功能） | 平板 |
-| lg | 1024-1440px | 标准版（推荐） | 笔记本 |
-| xl | 1440-1920px | 标准版 | 台式机 |
-| 2xl | > 1920px | 增强版（显示更多信息） | 4K显示器 |
+| 断点 | 尺寸范围    | 布局调整               | 目标设备 |
+| ---- | ----------- | ---------------------- | -------- |
+| xs   | < 640px     | 不支持（显示升级提示） | 手机竖屏 |
+| sm   | 640-768px   | 不支持（显示升级提示） | 手机横屏 |
+| md   | 768-1024px  | 简化版（仅核心功能）   | 平板     |
+| lg   | 1024-1440px | 标准版（推荐）         | 笔记本   |
+| xl   | 1440-1920px | 标准版                 | 台式机   |
+| 2xl  | > 1920px    | 增强版（显示更多信息） | 4K显示器 |
 
 **最低支持分辨率**：1024×768（但体验受限）  
 **推荐分辨率**：1920×1080 或更高
@@ -1293,16 +1329,16 @@ const chartInteractions = {
   backdrop-filter: var(--panel-blur);
   border: 1px solid var(--panel-border);
   box-shadow: var(--panel-shadow);
-  
+
   /* 圆角 */
   border-radius: 16px;
-  
+
   /* 内边距 */
   padding: var(--spacing-6);
-  
+
   /* 尺寸 */
   min-height: 180px;
-  
+
   /* 过渡动画 */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -1317,7 +1353,7 @@ const chartInteractions = {
   font-size: var(--text-4xl);
   font-weight: var(--font-bold);
   line-height: var(--leading-tight);
-  
+
   /* 数字等宽对齐 */
   font-variant-numeric: tabular-nums;
 }
@@ -1330,12 +1366,19 @@ const chartInteractions = {
   margin-top: var(--spacing-3);
 }
 
-.kpi-change.positive { color: var(--success); }
-.kpi-change.negative { color: var(--error); }
-.kpi-change.neutral  { color: var(--gray-500); }
+.kpi-change.positive {
+  color: var(--success);
+}
+.kpi-change.negative {
+  color: var(--error);
+}
+.kpi-change.neutral {
+  color: var(--gray-500);
+}
 ```
 
 **交互状态：**
+
 - **Hover**：卡片轻微上浮（-4px），阴影加深
 - **Active**：显示边框高亮，展开详细信息面板
 - **Loading**：骨架屏动画，保持布局稳定
@@ -1386,8 +1429,8 @@ const chartInteractions = {
     <button>清空</button>
   </div>
   <div class="week-grid">
-    <label><input type="checkbox" checked> 28</label>
-    <label><input type="checkbox"> 29</label>
+    <label><input type="checkbox" checked /> 28</label>
+    <label><input type="checkbox" /> 29</label>
     ...
   </div>
   <div class="selected-count">已选 3 / 14</div>
@@ -1446,6 +1489,7 @@ const chartInteractions = {
    - 圆角：12px
 
 2. **图表标题栏**：
+
    ```
    ┌─────────────────────────────────────────────┐
    │ 📈 签单保费趋势(第28-41周) [导出▼] [复制]   │
@@ -1481,7 +1525,7 @@ const chartInteractions = {
 const lineChartConfig = {
   // 图表类型
   type: 'line',
-  
+
   // 数据
   data: {
     labels: ['第28周', '第29周', '第30周', ...],
@@ -1496,18 +1540,18 @@ const lineChartConfig = {
       tension: 0.4  // 曲线平滑度
     }]
   },
-  
+
   // 配置项
   options: {
     responsive: true,
     maintainAspectRatio: false,
-    
+
     // 交互
     interaction: {
       mode: 'index',
       intersect: false
     },
-    
+
     // 图例
     plugins: {
       legend: {
@@ -1519,7 +1563,7 @@ const lineChartConfig = {
           font: { size: 14 }
         }
       },
-      
+
       // Tooltip
       tooltip: {
         backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -1530,7 +1574,7 @@ const lineChartConfig = {
         displayColors: true
       }
     },
-    
+
     // 坐标轴
     scales: {
       x: {
@@ -1579,9 +1623,9 @@ const lineChartConfig = {
 --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
 /* 持续时间 */
---duration-fast: 150ms;   /* 微交互 */
---duration-base: 250ms;   /* 标准过渡 */
---duration-slow: 400ms;   /* 页面切换 */
+--duration-fast: 150ms; /* 微交互 */
+--duration-base: 250ms; /* 标准过渡 */
+--duration-slow: 400ms; /* 页面切换 */
 
 /* 通用过渡 */
 .transition-base {
@@ -1590,8 +1634,12 @@ const lineChartConfig = {
 
 /* 淡入淡出 */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* 上滑入场 */
@@ -1613,17 +1661,16 @@ const lineChartConfig = {
 
 /* 骨架屏加载动画 */
 @keyframes shimmer {
-  0%   { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
 }
 
 .skeleton {
-  background: linear-gradient(
-    90deg,
-    #f0f0f0 0%,
-    #f8f8f8 50%,
-    #f0f0f0 100%
-  );
+  background: linear-gradient(90deg, #f0f0f0 0%, #f8f8f8 50%, #f0f0f0 100%);
   background-size: 800px 100%;
   animation: shimmer 1.5s infinite linear;
 }
@@ -1634,16 +1681,16 @@ const lineChartConfig = {
 ```javascript
 // 首屏加载顺序
 const loadSequence = {
-  1: { element: '.header',      delay: 0,     duration: 300 },
-  2: { element: '.filter-bar',  delay: 100,   duration: 300 },
-  3: { element: '.kpi-card',    delay: 200,   duration: 400, stagger: 50 },
-  4: { element: '.chart',       delay: 500,   duration: 400 }
-};
+  1: { element: '.header', delay: 0, duration: 300 },
+  2: { element: '.filter-bar', delay: 100, duration: 300 },
+  3: { element: '.kpi-card', delay: 200, duration: 400, stagger: 50 },
+  4: { element: '.chart', delay: 500, duration: 400 },
+}
 
 // KPI卡片交错入场
 document.querySelectorAll('.kpi-card').forEach((card, index) => {
-  card.style.animation = `slideInUp 0.4s ${index * 0.05}s both`;
-});
+  card.style.animation = `slideInUp 0.4s ${index * 0.05}s both`
+})
 ```
 
 ---
@@ -1662,23 +1709,23 @@ document.querySelectorAll('.kpi-card').forEach((card, index) => {
 ```javascript
 // Tab键导航顺序
 const focusOrder = [
-  '.filter-bar select',      // 筛选器
-  '.week-selector button',   // 周选择器
-  '.kpi-card',               // KPI卡片
-  '.chart-container',        // 图表
-  '.export-button'           // 导出按钮
-];
+  '.filter-bar select', // 筛选器
+  '.week-selector button', // 周选择器
+  '.kpi-card', // KPI卡片
+  '.chart-container', // 图表
+  '.export-button', // 导出按钮
+]
 
 // 快捷键定义
 const shortcuts = {
   'Ctrl+F': '聚焦搜索框',
   'Ctrl+E': '导出数据',
   'Ctrl+R': '刷新数据',
-  'Esc':    '关闭弹窗',
-  '←/→':    '切换周次',
-  'Tab':    '顺序导航',
-  'Shift+Tab': '反向导航'
-};
+  Esc: '关闭弹窗',
+  '←/→': '切换周次',
+  Tab: '顺序导航',
+  'Shift+Tab': '反向导航',
+}
 ```
 
 ---
@@ -1691,12 +1738,14 @@ const shortcuts = {
 从"被动查询"到"主动洞察"，让系统成为业务分析师的智能助手，自动发现数据中的异常、趋势和机会。
 
 **核心价值：**
+
 1. **降低分析门槛**：非专业人员也能获得专家级洞察
 2. **提升效率**：从手工分析8小时缩短到AI分析30秒
 3. **避免遗漏**：系统自动扫描全部维度，不放过任何异常
 4. **决策支持**：不仅告知"是什么"，更解释"为什么"和"怎么办"
 
 **技术路线：**
+
 - **MVP阶段**：基于规则的智能分析（阈值检测、同环比异常）
 - **V1.0阶段**：统计模型（Z-Score异常检测、线性回归趋势）
 - **V2.0阶段**：机器学习（时间序列预测、聚类分析）
@@ -1712,12 +1761,12 @@ const shortcuts = {
 
 **异常类型定义：**
 
-| 异常类型 | 检测方法 | 严重程度 | 触发阈值（示例） |
-|---------|---------|---------|-----------------|
-| **突变异常** | 环比变化率 | 🔴 高 | \|环比\| > 20% |
-| **趋势偏离** | 与历史趋势线的偏离度 | 🟡 中 | 偏离 > 2倍标准差 |
-| **阈值突破** | 超过预设业务阈值 | 🔴 高 | 赔付率 > 70% |
-| **结构异常** | 占比结构显著变化 | 🟡 中 | 某机构占比变化 > 5pp |
+| 异常类型     | 检测方法             | 严重程度 | 触发阈值（示例）     |
+| ------------ | -------------------- | -------- | -------------------- |
+| **突变异常** | 环比变化率           | 🔴 高    | \|环比\| > 20%       |
+| **趋势偏离** | 与历史趋势线的偏离度 | 🟡 中    | 偏离 > 2倍标准差     |
+| **阈值突破** | 超过预设业务阈值     | 🔴 高    | 赔付率 > 70%         |
+| **结构异常** | 占比结构显著变化     | 🟡 中    | 某机构占比变化 > 5pp |
 
 #### 5.2.2 检测算法
 
@@ -1726,10 +1775,10 @@ const shortcuts = {
 ```javascript
 // 环比突变检测
 function detectSuddenChange(currentValue, previousValue, threshold = 0.2) {
-  if (!previousValue || previousValue === 0) return null;
-  
-  const changeRate = (currentValue - previousValue) / previousValue;
-  
+  if (!previousValue || previousValue === 0) return null
+
+  const changeRate = (currentValue - previousValue) / previousValue
+
   if (Math.abs(changeRate) > threshold) {
     return {
       type: 'SUDDEN_CHANGE',
@@ -1737,39 +1786,39 @@ function detectSuddenChange(currentValue, previousValue, threshold = 0.2) {
       message: `环比变化${(changeRate * 100).toFixed(1)}%，超过阈值${threshold * 100}%`,
       value: currentValue,
       baseline: previousValue,
-      change: changeRate
-    };
+      change: changeRate,
+    }
   }
-  
-  return null;
+
+  return null
 }
 
 // 业务阈值检测
 function detectThresholdBreach(indicator, value, thresholds) {
   const config = {
-    '满期赔付率': { warning: 0.65, critical: 0.70 },
-    '费用率':     { warning: 0.18, critical: 0.22 },
-    '满期边际贡献率': { warning: 0.08, critical: 0.04 }
-  };
-  
-  const threshold = config[indicator];
-  if (!threshold) return null;
-  
+    满期赔付率: { warning: 0.65, critical: 0.7 },
+    费用率: { warning: 0.18, critical: 0.22 },
+    满期边际贡献率: { warning: 0.08, critical: 0.04 },
+  }
+
+  const threshold = config[indicator]
+  if (!threshold) return null
+
   if (value > threshold.critical) {
     return {
       type: 'THRESHOLD_BREACH',
       severity: 'CRITICAL',
-      message: `${indicator}达到${(value * 100).toFixed(2)}%，超过警戒线${(threshold.critical * 100)}%`
-    };
+      message: `${indicator}达到${(value * 100).toFixed(2)}%，超过警戒线${threshold.critical * 100}%`,
+    }
   } else if (value > threshold.warning) {
     return {
       type: 'THRESHOLD_BREACH',
       severity: 'WARNING',
-      message: `${indicator}达到${(value * 100).toFixed(2)}%，接近警戒线`
-    };
+      message: `${indicator}达到${(value * 100).toFixed(2)}%，接近警戒线`,
+    }
   }
-  
-  return null;
+
+  return null
 }
 ```
 
@@ -1778,66 +1827,70 @@ function detectThresholdBreach(indicator, value, thresholds) {
 ```javascript
 // Z-Score 异常检测
 function detectOutliers(dataPoints, zscore_threshold = 2) {
-  const mean = dataPoints.reduce((a, b) => a + b, 0) / dataPoints.length;
-  const variance = dataPoints.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / dataPoints.length;
-  const stdDev = Math.sqrt(variance);
-  
-  const outliers = dataPoints.map((value, index) => {
-    const zscore = (value - mean) / stdDev;
-    
-    if (Math.abs(zscore) > zscore_threshold) {
-      return {
-        index,
-        value,
-        zscore,
-        severity: Math.abs(zscore) > 3 ? 'CRITICAL' : 'WARNING',
-        message: `该值偏离均值${zscore.toFixed(1)}个标准差`
-      };
-    }
-    
-    return null;
-  }).filter(Boolean);
-  
-  return outliers;
+  const mean = dataPoints.reduce((a, b) => a + b, 0) / dataPoints.length
+  const variance =
+    dataPoints.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) /
+    dataPoints.length
+  const stdDev = Math.sqrt(variance)
+
+  const outliers = dataPoints
+    .map((value, index) => {
+      const zscore = (value - mean) / stdDev
+
+      if (Math.abs(zscore) > zscore_threshold) {
+        return {
+          index,
+          value,
+          zscore,
+          severity: Math.abs(zscore) > 3 ? 'CRITICAL' : 'WARNING',
+          message: `该值偏离均值${zscore.toFixed(1)}个标准差`,
+        }
+      }
+
+      return null
+    })
+    .filter(Boolean)
+
+  return outliers
 }
 
 // 趋势偏离检测（基于线性回归）
 function detectTrendDeviation(timeSeriesData) {
   // 简单线性回归：y = ax + b
-  const n = timeSeriesData.length;
-  const sumX = timeSeriesData.reduce((sum, _, i) => sum + i, 0);
-  const sumY = timeSeriesData.reduce((sum, val) => sum + val, 0);
-  const sumXY = timeSeriesData.reduce((sum, val, i) => sum + i * val, 0);
-  const sumX2 = timeSeriesData.reduce((sum, _, i) => sum + i * i, 0);
-  
-  const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
-  const intercept = (sumY - slope * sumX) / n;
-  
+  const n = timeSeriesData.length
+  const sumX = timeSeriesData.reduce((sum, _, i) => sum + i, 0)
+  const sumY = timeSeriesData.reduce((sum, val) => sum + val, 0)
+  const sumXY = timeSeriesData.reduce((sum, val, i) => sum + i * val, 0)
+  const sumX2 = timeSeriesData.reduce((sum, _, i) => sum + i * i, 0)
+
+  const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX)
+  const intercept = (sumY - slope * sumX) / n
+
   // 计算每个点与趋势线的偏离度
   const deviations = timeSeriesData.map((actual, index) => {
-    const expected = slope * index + intercept;
-    const deviation = actual - expected;
-    const percentDeviation = deviation / expected;
-    
+    const expected = slope * index + intercept
+    const deviation = actual - expected
+    const percentDeviation = deviation / expected
+
     return {
       index,
       actual,
       expected,
       deviation,
-      percentDeviation
-    };
-  });
-  
+      percentDeviation,
+    }
+  })
+
   // 识别显著偏离点（偏离 > 15%）
   const significantDeviations = deviations.filter(
     d => Math.abs(d.percentDeviation) > 0.15
-  );
-  
+  )
+
   return {
     trendLine: { slope, intercept },
     deviations: significantDeviations,
-    trend: slope > 0 ? 'UPWARD' : slope < 0 ? 'DOWNWARD' : 'STABLE'
-  };
+    trend: slope > 0 ? 'UPWARD' : slope < 0 ? 'DOWNWARD' : 'STABLE',
+  }
 }
 ```
 
@@ -1916,74 +1969,82 @@ function detectTrendDeviation(timeSeriesData) {
 
 ```javascript
 // 多维归因分析
-function performAttributionAnalysis(currentData, baselineData, metric, dimensions) {
-  const totalChange = currentData[metric] - baselineData[metric];
-  
+function performAttributionAnalysis(
+  currentData,
+  baselineData,
+  metric,
+  dimensions
+) {
+  const totalChange = currentData[metric] - baselineData[metric]
+
   const attributions = dimensions.map(dimension => {
     // 按维度聚合数据
-    const currentByDim = aggregateBy(currentData, dimension);
-    const baselineByDim = aggregateBy(baselineData, dimension);
-    
+    const currentByDim = aggregateBy(currentData, dimension)
+    const baselineByDim = aggregateBy(baselineData, dimension)
+
     // 计算每个维度值的贡献
     const contributions = Object.keys(currentByDim).map(dimValue => {
-      const change = (currentByDim[dimValue] || 0) - (baselineByDim[dimValue] || 0);
-      const contribution = change / totalChange;
-      
+      const change =
+        (currentByDim[dimValue] || 0) - (baselineByDim[dimValue] || 0)
+      const contribution = change / totalChange
+
       return {
         dimensionValue: dimValue,
         change,
         contribution,
-        contributionPercent: contribution * 100
-      };
-    });
-    
+        contributionPercent: contribution * 100,
+      }
+    })
+
     // 按贡献度排序
-    contributions.sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution));
-    
+    contributions.sort(
+      (a, b) => Math.abs(b.contribution) - Math.abs(a.contribution)
+    )
+
     return {
       dimension,
       totalContribution: contributions.reduce((sum, c) => sum + c.change, 0),
-      topContributors: contributions.slice(0, 5)  // 只保留Top 5
-    };
-  });
-  
+      topContributors: contributions.slice(0, 5), // 只保留Top 5
+    }
+  })
+
   return {
     metric,
     totalChange,
     attributions,
-    insights: generateInsights(attributions)
-  };
+    insights: generateInsights(attributions),
+  }
 }
 
 // 生成洞察建议
 function generateInsights(attributions) {
-  const insights = [];
-  
+  const insights = []
+
   // 规则1：识别单一维度主导的变化
   const dominantAttribution = attributions.find(
     attr => Math.abs(attr.totalContribution) / totalChange > 0.7
-  );
-  
+  )
+
   if (dominantAttribution) {
     insights.push({
       type: 'SINGLE_DRIVER',
-      message: `变化主要由【${dominantAttribution.dimension}】驱动，贡献了${(dominantAttribution.totalContribution / totalChange * 100).toFixed(0)}%`
-    });
+      message: `变化主要由【${dominantAttribution.dimension}】驱动，贡献了${((dominantAttribution.totalContribution / totalChange) * 100).toFixed(0)}%`,
+    })
   }
-  
+
   // 规则2：识别多点分散的变化
   const dispersedAttribution = attributions.every(
     attr => Math.abs(attr.totalContribution) / totalChange < 0.3
-  );
-  
+  )
+
   if (dispersedAttribution) {
     insights.push({
       type: 'DISPERSED',
-      message: '变化较为分散，无单一主导因素，建议多维度综合施策'
-    });
+      message: '变化较为分散，无单一主导因素，建议多维度综合施策',
+    })
   }
-  
-  return insights;
+
+  return insights
 }
 ```
 
@@ -2020,11 +2081,13 @@ function generateInsights(attributions) {
 基于历史数据，预测未来1-4周的业务指标走势，辅助业务计划制定。
 
 **预测方法：**
+
 - **简单移动平均（SMA）**：适用于平稳序列
 - **指数平滑（ETS）**：适用于有趋势和季节性的序列
 - **ARIMA模型**：适用于复杂时间序列
 
 **置信区间：**
+
 - 预测值附带80%和95%置信区间
 - 超出置信区间时触发预警
 
@@ -2033,36 +2096,36 @@ function generateInsights(attributions) {
 ```javascript
 // 简单指数平滑预测
 function exponentialSmoothing(historicalData, alpha = 0.3, periods = 4) {
-  let smoothedValue = historicalData[0];
-  const smoothedSeries = [smoothedValue];
-  
+  let smoothedValue = historicalData[0]
+  const smoothedSeries = [smoothedValue]
+
   // 计算平滑序列
   for (let i = 1; i < historicalData.length; i++) {
-    smoothedValue = alpha * historicalData[i] + (1 - alpha) * smoothedValue;
-    smoothedSeries.push(smoothedValue);
+    smoothedValue = alpha * historicalData[i] + (1 - alpha) * smoothedValue
+    smoothedSeries.push(smoothedValue)
   }
-  
+
   // 预测未来periods期
-  const forecast = [];
-  let lastValue = smoothedSeries[smoothedSeries.length - 1];
-  
+  const forecast = []
+  let lastValue = smoothedSeries[smoothedSeries.length - 1]
+
   for (let i = 0; i < periods; i++) {
     forecast.push({
       period: historicalData.length + i + 1,
       value: lastValue,
       confidenceInterval: {
-        lower: lastValue * 0.9,  // 简化的置信区间
-        upper: lastValue * 1.1
-      }
-    });
+        lower: lastValue * 0.9, // 简化的置信区间
+        upper: lastValue * 1.1,
+      },
+    })
   }
-  
+
   return {
     method: 'Exponential Smoothing',
     alpha,
     smoothedSeries,
-    forecast
-  };
+    forecast,
+  }
 }
 ```
 
@@ -2099,6 +2162,7 @@ function exponentialSmoothing(historicalData, alpha = 0.3, periods = 4) {
 分析不同业务维度之间的相关性，发现隐藏的业务规律。
 
 **分析场景示例：**
+
 - 费用率 vs 保费规模：是否存在规模经济效应？
 - 赔付率 vs 车险评级：评级体系是否有效？
 - 续保率 vs 终端来源：哪些渠道的客户忠诚度更高？
@@ -2109,30 +2173,36 @@ function exponentialSmoothing(historicalData, alpha = 0.3, periods = 4) {
 ```javascript
 // 皮尔逊相关系数
 function calculateCorrelation(xValues, yValues) {
-  const n = xValues.length;
-  const sumX = xValues.reduce((a, b) => a + b, 0);
-  const sumY = yValues.reduce((a, b) => a + b, 0);
-  const sumXY = xValues.reduce((sum, x, i) => sum + x * yValues[i], 0);
-  const sumX2 = xValues.reduce((sum, x) => sum + x * x, 0);
-  const sumY2 = yValues.reduce((sum, y) => sum + y * y, 0);
-  
-  const numerator = n * sumXY - sumX * sumY;
-  const denominator = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
-  
-  const correlation = numerator / denominator;
-  
+  const n = xValues.length
+  const sumX = xValues.reduce((a, b) => a + b, 0)
+  const sumY = yValues.reduce((a, b) => a + b, 0)
+  const sumXY = xValues.reduce((sum, x, i) => sum + x * yValues[i], 0)
+  const sumX2 = xValues.reduce((sum, x) => sum + x * x, 0)
+  const sumY2 = yValues.reduce((sum, y) => sum + y * y, 0)
+
+  const numerator = n * sumXY - sumX * sumY
+  const denominator = Math.sqrt(
+    (n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY)
+  )
+
+  const correlation = numerator / denominator
+
   // 判断相关性强度
-  const strength = Math.abs(correlation) > 0.7 ? '强' :
-                   Math.abs(correlation) > 0.4 ? '中' : '弱';
-  
-  const direction = correlation > 0 ? '正' : '负';
-  
+  const strength =
+    Math.abs(correlation) > 0.7
+      ? '强'
+      : Math.abs(correlation) > 0.4
+        ? '中'
+        : '弱'
+
+  const direction = correlation > 0 ? '正' : '负'
+
   return {
     coefficient: correlation,
     strength,
     direction,
-    interpretation: `${direction}相关（${strength}）`
-  };
+    interpretation: `${direction}相关（${strength}）`,
+  }
 }
 ```
 
@@ -2168,6 +2238,7 @@ function calculateCorrelation(xValues, yValues) {
 基于用户的分析行为和业务场景，主动推荐下一步分析方向。
 
 **推荐场景：**
+
 1. **当用户发现某指标异常时**：
    - 推荐：查看该指标的历史趋势
    - 推荐：进行多维度归因分析
@@ -2188,17 +2259,17 @@ function calculateCorrelation(xValues, yValues) {
 // 基于用户行为的推荐
 function recommendNextAction(userHistory, currentContext) {
   // 1. 场景匹配：找出相似的历史场景
-  const similarScenarios = findSimilarScenarios(userHistory, currentContext);
-  
+  const similarScenarios = findSimilarScenarios(userHistory, currentContext)
+
   // 2. 行为序列分析：在相似场景下，用户接下来做了什么？
-  const nextActions = similarScenarios.map(scenario => scenario.nextAction);
-  
+  const nextActions = similarScenarios.map(scenario => scenario.nextAction)
+
   // 3. 频率统计：推荐最常见的下一步操作
-  const actionFrequency = {};
+  const actionFrequency = {}
   nextActions.forEach(action => {
-    actionFrequency[action] = (actionFrequency[action] || 0) + 1;
-  });
-  
+    actionFrequency[action] = (actionFrequency[action] || 0) + 1
+  })
+
   // 4. 排序并返回Top 3推荐
   const recommendations = Object.entries(actionFrequency)
     .sort((a, b) => b[1] - a[1])
@@ -2206,21 +2277,21 @@ function recommendNextAction(userHistory, currentContext) {
     .map(([action, count]) => ({
       action,
       confidence: count / similarScenarios.length,
-      reason: generateReason(action, currentContext)
-    }));
-  
-  return recommendations;
+      reason: generateReason(action, currentContext),
+    }))
+
+  return recommendations
 }
 
 function generateReason(action, context) {
   const reasons = {
-    'view_trend': `查看${context.metric}的历史趋势，了解变化是否为常态`,
-    'attribution_analysis': `分析${context.metric}变化的主要贡献维度`,
-    'compare_peers': `与其他机构对比，识别相对表现`,
-    'drill_down': `下钻到更细粒度的维度，寻找根因`
-  };
-  
-  return reasons[action] || '该分析可能对您有帮助';
+    view_trend: `查看${context.metric}的历史趋势，了解变化是否为常态`,
+    attribution_analysis: `分析${context.metric}变化的主要贡献维度`,
+    compare_peers: `与其他机构对比，识别相对表现`,
+    drill_down: `下钻到更细粒度的维度，寻找根因`,
+  }
+
+  return reasons[action] || '该分析可能对您有帮助'
 }
 ```
 
@@ -2263,11 +2334,11 @@ function generateReason(action, context) {
      1. 高新：↓ 180万元 (-13.2%)
      2. 武侯：↓ 120万元 (-9.8%)
      3. 资阳：↓ 95万元 (-11.5%)
-     
+
      💡 进一步分析发现：
      • 高新主要是续保业务下降（-150万）
      • 武侯主要是新保业务下降（-100万）
-     
+
      [查看详细数据] [归因分析]
 
 ---
@@ -2278,12 +2349,12 @@ function generateReason(action, context) {
      • 新能源车赔付率：58.3%
      • 燃油车赔付率：65.1%
      • 差异：-6.8pp（新能源车更低）
-     
+
      💡 洞察：
      • 新能源车赔付率持续低于燃油车5-8pp
      • 可能原因：新能源车主驾驶更谨慎，且ADAS系统普及率高
      • 建议：考虑给予新能源车更优惠的定价
-     
+
      [查看趋势图] [下载报告]
 ```
 
@@ -2293,31 +2364,31 @@ function generateReason(action, context) {
 // 伪代码：NL-to-SQL/NL-to-API
 async function answerNaturalLanguageQuery(userQuestion) {
   // 1. 意图识别
-  const intent = await llm.classifyIntent(userQuestion);
+  const intent = await llm.classifyIntent(userQuestion)
   // 可能的意图：comparison, trend, ranking, attribution, definition
-  
+
   // 2. 实体抽取
-  const entities = await llm.extractEntities(userQuestion);
+  const entities = await llm.extractEntities(userQuestion)
   // 例如：{metric: '保费', dimension: '机构', timeRange: '上周'}
-  
+
   // 3. 查询生成
-  const query = generateQuery(intent, entities);
-  
+  const query = generateQuery(intent, entities)
+
   // 4. 执行查询
-  const data = await executeQuery(query);
-  
+  const data = await executeQuery(query)
+
   // 5. 生成回答
-  const answer = await llm.generateAnswer(userQuestion, data);
-  
+  const answer = await llm.generateAnswer(userQuestion, data)
+
   // 6. 附加可视化
-  const visualization = generateVisualization(intent, data);
-  
+  const visualization = generateVisualization(intent, data)
+
   return {
     answer,
     visualization,
     data,
-    confidence: 0.85
-  };
+    confidence: 0.85,
+  }
 }
 ```
 
@@ -2325,18 +2396,19 @@ async function answerNaturalLanguageQuery(userQuestion) {
 
 ### 5.8 智能分析能力路线图
 
-| 能力 | MVP | V1.0 | V2.0 | 未来 |
-|------|-----|------|------|------|
-| 异常检测 | ✅ 规则阈值 | ✅ 统计模型 | ML模型 | 实时流式检测 |
-| 归因分析 | ✅ 贡献度拆解 | ✅ 多维归因 | 因果推断 | 反事实分析 |
-| 趋势预测 | - | ✅ 指数平滑 | ARIMA/Prophet | LSTM神经网络 |
-| 关联分析 | - | ✅ 相关系数 | 聚类分析 | 复杂网络分析 |
-| 智能推荐 | - | - | ✅ 协同过滤 | 强化学习 |
-| 自然语言 | - | - | - | ✅ LLM问答 |
+| 能力     | MVP           | V1.0        | V2.0          | 未来         |
+| -------- | ------------- | ----------- | ------------- | ------------ |
+| 异常检测 | ✅ 规则阈值   | ✅ 统计模型 | ML模型        | 实时流式检测 |
+| 归因分析 | ✅ 贡献度拆解 | ✅ 多维归因 | 因果推断      | 反事实分析   |
+| 趋势预测 | -             | ✅ 指数平滑 | ARIMA/Prophet | LSTM神经网络 |
+| 关联分析 | -             | ✅ 相关系数 | 聚类分析      | 复杂网络分析 |
+| 智能推荐 | -             | -           | ✅ 协同过滤   | 强化学习     |
+| 自然语言 | -             | -           | -             | ✅ LLM问答   |
 
 ---
 
 # 产品需求文档（PRD）—— 车险经营分析仪表板
+
 **版本**: 0.1
 **状态**: 开发中
 **负责人**: [Alongor666](https://github.com/Alongor666)
@@ -2364,30 +2436,31 @@ async function answerNaturalLanguageQuery(userQuestion) {
 
 #### 6.2.1. 核心框架与库
 
-| 技术栈 | 版本 | 用途 | 选型理由 |
-| :--- | :--- | :--- | :--- |
-| **Next.js** | 14.x (App Router) | 前端框架 | SSR/SSG混合模式，优化首屏性能；文件路由系统；内置优化 |
-| **React** | 18.x | UI库 | 组件化开发；虚拟DOM；生态成熟 |
-| **TypeScript** | 5.x | 编程语言 | 类型安全；车险业务规则编码；减少运行时错误 |
-| **Tailwind CSS** | 3.x | 样式框架 | 原子化CSS；快速UI开发；主题定制 |
-| **Shadcn/ui** | latest | 组件库 | 可组合组件；遵循Radix UI；无缝集成Tailwind |
-| **Zustand** | 4.x | 状态管理 | 轻量级；API简洁；TypeScript友好 |
-| **Recharts** | 2.x | 图表库 | React原生；响应式；可定制性强；支持车险业务图表 |
+| 技术栈           | 版本              | 用途     | 选型理由                                              |
+| :--------------- | :---------------- | :------- | :---------------------------------------------------- |
+| **Next.js**      | 14.x (App Router) | 前端框架 | SSR/SSG混合模式，优化首屏性能；文件路由系统；内置优化 |
+| **React**        | 18.x              | UI库     | 组件化开发；虚拟DOM；生态成熟                         |
+| **TypeScript**   | 5.x               | 编程语言 | 类型安全；车险业务规则编码；减少运行时错误            |
+| **Tailwind CSS** | 3.x               | 样式框架 | 原子化CSS；快速UI开发；主题定制                       |
+| **Shadcn/ui**    | latest            | 组件库   | 可组合组件；遵循Radix UI；无缝集成Tailwind            |
+| **Zustand**      | 4.x               | 状态管理 | 轻量级；API简洁；TypeScript友好                       |
+| **Recharts**     | 2.x               | 图表库   | React原生；响应式；可定制性强；支持车险业务图表       |
 
 #### 6.2.2. 工具链
 
-| 工具 | 版本 | 用途 |
-| :--- | :--- | :--- |
-| **pnpm** | 8.x | 包管理器 |
-| **ESLint** | 8.x | 代码检查 |
-| **Prettier** | 3.x | 代码格式化 |
-| **Husky** | 8.x | Git钩子 |
-| **Vitest** | latest | 单元测试 |
-| **Playwright** | latest | E2E测试 |
+| 工具           | 版本   | 用途       |
+| :------------- | :----- | :--------- |
+| **pnpm**       | 8.x    | 包管理器   |
+| **ESLint**     | 8.x    | 代码检查   |
+| **Prettier**   | 3.x    | 代码格式化 |
+| **Husky**      | 8.x    | Git钩子    |
+| **Vitest**     | latest | 单元测试   |
+| **Playwright** | latest | E2E测试    |
 
 #### 6.2.3. 关键技术决策
 
 **状态管理架构**
+
 ```typescript
 // 全局状态结构
 interface AppStore {
@@ -2395,17 +2468,17 @@ interface AppStore {
   rawData: InsuranceRecord[]
   isLoading: boolean
   error: Error | null
-  
+
   // 筛选状态
   filters: FilterState
-  
+
   // 计算缓存
   computedKPIs: Map<string, KPIResult>
-  
+
   // UI状态
   viewMode: 'single' | 'trend'
   expandedPanels: Set<string>
-  
+
   // 操作方法
   loadData: (files: File[]) => Promise<void>
   updateFilters: (filters: Partial<FilterState>) => void
@@ -2414,9 +2487,10 @@ interface AppStore {
 ```
 
 **数据处理流水线**
+
 ```typescript
 // 数据处理管道
-rawData 
+rawData
   → validate() // 数据验证
   → transform() // 字段转换
   → filter() // 应用筛选
@@ -2432,13 +2506,14 @@ rawData
 
 MVP版本采用**无服务端计算**模式，降低部署复杂度：
 
-| 组件 | 技术选型 | 说明 |
-| :--- | :--- | :--- |
-| **静态资源托管** | Vercel / Netlify / AWS S3+CloudFront | 托管Next.js构建产物 |
-| **数据存储** | 静态JSON文件 | 放置于`public/data/`目录 |
-| **数据更新** | 手动上传+CI/CD触发重新构建 | 通过GitHub Actions自动部署 |
+| 组件             | 技术选型                             | 说明                       |
+| :--------------- | :----------------------------------- | :------------------------- |
+| **静态资源托管** | Vercel / Netlify / AWS S3+CloudFront | 托管Next.js构建产物        |
+| **数据存储**     | 静态JSON文件                         | 放置于`public/data/`目录   |
+| **数据更新**     | 手动上传+CI/CD触发重新构建           | 通过GitHub Actions自动部署 |
 
 **静态文件结构**
+
 ```
 public/
 ├── data/
@@ -2455,15 +2530,16 @@ public/
 
 V1.0版本引入后端服务，支持动态数据管理：
 
-| 技术栈 | 版本 | 用途 | 选型理由 |
-| :--- | :--- | :--- | :--- |
-| **Node.js** | 20.x LTS | 运行时环境 | 与前端技术栈统一；事件驱动高并发 |
-| **Fastify** | 4.x | Web框架 | 性能优于Express；TypeScript原生支持 |
-| **PostgreSQL** | 15.x | 关系数据库 | 复杂查询性能；JSONB支持；成熟稳定 |
-| **Redis** | 7.x | 缓存层 | 计算结果缓存；会话管理；实时性能提升 |
-| **Prisma** | 5.x | ORM | 类型安全；迁移管理；与TypeScript无缝集成 |
+| 技术栈         | 版本     | 用途       | 选型理由                                 |
+| :------------- | :------- | :--------- | :--------------------------------------- |
+| **Node.js**    | 20.x LTS | 运行时环境 | 与前端技术栈统一；事件驱动高并发         |
+| **Fastify**    | 4.x      | Web框架    | 性能优于Express；TypeScript原生支持      |
+| **PostgreSQL** | 15.x     | 关系数据库 | 复杂查询性能；JSONB支持；成熟稳定        |
+| **Redis**      | 7.x      | 缓存层     | 计算结果缓存；会话管理；实时性能提升     |
+| **Prisma**     | 5.x      | ORM        | 类型安全；迁移管理；与TypeScript无缝集成 |
 
 **API设计规范**
+
 ```typescript
 // RESTful API 端点
 GET    /api/v1/data/weeks?year=2024&weeks=28,29,30  // 获取周度数据
@@ -2499,8 +2575,19 @@ const InsuranceRecordSchema = z.object({
   policy_start_year: z.number().int().min(2020).max(2030),
   week_number: z.number().int().min(1).max(105),
   third_level_organization: z.enum([
-    '本部', '达州', '德阳', '高新', '乐山', '泸州', 
-    '青羊', '天府', '武侯', '新都', '宜宾', '资阳', '自贡'
+    '本部',
+    '达州',
+    '德阳',
+    '高新',
+    '乐山',
+    '泸州',
+    '青羊',
+    '天府',
+    '武侯',
+    '新都',
+    '宜宾',
+    '资阳',
+    '自贡',
   ]),
   insurance_type: z.enum(['商业险', '交强险']),
   signed_premium_yuan: z.number().nonnegative(),
@@ -2512,25 +2599,25 @@ const InsuranceRecordSchema = z.object({
 function validateRecords(records: unknown[]): ValidationResult {
   const results = records.map((record, index) => {
     try {
-      return { 
-        index, 
-        valid: true, 
-        data: InsuranceRecordSchema.parse(record) 
+      return {
+        index,
+        valid: true,
+        data: InsuranceRecordSchema.parse(record),
       }
     } catch (error) {
-      return { 
-        index, 
-        valid: false, 
-        errors: error.errors 
+      return {
+        index,
+        valid: false,
+        errors: error.errors,
       }
     }
   })
-  
+
   return {
     totalRecords: records.length,
     validRecords: results.filter(r => r.valid).length,
     invalidRecords: results.filter(r => !r.valid),
-    validData: results.filter(r => r.valid).map(r => r.data)
+    validData: results.filter(r => r.valid).map(r => r.data),
   }
 }
 ```
@@ -2541,22 +2628,19 @@ function validateRecords(records: unknown[]): ValidationResult {
 // 高性能聚合计算
 class AggregationEngine {
   private cache = new Map<string, AggregationResult>()
-  
-  aggregate(
-    data: InsuranceRecord[], 
-    filters: FilterState
-  ): AggregationResult {
+
+  aggregate(data: InsuranceRecord[], filters: FilterState): AggregationResult {
     // 生成缓存键
     const cacheKey = this.generateCacheKey(filters)
-    
+
     // 检查缓存
     if (this.cache.has(cacheKey)) {
       return this.cache.get(cacheKey)!
     }
-    
+
     // 过滤数据
     const filteredData = this.applyFilters(data, filters)
-    
+
     // 聚合计算（使用reduce优化性能）
     const aggregated = filteredData.reduce((acc, record) => {
       acc.signed_premium_yuan += record.signed_premium_yuan
@@ -2567,31 +2651,31 @@ class AggregationEngine {
       acc.expense_amount_yuan += record.expense_amount_yuan
       return acc
     }, this.createEmptyAggregation())
-    
+
     // 计算衍生指标
     const result = this.computeKPIs(aggregated)
-    
+
     // 缓存结果
     this.cache.set(cacheKey, result)
-    
+
     return result
   }
-  
+
   private computeKPIs(agg: BaseAggregation): AggregationResult {
     return {
       ...agg,
       loss_ratio: this.safeDivide(
-        agg.reported_claim_payment_yuan, 
+        agg.reported_claim_payment_yuan,
         agg.matured_premium_yuan
       ),
       expense_ratio: this.safeDivide(
-        agg.expense_amount_yuan, 
+        agg.expense_amount_yuan,
         agg.signed_premium_yuan
       ),
       // ... 其他KPI计算
     }
   }
-  
+
   private safeDivide(numerator: number, denominator: number): number | null {
     if (!denominator || denominator === 0) return null
     return numerator / denominator
@@ -2606,12 +2690,12 @@ class AggregationEngine {
 import Papa from 'papaparse'
 
 async function parseCSVStream(
-  file: File, 
+  file: File,
   onProgress: (progress: number) => void
 ): Promise<InsuranceRecord[]> {
   return new Promise((resolve, reject) => {
     const records: InsuranceRecord[] = []
-    
+
     Papa.parse(file, {
       header: true,
       dynamicTyping: true,
@@ -2621,13 +2705,13 @@ async function parseCSVStream(
         // 批量处理（每1000行）
         const batch = results.data.map(transformRecord)
         records.push(...batch)
-        
+
         // 更新进度
         const progress = (results.meta.cursor / file.size) * 100
         onProgress(progress)
       },
       complete: () => resolve(records),
-      error: (error) => reject(error)
+      error: error => reject(error),
     })
   })
 }
@@ -2675,6 +2759,7 @@ async function parseCSVStream(
 ```
 
 **部署配置**
+
 ```json
 // vercel.json
 {
@@ -2740,6 +2825,7 @@ async function parseCSVStream(
 ```
 
 **容器化配置**
+
 ```dockerfile
 # Dockerfile (后端服务)
 FROM node:20-alpine AS builder
@@ -2764,23 +2850,23 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - NEXT_PUBLIC_API_URL=http://backend:3001
     depends_on:
       - backend
-  
+
   backend:
     build: ./backend
     ports:
-      - "3001:3001"
+      - '3001:3001'
     environment:
       - DATABASE_URL=postgresql://user:pass@postgres:5432/insurance
       - REDIS_URL=redis://redis:6379
     depends_on:
       - postgres
       - redis
-  
+
   postgres:
     image: postgres:15-alpine
     environment:
@@ -2789,7 +2875,7 @@ services:
       - POSTGRES_DB=insurance
     volumes:
       - postgres_data:/var/lib/postgresql/data
-  
+
   redis:
     image: redis:7-alpine
     volumes:
@@ -2804,15 +2890,15 @@ volumes:
 
 #### 6.6.1. 前端性能优化
 
-| 优化策略 | 技术实现 | 性能指标 |
-| :--- | :--- | :--- |
-| **代码分割** | Next.js动态导入；按路由分割；按组件分割 | 首屏JS<150KB |
-| **图片优化** | Next.js Image组件；WebP格式；懒加载 | LCP<2.5s |
-| **字体优化** | 字体子集化；font-display: swap | CLS<0.1 |
-| **CSS优化** | Tailwind CSS PurgeCSS；关键CSS内联 | FCP<1.5s |
-| **虚拟化渲染** | react-window；长列表虚拟滚动 | 60fps流畅滚动 |
-| **计算优化** | useMemo缓存；Web Worker后台计算 | 交互响应<200ms |
-| **防抖节流** | lodash.debounce；筛选器防抖300ms | 减少80%计算 |
+| 优化策略       | 技术实现                                | 性能指标       |
+| :------------- | :-------------------------------------- | :------------- |
+| **代码分割**   | Next.js动态导入；按路由分割；按组件分割 | 首屏JS<150KB   |
+| **图片优化**   | Next.js Image组件；WebP格式；懒加载     | LCP<2.5s       |
+| **字体优化**   | 字体子集化；font-display: swap          | CLS<0.1        |
+| **CSS优化**    | Tailwind CSS PurgeCSS；关键CSS内联      | FCP<1.5s       |
+| **虚拟化渲染** | react-window；长列表虚拟滚动            | 60fps流畅滚动  |
+| **计算优化**   | useMemo缓存；Web Worker后台计算         | 交互响应<200ms |
+| **防抖节流**   | lodash.debounce；筛选器防抖300ms        | 减少80%计算    |
 
 ```typescript
 // 虚拟化长列表示例
@@ -2824,7 +2910,7 @@ function OrganizationList({ organizations }: Props) {
       {organizations[index].name}
     </div>
   )
-  
+
   return (
     <FixedSizeList
       height={400}
@@ -2841,7 +2927,7 @@ function OrganizationList({ organizations }: Props) {
 ```typescript
 // Web Worker计算示例
 // worker.ts
-self.addEventListener('message', (e) => {
+self.addEventListener('message', e => {
   const { data, filters } = e.data
   const result = heavyComputation(data, filters)
   self.postMessage(result)
@@ -2851,7 +2937,7 @@ self.addEventListener('message', (e) => {
 const worker = new Worker(new URL('./worker.ts', import.meta.url))
 
 worker.postMessage({ data, filters })
-worker.onmessage = (e) => {
+worker.onmessage = e => {
   setKPIs(e.data)
 }
 ```
@@ -2864,13 +2950,13 @@ class CacheManager {
   private memoryCache = new Map() // L1: 内存缓存
   private localStorageCache: Storage // L2: localStorage
   private apiCache: Cache // L3: Service Worker Cache API
-  
+
   async get<T>(key: string): Promise<T | null> {
     // L1: 内存缓存（最快）
     if (this.memoryCache.has(key)) {
       return this.memoryCache.get(key)
     }
-    
+
     // L2: localStorage（持久化）
     const localData = this.localStorageCache.getItem(key)
     if (localData) {
@@ -2878,7 +2964,7 @@ class CacheManager {
       this.memoryCache.set(key, parsed) // 回填L1
       return parsed
     }
-    
+
     // L3: Service Worker缓存（网络资源）
     const response = await this.apiCache.match(key)
     if (response) {
@@ -2886,16 +2972,16 @@ class CacheManager {
       this.set(key, data) // 回填L1/L2
       return data
     }
-    
+
     return null
   }
-  
+
   set<T>(key: string, value: T, ttl: number = 3600000): void {
     const item = { value, expiry: Date.now() + ttl }
-    
+
     // 写入L1
     this.memoryCache.set(key, item)
-    
+
     // 写入L2
     try {
       this.localStorageCache.setItem(key, JSON.stringify(item))
@@ -2904,7 +2990,7 @@ class CacheManager {
       this.cleanupLocalStorage()
     }
   }
-  
+
   invalidate(pattern: RegExp): void {
     // 清理所有匹配的缓存
     for (const key of this.memoryCache.keys()) {
@@ -2925,7 +3011,7 @@ class RequestQueue {
   private queue: Array<() => Promise<any>> = []
   private activeCount = 0
   private readonly maxConcurrent = 6 // 浏览器HTTP/2并发限制
-  
+
   async enqueue<T>(fn: () => Promise<T>): Promise<T> {
     return new Promise((resolve, reject) => {
       this.queue.push(async () => {
@@ -2936,19 +3022,19 @@ class RequestQueue {
           reject(error)
         }
       })
-      
+
       this.processQueue()
     })
   }
-  
+
   private async processQueue() {
     if (this.activeCount >= this.maxConcurrent || this.queue.length === 0) {
       return
     }
-    
+
     this.activeCount++
     const task = this.queue.shift()!
-    
+
     try {
       await task()
     } finally {
@@ -2966,35 +3052,37 @@ class RequestQueue {
 class PerformanceMonitor {
   trackPageLoad() {
     if (typeof window === 'undefined') return
-    
+
     window.addEventListener('load', () => {
       const perfData = window.performance.getEntriesByType('navigation')[0]
       const paintData = window.performance.getEntriesByType('paint')
-      
+
       const metrics = {
         // Core Web Vitals
         lcp: this.getLCP(),
         fid: this.getFID(),
         cls: this.getCLS(),
-        
+
         // 加载时间
-        domContentLoaded: perfData.domContentLoadedEventEnd - perfData.fetchStart,
+        domContentLoaded:
+          perfData.domContentLoadedEventEnd - perfData.fetchStart,
         loadComplete: perfData.loadEventEnd - perfData.fetchStart,
-        
+
         // 渲染时间
-        fcp: paintData.find(p => p.name === 'first-contentful-paint')?.startTime,
-        
+        fcp: paintData.find(p => p.name === 'first-contentful-paint')
+          ?.startTime,
+
         // 连接时间
         dns: perfData.domainLookupEnd - perfData.domainLookupStart,
         tcp: perfData.connectEnd - perfData.connectStart,
-        ttfb: perfData.responseStart - perfData.requestStart
+        ttfb: perfData.responseStart - perfData.requestStart,
       }
-      
+
       // 上报至监控平台
       this.reportMetrics(metrics)
     })
   }
-  
+
   trackInteraction(action: string, duration: number) {
     // 跟踪用户交互性能
     if (duration > 200) {
@@ -3009,15 +3097,15 @@ class PerformanceMonitor {
 
 #### 6.7.1. 数据安全策略
 
-| 安全层级 | 措施 | 说明 |
-| :--- | :--- | :--- |
-| **传输加密** | HTTPS/TLS 1.3 | 全站强制HTTPS；HSTS启用 |
-| **数据脱敏** | 前端脱敏 | 车牌号显示为`川A***88`；保单号后4位显示 |
-| **访问控制** | JWT认证（V1.0+） | Token过期时间8小时；Refresh Token机制 |
-| **输入验证** | Zod Schema | 前后端双重验证；防止注入攻击 |
-| **文件上传** | 白名单校验 | 仅允许.csv/.json；大小限制50MB；病毒扫描 |
-| **CSP策略** | Content Security Policy | 防止XSS攻击 |
-| **CORS配置** | 白名单域名 | 仅允许特定域名访问API |
+| 安全层级     | 措施                    | 说明                                     |
+| :----------- | :---------------------- | :--------------------------------------- |
+| **传输加密** | HTTPS/TLS 1.3           | 全站强制HTTPS；HSTS启用                  |
+| **数据脱敏** | 前端脱敏                | 车牌号显示为`川A***88`；保单号后4位显示  |
+| **访问控制** | JWT认证（V1.0+）        | Token过期时间8小时；Refresh Token机制    |
+| **输入验证** | Zod Schema              | 前后端双重验证；防止注入攻击             |
+| **文件上传** | 白名单校验              | 仅允许.csv/.json；大小限制50MB；病毒扫描 |
+| **CSP策略**  | Content Security Policy | 防止XSS攻击                              |
+| **CORS配置** | 白名单域名              | 仅允许特定域名访问API                    |
 
 ```typescript
 // 数据脱敏工具
@@ -3027,13 +3115,13 @@ class DataMasking {
     if (plate.length < 4) return '***'
     return plate.slice(0, 2) + '***' + plate.slice(-2)
   }
-  
+
   maskPolicyNumber(policyNo: string): string {
     // P202410180001 → P2024****0001
     if (policyNo.length < 8) return '****'
     return policyNo.slice(0, 5) + '****' + policyNo.slice(-4)
   }
-  
+
   maskPhoneNumber(phone: string): string {
     // 13812345678 → 138****5678
     return phone.slice(0, 3) + '****' + phone.slice(-4)
@@ -3072,24 +3160,24 @@ class AuthService {
   async login(username: string, password: string): Promise<AuthResponse> {
     // 验证用户凭证（集成企业SSO）
     const user = await this.validateCredentials(username, password)
-    
+
     // 生成Access Token（8小时）
     const accessToken = jwt.sign(
       { userId: user.id, role: user.role, organizationId: user.orgId },
       process.env.JWT_SECRET,
       { expiresIn: '8h' }
     )
-    
+
     // 生成Refresh Token（30天）
     const refreshToken = jwt.sign(
       { userId: user.id },
       process.env.REFRESH_SECRET,
       { expiresIn: '30d' }
     )
-    
+
     return { accessToken, refreshToken, user }
   }
-  
+
   async verifyToken(token: string): Promise<JWTPayload> {
     try {
       return jwt.verify(token, process.env.JWT_SECRET)
@@ -3106,7 +3194,7 @@ enum Permission {
   VIEW_DASHBOARD = 'view:dashboard',
   UPLOAD_DATA = 'upload:data',
   EXPORT_DATA = 'export:data',
-  MANAGE_USERS = 'manage:users'
+  MANAGE_USERS = 'manage:users',
 }
 
 const rolePermissions: Record<string, Permission[]> = {
@@ -3114,16 +3202,14 @@ const rolePermissions: Record<string, Permission[]> = {
     Permission.VIEW_DASHBOARD,
     Permission.UPLOAD_DATA,
     Permission.EXPORT_DATA,
-    Permission.MANAGE_USERS
+    Permission.MANAGE_USERS,
   ],
   analyst: [
     Permission.VIEW_DASHBOARD,
     Permission.UPLOAD_DATA,
-    Permission.EXPORT_DATA
+    Permission.EXPORT_DATA,
   ],
-  viewer: [
-    Permission.VIEW_DASHBOARD
-  ]
+  viewer: [Permission.VIEW_DASHBOARD],
 }
 
 // 权限检查中间件
@@ -3160,18 +3246,18 @@ class AuditLogger {
     const log: AuditLog = {
       id: generateId(),
       timestamp: new Date(),
-      ...event
+      ...event,
     }
-    
+
     // 异步写入数据库（不阻塞主流程）
     await this.writeToDatabase(log)
-    
+
     // 敏感操作实时告警
     if (this.isSensitiveAction(event.action)) {
       await this.sendAlert(log)
     }
   }
-  
+
   // 关键操作示例
   async logDataUpload(userId: string, fileCount: number, recordCount: number) {
     await this.log({
@@ -3181,11 +3267,15 @@ class AuditLogger {
       details: { fileCount, recordCount },
       ipAddress: req.ip,
       userAgent: req.headers['user-agent'],
-      result: 'success'
+      result: 'success',
     })
   }
-  
-  async logDataExport(userId: string, filters: FilterState, recordCount: number) {
+
+  async logDataExport(
+    userId: string,
+    filters: FilterState,
+    recordCount: number
+  ) {
     await this.log({
       userId,
       action: 'DATA_EXPORT',
@@ -3193,7 +3283,7 @@ class AuditLogger {
       details: { filters, recordCount },
       ipAddress: req.ip,
       userAgent: req.headers['user-agent'],
-      result: 'success'
+      result: 'success',
     })
   }
 }
@@ -3212,37 +3302,45 @@ class AuditLogger {
 **必需字段**：所有CSV文件必须包含以下26个字段，字段顺序可以灵活调整：
 
 **时间维度**
+
 - `snapshot_date`: 快照日期
-- `policy_start_year`: 保单年度  
+- `policy_start_year`: 保单年度
 - `week_number`: 周序号
 
 **组织维度**
+
 - `chengdu_branch`: 地域属性
 - `third_level_organization`: 三级机构
 
 **客户维度**
+
 - `customer_category_3`: 客户类型
 
 **产品维度**
+
 - `insurance_type`: 险种类型
 - `business_type_category`: 业务类型
 - `coverage_type`: 险别组合
 
 **业务属性**
+
 - `renewal_status`: 续保状态
 - `is_new_energy_vehicle`: 是否新能源车
 - `is_transferred_vehicle`: 是否过户车
 
 **评级维度**
+
 - `vehicle_insurance_grade`: 车险评级
 - `highway_risk_grade`: 高速风险等级
 - `large_truck_score`: 大货车评分
 - `small_truck_score`: 小货车评分
 
 **渠道维度**
+
 - `terminal_source`: 终端来源
 
 **业务指标**
+
 - `signed_premium_yuan`: 签单保费
 - `matured_premium_yuan`: 满期保费
 - `policy_count`: 保单件数
@@ -3255,33 +3353,37 @@ class AuditLogger {
 
 #### 7.1.2. 数据格式要求（核心）
 
-| 规范项 | 要求 | 说明 |
-| :--- | :--- | :--- |
-| **字符编码** | UTF-8 (without BOM) | 避免乱码；Windows Excel导出需转码 |
-| **分隔符** | 英文逗号`,` | 字段值包含逗号时需用双引号`""`包裹 |
-| **换行符** | LF (`\n`) | Windows CRLF需转换 |
-| **首行** | 字段名（英文snake_case） | 必须与数据模式定义一致 |
-| **缺失值** | 留空或`NULL` | 数值型字段留空视为`0`；枚举型留空报错 |
-| **日期格式** | `YYYY-MM-DD` | ISO 8601标准 |
-| **数值格式** | 无千分位；小数点为`.` | 例：`12345.67`（不是`12,345.67`） |
-| **布尔值** | `True` / `False` | 大小写敏感 |
+| 规范项       | 要求                     | 说明                                  |
+| :----------- | :----------------------- | :------------------------------------ |
+| **字符编码** | UTF-8 (without BOM)      | 避免乱码；Windows Excel导出需转码     |
+| **分隔符**   | 英文逗号`,`              | 字段值包含逗号时需用双引号`""`包裹    |
+| **换行符**   | LF (`\n`)                | Windows CRLF需转换                    |
+| **首行**     | 字段名（英文snake_case） | 必须与数据模式定义一致                |
+| **缺失值**   | 留空或`NULL`             | 数值型字段留空视为`0`；枚举型留空报错 |
+| **日期格式** | `YYYY-MM-DD`             | ISO 8601标准                          |
+| **数值格式** | 无千分位；小数点为`.`    | 例：`12345.67`（不是`12,345.67`）     |
+| **布尔值**   | `True` / `False`         | 大小写敏感                            |
 
 #### 7.1.3. 数据类型规范（核心）
 
 **日期格式**
+
 - 统一使用 `YYYY-MM-DD` 格式（ISO 8601标准）
 - 示例：`2024-07-15`
 
 **布尔值格式**
+
 - 使用 `True` / `False`（大小写敏感）
 - 或使用 `1` / `0`
 
 **数值格式**
+
 - 无千分位分隔符
 - 小数点使用英文句号 `.`
 - 示例：`12345.67`（不是 `12,345.67`）
 
 **空值处理**
+
 - 数值型字段：留空或 `NULL`，系统视为 `0`
 - 枚举型字段：留空将报错，必须提供有效值
 - 可选字段：可以留空
@@ -3289,6 +3391,7 @@ class AuditLogger {
 #### 7.1.4. 错误处理机制
 
 **验证级别**
+
 - **错误（Error）**：阻断导入，必须修正
   - 必填字段缺失
   - 数据类型错误
@@ -3305,10 +3408,12 @@ class AuditLogger {
 虽然文件名不影响数据导入，但建议使用以下命名规范便于管理：
 
 **周明细表**
+
 - 格式：`YYYY保单第WW周变动成本明细表.csv`
 - 示例：`2024保单第28周变动成本明细表.csv`
 
 **周汇总表**
+
 - 格式：`YY年保单WW-WW周变动成本汇总表.csv`
 - 示例：`25年保单28-41周变动成本汇总表.csv`
 
@@ -3328,45 +3433,45 @@ snapshot_date,policy_start_year,week_number,chengdu_branch,third_level_organizat
 // 单条数据记录接口
 interface InsuranceRecord {
   // 时间维度
-  snapshot_date: string              // 快照日期 YYYY-MM-DD
-  policy_start_year: number          // 保单年度
-  week_number: number                // 周序号 1-105
-  
+  snapshot_date: string // 快照日期 YYYY-MM-DD
+  policy_start_year: number // 保单年度
+  week_number: number // 周序号 1-105
+
   // 组织维度
-  chengdu_branch: '成都' | '中支'     // 地域属性
-  third_level_organization: string   // 三级机构（见枚举7.3.1）
-  
+  chengdu_branch: '成都' | '中支' // 地域属性
+  third_level_organization: string // 三级机构（见枚举7.3.1）
+
   // 客户维度
-  customer_category_3: string        // 客户类型（见枚举7.3.2）
-  
+  customer_category_3: string // 客户类型（见枚举7.3.2）
+
   // 产品维度
   insurance_type: '商业险' | '交强险'
-  business_type_category: string     // 业务类型（见枚举7.3.3）
-  coverage_type: string              // 险别组合（见枚举7.3.4）
-  
+  business_type_category: string // 业务类型（见枚举7.3.3）
+  coverage_type: string // 险别组合（见枚举7.3.4）
+
   // 业务属性
   renewal_status: '新保' | '续保' | '转保'
-  is_new_energy_vehicle: boolean     // 是否新能源
-  is_transferred_vehicle: boolean    // 是否过户车
-  
+  is_new_energy_vehicle: boolean // 是否新能源
+  is_transferred_vehicle: boolean // 是否过户车
+
   // 评级维度
-  vehicle_insurance_grade: string    // 车险评级 A-G/X
-  highway_risk_grade: string         // 高速风险等级 A-F/X
-  large_truck_score: string          // 大货车评分 A-E/X
-  small_truck_score: string          // 小货车评分 A-E/X
-  
+  vehicle_insurance_grade: string // 车险评级 A-G/X
+  highway_risk_grade: string // 高速风险等级 A-F/X
+  large_truck_score: string // 大货车评分 A-E/X
+  small_truck_score: string // 小货车评分 A-E/X
+
   // 渠道维度
-  terminal_source: string            // 终端来源（见枚举7.3.5）
-  
+  terminal_source: string // 终端来源（见枚举7.3.5）
+
   // 业务指标（绝对值）
-  signed_premium_yuan: number        // 签单保费（元）≥0
-  matured_premium_yuan: number       // 满期保费（元）≥0
-  policy_count: number               // 保单件数 ≥0
-  claim_case_count: number           // 赔案件数 ≥0
+  signed_premium_yuan: number // 签单保费（元）≥0
+  matured_premium_yuan: number // 满期保费（元）≥0
+  policy_count: number // 保单件数 ≥0
+  claim_case_count: number // 赔案件数 ≥0
   reported_claim_payment_yuan: number // 已报告赔款（元）≥0
-  expense_amount_yuan: number        // 费用金额（元）≥0
+  expense_amount_yuan: number // 费用金额（元）≥0
   commercial_premium_before_discount_yuan: number // 商业险折前保费 ≥0
-  premium_plan_yuan: number | null   // 保费计划（可选）
+  premium_plan_yuan: number | null // 保费计划（可选）
   marginal_contribution_amount_yuan: number // 边际贡献额（可负）
 }
 ```
@@ -3379,12 +3484,12 @@ interface DataListResponse {
   success: boolean
   data: InsuranceRecord[]
   meta: {
-    total: number            // 总记录数
-    page: number             // 当前页码
-    pageSize: number         // 每页大小
-    totalPages: number       // 总页数
-    version: string          // 数据版本
-    generatedAt: string      // 生成时间 ISO8601
+    total: number // 总记录数
+    page: number // 当前页码
+    pageSize: number // 每页大小
+    totalPages: number // 总页数
+    version: string // 数据版本
+    generatedAt: string // 生成时间 ISO8601
   }
   errors?: Array<{
     code: string
@@ -3399,49 +3504,49 @@ interface DataListResponse {
 interface KPIResponse {
   success: boolean
   data: {
-    filters: FilterState        // 应用的筛选条件
+    filters: FilterState // 应用的筛选条件
     kpis: {
       // 率值指标
-      loss_ratio: number | null              // 满期赔付率
-      premium_progress: number | null        // 保费达成率
-      maturity_ratio: number | null          // 满期率
-      expense_ratio: number | null           // 费用率
+      loss_ratio: number | null // 满期赔付率
+      premium_progress: number | null // 保费达成率
+      maturity_ratio: number | null // 满期率
+      expense_ratio: number | null // 费用率
       contribution_margin_ratio: number | null // 满期边际贡献率
-      variable_cost_ratio: number | null     // 变动成本率
-      matured_claim_ratio: number | null     // 满期出险率
-      
+      variable_cost_ratio: number | null // 变动成本率
+      matured_claim_ratio: number | null // 满期出险率
+
       // 绝对值指标
-      signed_premium: number                 // 签单保费（万元）
-      matured_premium: number                // 满期保费（万元）
-      policy_count: number                   // 保单件数
-      claim_case_count: number               // 赔案件数
-      reported_claim_payment: number         // 已报告赔款（万元）
-      expense_amount: number                 // 费用金额（万元）
-      contribution_margin_amount: number     // 边际贡献额（万元）
-      
+      signed_premium: number // 签单保费（万元）
+      matured_premium: number // 满期保费（万元）
+      policy_count: number // 保单件数
+      claim_case_count: number // 赔案件数
+      reported_claim_payment: number // 已报告赔款（万元）
+      expense_amount: number // 费用金额（万元）
+      contribution_margin_amount: number // 边际贡献额（万元）
+
       // 均值指标
-      average_premium: number | null         // 单均保费（元）
-      average_claim: number | null           // 案均赔款（元）
-      average_expense: number | null         // 单均费用（元）
-      autonomy_coefficient: number | null    // 商业险自主系数
+      average_premium: number | null // 单均保费（元）
+      average_claim: number | null // 案均赔款（元）
+      average_expense: number | null // 单均费用（元）
+      autonomy_coefficient: number | null // 商业险自主系数
     }
     comparison?: {
       type: 'yoy' | 'mom' | 'custom'
       baseline: KPIResult
       changes: {
         [key: string]: {
-          absolute: number      // 绝对变化值
-          relative: number      // 相对变化率（%）
+          absolute: number // 绝对变化值
+          relative: number // 相对变化率（%）
           direction: 'up' | 'down' | 'flat'
         }
       }
     }
   }
   meta: {
-    calculationTime: number    // 计算耗时（ms）
-    recordCount: number        // 参与计算的记录数
-    cacheHit: boolean         // 是否命中缓存
-    timestamp: string          // 计算时间戳
+    calculationTime: number // 计算耗时（ms）
+    recordCount: number // 参与计算的记录数
+    cacheHit: boolean // 是否命中缓存
+    timestamp: string // 计算时间戳
   }
 }
 ```
@@ -3458,13 +3563,13 @@ enum ThirdLevelOrganization {
   GAOXIN = '高新',
   LESHAN = '乐山',
   LUZHOU = '泸州',
-  MIANYANG = '资阳',      // 实际数据新增
-  NANCHONG = '南充',      // 实际数据新增
+  MIANYANG = '资阳', // 实际数据新增
+  NANCHONG = '南充', // 实际数据新增
   QINGYANG = '青羊',
   TIANFU = '天府',
   WUHOU = '武侯',
   XINDU = '新都',
-  YIBIN = '宜宾'
+  YIBIN = '宜宾',
 }
 ```
 
@@ -3482,7 +3587,7 @@ enum CustomerCategory {
   COMMERCIAL_CITY_BUS = '营业城市公交',
   COMMERCIAL_TAXI_RENTAL = '营业出租租赁',
   COMMERCIAL_HIGHWAY_PASSENGER = '营业公路客运',
-  COMMERCIAL_TRUCK = '营业货车'
+  COMMERCIAL_TRUCK = '营业货车',
 }
 ```
 
@@ -3505,7 +3610,7 @@ enum BusinessTypeCategory {
   OTHER = '其他',
   SPECIAL_VEHICLE = '特种车',
   RIDE_HAILING = '网约车',
-  DUMP_TRUCK = '自卸'
+  DUMP_TRUCK = '自卸',
 }
 ```
 
@@ -3513,9 +3618,9 @@ enum BusinessTypeCategory {
 
 ```typescript
 enum CoverageType {
-  FULL_COVERAGE = '主全',          // 交强险+商业主险+全部附加险
+  FULL_COVERAGE = '主全', // 交强险+商业主险+全部附加险
   COMPULSORY_THIRD_PARTY = '交三', // 交强险+商业三者险
-  COMPULSORY_ONLY = '单交'         // 仅交强险
+  COMPULSORY_ONLY = '单交', // 仅交强险
 }
 ```
 
@@ -3530,7 +3635,7 @@ enum TerminalSource {
   AI_UNDERWRITING = '0112AI出单',
   PC_WEB = '0201PC',
   MOBILE_APP = '0202APP',
-  TELEMARKETING = '0301电销'       // 实际数据新增
+  TELEMARKETING = '0301电销', // 实际数据新增
 }
 ```
 
@@ -3538,14 +3643,14 @@ enum TerminalSource {
 
 ```typescript
 enum VehicleInsuranceGrade {
-  GRADE_A = 'A',  // 最优
+  GRADE_A = 'A', // 最优
   GRADE_B = 'B',
   GRADE_C = 'C',
   GRADE_D = 'D',
   GRADE_E = 'E',
   GRADE_F = 'F',
-  GRADE_G = 'G',  // 最差
-  GRADE_X = 'X'   // 无法评级（约占18.3%）
+  GRADE_G = 'G', // 最差
+  GRADE_X = 'X', // 无法评级（约占18.3%）
 }
 ```
 
@@ -3553,18 +3658,18 @@ enum VehicleInsuranceGrade {
 
 #### 7.4.1. 字段级验证规则
 
-| 字段名 | 验证规则 | 错误提示 |
-| :--- | :--- | :--- |
-| `snapshot_date` | 格式`YYYY-MM-DD`；日期范围2020-01-01至今 | "快照日期格式错误或超出范围" |
-| `policy_start_year` | 整数；范围2024-2025（实际数据范围） | "保单年度必须在2024-2025之间" |
-| `week_number` | 整数；范围28-41（实际数据范围） | "周序号必须在28-41之间" |
-| `third_level_organization` | 必须在枚举列表内 | "三级机构代码不存在：{value}" |
-| `insurance_type` | 必须为`商业险`或`交强险` | "保险类型只能是商业保险或交强险" |
-| `signed_premium_yuan` | 数值；≥0；最大1000万 | "签单保费必须为非负数且不超过1000万" |
-| `policy_count` | 整数；≥0 | "保单件数必须为非负整数" |
-| `is_new_energy_vehicle` | 布尔值`True`或`False` | "能源类型必须为True或False" |
-| `vehicle_insurance_grade` | 仅当`customer_category_3`为非营业客车时必填 | "非营业客车必须提供车险评级" |
-| `premium_plan_yuan` | 可选；若提供则≥0 | "保费计划必须为非负数" |
+| 字段名                     | 验证规则                                    | 错误提示                             |
+| :------------------------- | :------------------------------------------ | :----------------------------------- |
+| `snapshot_date`            | 格式`YYYY-MM-DD`；日期范围2020-01-01至今    | "快照日期格式错误或超出范围"         |
+| `policy_start_year`        | 整数；范围2024-2025（实际数据范围）         | "保单年度必须在2024-2025之间"        |
+| `week_number`              | 整数；范围28-41（实际数据范围）             | "周序号必须在28-41之间"              |
+| `third_level_organization` | 必须在枚举列表内                            | "三级机构代码不存在：{value}"        |
+| `insurance_type`           | 必须为`商业险`或`交强险`                    | "保险类型只能是商业保险或交强险"     |
+| `signed_premium_yuan`      | 数值；≥0；最大1000万                        | "签单保费必须为非负数且不超过1000万" |
+| `policy_count`             | 整数；≥0                                    | "保单件数必须为非负整数"             |
+| `is_new_energy_vehicle`    | 布尔值`True`或`False`                       | "能源类型必须为True或False"          |
+| `vehicle_insurance_grade`  | 仅当`customer_category_3`为非营业客车时必填 | "非营业客车必须提供车险评级"         |
+| `premium_plan_yuan`        | 可选；若提供则≥0                            | "保费计划必须为非负数"               |
 
 #### 7.4.2. 跨字段验证规则
 
@@ -3578,8 +3683,8 @@ interface CrossFieldValidationRule {
 const crossFieldRules: CrossFieldValidationRule[] = [
   {
     name: 'matured_premium_not_exceed_signed',
-    validate: (r) => r.matured_premium_yuan <= r.signed_premium_yuan,
-    errorMessage: '满期保费不能超过签单保费'
+    validate: r => r.matured_premium_yuan <= r.signed_premium_yuan,
+    errorMessage: '满期保费不能超过签单保费',
   },
   // 以下规则已取消，不再作为上传阻断：
   // - 赔案件数 ≤ 保单件数
@@ -3587,12 +3692,12 @@ const crossFieldRules: CrossFieldValidationRule[] = [
   // - 非营业个人客车评级不能为 X
   {
     name: 'week_number_consistency',
-    validate: (r) => {
+    validate: r => {
       const year = new Date(r.snapshot_date).getFullYear()
       return year === r.policy_start_year
     },
-    errorMessage: '快照日期年份必须与保单年度一致'
-  }
+    errorMessage: '快照日期年份必须与保单年度一致',
+  },
 ]
 ```
 
@@ -3604,72 +3709,73 @@ class BusinessRuleValidator {
   // 规则1: 单均保费合理性检查
   validateAveragePremium(record: InsuranceRecord): ValidationResult {
     const avgPremium = record.signed_premium_yuan / record.policy_count
-    
+
     // 非营业个人客车单均保费通常在2000-8000元
     if (record.customer_category_3 === '非营业个人客车') {
       if (avgPremium < 1000 || avgPremium > 15000) {
         return {
           valid: false,
           level: 'warning',
-          message: `非营业个人客车单均保费异常：${avgPremium.toFixed(2)}元，正常范围2000-8000元`
+          message: `非营业个人客车单均保费异常：${avgPremium.toFixed(2)}元，正常范围2000-8000元`,
         }
       }
     }
-    
+
     // 营业货车单均保费通常在5000-30000元
     if (record.customer_category_3 === '营业货车') {
       if (avgPremium < 3000 || avgPremium > 50000) {
         return {
           valid: false,
           level: 'warning',
-          message: `营业货车单均保费异常：${avgPremium.toFixed(2)}元，正常范围5000-30000元`
+          message: `营业货车单均保费异常：${avgPremium.toFixed(2)}元，正常范围5000-30000元`,
         }
       }
     }
-    
+
     return { valid: true }
   }
-  
+
   // 规则2: 赔付率合理性检查
   validateLossRatio(record: InsuranceRecord): ValidationResult {
-    const lossRatio = record.reported_claim_payment_yuan / record.matured_premium_yuan
-    
+    const lossRatio =
+      record.reported_claim_payment_yuan / record.matured_premium_yuan
+
     if (lossRatio > 1.5) {
       return {
         valid: false,
         level: 'warning',
-        message: `赔付率异常：${(lossRatio * 100).toFixed(2)}%，超过150%需核实`
+        message: `赔付率异常：${(lossRatio * 100).toFixed(2)}%，超过150%需核实`,
       }
     }
-    
+
     return { valid: true }
   }
-  
+
   // 规则3: 费用率合理性检查
   validateExpenseRatio(record: InsuranceRecord): ValidationResult {
     const expenseRatio = record.expense_amount_yuan / record.signed_premium_yuan
-    
-    if (expenseRatio > 0.30) {
+
+    if (expenseRatio > 0.3) {
       return {
         valid: false,
         level: 'warning',
-        message: `费用率异常：${(expenseRatio * 100).toFixed(2)}%，超过30%需核实`
+        message: `费用率异常：${(expenseRatio * 100).toFixed(2)}%，超过30%需核实`,
       }
     }
-    
+
     return { valid: true }
   }
-  
+
   // 规则4: 新能源车与险种组合校验
   validateNewEnergyVehicleCoverage(record: InsuranceRecord): ValidationResult {
     if (record.is_new_energy_vehicle && record.coverage_type === '单交') {
       return {
         valid: false,
         level: 'warning',
-        message: '新能源车仅投保交强险风险较高，建议核实'
+        message: '新能源车仅投保交强险风险较高，建议核实',
       }
     }
-    
+
     return { valid: true }
   }
 }
@@ -3679,23 +3785,23 @@ class BusinessRuleValidator {
 
 #### 7.5.1. 错误分级
 
-| 错误级别 | 处理策略 | 示例 |
-| :--- | :--- | :--- |
-| **Error（错误）** | 阻断导入；必须修正 | 必填字段缺失；枚举值不匹配；数据类型错误 |
+| 错误级别            | 处理策略           | 示例                                        |
+| :------------------ | :----------------- | :------------------------------------------ |
+| **Error（错误）**   | 阻断导入；必须修正 | 必填字段缺失；枚举值不匹配；数据类型错误    |
 | **Warning（警告）** | 允许导入；标记异常 | 单均保费异常；赔付率超过150%；费用率超过30% |
-| **Info（提示）** | 仅记录日志 | 数据量较大；导入耗时较长 |
+| **Info（提示）**    | 仅记录日志         | 数据量较大；导入耗时较长                    |
 
 #### 7.5.2. 错误响应格式
 
 ```typescript
 interface ValidationError {
   level: 'error' | 'warning' | 'info'
-  code: string              // 错误代码
-  message: string           // 错误描述
-  field?: string            // 字段名
-  row?: number              // 行号（CSV导入时）
-  value?: any               // 错误值
-  suggestion?: string       // 修正建议
+  code: string // 错误代码
+  message: string // 错误描述
+  field?: string // 字段名
+  row?: number // 行号（CSV导入时）
+  value?: any // 错误值
+  suggestion?: string // 修正建议
 }
 
 interface ValidationReport {
@@ -3719,41 +3825,50 @@ interface ValidationReport {
 async function validateAndImportCSV(file: File): Promise<ValidationReport> {
   const report: ValidationReport = {
     success: false,
-    summary: { totalRecords: 0, validRecords: 0, errorRecords: 0, warningRecords: 0 },
+    summary: {
+      totalRecords: 0,
+      validRecords: 0,
+      errorRecords: 0,
+      warningRecords: 0,
+    },
     errors: [],
     warnings: [],
-    validData: []
+    validData: [],
   }
-  
+
   try {
     // 1. 解析CSV
     const rawRecords = await parseCSV(file)
     report.summary.totalRecords = rawRecords.length
-    
+
     // 2. Schema验证
     for (const [index, record] of rawRecords.entries()) {
       try {
         const validated = InsuranceRecordSchema.parse(record)
-        
+
         // 3. 业务规则验证
         const businessValidation = businessRuleValidator.validateAll(validated)
-        
+
         if (businessValidation.errors.length > 0) {
-          report.errors.push(...businessValidation.errors.map(e => ({
-            ...e,
-            row: index + 2 // CSV行号（含表头）
-          })))
+          report.errors.push(
+            ...businessValidation.errors.map(e => ({
+              ...e,
+              row: index + 2, // CSV行号（含表头）
+            }))
+          )
           report.summary.errorRecords++
         } else {
           report.validData.push(validated)
           report.summary.validRecords++
-          
+
           // 记录警告
           if (businessValidation.warnings.length > 0) {
-            report.warnings.push(...businessValidation.warnings.map(w => ({
-              ...w,
-              row: index + 2
-            })))
+            report.warnings.push(
+              ...businessValidation.warnings.map(w => ({
+                ...w,
+                row: index + 2,
+              }))
+            )
             report.summary.warningRecords++
           }
         }
@@ -3764,15 +3879,15 @@ async function validateAndImportCSV(file: File): Promise<ValidationReport> {
           code: 'SCHEMA_VALIDATION_FAILED',
           message: error.message,
           row: index + 2,
-          value: record
+          value: record,
         })
         report.summary.errorRecords++
       }
     }
-    
+
     // 4. 确定导入结果
     report.success = report.summary.errorRecords === 0
-    
+
     return report
   } catch (error) {
     throw new Error(`CSV解析失败: ${error.message}`)
@@ -3784,57 +3899,58 @@ async function validateAndImportCSV(file: File): Promise<ValidationReport> {
 
 #### 7.6.1. 字段详细说明
 
-| 字段名 | 中文名 | 数据类型 | 必填 | 取值范围 | 业务含义 | 示例 |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `snapshot_date` | 快照日期 | Date | ✓ | 2020-01-01至今 | 数据采集时点 | 2024-07-15 |
-| `policy_start_year` | 保单年度 | Integer | ✓ | 2020-2030 | 保单起保年度 | 2024 |
-| `week_number` | 周序号 | Integer | ✓ | 1-105 | 数据统计截至周的序号 | 28 |
-| `chengdu_branch` | 地域属性 | String | ✓ | 成都/中支 | 组织地域划分 | 成都 |
-| `third_level_organization` | 三级机构 | Enum | ✓ | 见7.3.1 | 业务单位 | 本部 |
-| `customer_category_3` | 客户类别 | Enum | ✓ | 见7.3.2 | 客户分类 | 非营业个人客车 |
-| `insurance_type` | 保险类型 | Enum | ✓ | 商业险/交强险 | 险种大类 | 商业险 |
-| `business_type_category` | 业务类型 | Enum | ✓ | 见7.3.3 | 细分业务类别 | 非营业客车新车 |
-| `coverage_type` | 险别组合 | Enum | ✓ | 主全/交三/单交 | 投保组合 | 主全 |
-| `renewal_status` | 客户状态 | Enum | ✓ | 新保/续保/转保 | 客户生命周期 | 新保 |
-| `is_new_energy_vehicle` | 能源类型 | Boolean | ✓ | True/False | 是否新能源车 | False |
-| `is_transferred_vehicle` | 过户车状态 | Boolean | ✓ | True/False | 是否过户车 | False |
-| `vehicle_insurance_grade` | 车险评级 | Enum | 条件必填* | A-G/X | 风险等级（非营业客车必填） | A |
-| `highway_risk_grade` | 高速风险等级 | Enum | ✓ | A-F/X | 高速行驶风险 | A |
-| `large_truck_score` | 大货车评分 | Enum | 条件必填** | A-E/X | 大货车风险评分 | X |
-| `small_truck_score` | 小货车评分 | Enum | 条件必填*** | A-E/X | 小货车风险评分 | X |
-| `terminal_source` | 终端来源 | Enum | ✓ | 见7.3.5 | 业务渠道 | 0201PC |
-| `signed_premium_yuan` | 签单保费 | Decimal | ✓ | ≥0 | 承保保费收入（元） | 5623.50 |
-| `matured_premium_yuan` | 满期保费 | Decimal | ✓ | ≥0 | 满期保费收入（元） | 5623.50 |
-| `policy_count` | 保单件数 | Integer | ✓ | ≥0 | 保单数量 | 1 |
-| `claim_case_count` | 赔案件数 | Integer | ✓ | ≥0 | 赔案数量 | 0 |
-| `reported_claim_payment_yuan` | 已报告赔款 | Decimal | ✓ | ≥0 | 赔付金额（元） | 0 |
-| `expense_amount_yuan` | 费用金额 | Decimal | ✓ | ≥0 | 业务费用（元） | 562.35 |
-| `commercial_premium_before_discount_yuan` | 商业险折前保费 | Decimal | ✓ | ≥0 | 商业险基准保费（元） | 6248.33 |
-| `premium_plan_yuan` | 保费计划 | Decimal | ✗ | ≥0 | 目标保费（元） | 5500.00 |
-| `marginal_contribution_amount_yuan` | 边际贡献额 | Decimal | ✓ | 任意值 | 边际利润（元） | 2810.58 |
+| 字段名                                    | 中文名         | 数据类型 | 必填           | 取值范围       | 业务含义                   | 示例           |
+| :---------------------------------------- | :------------- | :------- | :------------- | :------------- | :------------------------- | :------------- |
+| `snapshot_date`                           | 快照日期       | Date     | ✓              | 2020-01-01至今 | 数据采集时点               | 2024-07-15     |
+| `policy_start_year`                       | 保单年度       | Integer  | ✓              | 2020-2030      | 保单起保年度               | 2024           |
+| `week_number`                             | 周序号         | Integer  | ✓              | 1-105          | 数据统计截至周的序号       | 28             |
+| `chengdu_branch`                          | 地域属性       | String   | ✓              | 成都/中支      | 组织地域划分               | 成都           |
+| `third_level_organization`                | 三级机构       | Enum     | ✓              | 见7.3.1        | 业务单位                   | 本部           |
+| `customer_category_3`                     | 客户类别       | Enum     | ✓              | 见7.3.2        | 客户分类                   | 非营业个人客车 |
+| `insurance_type`                          | 保险类型       | Enum     | ✓              | 商业险/交强险  | 险种大类                   | 商业险         |
+| `business_type_category`                  | 业务类型       | Enum     | ✓              | 见7.3.3        | 细分业务类别               | 非营业客车新车 |
+| `coverage_type`                           | 险别组合       | Enum     | ✓              | 主全/交三/单交 | 投保组合                   | 主全           |
+| `renewal_status`                          | 客户状态       | Enum     | ✓              | 新保/续保/转保 | 客户生命周期               | 新保           |
+| `is_new_energy_vehicle`                   | 能源类型       | Boolean  | ✓              | True/False     | 是否新能源车               | False          |
+| `is_transferred_vehicle`                  | 过户车状态     | Boolean  | ✓              | True/False     | 是否过户车                 | False          |
+| `vehicle_insurance_grade`                 | 车险评级       | Enum     | 条件必填\*     | A-G/X          | 风险等级（非营业客车必填） | A              |
+| `highway_risk_grade`                      | 高速风险等级   | Enum     | ✓              | A-F/X          | 高速行驶风险               | A              |
+| `large_truck_score`                       | 大货车评分     | Enum     | 条件必填\*\*   | A-E/X          | 大货车风险评分             | X              |
+| `small_truck_score`                       | 小货车评分     | Enum     | 条件必填\*\*\* | A-E/X          | 小货车风险评分             | X              |
+| `terminal_source`                         | 终端来源       | Enum     | ✓              | 见7.3.5        | 业务渠道                   | 0201PC         |
+| `signed_premium_yuan`                     | 签单保费       | Decimal  | ✓              | ≥0             | 承保保费收入（元）         | 5623.50        |
+| `matured_premium_yuan`                    | 满期保费       | Decimal  | ✓              | ≥0             | 满期保费收入（元）         | 5623.50        |
+| `policy_count`                            | 保单件数       | Integer  | ✓              | ≥0             | 保单数量                   | 1              |
+| `claim_case_count`                        | 赔案件数       | Integer  | ✓              | ≥0             | 赔案数量                   | 0              |
+| `reported_claim_payment_yuan`             | 已报告赔款     | Decimal  | ✓              | ≥0             | 赔付金额（元）             | 0              |
+| `expense_amount_yuan`                     | 费用金额       | Decimal  | ✓              | ≥0             | 业务费用（元）             | 562.35         |
+| `commercial_premium_before_discount_yuan` | 商业险折前保费 | Decimal  | ✓              | ≥0             | 商业险基准保费（元）       | 6248.33        |
+| `premium_plan_yuan`                       | 保费计划       | Decimal  | ✗              | ≥0             | 目标保费（元）             | 5500.00        |
+| `marginal_contribution_amount_yuan`       | 边际贡献额     | Decimal  | ✓              | 任意值         | 边际利润（元）             | 2810.58        |
 
 **注释**:
-- *: 当`customer_category_3`为非营业个人客车时必填
-- **: 当`customer_category_3`包含大货车时必填
-- ***: 当`customer_category_3`为非营业货车或2吨以下营业货车时必填
+
+- \*: 当`customer_category_3`为非营业个人客车时必填
+- \*\*: 当`customer_category_3`包含大货车时必填
+- \*\*\*: 当`customer_category_3`为非营业货车或2吨以下营业货车时必填
 
 #### 7.6.2. 计算指标字典
 
-| 指标名称 | 英文代码 | 计算公式 | 单位 | 展示格式 | 业务解释 |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| 签单保费 | `signed_premium` | `SUM(signed_premium_yuan) / 10000` | 万元（取整） | 千分位整数 | 当期承保的保费收入 |
-| 满期保费 | `matured_premium` | `SUM(matured_premium_yuan) / 10000` | 万元（取整） | 千分位整数 | 已满期保单的保费收入 |
-| 满期赔付率 | `loss_ratio` | `SUM(reported_claim_payment_yuan) / SUM(matured_premium_yuan) * 100` | % | 两位小数 | 赔款占满期保费比例，核心风险指标 |
-| 保费达成率 | `premium_progress` | `(SUM(signed_premium_yuan) / SUM(premium_plan_yuan)) / (已过天数/365) * 100` | % | 两位小数 | 保费完成进度vs时间进度 |
-| 满期率 | `maturity_ratio` | `SUM(matured_premium_yuan) / SUM(signed_premium_yuan) * 100` | % | 两位小数 | 保单满期程度 |
-| 费用率 | `expense_ratio` | `SUM(expense_amount_yuan) / SUM(signed_premium_yuan) * 100` | % | 两位小数 | 费用占签单保费比例 |
-| 满期边际贡献率 | `contribution_margin_ratio` | `SUM(marginal_contribution_amount_yuan) / SUM(matured_premium_yuan) * 100` | % | 两位小数 | 盈利能力核心指标 |
-| 变动成本率 | `variable_cost_ratio` | `费用率 + 满期赔付率` | % | 两位小数 | 综合成本率 |
-| 满期出险率 | `matured_claim_ratio` | `(SUM(claim_case_count) / SUM(policy_count)) * 满期率` | % | 两位小数 | 满期保单的出险频率 |
-| 单均保费 | `average_premium` | `SUM(signed_premium_yuan) / SUM(policy_count)` | 元（取整） | 千分位整数 | 平均每张保单的保费 |
-| 案均赔款 | `average_claim` | `SUM(reported_claim_payment_yuan) / SUM(claim_case_count)` | 元（取整） | 千分位整数 | 平均每个赔案的赔款金额 |
-| 单均费用 | `average_expense` | `SUM(expense_amount_yuan) / SUM(policy_count)` | 元（取整） | 千分位整数 | 平均每张保单的费用 |
-| 商业险自主系数 | `autonomy_coefficient` | `SUM(signed_premium_yuan) / SUM(commercial_premium_before_discount_yuan)` | 无量纲 | 三位小数 | 商业险折扣力度 |
+| 指标名称       | 英文代码                    | 计算公式                                                                     | 单位         | 展示格式   | 业务解释                         |
+| :------------- | :-------------------------- | :--------------------------------------------------------------------------- | :----------- | :--------- | :------------------------------- |
+| 签单保费       | `signed_premium`            | `SUM(signed_premium_yuan) / 10000`                                           | 万元（取整） | 千分位整数 | 当期承保的保费收入               |
+| 满期保费       | `matured_premium`           | `SUM(matured_premium_yuan) / 10000`                                          | 万元（取整） | 千分位整数 | 已满期保单的保费收入             |
+| 满期赔付率     | `loss_ratio`                | `SUM(reported_claim_payment_yuan) / SUM(matured_premium_yuan) * 100`         | %            | 两位小数   | 赔款占满期保费比例，核心风险指标 |
+| 保费达成率     | `premium_progress`          | `(SUM(signed_premium_yuan) / SUM(premium_plan_yuan)) / (已过天数/365) * 100` | %            | 两位小数   | 保费完成进度vs时间进度           |
+| 满期率         | `maturity_ratio`            | `SUM(matured_premium_yuan) / SUM(signed_premium_yuan) * 100`                 | %            | 两位小数   | 保单满期程度                     |
+| 费用率         | `expense_ratio`             | `SUM(expense_amount_yuan) / SUM(signed_premium_yuan) * 100`                  | %            | 两位小数   | 费用占签单保费比例               |
+| 满期边际贡献率 | `contribution_margin_ratio` | `SUM(marginal_contribution_amount_yuan) / SUM(matured_premium_yuan) * 100`   | %            | 两位小数   | 盈利能力核心指标                 |
+| 变动成本率     | `variable_cost_ratio`       | `费用率 + 满期赔付率`                                                        | %            | 两位小数   | 综合成本率                       |
+| 满期出险率     | `matured_claim_ratio`       | `(SUM(claim_case_count) / SUM(policy_count)) * 满期率`                       | %            | 两位小数   | 满期保单的出险频率               |
+| 单均保费       | `average_premium`           | `SUM(signed_premium_yuan) / SUM(policy_count)`                               | 元（取整）   | 千分位整数 | 平均每张保单的保费               |
+| 案均赔款       | `average_claim`             | `SUM(reported_claim_payment_yuan) / SUM(claim_case_count)`                   | 元（取整）   | 千分位整数 | 平均每个赔案的赔款金额           |
+| 单均费用       | `average_expense`           | `SUM(expense_amount_yuan) / SUM(policy_count)`                               | 元（取整）   | 千分位整数 | 平均每张保单的费用               |
+| 商业险自主系数 | `autonomy_coefficient`      | `SUM(signed_premium_yuan) / SUM(commercial_premium_before_discount_yuan)`    | 无量纲       | 三位小数   | 商业险折扣力度                   |
 
 > 说明：绝对值类指标（签单保费、满期保费、费用、已报告赔款、边际贡献额等）在界面与导出中统一以万元为单位并四舍五入取整；均值类指标同样四舍五入取整到元。
 
@@ -3846,35 +3962,35 @@ async function validateAndImportCSV(file: File): Promise<ValidationReport> {
 
 #### 8.1.1. 响应时间要求（100人并发场景）
 
-| 操作类型 | 性能指标 | 测试条件 | 优先级 |
-| :--- | :--- | :--- | :--- |
-| **首屏加载 (LCP)** | <2.5s | 100并发；3G网络；10万条数据 | P0 |
-| **首次内容绘制 (FCP)** | <1.5s | 同上 | P0 |
-| **可交互时间 (TTI)** | <3.5s | 同上 | P0 |
-| **筛选器响应** | <200ms | 单次筛选变更；10万条数据 | P0 |
-| **KPI计算** | <500ms | 8个核心KPI；复杂筛选组合；10万条数据 | P0 |
-| **图表渲染** | <300ms | 单个趋势图；52周数据点 | P1 |
-| **数据导出** | <2s | 1万条记录；CSV格式 | P1 |
-| **CSV上传解析** | <10s | 5万条记录；5MB文件 | P1 |
+| 操作类型               | 性能指标 | 测试条件                             | 优先级 |
+| :--------------------- | :------- | :----------------------------------- | :----- |
+| **首屏加载 (LCP)**     | <2.5s    | 100并发；3G网络；10万条数据          | P0     |
+| **首次内容绘制 (FCP)** | <1.5s    | 同上                                 | P0     |
+| **可交互时间 (TTI)**   | <3.5s    | 同上                                 | P0     |
+| **筛选器响应**         | <200ms   | 单次筛选变更；10万条数据             | P0     |
+| **KPI计算**            | <500ms   | 8个核心KPI；复杂筛选组合；10万条数据 | P0     |
+| **图表渲染**           | <300ms   | 单个趋势图；52周数据点               | P1     |
+| **数据导出**           | <2s      | 1万条记录；CSV格式                   | P1     |
+| **CSV上传解析**        | <10s     | 5万条记录；5MB文件                   | P1     |
 
 #### 8.1.2. 吞吐量要求
 
-| 指标 | 目标值 | 说明 |
-| :--- | :--- | :--- |
-| **并发用户数** | 100人 | 同时在线并操作 |
-| **峰值请求数** | 500 QPS | API模式下 |
-| **数据处理能力** | 10万条/分钟 | CSV导入场景 |
-| **计算吞吐量** | 1000次KPI计算/分钟 | 缓存命中率>80% |
+| 指标             | 目标值             | 说明           |
+| :--------------- | :----------------- | :------------- |
+| **并发用户数**   | 100人              | 同时在线并操作 |
+| **峰值请求数**   | 500 QPS            | API模式下      |
+| **数据处理能力** | 10万条/分钟        | CSV导入场景    |
+| **计算吞吐量**   | 1000次KPI计算/分钟 | 缓存命中率>80% |
 
 #### 8.1.3. 资源使用限制
 
-| 资源类型 | 限制 | 说明 |
-| :--- | :--- | :--- |
-| **客户端内存** | <500MB | 浏览器进程内存占用 |
-| **客户端CPU** | <30% | 持续CPU占用率 |
-| **数据文件大小** | <50MB | 单次上传CSV文件 |
-| **缓存大小** | <100MB | localStorage + 内存缓存 |
-| **单次查询记录数** | <10万条 | 前端一次性加载 |
+| 资源类型           | 限制    | 说明                    |
+| :----------------- | :------ | :---------------------- |
+| **客户端内存**     | <500MB  | 浏览器进程内存占用      |
+| **客户端CPU**      | <30%    | 持续CPU占用率           |
+| **数据文件大小**   | <50MB   | 单次上传CSV文件         |
+| **缓存大小**       | <100MB  | localStorage + 内存缓存 |
+| **单次查询记录数** | <10万条 | 前端一次性加载          |
 
 #### 8.1.4. 性能测试基准
 
@@ -3885,26 +4001,26 @@ const performanceTestScenarios = [
     name: '基准场景',
     description: '单用户；1万条数据；简单筛选',
     expectedLCP: 1500, // ms
-    expectedKPICalculation: 100 // ms
+    expectedKPICalculation: 100, // ms
   },
   {
     name: '常规负载',
     description: '10并发；5万条数据；中等复杂筛选',
     expectedLCP: 2000,
-    expectedKPICalculation: 300
+    expectedKPICalculation: 300,
   },
   {
     name: '高负载',
     description: '50并发；10万条数据；复杂筛选（6个维度）',
     expectedLCP: 2500,
-    expectedKPICalculation: 500
+    expectedKPICalculation: 500,
   },
   {
     name: '压力测试',
     description: '100并发；10万条数据；复杂筛选+图表渲染',
     expectedLCP: 3000,
-    expectedKPICalculation: 800
-  }
+    expectedKPICalculation: 800,
+  },
 ]
 ```
 
@@ -3912,116 +4028,116 @@ const performanceTestScenarios = [
 
 #### 8.2.1. 数据安全
 
-| 安全措施 | 要求 | 实现方式 |
-| :--- | :--- | :--- |
-| **传输加密** | 强制HTTPS；TLS 1.3+ | Let's Encrypt证书；HSTS启用 |
+| 安全措施     | 要求                         | 实现方式                     |
+| :----------- | :--------------------------- | :--------------------------- |
+| **传输加密** | 强制HTTPS；TLS 1.3+          | Let's Encrypt证书；HSTS启用  |
 | **数据脱敏** | 车牌号/保单号/手机号部分隐藏 | 前端脱敏工具；导出时保留脱敏 |
-| **访问控制** | 基于角色的权限控制（RBAC） | JWT认证；权限中间件 |
-| **数据备份** | 每日自动备份；保留30天 | 数据库自动备份；异地存储 |
-| **审计日志** | 所有数据操作记录 | 数据上传/导出/删除记录 |
+| **访问控制** | 基于角色的权限控制（RBAC）   | JWT认证；权限中间件          |
+| **数据备份** | 每日自动备份；保留30天       | 数据库自动备份；异地存储     |
+| **审计日志** | 所有数据操作记录             | 数据上传/导出/删除记录       |
 
 #### 8.2.2. 应用安全
 
-| 威胁类型 | 防护措施 | 优先级 |
-| :--- | :--- | :--- |
-| **XSS攻击** | CSP策略；输入输出转义；React自动转义 | P0 |
-| **CSRF攻击** | CSRF Token；SameSite Cookie | P0 |
-| **SQL注入** | Prisma ORM参数化查询；输入验证 | P0 |
-| **文件上传漏洞** | 文件类型白名单；大小限制；病毒扫描 | P0 |
-| **DDoS攻击** | CloudFlare防护；限流策略 | P1 |
-| **暴力破解** | 登录失败锁定；验证码 | P1 |
+| 威胁类型         | 防护措施                             | 优先级 |
+| :--------------- | :----------------------------------- | :----- |
+| **XSS攻击**      | CSP策略；输入输出转义；React自动转义 | P0     |
+| **CSRF攻击**     | CSRF Token；SameSite Cookie          | P0     |
+| **SQL注入**      | Prisma ORM参数化查询；输入验证       | P0     |
+| **文件上传漏洞** | 文件类型白名单；大小限制；病毒扫描   | P0     |
+| **DDoS攻击**     | CloudFlare防护；限流策略             | P1     |
+| **暴力破解**     | 登录失败锁定；验证码                 | P1     |
 
 #### 8.2.3. 合规要求
 
-| 合规项 | 要求 | 说明 |
-| :--- | :--- | :--- |
-| **数据隐私** | 符合《个人信息保护法》 | 最小化数据收集；用户授权 |
-| **数据留存** | 业务数据保留3年；日志保留1年 | 定期清理过期数据 |
-| **安全审计** | 季度安全评估；年度渗透测试 | 第三方安全公司 |
+| 合规项       | 要求                         | 说明                     |
+| :----------- | :--------------------------- | :----------------------- |
+| **数据隐私** | 符合《个人信息保护法》       | 最小化数据收集；用户授权 |
+| **数据留存** | 业务数据保留3年；日志保留1年 | 定期清理过期数据         |
+| **安全审计** | 季度安全评估；年度渗透测试   | 第三方安全公司           |
 
 ### 8.3. 兼容性要求
 
 #### 8.3.1. 浏览器兼容性
 
-| 浏览器 | 版本要求 | 测试优先级 |
-| :--- | :--- | :--- |
-| **Chrome** | 最新版 + 最近2个大版本 | P0 |
-| **Edge** | 最新版 + 最近2个大版本 | P0 |
-| **Firefox** | 最新版 + 最近2个大版本 | P1 |
-| **Safari** | 最新版 + 最近2个大版本 (macOS/iOS) | P1 |
-| **移动浏览器** | iOS Safari 15+；Chrome Mobile 100+ | P2 |
+| 浏览器         | 版本要求                           | 测试优先级 |
+| :------------- | :--------------------------------- | :--------- |
+| **Chrome**     | 最新版 + 最近2个大版本             | P0         |
+| **Edge**       | 最新版 + 最近2个大版本             | P0         |
+| **Firefox**    | 最新版 + 最近2个大版本             | P1         |
+| **Safari**     | 最新版 + 最近2个大版本 (macOS/iOS) | P1         |
+| **移动浏览器** | iOS Safari 15+；Chrome Mobile 100+ | P2         |
 
 **不支持**: IE11及以下版本
 
 #### 8.3.2. 设备兼容性
 
-| 设备类型 | 分辨率范围 | 交互方式 | 优先级 |
-| :--- | :--- | :--- | :--- |
-| **桌面** | 1920x1080 ~ 3840x2160 | 鼠标+键盘 | P0 |
-| **笔记本** | 1366x768 ~ 2560x1440 | 触控板+键盘 | P0 |
-| **平板** | 1024x768 ~ 2732x2048 | 触摸 | P2 |
-| **手机** | 375x667 ~ 428x926 | 触摸 | P3 (MVP不支持) |
+| 设备类型   | 分辨率范围            | 交互方式    | 优先级         |
+| :--------- | :-------------------- | :---------- | :------------- |
+| **桌面**   | 1920x1080 ~ 3840x2160 | 鼠标+键盘   | P0             |
+| **笔记本** | 1366x768 ~ 2560x1440  | 触控板+键盘 | P0             |
+| **平板**   | 1024x768 ~ 2732x2048  | 触摸        | P2             |
+| **手机**   | 375x667 ~ 428x926     | 触摸        | P3 (MVP不支持) |
 
 #### 8.3.3. 文件格式兼容性
 
-| 格式 | 导入 | 导出 | 说明 |
-| :--- | :--- | :--- | :--- |
-| **CSV** | ✓ | ✓ | UTF-8编码；主要数据格式 |
-| **Excel (xlsx)** | ✗ | ✓ (V1.0+) | 导出支持；导入需转换为CSV |
-| **JSON** | ✓ | ✓ | API数据交换格式 |
-| **PDF** | ✗ | ✓ (V2.0+) | 报告导出 |
+| 格式             | 导入 | 导出      | 说明                      |
+| :--------------- | :--- | :-------- | :------------------------ |
+| **CSV**          | ✓    | ✓         | UTF-8编码；主要数据格式   |
+| **Excel (xlsx)** | ✗    | ✓ (V1.0+) | 导出支持；导入需转换为CSV |
+| **JSON**         | ✓    | ✓         | API数据交换格式           |
+| **PDF**          | ✗    | ✓ (V2.0+) | 报告导出                  |
 
 ### 8.4. 可用性要求
 
 #### 8.4.1. 系统可用性
 
-| 指标 | 目标值 | 计算方式 |
-| :--- | :--- | :--- |
-| **系统可用性** | 99.5% | 月度统计；计划内维护不计入 |
-| **MTBF（平均无故障时间）** | >720小时 | 30天 |
-| **MTTR（平均恢复时间）** | <2小时 | 故障发生到完全恢复 |
-| **RTO（恢复时间目标）** | <1小时 | 灾难恢复时间 |
-| **RPO（恢复点目标）** | <24小时 | 数据丢失容忍度 |
+| 指标                       | 目标值   | 计算方式                   |
+| :------------------------- | :------- | :------------------------- |
+| **系统可用性**             | 99.5%    | 月度统计；计划内维护不计入 |
+| **MTBF（平均无故障时间）** | >720小时 | 30天                       |
+| **MTTR（平均恢复时间）**   | <2小时   | 故障发生到完全恢复         |
+| **RTO（恢复时间目标）**    | <1小时   | 灾难恢复时间               |
+| **RPO（恢复点目标）**      | <24小时  | 数据丢失容忍度             |
 
 #### 8.4.2. 易用性要求
 
-| 维度 | 要求 | 评估方式 |
-| :--- | :--- | :--- |
-| **学习曲线** | 新用户30分钟内完成基本操作 | 用户测试 |
-| **错误率** | 关键操作错误率<5% | A/B测试 |
-| **任务完成时间** | 单次分析任务<3分钟 | 时间统计 |
-| **用户满意度** | NPS>40；满意度>4.0/5.0 | 问卷调查 |
+| 维度             | 要求                       | 评估方式 |
+| :--------------- | :------------------------- | :------- |
+| **学习曲线**     | 新用户30分钟内完成基本操作 | 用户测试 |
+| **错误率**       | 关键操作错误率<5%          | A/B测试  |
+| **任务完成时间** | 单次分析任务<3分钟         | 时间统计 |
+| **用户满意度**   | NPS>40；满意度>4.0/5.0     | 问卷调查 |
 
 #### 8.4.3. 无障碍访问（A11y）
 
-| 级别 | 要求 | 优先级 |
-| :--- | :--- | :--- |
-| **键盘导航** | 所有功能支持Tab键导航 | P1 |
-| **屏幕阅读器** | 核心功能支持NVDA/JAWS | P2 |
-| **对比度** | WCAG AA级别（4.5:1） | P1 |
-| **字体缩放** | 支持200%缩放不破坏布局 | P1 |
+| 级别           | 要求                   | 优先级 |
+| :------------- | :--------------------- | :----- |
+| **键盘导航**   | 所有功能支持Tab键导航  | P1     |
+| **屏幕阅读器** | 核心功能支持NVDA/JAWS  | P2     |
+| **对比度**     | WCAG AA级别（4.5:1）   | P1     |
+| **字体缩放**   | 支持200%缩放不破坏布局 | P1     |
 
 ### 8.5. 可维护性
 
 #### 8.5.1. 代码质量
 
-| 指标 | 目标值 | 工具 |
-| :--- | :--- | :--- |
-| **测试覆盖率** | >80% | Vitest + Playwright |
-| **代码复杂度** | 圈复杂度<10 | ESLint插件 |
-| **代码重复率** | <5% | SonarQube |
-| **TypeScript严格模式** | 100%启用 | tsconfig.json strict: true |
+| 指标                   | 目标值      | 工具                       |
+| :--------------------- | :---------- | :------------------------- |
+| **测试覆盖率**         | >80%        | Vitest + Playwright        |
+| **代码复杂度**         | 圈复杂度<10 | ESLint插件                 |
+| **代码重复率**         | <5%         | SonarQube                  |
+| **TypeScript严格模式** | 100%启用    | tsconfig.json strict: true |
 
 #### 8.5.2. 文档要求
 
-| 文档类型 | 更新频率 | 负责人 |
-| :--- | :--- | :--- |
-| **PRD文档** | 每个迭代版本 | 产品经理 |
+| 文档类型         | 更新频率       | 负责人     |
+| :--------------- | :------------- | :--------- |
+| **PRD文档**      | 每个迭代版本   | 产品经理   |
 | **技术设计文档** | 重大功能开发前 | 技术负责人 |
-| **API文档** | 接口变更时 | 后端开发 |
-| **组件文档** | 组件开发完成时 | 前端开发 |
-| **用户手册** | 每个正式版本 | 产品+技术 |
-| **变更日志** | 每次发布 | 项目管理 |
+| **API文档**      | 接口变更时     | 后端开发   |
+| **组件文档**     | 组件开发完成时 | 前端开发   |
+| **用户手册**     | 每个正式版本   | 产品+技术  |
+| **变更日志**     | 每次发布       | 项目管理   |
 
 #### 8.5.3. 监控与告警
 
@@ -4031,16 +4147,16 @@ const monitoringConfig = {
   performance: {
     lcp: { threshold: 2500, alertLevel: 'warning' },
     fid: { threshold: 100, alertLevel: 'warning' },
-    cls: { threshold: 0.1, alertLevel: 'warning' }
+    cls: { threshold: 0.1, alertLevel: 'warning' },
   },
   errors: {
     jsErrors: { threshold: 10, window: '5min', alertLevel: 'critical' },
-    apiErrors: { threshold: 20, window: '5min', alertLevel: 'critical' }
+    apiErrors: { threshold: 20, window: '5min', alertLevel: 'critical' },
   },
   business: {
     uploadFailureRate: { threshold: 0.05, alertLevel: 'warning' },
-    calculationTimeout: { threshold: 0.02, alertLevel: 'warning' }
-  }
+    calculationTimeout: { threshold: 0.02, alertLevel: 'warning' },
+  },
 }
 ```
 
@@ -4048,20 +4164,20 @@ const monitoringConfig = {
 
 #### 8.6.1. 功能扩展性
 
-| 扩展点 | 设计方案 | 说明 |
-| :--- | :--- | :--- |
-| **新增KPI指标** | 插件化KPI计算引擎 | 配置化添加新指标 |
-| **新增筛选维度** | 动态筛选器生成 | 基于数据字典自动生成 |
-| **新增图表类型** | 图表组件抽象接口 | 统一数据适配器 |
-| **新增数据源** | 数据源适配器模式 | 支持多种数据格式 |
+| 扩展点           | 设计方案          | 说明                 |
+| :--------------- | :---------------- | :------------------- |
+| **新增KPI指标**  | 插件化KPI计算引擎 | 配置化添加新指标     |
+| **新增筛选维度** | 动态筛选器生成    | 基于数据字典自动生成 |
+| **新增图表类型** | 图表组件抽象接口  | 统一数据适配器       |
+| **新增数据源**   | 数据源适配器模式  | 支持多种数据格式     |
 
 #### 8.6.2. 性能扩展性
 
-| 场景 | 扩展方案 | 触发条件 |
-| :--- | :--- | :--- |
-| **数据量增长** | 虚拟化+分页+索引 | 数据量>10万条 |
-| **用户量增长** | 水平扩展+CDN | 并发>100人 |
-| **计算复杂度增长** | Web Worker池+GPU加速 | 计算时间>1s |
+| 场景               | 扩展方案             | 触发条件      |
+| :----------------- | :------------------- | :------------ |
+| **数据量增长**     | 虚拟化+分页+索引     | 数据量>10万条 |
+| **用户量增长**     | 水平扩展+CDN         | 并发>100人    |
+| **计算复杂度增长** | Web Worker池+GPU加速 | 计算时间>1s   |
 
 #### 8.6.3. 架构演进路径
 
@@ -4081,12 +4197,12 @@ V3.0 (大数据平台 + AI预测)
 
 ### 9.1. 版本演进总览
 
-| 版本 | 核心目标 | 发布时间 | 开发周期 | 团队规模 |
-| :--- | :--- | :--- | :--- | :--- |
-| **MVP** | 核心分析能力验证 | Q1 2025 | 6周 | 3人（1前端+1后端+1产品） |
-| **V1.0** | 完整功能上线 | Q2 2025 | 8周 | 5人（2前端+2后端+1产品） |
-| **V2.0** | AI增强+高级分析 | Q3 2025 | 10周 | 7人（3前端+2后端+1算法+1产品） |
-| **V3.0** | 行业对标+生态开放 | Q4 2025 | 12周 | 10人（全栈团队） |
+| 版本     | 核心目标          | 发布时间 | 开发周期 | 团队规模                       |
+| :------- | :---------------- | :------- | :------- | :----------------------------- |
+| **MVP**  | 核心分析能力验证  | Q1 2025  | 6周      | 3人（1前端+1后端+1产品）       |
+| **V1.0** | 完整功能上线      | Q2 2025  | 8周      | 5人（2前端+2后端+1产品）       |
+| **V2.0** | AI增强+高级分析   | Q3 2025  | 10周     | 7人（3前端+2后端+1算法+1产品） |
+| **V3.0** | 行业对标+生态开放 | Q4 2025  | 12周     | 10人（全栈团队）               |
 
 ### 9.2. MVP版本（最小可行产品）
 
@@ -4094,19 +4210,19 @@ V3.0 (大数据平台 + AI预测)
 
 #### 9.2.1. 功能清单
 
-| 模块 | 功能 | 优先级 | 工作量 |
-| :--- | :--- | :--- | :--- |
-| **数据导入** | CSV文件上传（前端解析） | P0 | 3人天 |
-| **数据导入** | 基础数据验证（必填+类型） | P0 | 2人天 |
-| **数据导入** | 导入进度条 | P0 | 1人天 |
-| **核心KPI** | 8个核心KPI看板 | P0 | 5人天 |
-| **核心KPI** | KPI计算引擎（前端） | P0 | 4人天 |
-| **筛选系统** | 单周模式筛选 | P0 | 3人天 |
-| **筛选系统** | 4级筛选器（模式/周次/数据类型/机构） | P0 | 5人天 |
-| **UI框架** | 页面布局+导航 | P0 | 3人天 |
-| **UI框架** | 玻璃态设计系统 | P0 | 4人天 |
-| **图表** | 签单保费趋势图（简单版） | P1 | 2人天 |
-| **数据导出** | CSV导出（基础版） | P1 | 2人天 |
+| 模块         | 功能                                 | 优先级 | 工作量 |
+| :----------- | :----------------------------------- | :----- | :----- |
+| **数据导入** | CSV文件上传（前端解析）              | P0     | 3人天  |
+| **数据导入** | 基础数据验证（必填+类型）            | P0     | 2人天  |
+| **数据导入** | 导入进度条                           | P0     | 1人天  |
+| **核心KPI**  | 8个核心KPI看板                       | P0     | 5人天  |
+| **核心KPI**  | KPI计算引擎（前端）                  | P0     | 4人天  |
+| **筛选系统** | 单周模式筛选                         | P0     | 3人天  |
+| **筛选系统** | 4级筛选器（模式/周次/数据类型/机构） | P0     | 5人天  |
+| **UI框架**   | 页面布局+导航                        | P0     | 3人天  |
+| **UI框架**   | 玻璃态设计系统                       | P0     | 4人天  |
+| **图表**     | 签单保费趋势图（简单版）             | P1     | 2人天  |
+| **数据导出** | CSV导出（基础版）                    | P1     | 2人天  |
 
 **总工作量**: 34人天（约6周，3人团队）
 
@@ -4120,14 +4236,14 @@ V3.0 (大数据平台 + AI预测)
 
 #### 9.2.3. 里程碑与交付物
 
-| 周次 | 里程碑 | 交付物 | 验收标准 |
-| :--- | :--- | :--- | :--- |
-| **W1** | 项目启动+技术预研 | 技术方案文档；开发环境搭建 | 技术栈确定；Hello World运行 |
-| **W2** | 数据层开发 | CSV解析器；数据验证器；示例数据 | 能成功导入并验证测试CSV |
-| **W3** | 计算引擎开发 | KPI计算引擎；8个核心指标 | 单元测试通过；计算精度100% |
-| **W4** | UI框架+筛选系统 | 页面布局；筛选器组件；设计系统 | 筛选器功能完整；响应式布局 |
-| **W5** | KPI看板+图表 | 8个KPI卡片；趋势图组件 | 数据联动正确；动画流畅 |
-| **W6** | 测试+部署 | 测试报告；部署文档；用户手册 | 核心流程E2E测试通过；Vercel部署成功 |
+| 周次   | 里程碑            | 交付物                          | 验收标准                            |
+| :----- | :---------------- | :------------------------------ | :---------------------------------- |
+| **W1** | 项目启动+技术预研 | 技术方案文档；开发环境搭建      | 技术栈确定；Hello World运行         |
+| **W2** | 数据层开发        | CSV解析器；数据验证器；示例数据 | 能成功导入并验证测试CSV             |
+| **W3** | 计算引擎开发      | KPI计算引擎；8个核心指标        | 单元测试通过；计算精度100%          |
+| **W4** | UI框架+筛选系统   | 页面布局；筛选器组件；设计系统  | 筛选器功能完整；响应式布局          |
+| **W5** | KPI看板+图表      | 8个KPI卡片；趋势图组件          | 数据联动正确；动画流畅              |
+| **W6** | 测试+部署         | 测试报告；部署文档；用户手册    | 核心流程E2E测试通过；Vercel部署成功 |
 
 #### 9.2.4. 验收标准
 
@@ -4152,27 +4268,27 @@ V3.0 (大数据平台 + AI预测)
 
 #### 9.3.1. 功能清单
 
-| 模块 | 功能 | 优先级 | 工作量 |
-| :--- | :--- | :--- | :--- |
-| **MVP功能增强** | MVP所有功能优化 | P0 | 5人天 |
-| **双模式分析** | 多周趋势模式 | P0 | 8人天 |
-| **双模式分析** | 周增量vs当周值切换 | P0 | 3人天 |
-| **高级筛选** | 11个业务维度筛选 | P0 | 6人天 |
-| **高级筛选** | 全选/反选/清空/计数 | P0 | 2人天 |
-| **对比分析** | 同比/环比/自定义对比 | P0 | 5人天 |
-| **图表增强** | 16项KPI趋势图 | P0 | 8人天 |
-| **图表增强** | 结构分析图（饼图/柱状图） | P1 | 5人天 |
-| **计算核对** | 透明计算面板 | P1 | 3人天 |
-| **数据导出** | 增强导出（含筛选条件） | P1 | 2人天 |
-| **后端服务** | Fastify API服务 | P0 | 8人天 |
-| **后端服务** | PostgreSQL数据库 | P0 | 5人天 |
-| **后端服务** | Redis缓存层 | P1 | 3人天 |
-| **用户系统** | JWT认证 | P0 | 5人天 |
-| **用户系统** | RBAC权限控制 | P0 | 4人天 |
-| **用户系统** | 审计日志 | P1 | 3人天 |
-| **性能优化** | 虚拟化长列表 | P0 | 3人天 |
-| **性能优化** | Web Worker计算 | P1 | 4人天 |
-| **性能优化** | 多层缓存策略 | P0 | 4人天 |
+| 模块            | 功能                      | 优先级 | 工作量 |
+| :-------------- | :------------------------ | :----- | :----- |
+| **MVP功能增强** | MVP所有功能优化           | P0     | 5人天  |
+| **双模式分析**  | 多周趋势模式              | P0     | 8人天  |
+| **双模式分析**  | 周增量vs当周值切换        | P0     | 3人天  |
+| **高级筛选**    | 11个业务维度筛选          | P0     | 6人天  |
+| **高级筛选**    | 全选/反选/清空/计数       | P0     | 2人天  |
+| **对比分析**    | 同比/环比/自定义对比      | P0     | 5人天  |
+| **图表增强**    | 16项KPI趋势图             | P0     | 8人天  |
+| **图表增强**    | 结构分析图（饼图/柱状图） | P1     | 5人天  |
+| **计算核对**    | 透明计算面板              | P1     | 3人天  |
+| **数据导出**    | 增强导出（含筛选条件）    | P1     | 2人天  |
+| **后端服务**    | Fastify API服务           | P0     | 8人天  |
+| **后端服务**    | PostgreSQL数据库          | P0     | 5人天  |
+| **后端服务**    | Redis缓存层               | P1     | 3人天  |
+| **用户系统**    | JWT认证                   | P0     | 5人天  |
+| **用户系统**    | RBAC权限控制              | P0     | 4人天  |
+| **用户系统**    | 审计日志                  | P1     | 3人天  |
+| **性能优化**    | 虚拟化长列表              | P0     | 3人天  |
+| **性能优化**    | Web Worker计算            | P1     | 4人天  |
+| **性能优化**    | 多层缓存策略              | P0     | 4人天  |
 
 **总工作量**: 86人天（约8周，5人团队）
 
@@ -4188,32 +4304,32 @@ V3.0 (大数据平台 + AI预测)
 
 #### 9.3.3. 里程碑与交付物
 
-| 周次 | 里程碑 | 交付物 | 验收标准 |
-| :--- | :--- | :--- | :--- |
-| **W1-W2** | 后端服务开发 | API服务；数据库设计；认证系统 | API文档完整；认证流程通过 |
-| **W3-W4** | 双模式分析 | 多周趋势模式；对比分析；高级筛选 | 功能完整；数据联动正确 |
-| **W5-W6** | 图表增强+性能优化 | 16项KPI图表；虚拟化；缓存 | 性能指标达标；图表无卡顿 |
-| **W7** | 集成测试+安全加固 | 测试报告；安全扫描报告 | E2E测试通过；无高危漏洞 |
-| **W8** | 部署+上线 | 部署文档；监控配置；用户培训 | 生产环境稳定；用户验收通过 |
+| 周次      | 里程碑            | 交付物                           | 验收标准                   |
+| :-------- | :---------------- | :------------------------------- | :------------------------- |
+| **W1-W2** | 后端服务开发      | API服务；数据库设计；认证系统    | API文档完整；认证流程通过  |
+| **W3-W4** | 双模式分析        | 多周趋势模式；对比分析；高级筛选 | 功能完整；数据联动正确     |
+| **W5-W6** | 图表增强+性能优化 | 16项KPI图表；虚拟化；缓存        | 性能指标达标；图表无卡顿   |
+| **W7**    | 集成测试+安全加固 | 测试报告；安全扫描报告           | E2E测试通过；无高危漏洞    |
+| **W8**    | 部署+上线         | 部署文档；监控配置；用户培训     | 生产环境稳定；用户验收通过 |
 
 #### 9.3.4. 关键性能指标
 
-| 指标 | 目标值 | 测试条件 |
-| :--- | :--- | :--- |
-| 首屏加载 (LCP) | <2.5s | 100并发；10万条数据 |
-| KPI计算响应 | <500ms | 复杂筛选；10万条数据 |
-| 图表渲染 | <300ms | 52周趋势图 |
-| 系统可用性 | >99.5% | 月度统计 |
-| 并发支持 | 100人 | 压力测试 |
+| 指标           | 目标值 | 测试条件             |
+| :------------- | :----- | :------------------- |
+| 首屏加载 (LCP) | <2.5s  | 100并发；10万条数据  |
+| KPI计算响应    | <500ms | 复杂筛选；10万条数据 |
+| 图表渲染       | <300ms | 52周趋势图           |
+| 系统可用性     | >99.5% | 月度统计             |
+| 并发支持       | 100人  | 压力测试             |
 
 #### 9.3.5. 风险与应对
 
-| 风险 | 可能性 | 影响 | 应对措施 |
-| :--- | :--- | :--- | :--- |
-| 性能不达标 | 中 | 高 | 提前压测；预留优化时间 |
-| 数据迁移问题 | 中 | 中 | 双写验证；灰度迁移 |
-| 安全漏洞 | 低 | 高 | 代码审查；渗透测试 |
-| 资源不足 | 中 | 中 | 预算储备；外包支持 |
+| 风险         | 可能性 | 影响 | 应对措施               |
+| :----------- | :----- | :--- | :--------------------- |
+| 性能不达标   | 中     | 高   | 提前压测；预留优化时间 |
+| 数据迁移问题 | 中     | 中   | 双写验证；灰度迁移     |
+| 安全漏洞     | 低     | 高   | 代码审查；渗透测试     |
+| 资源不足     | 中     | 中   | 预算储备；外包支持     |
 
 ### 9.4. V2.0版本（AI增强版）
 
@@ -4221,54 +4337,54 @@ V3.0 (大数据平台 + AI预测)
 
 #### 9.4.1. 功能清单
 
-| 模块 | 功能 | 优先级 | 工作量 |
-| :--- | :--- | :--- | :--- |
-| **AI问题归因** | 自动识别异常指标 | P0 | 8人天 |
-| **AI问题归因** | 多维度归因分析 | P0 | 10人天 |
-| **AI问题归因** | 自然语言解读 | P1 | 8人天 |
-| **AI预测** | 保费预测模型 | P0 | 12人天 |
-| **AI预测** | 赔付率预测模型 | P0 | 12人天 |
-| **AI预测** | 置信区间展示 | P1 | 5人天 |
-| **智能推荐** | 优化建议生成 | P1 | 8人天 |
-| **智能推荐** | 最佳实践案例匹配 | P2 | 6人天 |
-| **高级图表** | 瀑布图（成本构成） | P1 | 5人天 |
-| **高级图表** | 桑基图（流向分析） | P1 | 5人天 |
-| **高级图表** | 热力地图（机构对比） | P1 | 4人天 |
-| **自定义报告** | 报告模板配置 | P1 | 8人天 |
-| **自定义报告** | PDF导出 | P1 | 5人天 |
-| **协作功能** | 分析快照分享 | P2 | 6人天 |
-| **协作功能** | 评论与批注 | P2 | 5人天 |
+| 模块           | 功能                 | 优先级 | 工作量 |
+| :------------- | :------------------- | :----- | :----- |
+| **AI问题归因** | 自动识别异常指标     | P0     | 8人天  |
+| **AI问题归因** | 多维度归因分析       | P0     | 10人天 |
+| **AI问题归因** | 自然语言解读         | P1     | 8人天  |
+| **AI预测**     | 保费预测模型         | P0     | 12人天 |
+| **AI预测**     | 赔付率预测模型       | P0     | 12人天 |
+| **AI预测**     | 置信区间展示         | P1     | 5人天  |
+| **智能推荐**   | 优化建议生成         | P1     | 8人天  |
+| **智能推荐**   | 最佳实践案例匹配     | P2     | 6人天  |
+| **高级图表**   | 瀑布图（成本构成）   | P1     | 5人天  |
+| **高级图表**   | 桑基图（流向分析）   | P1     | 5人天  |
+| **高级图表**   | 热力地图（机构对比） | P1     | 4人天  |
+| **自定义报告** | 报告模板配置         | P1     | 8人天  |
+| **自定义报告** | PDF导出              | P1     | 5人天  |
+| **协作功能**   | 分析快照分享         | P2     | 6人天  |
+| **协作功能**   | 评论与批注           | P2     | 5人天  |
 
 **总工作量**: 107人天（约10周，7人团队）
 
 #### 9.4.2. AI技术栈
 
-| 技术 | 用途 | 方案 |
-| :--- | :--- | :--- |
-| **LLM** | 自然语言解读 | GPT-4 API / Claude API |
-| **时间序列预测** | 保费/赔付预测 | Prophet / LSTM |
-| **异常检测** | 指标异常识别 | Isolation Forest / DBSCAN |
-| **特征工程** | 数据预处理 | Pandas + NumPy |
-| **模型服务** | 推理服务 | FastAPI + TorchServe |
+| 技术             | 用途          | 方案                      |
+| :--------------- | :------------ | :------------------------ |
+| **LLM**          | 自然语言解读  | GPT-4 API / Claude API    |
+| **时间序列预测** | 保费/赔付预测 | Prophet / LSTM            |
+| **异常检测**     | 指标异常识别  | Isolation Forest / DBSCAN |
+| **特征工程**     | 数据预处理    | Pandas + NumPy            |
+| **模型服务**     | 推理服务      | FastAPI + TorchServe      |
 
 #### 9.4.3. 里程碑与交付物
 
-| 周次 | 里程碑 | 交付物 |
-| :--- | :--- | :--- |
-| **W1-W3** | AI模型开发 | 归因模型；预测模型；测试报告 |
-| **W4-W6** | AI功能集成 | 归因界面；预测界面；API集成 |
-| **W7-W8** | 高级图表+报告 | 瀑布图；桑基图；报告系统 |
-| **W9** | 模型优化+测试 | 性能优化；准确率测试 |
-| **W10** | 上线+运营 | 部署文档；用户培训；监控配置 |
+| 周次      | 里程碑        | 交付物                       |
+| :-------- | :------------ | :--------------------------- |
+| **W1-W3** | AI模型开发    | 归因模型；预测模型；测试报告 |
+| **W4-W6** | AI功能集成    | 归因界面；预测界面；API集成  |
+| **W7-W8** | 高级图表+报告 | 瀑布图；桑基图；报告系统     |
+| **W9**    | 模型优化+测试 | 性能优化；准确率测试         |
+| **W10**   | 上线+运营     | 部署文档；用户培训；监控配置 |
 
 #### 9.4.4. AI能力指标
 
-| 能力 | 目标 | 评估方式 |
-| :--- | :--- | :--- |
-| 归因准确率 | >85% | 人工标注对比 |
-| 预测MAPE | <15% | 回测验证 |
+| 能力           | 目标 | 评估方式     |
+| :------------- | :--- | :----------- |
+| 归因准确率     | >85% | 人工标注对比 |
+| 预测MAPE       | <15% | 回测验证     |
 | 异常检测召回率 | >90% | 历史数据验证 |
-| 推理响应时间 | <2s | 性能测试 |
+| 推理响应时间   | <2s  | 性能测试     |
 
 ### 9.5. V3.0版本（行业对标版）
 
@@ -4276,23 +4392,23 @@ V3.0 (大数据平台 + AI预测)
 
 #### 9.5.1. 功能清单
 
-| 模块 | 功能 | 优先级 | 工作量 |
-| :--- | :--- | :--- | :--- |
-| **行业对标** | 行业基准数据接入 | P0 | 10人天 |
-| **行业对标** | 同业对比分析 | P0 | 8人天 |
-| **行业对标** | 竞争力评估 | P1 | 6人天 |
-| **数据中台** | 统一数据接入层 | P0 | 12人天 |
-| **数据中台** | 数据血缘追踪 | P1 | 8人天 |
-| **数据中台** | 元数据管理 | P1 | 6人天 |
-| **开放API** | RESTful API完整开放 | P0 | 10人天 |
-| **开放API** | GraphQL支持 | P1 | 8人天 |
-| **开放API** | Webhook事件推送 | P1 | 5人天 |
-| **SDK** | JavaScript SDK | P1 | 8人天 |
-| **SDK** | Python SDK | P1 | 8人天 |
-| **移动端** | 移动Web适配 | P1 | 12人天 |
-| **移动端** | 小程序版本 | P2 | 15人天 |
-| **实时分析** | 实时数据流接入 | P1 | 10人天 |
-| **实时分析** | 流式计算引擎 | P1 | 12人天 |
+| 模块         | 功能                | 优先级 | 工作量 |
+| :----------- | :------------------ | :----- | :----- |
+| **行业对标** | 行业基准数据接入    | P0     | 10人天 |
+| **行业对标** | 同业对比分析        | P0     | 8人天  |
+| **行业对标** | 竞争力评估          | P1     | 6人天  |
+| **数据中台** | 统一数据接入层      | P0     | 12人天 |
+| **数据中台** | 数据血缘追踪        | P1     | 8人天  |
+| **数据中台** | 元数据管理          | P1     | 6人天  |
+| **开放API**  | RESTful API完整开放 | P0     | 10人天 |
+| **开放API**  | GraphQL支持         | P1     | 8人天  |
+| **开放API**  | Webhook事件推送     | P1     | 5人天  |
+| **SDK**      | JavaScript SDK      | P1     | 8人天  |
+| **SDK**      | Python SDK          | P1     | 8人天  |
+| **移动端**   | 移动Web适配         | P1     | 12人天 |
+| **移动端**   | 小程序版本          | P2     | 15人天 |
+| **实时分析** | 实时数据流接入      | P1     | 10人天 |
+| **实时分析** | 流式计算引擎        | P1     | 12人天 |
 
 **总工作量**: 138人天（约12周，10人团队）
 
@@ -4329,21 +4445,21 @@ V3.0 (大数据平台 + AI预测)
 
 #### 9.5.3. 里程碑与交付物
 
-| 周次 | 里程碑 | 交付物 |
-| :--- | :--- | :--- |
-| **W1-W3** | 数据中台建设 | 数据湖；元数据管理；接入层 |
-| **W4-W6** | 行业对标功能 | 基准数据；对比分析；评估体系 |
-| **W7-W9** | 开放API+SDK | API文档；JavaScript/Python SDK |
-| **W10-W11** | 移动端+实时分析 | 移动Web；流式计算 |
-| **W12** | 测试+上线 | 集成测试；文档；培训 |
+| 周次        | 里程碑          | 交付物                         |
+| :---------- | :-------------- | :----------------------------- |
+| **W1-W3**   | 数据中台建设    | 数据湖；元数据管理；接入层     |
+| **W4-W6**   | 行业对标功能    | 基准数据；对比分析；评估体系   |
+| **W7-W9**   | 开放API+SDK     | API文档；JavaScript/Python SDK |
+| **W10-W11** | 移动端+实时分析 | 移动Web；流式计算              |
+| **W12**     | 测试+上线       | 集成测试；文档；培训           |
 
 ### 9.6. 后续规划（V4.0+）
 
-| 版本 | 核心功能 | 预计时间 |
-| :--- | :--- | :--- |
-| **V4.0** | 多险种支持（寿险/健康险）；跨险种对比 | 2026 Q1 |
-| **V5.0** | 区块链存证；数据确权；联邦学习 | 2026 Q3 |
-| **V6.0** | 数字孪生；元宇宙展示；VR/AR分析 | 2027 Q1 |
+| 版本     | 核心功能                              | 预计时间 |
+| :------- | :------------------------------------ | :------- |
+| **V4.0** | 多险种支持（寿险/健康险）；跨险种对比 | 2026 Q1  |
+| **V5.0** | 区块链存证；数据确权；联邦学习        | 2026 Q3  |
+| **V6.0** | 数字孪生；元宇宙展示；VR/AR分析       | 2027 Q1  |
 
 ---
 
@@ -4353,95 +4469,95 @@ V3.0 (大数据平台 + AI预测)
 
 #### 10.1.1. 车险业务术语
 
-| 术语 | 英文 | 定义 | 示例/说明 |
-| :--- | :--- | :--- | :--- |
-| **签单保费** | Signed Premium | 承保时确认的保费收入 | 客户投保时的保费金额 |
-| **满期保费** | Matured Premium | 保单满期后确认的保费收入 | 保单到期未退保的保费 |
-| **赔付率** | Loss Ratio | 赔款占保费的比例 | 赔付率=已报告赔款/满期保费 |
-| **费用率** | Expense Ratio | 费用占保费的比例 | 费用率=费用金额/签单保费 |
-| **满期边际贡献率** | Contribution Margin Ratio | 扣除变动成本后的利润率 | 核心盈利指标 |
-| **满期率** | Maturity Ratio | 满期保费占签单保费比例 | 反映保单持续性 |
-| **出险率** | Claim Frequency | 出险案件占保单数量比例 | 风险频率指标 |
-| **案均赔款** | Average Claim Amount | 平均每个赔案的赔款金额 | 案均赔款=总赔款/赔案数 |
-| **单均保费** | Average Premium | 平均每张保单的保费 | 单均保费=签单保费/保单数 |
-| **自主系数** | Autonomy Coefficient | 商业险实际保费与基准保费比值 | 反映定价折扣力度 |
-| **交强险** | Compulsory Traffic Insurance | 机动车交通事故责任强制保险 | 国家强制险种 |
-| **商业险** | Commercial Insurance | 商业机动车保险 | 可选险种 |
-| **新保** | New Business | 首次投保客户 | 新客户获取 |
-| **续保** | Renewal | 保单到期后再次投保 | 老客户续费 |
-| **转保** | Transfer | 从其他保司转入 | 竞争获客 |
-| **主全** | Full Coverage | 交强险+商业主险+全部附加险 | 最全面保障 |
-| **折前保费** | Premium Before Discount | 商业险基准保费 | 折扣前价格 |
-| **NCD** | No Claim Discount | 无赔款优待 | 连续无出险折扣 |
-| **保费达成率** | Premium Progress | 实际保费完成度vs时间进度 | 保费达成率=（实际/计划）/（已过天数/365） |
+| 术语               | 英文                         | 定义                         | 示例/说明                                 |
+| :----------------- | :--------------------------- | :--------------------------- | :---------------------------------------- |
+| **签单保费**       | Signed Premium               | 承保时确认的保费收入         | 客户投保时的保费金额                      |
+| **满期保费**       | Matured Premium              | 保单满期后确认的保费收入     | 保单到期未退保的保费                      |
+| **赔付率**         | Loss Ratio                   | 赔款占保费的比例             | 赔付率=已报告赔款/满期保费                |
+| **费用率**         | Expense Ratio                | 费用占保费的比例             | 费用率=费用金额/签单保费                  |
+| **满期边际贡献率** | Contribution Margin Ratio    | 扣除变动成本后的利润率       | 核心盈利指标                              |
+| **满期率**         | Maturity Ratio               | 满期保费占签单保费比例       | 反映保单持续性                            |
+| **出险率**         | Claim Frequency              | 出险案件占保单数量比例       | 风险频率指标                              |
+| **案均赔款**       | Average Claim Amount         | 平均每个赔案的赔款金额       | 案均赔款=总赔款/赔案数                    |
+| **单均保费**       | Average Premium              | 平均每张保单的保费           | 单均保费=签单保费/保单数                  |
+| **自主系数**       | Autonomy Coefficient         | 商业险实际保费与基准保费比值 | 反映定价折扣力度                          |
+| **交强险**         | Compulsory Traffic Insurance | 机动车交通事故责任强制保险   | 国家强制险种                              |
+| **商业险**         | Commercial Insurance         | 商业机动车保险               | 可选险种                                  |
+| **新保**           | New Business                 | 首次投保客户                 | 新客户获取                                |
+| **续保**           | Renewal                      | 保单到期后再次投保           | 老客户续费                                |
+| **转保**           | Transfer                     | 从其他保司转入               | 竞争获客                                  |
+| **主全**           | Full Coverage                | 交强险+商业主险+全部附加险   | 最全面保障                                |
+| **折前保费**       | Premium Before Discount      | 商业险基准保费               | 折扣前价格                                |
+| **NCD**            | No Claim Discount            | 无赔款优待                   | 连续无出险折扣                            |
+| **保费达成率**     | Premium Progress             | 实际保费完成度vs时间进度     | 保费达成率=（实际/计划）/（已过天数/365） |
 
 #### 10.1.2. 技术术语
 
-| 术语 | 英文 | 定义 | 说明 |
-| :--- | :--- | :--- | :--- |
-| **LCP** | Largest Contentful Paint | 最大内容绘制时间 | Core Web Vitals指标 |
-| **FCP** | First Contentful Paint | 首次内容绘制时间 | 性能指标 |
-| **TTI** | Time to Interactive | 可交互时间 | 性能指标 |
-| **CLS** | Cumulative Layout Shift | 累积布局偏移 | 视觉稳定性指标 |
-| **SSR** | Server-Side Rendering | 服务端渲染 | Next.js核心能力 |
-| **SSG** | Static Site Generation | 静态站点生成 | Next.js核心能力 |
-| **CSR** | Client-Side Rendering | 客户端渲染 | 传统SPA模式 |
-| **RBAC** | Role-Based Access Control | 基于角色的访问控制 | 权限管理模式 |
-| **JWT** | JSON Web Token | JSON Web令牌 | 认证方案 |
-| **ORM** | Object-Relational Mapping | 对象关系映射 | Prisma等工具 |
-| **CDC** | Change Data Capture | 变更数据捕获 | 数据同步技术 |
+| 术语     | 英文                      | 定义               | 说明                |
+| :------- | :------------------------ | :----------------- | :------------------ |
+| **LCP**  | Largest Contentful Paint  | 最大内容绘制时间   | Core Web Vitals指标 |
+| **FCP**  | First Contentful Paint    | 首次内容绘制时间   | 性能指标            |
+| **TTI**  | Time to Interactive       | 可交互时间         | 性能指标            |
+| **CLS**  | Cumulative Layout Shift   | 累积布局偏移       | 视觉稳定性指标      |
+| **SSR**  | Server-Side Rendering     | 服务端渲染         | Next.js核心能力     |
+| **SSG**  | Static Site Generation    | 静态站点生成       | Next.js核心能力     |
+| **CSR**  | Client-Side Rendering     | 客户端渲染         | 传统SPA模式         |
+| **RBAC** | Role-Based Access Control | 基于角色的访问控制 | 权限管理模式        |
+| **JWT**  | JSON Web Token            | JSON Web令牌       | 认证方案            |
+| **ORM**  | Object-Relational Mapping | 对象关系映射       | Prisma等工具        |
+| **CDC**  | Change Data Capture       | 变更数据捕获       | 数据同步技术        |
 
 ### 10.2. 参考文档
 
 #### 10.2.1. 保险行业标准
 
-| 文档名称 | 发布机构 | 版本 | 说明 |
-| :--- | :--- | :--- | :--- |
-| 《机动车商业保险示范条款》 | 中国银保监会 | 2020版 | 商业险标准条款 |
-| 《机动车交通事故责任强制保险条例》 | 国务院 | 2020修订 | 交强险法规 |
-| 《保险公司偿付能力管理规定》 | 中国银保监会 | 2023版 | 偿付能力标准 |
-| 《车险综合改革指导意见》 | 中国银保监会 | 2020年 | 车险改革文件 |
+| 文档名称                           | 发布机构     | 版本     | 说明           |
+| :--------------------------------- | :----------- | :------- | :------------- |
+| 《机动车商业保险示范条款》         | 中国银保监会 | 2020版   | 商业险标准条款 |
+| 《机动车交通事故责任强制保险条例》 | 国务院       | 2020修订 | 交强险法规     |
+| 《保险公司偿付能力管理规定》       | 中国银保监会 | 2023版   | 偿付能力标准   |
+| 《车险综合改革指导意见》           | 中国银保监会 | 2020年   | 车险改革文件   |
 
 #### 10.2.2. 技术标准与最佳实践
 
-| 文档名称 | 来源 | 说明 |
-| :--- | :--- | :--- |
-| [Next.js Documentation](https://nextjs.org/docs) | Vercel | Next.js官方文档 |
-| [React Documentation](https://react.dev/) | Meta | React官方文档 |
+| 文档名称                                                    | 来源      | 说明               |
+| :---------------------------------------------------------- | :-------- | :----------------- |
+| [Next.js Documentation](https://nextjs.org/docs)            | Vercel    | Next.js官方文档    |
+| [React Documentation](https://react.dev/)                   | Meta      | React官方文档      |
 | [TypeScript Handbook](https://www.typescriptlang.org/docs/) | Microsoft | TypeScript官方手册 |
-| [WCAG 2.1](https://www.w3.org/TR/WCAG21/) | W3C | Web无障碍指南 |
-| [Web Vitals](https://web.dev/vitals/) | Google | Web性能指标 |
-| [OWASP Top 10](https://owasp.org/www-project-top-ten/) | OWASP | Web安全最佳实践 |
+| [WCAG 2.1](https://www.w3.org/TR/WCAG21/)                   | W3C       | Web无障碍指南      |
+| [Web Vitals](https://web.dev/vitals/)                       | Google    | Web性能指标        |
+| [OWASP Top 10](https://owasp.org/www-project-top-ten/)      | OWASP     | Web安全最佳实践    |
 
 #### 10.2.3. 设计参考
 
-| 资源 | 说明 |
-| :--- | :--- |
-| [Apple Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/) | Apple设计指南 |
-| [Material Design 3](https://m3.material.io/) | Google设计系统 |
-| [Ant Design](https://ant.design/) | 企业级UI设计语言 |
-| [Recharts Examples](https://recharts.org/en-US/examples) | 图表库示例 |
+| 资源                                                                                               | 说明             |
+| :------------------------------------------------------------------------------------------------- | :--------------- |
+| [Apple Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/) | Apple设计指南    |
+| [Material Design 3](https://m3.material.io/)                                                       | Google设计系统   |
+| [Ant Design](https://ant.design/)                                                                  | 企业级UI设计语言 |
+| [Recharts Examples](https://recharts.org/en-US/examples)                                           | 图表库示例       |
 
 ### 10.3. 变更记录
 
-| 版本 | 日期 | 变更类型 | 变更内容 | 负责人 |
-| :--- | :--- | :--- | :--- | :--- |
-| 0.1 | 2025-10-18 | 新增 | 初始版本：第二部分（章节6-10） | Alongor666 |
-| - | - | - | - 技术架构规划 | - |
-| - | - | - | - 数据规范定义 | - |
-| - | - | - | - 非功能需求 | - |
-| - | - | - | - 迭代路线图 | - |
-| - | - | - | - 附录 | - |
+| 版本 | 日期       | 变更类型 | 变更内容                       | 负责人     |
+| :--- | :--------- | :------- | :----------------------------- | :--------- |
+| 0.1  | 2025-10-18 | 新增     | 初始版本：第二部分（章节6-10） | Alongor666 |
+| -    | -          | -        | - 技术架构规划                 | -          |
+| -    | -          | -        | - 数据规范定义                 | -          |
+| -    | -          | -        | - 非功能需求                   | -          |
+| -    | -          | -        | - 迭代路线图                   | -          |
+| -    | -          | -        | - 附录                         | -          |
 
 ### 10.4. 贡献者
 
-| 角色 | 姓名 | 职责 | 联系方式 |
-| :--- | :--- | :--- | :--- |
-| **产品负责人** | Alongor666 | PRD撰写；需求管理；版本规划 | GitHub: @Alongor666 |
-| **技术负责人** | TBD | 技术架构；技术选型；代码审查 | - |
-| **前端负责人** | TBD | 前端架构；组件开发；性能优化 | - |
-| **后端负责人** | TBD | 后端架构；API开发；数据库设计 | - |
-| **算法工程师** | TBD | AI模型；预测算法；归因分析 | - |
+| 角色           | 姓名       | 职责                          | 联系方式            |
+| :------------- | :--------- | :---------------------------- | :------------------ |
+| **产品负责人** | Alongor666 | PRD撰写；需求管理；版本规划   | GitHub: @Alongor666 |
+| **技术负责人** | TBD        | 技术架构；技术选型；代码审查  | -                   |
+| **前端负责人** | TBD        | 前端架构；组件开发；性能优化  | -                   |
+| **后端负责人** | TBD        | 后端架构；API开发；数据库设计 | -                   |
+| **算法工程师** | TBD        | AI模型；预测算法；归因分析    | -                   |
 
 ### 10.5. 文档维护
 
@@ -4449,27 +4565,27 @@ V3.0 (大数据平台 + AI预测)
 
 - **定期审查**: 每个迭代开始前审查PRD，确保与实际开发一致
 - **变更流程**: 重大变更需经过评审；一般变更更新变更记录即可
-- **版本号规则**: 
+- **版本号规则**:
   - 重大变更：主版本号+1（如0.1 → 1.0）
   - 功能新增：次版本号+1（如1.0 → 1.1）
   - 文档修正：修订号+1（如1.1.0 → 1.1.1）
 
 #### 10.5.2. 文档状态
 
-| 状态 | 说明 |
-| :--- | :--- |
-| **草稿 (Draft)** | 初始编写中，未经评审 |
-| **评审中 (In Review)** | 提交评审，等待反馈 |
-| **已批准 (Approved)** | 评审通过，可作为开发依据 |
-| **开发中 (In Development)** | 功能开发中 |
-| **已归档 (Archived)** | 版本已上线，文档归档 |
-
+| 状态                        | 说明                     |
+| :-------------------------- | :----------------------- |
+| **草稿 (Draft)**            | 初始编写中，未经评审     |
+| **评审中 (In Review)**      | 提交评审，等待反馈       |
+| **已批准 (Approved)**       | 评审通过，可作为开发依据 |
+| **开发中 (In Development)** | 功能开发中               |
+| **已归档 (Archived)**       | 版本已上线，文档归档     |
 
 ---
 
 ## 文档结束
 
 **下一步行动**:
+
 1. ✅ 完成第二部分PRD文档（章节6-10）
 2. ✅ CSV上传功能优化完成（2025-01-20）
 3. 🔄 组织技术评审会议，确认技术方案可行性
@@ -4478,6 +4594,7 @@ V3.0 (大数据平台 + AI预测)
 6. 🔄 创建GitHub仓库，初始化项目
 
 **相关文档**:
+
 - [技术架构详细设计文档] (待创建)
 - [API接口文档] (待创建)
 - [用户操作手册] (待创建)
@@ -4490,18 +4607,21 @@ V3.0 (大数据平台 + AI预测)
 ### CSV上传功能重大优化
 
 **解决的核心问题：**
+
 1. **字段顺序匹配问题**：调整 `csv-parser.ts` 中 `REQUIRED_FIELDS` 顺序，完全匹配实际CSV文件结构
 2. **大文件解析优化**：优化内存管理和批处理逻辑，支持16,000+行数据
 3. **错误诊断增强**：提供详细的字段验证和错误定位信息
 4. **性能监控改进**：添加解析进度跟踪和性能指标
 
 **技术改进：**
+
 - 优化 `transformCSVRow` 函数的错误处理机制
 - 增强 `parseCSVFile` 的批处理逻辑和内存管理
 - 改进 `useFileUpload` Hook 的状态管理
 - 更新相关文档和规范
 
 **测试验证：**
+
 - ✅ 测试数据.csv (16,968行) 解析成功
 - ✅ 所有26个必需字段验证通过
 - ✅ 字段顺序完全匹配

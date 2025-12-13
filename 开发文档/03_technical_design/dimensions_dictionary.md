@@ -7,6 +7,7 @@
 - 规范化策略：`normalizeChineseText` 与 `fuzzy-matcher.ts/ENUM_MAPPINGS`（同义词归一）
 
 ## 维度总览
+
 - 时间维度：`snapshot_date`、`policy_start_year`、`week_number`
 - 组织维度：`chengdu_branch`、`third_level_organization`
 - 客户维度：`customer_category_3`
@@ -18,10 +19,12 @@
 ## 枚举值定义（Canonical Sets）
 
 ### 组织维度
+
 - `chengdu_branch`：成都 | 中支
 - `third_level_organization`：本部 | 达州 | 德阳 | 高新 | 乐山 | 泸州 | 绵阳 | 南充 | 青羊 | 天府 | 武侯 | 新都 | 宜宾
 
 ### 客户维度
+
 - `customer_category_3`（11）：
   - 非营业个人客车
   - 非营业货车
@@ -36,6 +39,7 @@
   - 营业货车
 
 ### 产品维度
+
 - `insurance_type`：商业险 | 交强险
 - `business_type_category`（16）：
   - 10吨以上-普货
@@ -57,20 +61,24 @@
 - `coverage_type`：主全 | 交三 | 单交
 
 ### 业务属性
+
 - `renewal_status`：新保 | 续保 | 转保
 - `is_new_energy_vehicle`：True | False
 - `is_transferred_vehicle`：True | False
 
 ### 评级维度
+
 - `vehicle_insurance_grade`：A | B | C | D | E | F | G | X
 - `highway_risk_grade`：A | B | C | D | E | F | X
 - `large_truck_score`：A | B | C | D | E | X
 - `small_truck_score`：A | B | C | D | E | X
 
 ### 渠道维度
+
 - `terminal_source`（8）：0101柜面 | 0106移动展业(App) | 0107B2B | 0110融合销售 | 0112AI出单 | 0201PC | 0202APP | 0301电销
 
 ## 代码关联与使用
+
 - `src/constants/dimensions.ts`：
   - `CANONICAL_CUSTOMER_CATEGORIES`（客户类别，11项）
   - `CANONICAL_BUSINESS_TYPES`（业务类型，16项）
@@ -80,18 +88,21 @@
   - CSV 导入校验：忽略非 Canonical 值并提示缺失标签
 
 ## 归一化与同义词
+
 - 文本归一：`normalizeChineseText`（去除空白/变体统一）
 - 同义词映射：`src/lib/fuzzy-matcher.ts/ENUM_MAPPINGS`
   - 示例：保险类型、险别组合、新续转状态等常见别名 → Canonical 值
 - 建议：如需扩展同义词，请同时更新此文档与 `ENUM_MAPPINGS`
 
 ## 变更管理
+
 - 如 Canonical 集合更新（新增/调整）：
   - 更新 `src/constants/dimensions.ts`
   - 同步更新本文件与 `CSV导入规范.md`
   - 若涉及 UI/解析逻辑，同步验证并更新相关模块文档
 
 ## 目标管理维度拆解
+
 - 保险类型维度：
   - 目标拆解：按 `insurance_type`（商业险、交强险）分别设置年度目标；CSV 模板列：`insurance_type`, `target_wan`。
   - 结构均衡：页面展示险种合计与总体差额（万元），并自动计算周均/日均；用于结构均衡与产品配比。
@@ -102,10 +113,12 @@
   - UI位置：目标管理页 `src/app/targets/page.tsx` → 维度标签「三级机构」。
 
 注意事项：
+
 - 规范值限制仅对「客户分类」「业务类型」执行（见 `CANONICAL_SETS`）；「保险类型」「三级机构」以数据源枚举为准（归一化后使用）。
 - CSV 导入严格校验枚举值，详见 `开发文档/archive/CSV导入规范.md`。
 
 ## 参考与来源
+
 - 规范来源：`开发文档/archive/CSV导入规范.md`
 - 业务描述：`开发文档/archive/PRD-best.md`（筛选维度体系）
 - 数据架构：`开发文档/03_technical_design/data_architecture.md`

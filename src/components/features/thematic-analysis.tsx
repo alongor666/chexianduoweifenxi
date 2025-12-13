@@ -1595,11 +1595,13 @@ function ContributionAnalysisTab({ compact = false }: TabContentProps) {
  * 趋势分析标签页
  * 业务类型双Y轴复合图
  */
-function TrendAnalysisTab({ compact = false }: TabContentProps) {
+function TrendAnalysisTab(_props: TabContentProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-base font-semibold text-slate-800">业务类型经营趋势</h2>
+        <h2 className="text-base font-semibold text-slate-800">
+          业务类型经营趋势
+        </h2>
         <p className="text-xs text-slate-500">
           横向对比各业务类型的规模、占比与经营指标,识别增长机会与风险点
         </p>

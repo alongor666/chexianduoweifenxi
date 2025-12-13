@@ -42,6 +42,7 @@ Assistant (using this skill):
 ## When to Use This Skill
 
 Trigger this skill when:
+
 - User uploads auto insurance weekly cost data (Excel/CSV format) and requests board presentation
 - User mentions keywords: "董事会汇报", "周报PPT", "经营分析演示", "board report", "executive briefing"
 - User asks to generate presentation slides from insurance data
@@ -50,19 +51,24 @@ Trigger this skill when:
 ## Core Workflow
 
 ### Step 1: Data Validation
+
 Execute the data validator to ensure data quality:
+
 ```bash
 python scripts/data_validator.py <uploaded_file_path>
 ```
 
 The validator checks:
+
 - Required field completeness (policy numbers, premium amounts, cost rates)
 - Data type correctness (numeric fields, date formats)
 - Week number extraction from filename (e.g., "第45周" → Week 45)
 - Record count and date range calculation
 
 ### Step 2: KPI Calculation
+
 Calculate board-level KPIs (not raw data dumps):
+
 ```bash
 python scripts/kpi_calculator.py <file_path> <week_number>
 ```
@@ -90,7 +96,9 @@ python scripts/kpi_calculator.py <file_path> <week_number>
    - Risk exposure in high-risk segments (e.g., highway freight)
 
 ### Step 3: Generate McKinsey-Style PPT
+
 Create presentation slides with consulting-grade design:
+
 ```bash
 python scripts/board_ppt_generator.py <week_number> <kpi_data_json>
 ```
@@ -108,7 +116,9 @@ python scripts/board_ppt_generator.py <week_number> <kpi_data_json>
 Refer to [references/mckinsey-style-guide.md](references/mckinsey-style-guide.md) for detailed design principles.
 
 ### Step 4 (Optional): Week-over-Week Comparison
+
 When user provides data for two consecutive weeks:
+
 ```bash
 python scripts/optional_modules/week_comparator.py <week1_kpis.json> <week2_kpis.json>
 ```
@@ -136,6 +146,7 @@ Generates additional comparison slide showing WoW changes in key metrics.
 
 **Color Scheme:**
 Uses client-specific colors extracted from corporate reports:
+
 - Primary: Deep Red (#a02724) - 60% usage for core messages
 - Alert: Bright Red (#c00000) - warnings and risks
 - Text: Black (#000000) - titles and important text
@@ -146,22 +157,25 @@ Configure colors in [assets/mckinsey_config.json](assets/mckinsey_config.json).
 ## Configuration
 
 ### Alert Thresholds
+
 Customize business rules in [config.json](config.json):
+
 ```json
 {
   "预警阈值": {
-    "综合成本率_上限": 95,       // Alert if combined ratio > 95%
-    "新能源车赔付率差距": 10      // Alert if NEV loss ratio > traditional + 10pp
+    "综合成本率_上限": 95, // Alert if combined ratio > 95%
+    "新能源车赔付率差距": 10 // Alert if NEV loss ratio > traditional + 10pp
   }
 }
 ```
 
 ### Display Parameters
+
 ```json
 {
   "报表参数": {
-    "显示TOP业务类型数": 5,      // Show top 5 business types
-    "显示TOP机构数": 5           // Show top 5 distribution channels
+    "显示TOP业务类型数": 5, // Show top 5 business types
+    "显示TOP机构数": 5 // Show top 5 distribution channels
   }
 }
 ```
@@ -171,6 +185,7 @@ Refer to [references/config-guide.md](references/config-guide.md) for full confi
 ## Usage Examples
 
 **Example 1: Basic Usage**
+
 ```
 User: 我上传了第45周的车险数据,帮我生成董事会汇报PPT
 

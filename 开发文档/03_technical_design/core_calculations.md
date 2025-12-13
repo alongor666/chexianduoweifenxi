@@ -3,6 +3,7 @@
 本文件定义了平台的KPI体系架构、计算公式、业务逻辑和显示规则。
 
 **KPI体系说明**:
+
 - **核心展示KPI**: 16个（4x4网格布局）
 - **辅助计算字段**: 7个（用于计算但不直接展示）
 - **总计**: 23个指标字段
@@ -20,39 +21,39 @@
 
 ### 第一行：核心比率指标
 
-| KPI名称 | 计算公式 | 业务说明 |
-| :--- | :--- | :--- |
-| **满期边际贡献率** | `100% - 变动成本率` | **盈利能力核心**。衡量最终的盈利空间，是盈利能力的结果指标。 |
-| **保费时间进度达成率** | `当期签单保费 / (年度目标保费 / 365 * 当期天数)` | 衡量保费收入与年度目标的匹配程度。 |
-| **满期赔付率** | `满期赔付 / 满期保费` | 反映赔付支出占满期保费的比例。 |
-| **费用率** | `总费用 / 签单保费` | 衡量获取和管理业务所需成本的效率。 |
+| KPI名称                | 计算公式                                         | 业务说明                                                     |
+| :--------------------- | :----------------------------------------------- | :----------------------------------------------------------- |
+| **满期边际贡献率**     | `100% - 变动成本率`                              | **盈利能力核心**。衡量最终的盈利空间，是盈利能力的结果指标。 |
+| **保费时间进度达成率** | `当期签单保费 / (年度目标保费 / 365 * 当期天数)` | 衡量保费收入与年度目标的匹配程度。                           |
+| **满期赔付率**         | `满期赔付 / 满期保费`                            | 反映赔付支出占满期保费的比例。                               |
+| **费用率**             | `总费用 / 签单保费`                              | 衡量获取和管理业务所需成本的效率。                           |
 
 ### 第二行：核心金额指标
 
-| KPI名称 | 计算公式 | 业务说明 |
-| :--- | :--- | :--- |
+| KPI名称            | 计算公式                    | 业务说明                                   |
+| :----------------- | :-------------------------- | :----------------------------------------- |
 | **满期边际贡献额** | `满期保费 * 满期边际贡献率` | **利润绝对值**。定位利润的绝对值贡献来源。 |
-| **签单保费** | `SUM(签单保费)` | 业务规模的核心体现。 |
-| **已报告赔款** | `SUM(已报告赔款)` | 已发生并上报的赔案金额。 |
-| **费用额** | `SUM(总费用)` | 业务相关的总费用支出。 |
+| **签单保费**       | `SUM(签单保费)`             | 业务规模的核心体现。                       |
+| **已报告赔款**     | `SUM(已报告赔款)`           | 已发生并上报的赔案金额。                   |
+| **费用额**         | `SUM(总费用)`               | 业务相关的总费用支出。                     |
 
 ### 第三行：结构与效率指标
 
-| KPI名称 | 计算公式 | 业务说明 |
-| :--- | :--- | :--- |
-| **变动成本率** | `满期赔付率 + 费用率` | **成本控制能力**。诊断成本端的整体表现。 |
-| **满期率** | `满期保费 / 签单保费` | 反映当期保费中已实现风险价值的部分。 |
-| **满期出险率** | `赔案件数 / 满期保单数` | 衡量已满期保单的出险频率。 |
-| **保单件数** | `COUNT(保单)` | 业务规模的辅助指标。 |
+| KPI名称        | 计算公式                | 业务说明                                 |
+| :------------- | :---------------------- | :--------------------------------------- |
+| **变动成本率** | `满期赔付率 + 费用率`   | **成本控制能力**。诊断成本端的整体表现。 |
+| **满期率**     | `满期保费 / 签单保费`   | 反映当期保费中已实现风险价值的部分。     |
+| **满期出险率** | `赔案件数 / 满期保单数` | 衡量已满期保单的出险频率。               |
+| **保单件数**   | `COUNT(保单)`           | 业务规模的辅助指标。                     |
 
 ### 第四行：单均质量指标
 
-| KPI名称 | 计算公式 | 业务说明 |
-| :--- | :--- | :--- |
-| **赔案件数** | `COUNT(赔案)` | 赔付发生的频率。 |
-| **单均保费** | `签单保费 / 保单件数` | **业务质量**。衡量平均每张保单的保费收入。 |
+| KPI名称      | 计算公式                | 业务说明                                   |
+| :----------- | :---------------------- | :----------------------------------------- |
+| **赔案件数** | `COUNT(赔案)`           | 赔付发生的频率。                           |
+| **单均保费** | `签单保费 / 保单件数`   | **业务质量**。衡量平均每张保单的保费收入。 |
 | **案均赔款** | `已报告赔款 / 赔案件数` | **风险成本**。衡量平均每起赔案的赔付金额。 |
-| **单均费用** | `总费用 / 保单件数` | **运营效率**。衡量平均每张保单的费用成本。 |
+| **单均费用** | `总费用 / 保单件数`     | **运营效率**。衡量平均每张保单的费用成本。 |
 
 ## 3. 边贡分析专题计算逻辑
 
@@ -79,6 +80,7 @@
 ### 4.1 中国特色：50周工作制
 
 考虑到中国保险业务的实际运营规律，年度目标分配采用**50周工作制**：
+
 - **春节长假**：约1周
 - **国庆长假**：约1周
 - **实际工作周数**：52 - 2 = **50周**
@@ -90,24 +92,28 @@
 为了确保不同视角下指标的可比性，所有模式均统一采用 **50周工作制** 作为时间进度的分母。
 
 #### 模式A：当周值模式（累计视角）
+
 ```
 时间进度 = Min(当前周次 / 50, 100%)
 保费时间进度达成率 = (实际签单保费累计 / 年度目标保费) / 时间进度 × 100%
 ```
 
 **示例**：
+
 - 年度目标：10,000万元
 - 当前周次：第25周（时间进度 = 25/50 = 50%）
 - 实际累计保费：5,500万元（完成率 = 55%）
 - **时间进度达成率 = 55% / 50% = 110%**
 
 #### 模式B：周增量模式（单周视角）
+
 ```
 周计划 = 年度目标保费 / 50
 保费时间进度达成率 = 当周实际签单保费 / 周计划 × 100%
 ```
 
 **示例**：
+
 - 年度目标：10,000万元
 - 周计划：200万元
 - 当周实际保费：220万元
@@ -130,17 +136,20 @@
 **规则**：第1周从1月1日开始，到第一个周六结束。
 
 **2025年示例**：
+
 - 第1周：2025-01-01（周三）~ 2025-01-04（周六）= 4天
 - 第2周：2025-01-05（周日）~ 2025-01-11（周六）= 7天
 - 第42周：2025-10-13（周一）~ 2025-10-18（周六）= 7天
 
 **计算公式**：
+
 ```javascript
 第N周结束日 = 第1周结束日 + (N-1) × 7天
 已过天数 = 从1月1日到第N周结束日的天数
 ```
 
 **关键实现细节**：
+
 - 使用UTC时间避免时区问题
 - 第1周可能不足7天（取决于1月1日是星期几）
 - 所有后续周均为完整的7天（周日-周六）
@@ -150,29 +159,30 @@
 - **数据聚合**: 所有指标均支持按时间、机构、业务类型等维度进行聚合和筛选。
 - **环比计算**: 所有KPI均提供与上期（周/月）的**绝对增量**和**百分比变化**对比。智能跳过缺失周期（最多往前查找5周）。
 - **颜色编码**:
-    - **正向指标** (如边贡率、单均保费): 越高越好，使用绿色系表示优秀。
-    - **逆向指标** (如赔付率、费用率): 越低越好，使用红色系表示风险。
-    - **中性指标** (如签单保费): 通常不设颜色，或使用灰色系。
+  - **正向指标** (如边贡率、单均保费): 越高越好，使用绿色系表示优秀。
+  - **逆向指标** (如赔付率、费用率): 越低越好，使用红色系表示风险。
+  - **中性指标** (如签单保费): 通常不设颜色，或使用灰色系。
 - **显示格式**:
-    - **比率**: 通常保留1-2位小数的百分比。
-    - **金额**: 通常以"万"为单位，保留0-2位小数。
-    - **数量**: 整数。
+  - **比率**: 通常保留1-2位小数的百分比。
+  - **金额**: 通常以"万"为单位，保留0-2位小数。
+  - **数量**: 整数。
 
 ## 8. 辅助计算字段（不直接展示的KPI）
 
 除了上述16个核心展示KPI外，系统还实现了以下7个辅助字段，用于计算或特定场景：
 
-| 字段名 | 中文名称 | 说明 | 代码字段名 |
-|--------|---------|------|-----------|
-| 1 | 满期保费 | 用于多项比率计算的基础数据 | `maturedPremium` / `matured_premium` |
-| 2 | 商业险自主系数 | 商业险折前保费/商业险保费 | `autonomyCoefficient` / `autonomy_coefficient` |
-| 3 | 保费达成率 | 用于计算时间进度达成率 | `premiumProgress` / `premium_progress` |
-| 4 | 件数时间进度达成率 | 保单件数与目标的时间进度达成情况 | `policyCountTimeProgressAchievementRate` / `policy_count_time_progress_achievement_rate` |
-| 5 | 单均边贡额 | (边贡额 × 10000) / 保单件数 | `averageContribution` / `average_contribution` |
-| 6 | 年度保费目标 | 目标管理模块使用 | `annualPremiumTarget` / `annual_premium_target` |
-| 7 | 年度件数目标 | 目标管理模块使用 | `annualPolicyCountTarget` / `annual_policy_count_target` |
+| 字段名 | 中文名称           | 说明                             | 代码字段名                                                                               |
+| ------ | ------------------ | -------------------------------- | ---------------------------------------------------------------------------------------- |
+| 1      | 满期保费           | 用于多项比率计算的基础数据       | `maturedPremium` / `matured_premium`                                                     |
+| 2      | 商业险自主系数     | 商业险折前保费/商业险保费        | `autonomyCoefficient` / `autonomy_coefficient`                                           |
+| 3      | 保费达成率         | 用于计算时间进度达成率           | `premiumProgress` / `premium_progress`                                                   |
+| 4      | 件数时间进度达成率 | 保单件数与目标的时间进度达成情况 | `policyCountTimeProgressAchievementRate` / `policy_count_time_progress_achievement_rate` |
+| 5      | 单均边贡额         | (边贡额 × 10000) / 保单件数      | `averageContribution` / `average_contribution`                                           |
+| 6      | 年度保费目标       | 目标管理模块使用                 | `annualPremiumTarget` / `annual_premium_target`                                          |
+| 7      | 年度件数目标       | 目标管理模块使用                 | `annualPolicyCountTarget` / `annual_policy_count_target`                                 |
 
 **使用场景**:
+
 - **满期保费**: 满期率、赔付率等比率指标的分母
 - **保费达成率**: 计算保费时间进度达成率的中间值
 - **件数时间进度达成率**: 目标管理页面展示
@@ -185,12 +195,13 @@
 
 系统采用**双命名体系**以适应不同技术层的惯例:
 
-| 层级 | 命名风格 | 示例 | 使用场景 |
-|------|---------|------|---------|
-| **Domain层** | `camelCase` | `lossRatio`, `contributionMarginRatio` | TypeScript业务逻辑计算 |
-| **Types/数据库层** | `snake_case` | `loss_ratio`, `contribution_margin_ratio` | 数据库字段、API响应 |
+| 层级               | 命名风格     | 示例                                      | 使用场景               |
+| ------------------ | ------------ | ----------------------------------------- | ---------------------- |
+| **Domain层**       | `camelCase`  | `lossRatio`, `contributionMarginRatio`    | TypeScript业务逻辑计算 |
+| **Types/数据库层** | `snake_case` | `loss_ratio`, `contribution_margin_ratio` | 数据库字段、API响应    |
 
 **代码示例**:
+
 ```typescript
 // Domain层 (src/domain/rules/kpi-calculator.ts)
 export interface KPIResult {
@@ -206,37 +217,38 @@ export interface KPIResult {
 ```
 
 **转换机制**:
+
 - 系统通过类型映射自动处理两种命名的互转
 - 前端组件通常使用 `camelCase`
 - 数据库/CSV导入导出使用 `snake_case`
 
 ### 完整字段对照表
 
-| 序号 | 文档中文名称 | Domain层(camelCase) | Types层(snake_case) | 4x4网格展示 |
-|------|-------------|---------------------|---------------------|------------|
-| 1 | 满期边际贡献率 | contributionMarginRatio | contribution_margin_ratio | ✅ 第1行第1列 |
-| 2 | 保费时间进度达成率 | premiumTimeProgressAchievementRate | premium_time_progress_achievement_rate | ✅ 第1行第2列 |
-| 3 | 满期赔付率 | lossRatio | loss_ratio | ✅ 第1行第3列 |
-| 4 | 费用率 | expenseRatio | expense_ratio | ✅ 第1行第4列 |
-| 5 | 满期边际贡献额 | contributionMarginAmount | contribution_margin_amount | ✅ 第2行第1列 |
-| 6 | 签单保费 | signedPremium | signed_premium | ✅ 第2行第2列 |
-| 7 | 已报告赔款 | reportedClaimPayment | reported_claim_payment | ✅ 第2行第3列 |
-| 8 | 费用额 | expenseAmount | expense_amount | ✅ 第2行第4列 |
-| 9 | 变动成本率 | variableCostRatio | variable_cost_ratio | ✅ 第3行第1列 |
-| 10 | 满期率 | maturityRatio | maturity_ratio | ✅ 第3行第2列 |
-| 11 | 满期出险率 | maturedClaimRatio | matured_claim_ratio | ✅ 第3行第3列 |
-| 12 | 保单件数 | policyCount | policy_count | ✅ 第3行第4列 |
-| 13 | 赔案件数 | claimCaseCount | claim_case_count | ✅ 第4行第1列 |
-| 14 | 单均保费 | averagePremium | average_premium | ✅ 第4行第2列 |
-| 15 | 案均赔款 | averageClaim | average_claim | ✅ 第4行第3列 |
-| 16 | 单均费用 | averageExpense | average_expense | ✅ 第4行第4列 |
-| 17 | 满期保费 | maturedPremium | matured_premium | ❌ 不直接展示 |
-| 18 | 商业险自主系数 | autonomyCoefficient | autonomy_coefficient | ❌ 不直接展示 |
-| 19 | 保费达成率 | premiumProgress | premium_progress | ❌ 用于计算时间进度 |
-| 20 | 件数时间进度达成率 | policyCountTimeProgressAchievementRate | policy_count_time_progress_achievement_rate | ❌ 未在文档列出 |
-| 21 | 单均边贡额 | averageContribution | average_contribution | ❌ 边贡专题使用 |
-| 22 | 年度保费目标 | annualPremiumTarget | annual_premium_target | ❌ 目标管理字段 |
-| 23 | 年度件数目标 | annualPolicyCountTarget | annual_policy_count_target | ❌ 目标管理字段 |
+| 序号 | 文档中文名称       | Domain层(camelCase)                    | Types层(snake_case)                         | 4x4网格展示         |
+| ---- | ------------------ | -------------------------------------- | ------------------------------------------- | ------------------- |
+| 1    | 满期边际贡献率     | contributionMarginRatio                | contribution_margin_ratio                   | ✅ 第1行第1列       |
+| 2    | 保费时间进度达成率 | premiumTimeProgressAchievementRate     | premium_time_progress_achievement_rate      | ✅ 第1行第2列       |
+| 3    | 满期赔付率         | lossRatio                              | loss_ratio                                  | ✅ 第1行第3列       |
+| 4    | 费用率             | expenseRatio                           | expense_ratio                               | ✅ 第1行第4列       |
+| 5    | 满期边际贡献额     | contributionMarginAmount               | contribution_margin_amount                  | ✅ 第2行第1列       |
+| 6    | 签单保费           | signedPremium                          | signed_premium                              | ✅ 第2行第2列       |
+| 7    | 已报告赔款         | reportedClaimPayment                   | reported_claim_payment                      | ✅ 第2行第3列       |
+| 8    | 费用额             | expenseAmount                          | expense_amount                              | ✅ 第2行第4列       |
+| 9    | 变动成本率         | variableCostRatio                      | variable_cost_ratio                         | ✅ 第3行第1列       |
+| 10   | 满期率             | maturityRatio                          | maturity_ratio                              | ✅ 第3行第2列       |
+| 11   | 满期出险率         | maturedClaimRatio                      | matured_claim_ratio                         | ✅ 第3行第3列       |
+| 12   | 保单件数           | policyCount                            | policy_count                                | ✅ 第3行第4列       |
+| 13   | 赔案件数           | claimCaseCount                         | claim_case_count                            | ✅ 第4行第1列       |
+| 14   | 单均保费           | averagePremium                         | average_premium                             | ✅ 第4行第2列       |
+| 15   | 案均赔款           | averageClaim                           | average_claim                               | ✅ 第4行第3列       |
+| 16   | 单均费用           | averageExpense                         | average_expense                             | ✅ 第4行第4列       |
+| 17   | 满期保费           | maturedPremium                         | matured_premium                             | ❌ 不直接展示       |
+| 18   | 商业险自主系数     | autonomyCoefficient                    | autonomy_coefficient                        | ❌ 不直接展示       |
+| 19   | 保费达成率         | premiumProgress                        | premium_progress                            | ❌ 用于计算时间进度 |
+| 20   | 件数时间进度达成率 | policyCountTimeProgressAchievementRate | policy_count_time_progress_achievement_rate | ❌ 未在文档列出     |
+| 21   | 单均边贡额         | averageContribution                    | average_contribution                        | ❌ 边贡专题使用     |
+| 22   | 年度保费目标       | annualPremiumTarget                    | annual_premium_target                       | ❌ 目标管理字段     |
+| 23   | 年度件数目标       | annualPolicyCountTarget                | annual_policy_count_target                  | ❌ 目标管理字段     |
 
 ## 8. 文档状态
 

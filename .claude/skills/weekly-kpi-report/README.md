@@ -13,6 +13,7 @@ Upload weekly auto insurance cost data (Excel/CSV) and request a board presentat
 ```
 
 The skill automatically:
+
 1. ✅ Validates data quality and required fields
 2. 📊 Calculates 16+ board-level KPIs across 4 categories
 3. 📈 Generates McKinsey-style PPT with conclusion-first slides
@@ -21,25 +22,30 @@ The skill automatically:
 ## Key Features
 
 ### McKinsey Consulting Style
+
 - **Conclusion-first titles** - Every slide answers "So what?"
 - **Minimalist design** - Generous white space, clean layout
 - **Professional visualization** - Data-driven insights, not decoration
 - **Client-specific colors** - Extracted from corporate reports (#a02724 deep red)
 
 ### Intelligent Analysis
+
 - **16+ KPIs** across business scale, profitability, structure, and risk
 - **Auto-generated insights** - Identifies top highlights and risks
 - **Actionable recommendations** - Based on configurable thresholds
 - **Week-over-week comparison** - Optional trend analysis
 
 ### Flexible Configuration
+
 Customize without code changes via `config.json`:
+
 - Alert thresholds (combined ratio, claims frequency, etc.)
 - Display parameters (top N business types, organizations)
 - PPT styling (colors, fonts, sizes)
 - Business rules (NEV definition, high-risk segments)
 
 ## File Structure
+
 ```
 weekly-kpi-report/
 ├── SKILL.md                          # Skill definition and core workflow
@@ -67,16 +73,19 @@ weekly-kpi-report/
 ### Method 1: Natural Language (Recommended)
 
 **Basic usage:**
+
 ```
 我上传了第45周的车险数据,帮我生成董事会汇报PPT
 ```
 
 **With WoW comparison:**
+
 ```
 我上传了第45周和第44周的数据,生成带环比分析的董事会PPT
 ```
 
 Claude automatically:
+
 1. Identifies file and week number
 2. Calculates all KPIs using configured thresholds
 3. Generates professional PPT using McKinsey template
@@ -105,8 +114,8 @@ Edit `config.json` to adjust:
 ```json
 {
   "预警阈值": {
-    "综合成本率_上限": 100,  // Change to 100%
-    "出险频度_上限": 30      // Change to 30%
+    "综合成本率_上限": 100, // Change to 100%
+    "出险频度_上限": 30 // Change to 30%
   }
 }
 ```
@@ -116,6 +125,7 @@ Changes take effect immediately on next run.
 ## Generated PPT Structure
 
 **7 Slides:**
+
 1. **Cover** - Title, date range, presenter
 2. **Executive Summary** - Core metrics with top 3 highlights/risks
 3. **Premium Analysis** - Revenue trends, business mix, YoY comparison
@@ -125,6 +135,7 @@ Changes take effect immediately on next run.
 7. **Action Items** - Auto-generated recommendations
 
 **Slide Title Examples:**
+
 - ✅ "Profitability remains healthy with 83.9% combined ratio below industry benchmark"
 - ✅ "NEV profitability is concerning: 108.5% loss ratio, 41.4pp higher than traditional vehicles"
 - ✅ "Business scale expanded 5.9%, but cost control needs attention"
@@ -132,11 +143,13 @@ Changes take effect immediately on next run.
 ## Design Standards
 
 **McKinsey Three Pillars:**
+
 1. **Conclusion-first** - Every title answers "So what?"
 2. **Minimalist** - Large white space, clean single red accent line
 3. **Left-aligned** - Professional business structure
 
 **Color Scheme:**
+
 - Primary: Deep Red (#a02724) - core messages
 - Alert: Bright Red (#c00000) - warnings
 - Text: Black (#000000) - titles
@@ -150,21 +163,23 @@ Changes take effect immediately on next run.
 
 ## Documentation
 
-| File | Purpose |
-|------|---------|
-| [SKILL.md](SKILL.md) | Complete workflow, activation triggers, and step-by-step process |
-| [examples.md](examples.md) | 6+ comprehensive usage examples with inputs/outputs |
-| [references/mckinsey-style-guide.md](references/mckinsey-style-guide.md) | Full McKinsey design principles and visual standards |
-| [references/config-guide.md](references/config-guide.md) | Business rule configuration and threshold customization |
+| File                                                                     | Purpose                                                          |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| [SKILL.md](SKILL.md)                                                     | Complete workflow, activation triggers, and step-by-step process |
+| [examples.md](examples.md)                                               | 6+ comprehensive usage examples with inputs/outputs              |
+| [references/mckinsey-style-guide.md](references/mckinsey-style-guide.md) | Full McKinsey design principles and visual standards             |
+| [references/config-guide.md](references/config-guide.md)                 | Business rule configuration and threshold customization          |
 
 ## Technical Requirements
 
 **Dependencies:**
+
 ```bash
 pip install pandas openpyxl python-pptx numpy matplotlib seaborn --break-system-packages
 ```
 
 **Data Requirements:**
+
 - File format: `.xlsx`
 - Required fields: Premium, loss ratio, expense ratio, variable cost rate, claims frequency
 - File naming: `车险保单变动成本清单__第XX周_.xlsx`
@@ -172,10 +187,12 @@ pip install pandas openpyxl python-pptx numpy matplotlib seaborn --break-system-
 ## Prompt Optimization
 
 **❌ Not Recommended:**
+
 - "分析这个文件" (too vague)
 - "做个 PPT" (lacks context)
 
 **✅ Recommended:**
+
 - "我上传了第45周的车险数据,生成董事会汇报PPT"
 - "帮我制作本周车险业务的高管汇报演示文稿"
 - "基于这份周报数据创建董事会级别的分析PPT"
@@ -212,6 +229,7 @@ pip install pandas openpyxl python-pptx numpy matplotlib seaborn --break-system-
 ## Use Cases
 
 **Recommended for:**
+
 - ✅ Board presentations
 - ✅ Executive decision meetings
 - ✅ Investor roadshows

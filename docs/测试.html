@@ -1,174 +1,328 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>保费目标占比与条形图</title>
-  <style>
-    :root { --card-bg:#fff; --body-bg:#f4f6f9; --text:#1f2937; }
-    * { box-sizing: border-box; }
-    body { font-family:"Microsoft YaHei", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; background:var(--body-bg); color:var(--text); margin:0; padding:24px; }
-    h1 { text-align:center; margin:0 0 8px; }
-    .sub { text-align:center; color:#6b7280; margin-bottom:20px; }
-    .wrap { display:flex; flex-wrap:wrap; gap:20px; justify-content:center; }
-    .card { background:var(--card-bg); border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,.08); padding:12px; }
-    #pie, #bar { width: 640px; height: 480px; }
-    #status { max-width:1320px; margin: 8px auto 0; padding:12px; background:#fff; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,.06); }
-    #status ul{ margin:8px 0 0; padding-left:20px; }
-    #status .ok { color:#16a34a; }
-    #status .fail { color:#dc2626; }
-    .footer { text-align:center; font-size:12px; color:#9ca3af; margin-top:14px; }
-    noscript{ display:block; text-align:center; color:#b45309; background:#fffbeb; border:1px solid #f59e0b; padding:8px; border-radius:10px; }
-    code.badge { padding:2px 6px; background:#eef2ff; color:#3730a3; border-radius:6px; }
-  </style>
-</head>
-<body>
-  <h1>机构保费目标占比与条形图</h1>
-  <p class="sub">自动求和、占比饼图与降序条形图（含自检用例 & 多 CDN 容错加载）</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>保费目标占比与条形图</title>
+    <style>
+      :root {
+        --card-bg: #fff;
+        --body-bg: #f4f6f9;
+        --text: #1f2937;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family:
+          'Microsoft YaHei',
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          'Helvetica Neue',
+          Arial;
+        background: var(--body-bg);
+        color: var(--text);
+        margin: 0;
+        padding: 24px;
+      }
+      h1 {
+        text-align: center;
+        margin: 0 0 8px;
+      }
+      .sub {
+        text-align: center;
+        color: #6b7280;
+        margin-bottom: 20px;
+      }
+      .wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+      }
+      .card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        padding: 12px;
+      }
+      #pie,
+      #bar {
+        width: 640px;
+        height: 480px;
+      }
+      #status {
+        max-width: 1320px;
+        margin: 8px auto 0;
+        padding: 12px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      }
+      #status ul {
+        margin: 8px 0 0;
+        padding-left: 20px;
+      }
+      #status .ok {
+        color: #16a34a;
+      }
+      #status .fail {
+        color: #dc2626;
+      }
+      .footer {
+        text-align: center;
+        font-size: 12px;
+        color: #9ca3af;
+        margin-top: 14px;
+      }
+      noscript {
+        display: block;
+        text-align: center;
+        color: #b45309;
+        background: #fffbeb;
+        border: 1px solid #f59e0b;
+        padding: 8px;
+        border-radius: 10px;
+      }
+      code.badge {
+        padding: 2px 6px;
+        background: #eef2ff;
+        color: #3730a3;
+        border-radius: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>机构保费目标占比与条形图</h1>
+    <p class="sub">
+      自动求和、占比饼图与降序条形图（含自检用例 & 多 CDN 容错加载）
+    </p>
 
-  <noscript>需要启用 JavaScript 才能显示图表。</noscript>
+    <noscript>需要启用 JavaScript 才能显示图表。</noscript>
 
-  <div class="wrap">
-    <div id="pie" class="card"></div>
-    <div id="bar" class="card"></div>
-  </div>
+    <div class="wrap">
+      <div id="pie" class="card"></div>
+      <div id="bar" class="card"></div>
+    </div>
 
-  <div id="status">
-    <strong>自检结果（Test Cases）</strong>
-    <ul id="tests"></ul>
-  </div>
-  <div class="footer">若外网 CDN 受限，页面会自动在多源间切换；如仍失败，可改为本地离线版（我可提供）。</div>
+    <div id="status">
+      <strong>自检结果（Test Cases）</strong>
+      <ul id="tests"></ul>
+    </div>
+    <div class="footer">
+      若外网 CDN
+      受限，页面会自动在多源间切换；如仍失败，可改为本地离线版（我可提供）。
+    </div>
 
-  <script>
-    // ---- 1) 数据（保持一致，不能改动） ----
-    const rawData = [
-      {name:'天府', value:19730},
-      {name:'高新', value:5570},
-      {name:'青羊', value:4340},
-      {name:'新都', value:3500},
-      {name:'武侯', value:1350},
-      {name:'宜宾', value:2270},
-      {name:'泸州', value:1075},
-      {name:'乐山', value:1190},
-      {name:'德阳', value:1280},
-      {name:'资阳', value:1200},
-      {name:'自贡', value:945},
-      {name:'达州', value:650},
-    ];
+    <script>
+      // ---- 1) 数据（保持一致，不能改动） ----
+      const rawData = [
+        { name: '天府', value: 19730 },
+        { name: '高新', value: 5570 },
+        { name: '青羊', value: 4340 },
+        { name: '新都', value: 3500 },
+        { name: '武侯', value: 1350 },
+        { name: '宜宾', value: 2270 },
+        { name: '泸州', value: 1075 },
+        { name: '乐山', value: 1190 },
+        { name: '德阳', value: 1280 },
+        { name: '资阳', value: 1200 },
+        { name: '自贡', value: 945 },
+        { name: '达州', value: 650 },
+      ]
 
-    // ---- 2) 多源顺序加载（增加中国大陆可用镜像，避免“echarts 未定义”） ----
-    const ECHARTS_CDNS = [
-      // 首选：jsDelivr fastly
-      'https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js',
-      // jsDelivr 默认
-      'https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js',
-      // BootCDN / Staticfile
-      'https://cdn.staticfile.org/echarts/5.5.0/echarts.min.js',
-      // Cloudflare cdnjs
-      'https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js',
-      // 淘宝源（npmmirror）
-      'https://registry.npmmirror.com/echarts/latest/files/dist/echarts.min.js',
-      // unpkg（放到最后）
-      'https://unpkg.com/echarts@5/dist/echarts.min.js',
-    ];
+      // ---- 2) 多源顺序加载（增加中国大陆可用镜像，避免“echarts 未定义”） ----
+      const ECHARTS_CDNS = [
+        // 首选：jsDelivr fastly
+        'https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js',
+        // jsDelivr 默认
+        'https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js',
+        // BootCDN / Staticfile
+        'https://cdn.staticfile.org/echarts/5.5.0/echarts.min.js',
+        // Cloudflare cdnjs
+        'https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js',
+        // 淘宝源（npmmirror）
+        'https://registry.npmmirror.com/echarts/latest/files/dist/echarts.min.js',
+        // unpkg（放到最后）
+        'https://unpkg.com/echarts@5/dist/echarts.min.js',
+      ]
 
-    const LOAD_TIMEOUT_MS = 6000; // 单源超时控制
+      const LOAD_TIMEOUT_MS = 6000 // 单源超时控制
 
-    function addTest(msg, ok){
-      const li = document.createElement('li');
-      li.innerHTML = msg; li.className = ok ? 'ok' : 'fail';
-      document.getElementById('tests').appendChild(li);
-    }
+      function addTest(msg, ok) {
+        const li = document.createElement('li')
+        li.innerHTML = msg
+        li.className = ok ? 'ok' : 'fail'
+        document.getElementById('tests').appendChild(li)
+      }
 
-    function loadScriptWithTimeout(src){
-      return new Promise((resolve, reject) => {
-        const s = document.createElement('script');
-        let done = false;
-        const timer = setTimeout(() => {
-          if (done) return; done = true; s.remove();
-          reject(new Error('超时: '+src));
-        }, LOAD_TIMEOUT_MS);
-        s.src = src; s.defer = true; s.crossOrigin = 'anonymous';
-        s.onload = () => { if (done) return; done = true; clearTimeout(timer); resolve(src); };
-        s.onerror = () => { if (done) return; done = true; clearTimeout(timer); reject(new Error('加载失败: '+src)); };
-        document.head.appendChild(s);
-      });
-    }
+      function loadScriptWithTimeout(src) {
+        return new Promise((resolve, reject) => {
+          const s = document.createElement('script')
+          let done = false
+          const timer = setTimeout(() => {
+            if (done) return
+            done = true
+            s.remove()
+            reject(new Error('超时: ' + src))
+          }, LOAD_TIMEOUT_MS)
+          s.src = src
+          s.defer = true
+          s.crossOrigin = 'anonymous'
+          s.onload = () => {
+            if (done) return
+            done = true
+            clearTimeout(timer)
+            resolve(src)
+          }
+          s.onerror = () => {
+            if (done) return
+            done = true
+            clearTimeout(timer)
+            reject(new Error('加载失败: ' + src))
+          }
+          document.head.appendChild(s)
+        })
+      }
 
-    async function loadEchartsSequential(urls){
-      const tried = [];
-      for (const url of urls){
-        tried.push(url);
+      async function loadEchartsSequential(urls) {
+        const tried = []
+        for (const url of urls) {
+          tried.push(url)
+          try {
+            const used = await loadScriptWithTimeout(url)
+            addTest(
+              '尝试加载: <code class="badge">' + url + '</code> → 成功',
+              true
+            )
+            return { used, tried }
+          } catch (e) {
+            addTest(
+              '尝试加载: <code class="badge">' +
+                url +
+                '</code> → 失败（' +
+                e.message +
+                '）',
+              false
+            )
+          }
+        }
+        throw new Error('所有 CDN 均不可用')
+      }
+
+      function initCharts() {
+        if (!window.echarts) {
+          throw new Error('ECharts 仍未加载')
+        }
+        const total = rawData.reduce((s, x) => s + x.value, 0)
+        const sorted = [...rawData].sort((a, b) => b.value - a.value)
+
+        // 饼图
+        const pie = echarts.init(document.getElementById('pie'))
+        pie.setOption({
+          title: {
+            text: '保费目标占比',
+            subtext: `总计：${total}`,
+            left: 'center',
+          },
+          tooltip: { trigger: 'item', formatter: '{b}：{c} ({d}%)' },
+          legend: { bottom: 0, type: 'scroll' },
+          series: [
+            {
+              type: 'pie',
+              radius: '60%',
+              data: sorted,
+              label: { formatter: '{b}: {d}%' },
+            },
+          ],
+        })
+
+        // 条形图
+        const bar = echarts.init(document.getElementById('bar'))
+        bar.setOption({
+          title: { text: '保费目标条形图（降序）', left: 'center' },
+          tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+          xAxis: { type: 'value' },
+          yAxis: {
+            type: 'category',
+            inverse: true,
+            data: sorted.map(d => d.name),
+          },
+          series: [
+            {
+              type: 'bar',
+              data: sorted.map(d => d.value),
+              label: { show: true, position: 'right' },
+            },
+          ],
+        })
+
+        window.addEventListener('resize', () => {
+          pie.resize()
+          bar.resize()
+        })
+
+        // ---- 自检：保留原有用例并新增更多 ----
         try {
-          const used = await loadScriptWithTimeout(url);
-          addTest('尝试加载: <code class="badge">'+url+'</code> → 成功', true);
-          return { used, tried };
+          // 既有用例（不可改动）
+          addTest('合计应为 43100：' + total, total === 43100)
+          addTest('已加载 window.echarts', !!window.echarts)
+          addTest('饼图已创建', !!pie)
+          addTest('条形图已创建', !!bar)
+          addTest(
+            '条形图类别数量=12：' + bar.getOption().yAxis[0].data.length,
+            bar.getOption().yAxis[0].data.length === 12
+          )
+          // 新增用例
+          addTest(
+            '降序第一名应为“天府(19730)”：' +
+              sorted[0].name +
+              '(' +
+              sorted[0].value +
+              ')',
+            sorted[0].name === '天府' && sorted[0].value === 19730
+          )
+          addTest(
+            '降序最后一名应为“达州(650)”：' +
+              sorted[sorted.length - 1].name +
+              '(' +
+              sorted[sorted.length - 1].value +
+              ')',
+            sorted[sorted.length - 1].name === '达州' &&
+              sorted[sorted.length - 1].value === 650
+          )
         } catch (e) {
-          addTest('尝试加载: <code class="badge">'+url+'</code> → 失败（'+e.message+'）', false);
+          addTest('自检异常：' + (e && e.message ? e.message : e), false)
         }
       }
-      throw new Error('所有 CDN 均不可用');
-    }
 
-    function initCharts(){
-      if (!window.echarts){ throw new Error('ECharts 仍未加载'); }
-      const total = rawData.reduce((s, x) => s + x.value, 0);
-      const sorted = [...rawData].sort((a,b) => b.value - a.value);
-
-      // 饼图
-      const pie = echarts.init(document.getElementById('pie'));
-      pie.setOption({
-        title:{ text:'保费目标占比', subtext:`总计：${total}`, left:'center'},
-        tooltip:{ trigger:'item', formatter:'{b}：{c} ({d}%)' },
-        legend:{ bottom:0, type:'scroll' },
-        series:[{ type:'pie', radius:'60%', data: sorted, label:{ formatter:'{b}: {d}%'} }]
-      });
-
-      // 条形图
-      const bar = echarts.init(document.getElementById('bar'));
-      bar.setOption({
-        title:{ text:'保费目标条形图（降序）', left:'center' },
-        tooltip:{ trigger:'axis', axisPointer:{ type:'shadow' } },
-        xAxis:{ type:'value' },
-        yAxis:{ type:'category', inverse:true, data: sorted.map(d=>d.name) },
-        series:[{ type:'bar', data: sorted.map(d=>d.value), label:{ show:true, position:'right' } }]
-      });
-
-      window.addEventListener('resize', () => { pie.resize(); bar.resize(); });
-
-      // ---- 自检：保留原有用例并新增更多 ----
-      try {
-        // 既有用例（不可改动）
-        addTest('合计应为 43100：' + total, total === 43100);
-        addTest('已加载 window.echarts', !!window.echarts);
-        addTest('饼图已创建', !!pie);
-        addTest('条形图已创建', !!bar);
-        addTest('条形图类别数量=12：' + bar.getOption().yAxis[0].data.length, bar.getOption().yAxis[0].data.length === 12);
-        // 新增用例
-        addTest('降序第一名应为“天府(19730)”：' + sorted[0].name + '('+sorted[0].value+')', sorted[0].name === '天府' && sorted[0].value === 19730);
-        addTest('降序最后一名应为“达州(650)”：' + sorted[sorted.length-1].name + '('+sorted[sorted.length-1].value+')', sorted[sorted.length-1].name === '达州' && sorted[sorted.length-1].value === 650);
-      } catch (e) {
-        addTest('自检异常：' + (e && e.message ? e.message : e), false);
-      }
-    }
-
-    (async () => {
-      if (!window.echarts){
-        try {
-          const { used, tried } = await loadEchartsSequential(ECHARTS_CDNS);
-          addTest('ECharts 加载完成，使用源：<code class="badge">'+used+'</code>；共尝试 '+tried.length+' 个源', true);
-        } catch (e) {
-          addTest('ECharts 加载失败（全部源不可用）：' + e.message, false);
-          console.error(e);
-          return; // 无法继续
+      ;(async () => {
+        if (!window.echarts) {
+          try {
+            const { used, tried } = await loadEchartsSequential(ECHARTS_CDNS)
+            addTest(
+              'ECharts 加载完成，使用源：<code class="badge">' +
+                used +
+                '</code>；共尝试 ' +
+                tried.length +
+                ' 个源',
+              true
+            )
+          } catch (e) {
+            addTest('ECharts 加载失败（全部源不可用）：' + e.message, false)
+            console.error(e)
+            return // 无法继续
+          }
         }
-      }
-      try { initCharts(); }
-      catch (e) {
-        addTest('初始化失败：' + e.message, false);
-        console.error(e);
-      }
-    })();
-  </script>
-</body>
+        try {
+          initCharts()
+        } catch (e) {
+          addTest('初始化失败：' + e.message, false)
+          console.error(e)
+        }
+      })()
+    </script>
+  </body>
 </html>

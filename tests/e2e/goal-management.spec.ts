@@ -1,6 +1,10 @@
 import { expect, test } from '@playwright/test'
 import { parseGoalCsv } from '../../src/utils/csvParser'
-import { useGoalStore, resetGoalStore, KNOWN_BUSINESS_TYPES } from '../../src/store/goalStore'
+import {
+  useGoalStore,
+  resetGoalStore,
+  KNOWN_BUSINESS_TYPES,
+} from '../../src/store/goalStore'
 
 const formatCsv = (records: Array<{ bizType: string; value: number }>) => {
   const lines = ['业务类型,年度目标（万）']

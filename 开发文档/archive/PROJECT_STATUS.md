@@ -61,23 +61,26 @@ src/
 ### ✅ 已完成
 
 **阶段 0：准备工作**
-- [X] 创建架构规则文档（`ARCHITECTURE_RULES.md`）
-- [X] 创建重构计划（`REFACTORING_PLAN.md`）
-- [X] 创建检查清单（`REFACTORING_CHECKLIST.md`）
-- [X] 创建 AI 协作约定（`AI_COLLABORATION.md`）
+
+- [x] 创建架构规则文档（`ARCHITECTURE_RULES.md`）
+- [x] 创建重构计划（`REFACTORING_PLAN.md`）
+- [x] 创建检查清单（`REFACTORING_CHECKLIST.md`）
+- [x] 创建 AI 协作约定（`AI_COLLABORATION.md`）
 
 **Day 1-2：Domain 层**
-- [X] 创建 Domain 层目录结构
-- [X] 提取保险实体（`InsuranceRecord`）
-- [X] 提取业务规则（KPI 计算、数据规范化）
-- [X] 编写单元测试
+
+- [x] 创建 Domain 层目录结构
+- [x] 提取保险实体（`InsuranceRecord`）
+- [x] 提取业务规则（KPI 计算、数据规范化）
+- [x] 编写单元测试
 
 **Day 3-4：Application 层** ⭐ 刚完成
-- [X] 定义端口接口（`IDataRepository`, `IFileParser`, `IExporter`）
-- [X] 实现用例（`UploadDataUseCase`, `CalculateKPIUseCase`, `ExportReportUseCase`）
-- [X] 创建应用服务（`DataService`）
-- [X] 编写 22 个单元测试（全部通过）
-- [X] 验证架构规则（依赖方向、文件大小、单一职责）
+
+- [x] 定义端口接口（`IDataRepository`, `IFileParser`, `IExporter`）
+- [x] 实现用例（`UploadDataUseCase`, `CalculateKPIUseCase`, `ExportReportUseCase`）
+- [x] 创建应用服务（`DataService`）
+- [x] 编写 22 个单元测试（全部通过）
+- [x] 验证架构规则（依赖方向、文件大小、单一职责）
 
 ### 🔄 进行中（第 1 周：建立核心层）
 
@@ -195,7 +198,7 @@ grep -r "fetch\|axios\|supabase" src/domain/
    - 确认依赖方向正确（外→内）
 
 3. **是否符合单一职责？**
-   - 用一句话描述职责：_______________
+   - 用一句话描述职责：******\_\_\_******
 
 4. **是否有重复代码？**
    - 检查项目中是否已有类似代码

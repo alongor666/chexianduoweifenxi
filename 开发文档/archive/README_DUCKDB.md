@@ -27,12 +27,12 @@
 
 ### 📊 性能提升
 
-| 指标 | 优化前 | 优化后 | 提升 |
-|------|--------|--------|------|
-| 页面刷新 | 2-5秒 | < 0.5秒 | **10x** |
-| 筛选查询 | 300-800ms | 10-30ms | **20x** |
-| 聚合计算 | 500-1500ms | 20-50ms | **25x** |
-| 文件大小 | 15 MB | 3 MB | **80%↓** |
+| 指标     | 优化前     | 优化后  | 提升     |
+| -------- | ---------- | ------- | -------- |
+| 页面刷新 | 2-5秒      | < 0.5秒 | **10x**  |
+| 筛选查询 | 300-800ms  | 10-30ms | **20x**  |
+| 聚合计算 | 500-1500ms | 20-50ms | **25x**  |
+| 文件大小 | 15 MB      | 3 MB    | **80%↓** |
 
 ## 🚀 如何使用
 
@@ -110,6 +110,7 @@ chexianduoweifenxi/
    - 修改: 使用 DatabaseAdapter 替代直接 CSV 解析
 
 3. **测试验证**
+
    ```bash
    # 生成测试数据库
    python scripts/csv_to_duckdb.py
@@ -176,9 +177,9 @@ interface DatabaseAdapter {
 
 ```typescript
 export const FEATURE_FLAGS = {
-  useDuckDB: true,              // 启用 DuckDB 支持
-  allowDatabaseSwitch: true,    // 允许切换数据库
-  showPerformanceMetrics: true  // 显示性能指标
+  useDuckDB: true, // 启用 DuckDB 支持
+  allowDatabaseSwitch: true, // 允许切换数据库
+  showPerformanceMetrics: true, // 显示性能指标
 }
 ```
 
@@ -187,12 +188,14 @@ export const FEATURE_FLAGS = {
 ### Q: 前端如何切换使用 DuckDB?
 
 A: 使用 `DatabaseAdapterFactory.createFromFile(file)` 会自动根据文件扩展名选择适配器：
+
 - `.csv` → IndexedDBAdapter (原方案)
 - `.duckdb` / `.db` → DuckDBAdapter (新方案)
 
 ### Q: 如何测试 DuckDB 功能?
 
 A:
+
 ```bash
 # 1. 生成测试数据库
 python scripts/csv_to_duckdb.py
@@ -209,6 +212,7 @@ pnpm dev
 ### Q: DuckDB 与现有代码兼容吗?
 
 A: **完全兼容**。适配器模式确保：
+
 - 接口统一，上层代码无需修改
 - CSV 方案继续可用
 - 可以平滑迁移
@@ -216,9 +220,10 @@ A: **完全兼容**。适配器模式确保：
 ### Q: 如何回滚到旧方案?
 
 A: 只需修改 `src/config/features.ts`：
+
 ```typescript
 export const FEATURE_FLAGS = {
-  useDuckDB: false,  // 禁用 DuckDB
+  useDuckDB: false, // 禁用 DuckDB
 }
 ```
 

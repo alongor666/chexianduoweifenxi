@@ -38,12 +38,14 @@ Insuralytics 是一个专为车险业务设计的现代化、轻量级多维分�
 ### 安装与启动
 
 1.  **克隆仓库**
+
     ```bash
     git clone https://github.com/alongor666/insuralytics.git
     cd insuralytics
     ```
 
 2.  **安装依赖**
+
     ```bash
     pnpm install
     ```

@@ -34,13 +34,13 @@
 
 ### 📊 性能提升
 
-| 操作 | CSV + IndexedDB | DuckDB-WASM | 提升倍数 |
-|------|----------------|-------------|---------|
-| 首次加载 | 2-5秒 | 300-500ms | **10x** |
-| 页面刷新 | 2-5秒 | <100ms | **50x** |
-| 筛选查询 | 300-800ms | 10-30ms | **20x** |
-| 聚合计算 | 500-1500ms | 20-50ms | **25x** |
-| 文件大小 | 15MB (CSV) | 3MB (.duckdb) | **80%↓** |
+| 操作     | CSV + IndexedDB | DuckDB-WASM   | 提升倍数 |
+| -------- | --------------- | ------------- | -------- |
+| 首次加载 | 2-5秒           | 300-500ms     | **10x**  |
+| 页面刷新 | 2-5秒           | <100ms        | **50x**  |
+| 筛选查询 | 300-800ms       | 10-30ms       | **20x**  |
+| 聚合计算 | 500-1500ms      | 20-50ms       | **25x**  |
+| 文件大小 | 15MB (CSV)      | 3MB (.duckdb) | **80%↓** |
 
 ---
 
@@ -50,35 +50,35 @@
 
 DuckDB 文件必须包含名为 **`insurance_records`** 的表，包含以下 **27个字段**：
 
-| # | 字段名 | 数据类型 | 是否必需 | 说明 |
-|---|--------|---------|---------|------|
-| 1 | `snapshot_date` | DATE | ✅ 必需 | 快照日期 (YYYY-MM-DD) |
-| 2 | `policy_start_year` | INTEGER | ✅ 必需 | 保单年度 (2024-2025) |
-| 3 | `business_type_category` | VARCHAR | ✅ 必需 | 业务类型分类 |
-| 4 | `chengdu_branch` | VARCHAR | ✅ 必需 | 地域属性 (成都/中支) |
-| 5 | `second_level_organization` | VARCHAR | ⚠️ 可选 | 二级机构 |
-| 6 | `third_level_organization` | VARCHAR | ✅ 必需 | 三级机构 |
-| 7 | `customer_category_3` | VARCHAR | ✅ 必需 | 客户类别 |
-| 8 | `insurance_type` | VARCHAR | ✅ 必需 | 保险类型 (商业险/交强险) |
-| 9 | `is_new_energy_vehicle` | BOOLEAN | ✅ 必需 | 是否新能源车 |
-| 10 | `coverage_type` | VARCHAR | ✅ 必需 | 险别组合 |
-| 11 | `is_transferred_vehicle` | BOOLEAN | ✅ 必需 | 是否过户车 |
-| 12 | `renewal_status` | VARCHAR | ✅ 必需 | 新续转状态 |
-| 13 | `vehicle_insurance_grade` | VARCHAR | ⚠️ 可空 | 车险评级 (A-G, X) |
-| 14 | `highway_risk_grade` | VARCHAR | ⚠️ 可空 | 高速风险等级 (A-F, X) |
-| 15 | `large_truck_score` | VARCHAR | ⚠️ 可空 | 大货车评分 (A-E, X) |
-| 16 | `small_truck_score` | VARCHAR | ⚠️ 可空 | 小货车评分 (A-E, X) |
-| 17 | `terminal_source` | VARCHAR | ✅ 必需 | 终端来源 |
-| 18 | `signed_premium_yuan` | DOUBLE | ✅ 必需 | 签单保费 (元) |
-| 19 | `matured_premium_yuan` | DOUBLE | ✅ 必需 | 满期保费 (元) |
-| 20 | `policy_count` | INTEGER | ✅ 必需 | 保单件数 |
-| 21 | `claim_case_count` | INTEGER | ✅ 必需 | 赔案件数 |
-| 22 | `reported_claim_payment_yuan` | DOUBLE | ✅ 必需 | 已报告赔款 (元) |
-| 23 | `expense_amount_yuan` | DOUBLE | ✅ 必需 | 费用金额 (元) |
-| 24 | `commercial_premium_before_discount_yuan` | DOUBLE | ✅ 必需 | 商业险折前保费 (元) |
-| 25 | `premium_plan_yuan` | DOUBLE | ⚠️ 可空 | 保费计划 (元) |
-| 26 | `marginal_contribution_amount_yuan` | DOUBLE | ✅ 必需 | 边际贡献额 (元，可为负) |
-| 27 | `week_number` | INTEGER | ✅ 必需 | 周序号 |
+| #   | 字段名                                    | 数据类型 | 是否必需 | 说明                     |
+| --- | ----------------------------------------- | -------- | -------- | ------------------------ |
+| 1   | `snapshot_date`                           | DATE     | ✅ 必需  | 快照日期 (YYYY-MM-DD)    |
+| 2   | `policy_start_year`                       | INTEGER  | ✅ 必需  | 保单年度 (2024-2025)     |
+| 3   | `business_type_category`                  | VARCHAR  | ✅ 必需  | 业务类型分类             |
+| 4   | `chengdu_branch`                          | VARCHAR  | ✅ 必需  | 地域属性 (成都/中支)     |
+| 5   | `second_level_organization`               | VARCHAR  | ⚠️ 可选  | 二级机构                 |
+| 6   | `third_level_organization`                | VARCHAR  | ✅ 必需  | 三级机构                 |
+| 7   | `customer_category_3`                     | VARCHAR  | ✅ 必需  | 客户类别                 |
+| 8   | `insurance_type`                          | VARCHAR  | ✅ 必需  | 保险类型 (商业险/交强险) |
+| 9   | `is_new_energy_vehicle`                   | BOOLEAN  | ✅ 必需  | 是否新能源车             |
+| 10  | `coverage_type`                           | VARCHAR  | ✅ 必需  | 险别组合                 |
+| 11  | `is_transferred_vehicle`                  | BOOLEAN  | ✅ 必需  | 是否过户车               |
+| 12  | `renewal_status`                          | VARCHAR  | ✅ 必需  | 新续转状态               |
+| 13  | `vehicle_insurance_grade`                 | VARCHAR  | ⚠️ 可空  | 车险评级 (A-G, X)        |
+| 14  | `highway_risk_grade`                      | VARCHAR  | ⚠️ 可空  | 高速风险等级 (A-F, X)    |
+| 15  | `large_truck_score`                       | VARCHAR  | ⚠️ 可空  | 大货车评分 (A-E, X)      |
+| 16  | `small_truck_score`                       | VARCHAR  | ⚠️ 可空  | 小货车评分 (A-E, X)      |
+| 17  | `terminal_source`                         | VARCHAR  | ✅ 必需  | 终端来源                 |
+| 18  | `signed_premium_yuan`                     | DOUBLE   | ✅ 必需  | 签单保费 (元)            |
+| 19  | `matured_premium_yuan`                    | DOUBLE   | ✅ 必需  | 满期保费 (元)            |
+| 20  | `policy_count`                            | INTEGER  | ✅ 必需  | 保单件数                 |
+| 21  | `claim_case_count`                        | INTEGER  | ✅ 必需  | 赔案件数                 |
+| 22  | `reported_claim_payment_yuan`             | DOUBLE   | ✅ 必需  | 已报告赔款 (元)          |
+| 23  | `expense_amount_yuan`                     | DOUBLE   | ✅ 必需  | 费用金额 (元)            |
+| 24  | `commercial_premium_before_discount_yuan` | DOUBLE   | ✅ 必需  | 商业险折前保费 (元)      |
+| 25  | `premium_plan_yuan`                       | DOUBLE   | ⚠️ 可空  | 保费计划 (元)            |
+| 26  | `marginal_contribution_amount_yuan`       | DOUBLE   | ✅ 必需  | 边际贡献额 (元，可为负)  |
+| 27  | `week_number`                             | INTEGER  | ✅ 必需  | 周序号                   |
 
 ### 2.2 数据类型约束
 
@@ -144,6 +144,7 @@ python scripts/validate_duckdb.py insurance_data.duckdb
 ```
 
 验证脚本会检查：
+
 - ✅ 表 `insurance_records` 是否存在
 - ✅ 27个字段是否完整
 - ✅ 数据类型是否正确
@@ -250,15 +251,15 @@ python scripts/validate_duckdb.py insurance_data.duckdb
 
 ### 现有功能兼容性
 
-| 功能模块 | CSV 模式 | DuckDB 模式 | 说明 |
-|---------|---------|------------|------|
-| 文件上传 | ✅ 支持 | ✅ 支持 | 自动识别文件类型 |
-| 数据筛选 | ✅ 支持 | ✅ 支持 | 性能更优 |
-| KPI 计算 | ✅ 支持 | ✅ 支持 | 速度提升20倍 |
-| 边贡分析 | ✅ 支持 | ✅ 支持 | 查询更快 |
-| 目标管理 | ✅ 支持 | ✅ 支持 | 完全兼容 |
-| 数据持久化 | LocalStorage | DuckDB 文件 | 自动切换 |
-| 数据导出 | ✅ 支持 | ✅ 支持 | 导出到 CSV/Excel |
+| 功能模块   | CSV 模式     | DuckDB 模式 | 说明             |
+| ---------- | ------------ | ----------- | ---------------- |
+| 文件上传   | ✅ 支持      | ✅ 支持     | 自动识别文件类型 |
+| 数据筛选   | ✅ 支持      | ✅ 支持     | 性能更优         |
+| KPI 计算   | ✅ 支持      | ✅ 支持     | 速度提升20倍     |
+| 边贡分析   | ✅ 支持      | ✅ 支持     | 查询更快         |
+| 目标管理   | ✅ 支持      | ✅ 支持     | 完全兼容         |
+| 数据持久化 | LocalStorage | DuckDB 文件 | 自动切换         |
+| 数据导出   | ✅ 支持      | ✅ 支持     | 导出到 CSV/Excel |
 
 ---
 
@@ -297,33 +298,35 @@ python scripts/validate_duckdb.py insurance_data.duckdb
 
 #### 2. 浏览器兼容性
 
-| 浏览器 | 最低版本 | DuckDB-WASM 支持 |
-|--------|---------|-----------------|
-| Chrome | 87+ | ✅ 完全支持 |
-| Firefox | 78+ | ✅ 完全支持 |
-| Safari | 14+ | ✅ 完全支持 |
-| Edge | 87+ | ✅ 完全支持 |
-| IE | - | ❌ 不支持 |
+| 浏览器  | 最低版本 | DuckDB-WASM 支持 |
+| ------- | -------- | ---------------- |
+| Chrome  | 87+      | ✅ 完全支持      |
+| Firefox | 78+      | ✅ 完全支持      |
+| Safari  | 14+      | ✅ 完全支持      |
+| Edge    | 87+      | ✅ 完全支持      |
+| IE      | -        | ❌ 不支持        |
 
 #### 3. 数据规模建议
 
-| 记录数 | 性能表现 | 建议 |
-|--------|---------|------|
-| < 10万 | 🟢 极佳 | 直接使用 |
-| 10-50万 | 🟡 良好 | 可直接使用 |
-| 50-100万 | 🟠 可用 | 考虑分页 |
-| > 100万 | 🔴 较慢 | 建议分区 |
+| 记录数   | 性能表现 | 建议       |
+| -------- | -------- | ---------- |
+| < 10万   | 🟢 极佳  | 直接使用   |
+| 10-50万  | 🟡 良好  | 可直接使用 |
+| 50-100万 | 🟠 可用  | 考虑分页   |
+| > 100万  | 🔴 较慢  | 建议分区   |
 
 #### 4. Schema 演化
 
 **当前版本**: 27字段（v1.0）
 
 **未来扩展**:
+
 - ✅ 允许新增可选字段
 - ⚠️ 不建议删除现有字段
 - ❌ 禁止修改核心字段类型
 
 **向后兼容策略**:
+
 ```sql
 -- 示例：安全地新增可选字段
 ALTER TABLE insurance_records
@@ -340,6 +343,7 @@ ADD COLUMN new_optional_field VARCHAR DEFAULT '';
 #### 6. 数据刷新策略
 
 **场景 A: 追加新周数据**
+
 ```bash
 # 方法 1: 重新生成 (推荐)
 # 将所有周的 CSV 放入 实际数据/ 目录
@@ -352,6 +356,7 @@ D .quit
 ```
 
 **场景 B: 修正历史数据**
+
 ```bash
 # 必须重新生成数据库
 # DuckDB 文件不支持在浏览器中修改
@@ -360,13 +365,13 @@ python scripts/etl_to_duckdb.py
 
 #### 7. 错误处理边界
 
-| 错误类型 | 系统行为 | 用户操作 |
-|---------|---------|---------|
-| 表名错误 | 显示错误提示 | 检查 ETL 脚本 |
-| 字段缺失 | 查询失败 | 重新生成数据库 |
+| 错误类型   | 系统行为     | 用户操作          |
+| ---------- | ------------ | ----------------- |
+| 表名错误   | 显示错误提示 | 检查 ETL 脚本     |
+| 字段缺失   | 查询失败     | 重新生成数据库    |
 | 类型不匹配 | 数据转换错误 | 修正 CSV 数据类型 |
-| 文件损坏 | 无法打开 | 重新生成 |
-| 内存不足 | 浏览器崩溃 | 减小数据集或分区 |
+| 文件损坏   | 无法打开     | 重新生成          |
+| 内存不足   | 浏览器崩溃   | 减小数据集或分区  |
 
 ---
 
@@ -418,11 +423,13 @@ python scripts/etl_to_duckdb.py
 ### Q4: DuckDB 文件比 CSV 小这么多，数据会丢失吗？
 
 **不会**。DuckDB 使用列式存储和压缩算法：
+
 - 相同列的数据压缩率高
 - 重复值自动去重
 - 数值类型紧凑存储
 
 验证方法：
+
 ```sql
 -- 对比记录数
 D SELECT COUNT(*) FROM insurance_records;
@@ -444,11 +451,13 @@ cp insurance_data.duckdb /path/to/usb/
 ### Q6: 上传 DuckDB 后数据能持久化吗？
 
 **取决于浏览器支持**：
+
 - Chrome/Edge: 支持 IndexedDB 持久化
 - Firefox: 支持，但有容量限制
 - Safari: 支持，但可能被自动清理
 
 **最佳实践**：
+
 - 保留原始 DuckDB 文件
 - 定期备份
 - 使用浏览器的"持久化存储"权限
@@ -456,11 +465,13 @@ cp insurance_data.duckdb /path/to/usb/
 ### Q7: 能否在移动端使用？
 
 **有限支持**：
+
 - 移动 Chrome: ✅ 支持，但性能较差
 - 移动 Safari: ⚠️ 部分支持
 - 微信浏览器: ❌ 不推荐
 
 **建议**：
+
 - 数据量 < 10万行可在移动端使用
 - 复杂分析请使用桌面端
 
@@ -511,12 +522,12 @@ cp insurance_data.duckdb /path/to/usb/
 
 ### 常见错误代码
 
-| 错误代码 | 原因 | 解决方法 |
-|---------|------|---------|
-| `未找到 insurance_records 表` | 表名错误或不存在 | 检查 ETL 脚本 |
-| `Failed to instantiate WASM module` | WASM 加载失败 | 检查网络连接 |
-| `数据库未初始化` | 连接未建立 | 重新上传文件 |
-| `查询数据失败` | SQL 语法错误或字段缺失 | 检查字段完整性 |
+| 错误代码                            | 原因                   | 解决方法       |
+| ----------------------------------- | ---------------------- | -------------- |
+| `未找到 insurance_records 表`       | 表名错误或不存在       | 检查 ETL 脚本  |
+| `Failed to instantiate WASM module` | WASM 加载失败          | 检查网络连接   |
+| `数据库未初始化`                    | 连接未建立             | 重新上传文件   |
+| `查询数据失败`                      | SQL 语法错误或字段缺失 | 检查字段完整性 |
 
 ### 性能调优
 

@@ -31,8 +31,10 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useFilteredData } from '@/hooks/use-filtered-data'
-import { useKPI } from '@/hooks/use-kpi'
-import { CANONICAL_BUSINESS_TYPES, getBusinessTypeLabel } from '@/constants/dimensions'
+import {
+  CANONICAL_BUSINESS_TYPES,
+  getBusinessTypeLabel,
+} from '@/constants/dimensions'
 import { formatNumber, formatPercent } from '@/utils/formatters'
 import {
   buildGrid,
@@ -48,19 +50,26 @@ import { CHART_COLORS } from '@/lib/charts/theme'
 /**
  * 可切换的指标类型
  */
-type MetricType = 'variableCostRatio' | 'contributionMarginRatio' | 'lossRatio' | 'expenseRatio'
+type MetricType =
+  | 'variableCostRatio'
+  | 'contributionMarginRatio'
+  | 'lossRatio'
+  | 'expenseRatio'
 
 /**
  * 指标配置
  */
-const METRIC_CONFIG: Record<MetricType, {
-  label: string
-  color: string
-  /** 是否逆向指标(越低越好) */
-  isInverse: boolean
-  /** 状态阈值(用于颜色判断) */
-  thresholds?: { warning: number; danger: number }
-}> = {
+const METRIC_CONFIG: Record<
+  MetricType,
+  {
+    label: string
+    color: string
+    /** 是否逆向指标(越低越好) */
+    isInverse: boolean
+    /** 状态阈值(用于颜色判断) */
+    thresholds?: { warning: number; danger: number }
+  }
+> = {
   variableCostRatio: {
     label: '变动成本率',
     color: '#f97316', // 橙色
@@ -102,19 +111,22 @@ interface BusinessTypeDataItem {
 }
 
 export function BusinessTypeDualAxisChart() {
-  const [selectedMetric, setSelectedMetric] = useState<MetricType>('variableCostRatio')
+  const [selectedMetric, setSelectedMetric] =
+    useState<MetricType>('variableCostRatio')
   const filteredData = useFilteredData()
-  const kpiData = useKPI()
 
   // 按业务类型聚合数据
   const chartData = useMemo(() => {
-    const groupedByBusinessType = new Map<string, {
-      signedPremium: number
-      maturedPremium: number
-      reportedClaimPayment: number
-      expenseAmount: number
-      policyCount: number
-    }>()
+    const groupedByBusinessType = new Map<
+      string,
+      {
+        signedPremium: number
+        maturedPremium: number
+        reportedClaimPayment: number
+        expenseAmount: number
+        policyCount: number
+      }
+    >()
 
     // 聚合数据
     filteredData.forEach(record => {
@@ -129,7 +141,8 @@ export function BusinessTypeDualAxisChart() {
 
       existing.signedPremium += record.signed_premium_yuan / 10000 // 转换为万元
       existing.maturedPremium += record.matured_premium_yuan / 10000
-      existing.reportedClaimPayment += record.reported_claim_payment_yuan / 10000
+      existing.reportedClaimPayment +=
+        record.reported_claim_payment_yuan / 10000
       existing.expenseAmount += record.expense_amount_yuan / 10000
       existing.policyCount += record.policy_count
 
@@ -137,47 +150,66 @@ export function BusinessTypeDualAxisChart() {
     })
 
     // 计算总签单保费用于占比计算
-    const totalSignedPremium = Array.from(groupedByBusinessType.values())
-      .reduce((sum, item) => sum + item.signedPremium, 0)
+    const totalSignedPremium = Array.from(
+      groupedByBusinessType.values()
+    ).reduce((sum, item) => sum + item.signedPremium, 0)
 
     // 转换为图表数据项
     const items: BusinessTypeDataItem[] = []
 
-    // 按照标准业务类型顺序输出
+    // 按照标准业务类型顺序输出（显示所有业务类型，包括无数据的）
     CANONICAL_BUSINESS_TYPES.forEach(businessType => {
-      const data = groupedByBusinessType.get(businessType)
-      if (!data || data.signedPremium === 0) return // 过滤无数据的业务类型
+      const data = groupedByBusinessType.get(businessType) || {
+        signedPremium: 0,
+        maturedPremium: 0,
+        reportedClaimPayment: 0,
+        expenseAmount: 0,
+        policyCount: 0,
+      }
 
       const signedPremium = data.signedPremium
       const maturedPremium = data.maturedPremium
-      const premiumRatio = totalSignedPremium > 0 ? (signedPremium / totalSignedPremium) * 100 : 0
+      const premiumRatio =
+        totalSignedPremium > 0 ? (signedPremium / totalSignedPremium) * 100 : 0
 
       // 计算可切换指标
       let metricValue: number | null = null
       switch (selectedMetric) {
         case 'variableCostRatio': {
           // 变动成本率 = 满期赔付率 + 费用率
-          const lossRatio = maturedPremium > 0 ? (data.reportedClaimPayment / maturedPremium) * 100 : 0
-          const expenseRatio = signedPremium > 0 ? (data.expenseAmount / signedPremium) * 100 : 0
+          const lossRatio =
+            maturedPremium > 0
+              ? (data.reportedClaimPayment / maturedPremium) * 100
+              : 0
+          const expenseRatio =
+            signedPremium > 0 ? (data.expenseAmount / signedPremium) * 100 : 0
           metricValue = lossRatio + expenseRatio
           break
         }
         case 'contributionMarginRatio': {
           // 边际贡献率 = 100% - 变动成本率
-          const lossRatio = maturedPremium > 0 ? (data.reportedClaimPayment / maturedPremium) * 100 : 0
-          const expenseRatio = signedPremium > 0 ? (data.expenseAmount / signedPremium) * 100 : 0
+          const lossRatio =
+            maturedPremium > 0
+              ? (data.reportedClaimPayment / maturedPremium) * 100
+              : 0
+          const expenseRatio =
+            signedPremium > 0 ? (data.expenseAmount / signedPremium) * 100 : 0
           const variableCostRatio = lossRatio + expenseRatio
           metricValue = 100 - variableCostRatio
           break
         }
         case 'lossRatio': {
           // 满期赔付率
-          metricValue = maturedPremium > 0 ? (data.reportedClaimPayment / maturedPremium) * 100 : 0
+          metricValue =
+            maturedPremium > 0
+              ? (data.reportedClaimPayment / maturedPremium) * 100
+              : 0
           break
         }
         case 'expenseRatio': {
           // 费用率
-          metricValue = signedPremium > 0 ? (data.expenseAmount / signedPremium) * 100 : 0
+          metricValue =
+            signedPremium > 0 ? (data.expenseAmount / signedPremium) * 100 : 0
           break
         }
       }
@@ -198,7 +230,9 @@ export function BusinessTypeDualAxisChart() {
     const metricConfig = METRIC_CONFIG[selectedMetric]
 
     // X轴数据(业务类型短标签)
-    const xAxisData = chartData.map(item => getBusinessTypeLabel(item.businessType))
+    const xAxisData = chartData.map(item =>
+      getBusinessTypeLabel(item.businessType)
+    )
 
     // 签单保费数据
     const premiumData = chartData.map(item => item.signedPremium)
@@ -324,7 +358,7 @@ export function BusinessTypeDualAxisChart() {
           </div>
           <Select
             value={selectedMetric}
-            onValueChange={(value) => setSelectedMetric(value as MetricType)}
+            onValueChange={value => setSelectedMetric(value as MetricType)}
           >
             <SelectTrigger className="w-48">
               <SelectValue placeholder="选择指标" />

@@ -37,6 +37,7 @@
 ### 解决方案
 
 **通过明确的约定和提示词，让 AI**：
+
 - ✅ 理解项目架构
 - ✅ 遵守代码规范
 - ✅ 生成可维护的代码
@@ -77,33 +78,34 @@
    - 相同逻辑出现 > 2 次 → 必须抽象
 
 ## 项目目录结构
-
 ```
+
 src/
-├── domain/              ← 业务核心层（纯 TypeScript，无框架依赖）
-│   ├── entities/        ← 业务实体（InsuranceRecord, KPI）
-│   ├── rules/           ← 业务规则（纯函数）
-│   └── types/           ← 类型定义
+├── domain/ ← 业务核心层（纯 TypeScript，无框架依赖）
+│ ├── entities/ ← 业务实体（InsuranceRecord, KPI）
+│ ├── rules/ ← 业务规则（纯函数）
+│ └── types/ ← 类型定义
 │
-├── application/         ← 应用层（用例编排）
-│   ├── use-cases/       ← 用例（UploadData, CalculateKPI）
-│   ├── ports/           ← 接口定义（IDataRepository, IFileParser）
-│   └── services/        ← 应用服务
+├── application/ ← 应用层（用例编排）
+│ ├── use-cases/ ← 用例（UploadData, CalculateKPI）
+│ ├── ports/ ← 接口定义（IDataRepository, IFileParser）
+│ └── services/ ← 应用服务
 │
-├── infrastructure/      ← 基础设施层（技术实现）
-│   ├── adapters/        ← 适配器（DuckDB, CSV, PDF）
-│   ├── api/             ← API 客户端
-│   └── storage/         ← 存储实现
+├── infrastructure/ ← 基础设施层（技术实现）
+│ ├── adapters/ ← 适配器（DuckDB, CSV, PDF）
+│ ├── api/ ← API 客户端
+│ └── storage/ ← 存储实现
 │
-├── features/            ← 功能切片（FSD）
-│   ├── data-upload/     ← 文件上传功能
-│   ├── kpi-dashboard/   ← KPI 看板
-│   └── data-filter/     ← 数据筛选
+├── features/ ← 功能切片（FSD）
+│ ├── data-upload/ ← 文件上传功能
+│ ├── kpi-dashboard/ ← KPI 看板
+│ └── data-filter/ ← 数据筛选
 │
-└── shared/              ← 共享资源
-    ├── ui/              ← UI 组件库
-    ├── hooks/           ← 通用 Hooks
-    └── utils/           ← 工具函数
+└── shared/ ← 共享资源
+├── ui/ ← UI 组件库
+├── hooks/ ← 通用 Hooks
+└── utils/ ← 工具函数
+
 ```
 
 ## 技术栈
@@ -173,11 +175,13 @@ src/
 **任务**：计算满期边际贡献率
 
 **架构约束**：
+
 - 目标层级：Domain 层
 - 依赖规则：只能依赖 `domain/entities/Insurance.ts`
 - 职责：根据保险记录计算满期边际贡献率
 
 **质量要求**：
+
 - 纯函数（无副作用）
 - 有单元测试
 - 有 JSDoc 注释
@@ -219,6 +223,7 @@ src/
 ## 保留功能
 
 重构后必须保持以下功能不变：
+
 - [功能 1]
 - [功能 2]
 
@@ -227,15 +232,18 @@ src/
 重构 `src/store/use-app-store.ts`（当前 1007 行）：
 
 **当前问题**：
+
 - 违反单一职责原则（包含数据、筛选、缓存、持久化 4 个职责）
 - 文件过大（1007 行）
 
 **重构目标**：
+
 - 拆分为 4 个独立的 Store
 - 每个 Store < 200 行
 - 职责单一
 
 **重构步骤**：
+
 1. 分析现状：识别 4 个职责
 2. 制定计划：创建 dataStore、filterStore、cacheStore、persistStore
 3. 执行重构：提供拆分后的代码
@@ -310,12 +318,13 @@ src/
 
 ### 场景 1：创建新的业务规则
 
-```markdown
+````markdown
 请在 Domain 层创建新的业务规则函数：
 
 **文件路径**：`src/domain/rules/[规则名称].ts`
 
 **函数签名**：
+
 ```typescript
 /**
  * [函数描述]
@@ -326,8 +335,10 @@ export function [函数名]([参数列表]): [返回类型] {
   // 实现
 }
 ```
+````
 
 **要求**：
+
 - 纯函数（无副作用）
 - 有完整的 JSDoc 注释
 - 包含单元测试
@@ -335,7 +346,8 @@ export function [函数名]([参数列表]): [返回类型] {
 
 **示例数据**：
 [提供测试数据]
-```
+
+````
 
 ---
 
@@ -361,14 +373,16 @@ export class [用例名]UseCase {
     // 4. 返回结果
   }
 }
-```
+````
 
 **要求**：
+
 - 依赖通过构造函数注入
 - 不包含业务逻辑（业务逻辑在 Domain 层）
 - 只负责编排
 - 有单元测试（使用 Mock）
-```
+
+````
 
 ---
 
@@ -379,18 +393,20 @@ export class [用例名]UseCase {
 
 **功能名称**：[功能名]
 **目录结构**：
-```
+````
+
 src/features/[feature-name]/
 ├── ui/
-│   ├── [MainComponent].tsx        ← 主组件
-│   └── [SubComponent].tsx         ← 子组件
+│ ├── [MainComponent].tsx ← 主组件
+│ └── [SubComponent].tsx ← 子组件
 ├── model/
-│   ├── use[FeatureName].ts        ← 自定义 Hook
-│   └── [feature]Store.ts          ← 状态管理
+│ ├── use[FeatureName].ts ← 自定义 Hook
+│ └── [feature]Store.ts ← 状态管理
 ├── lib/
-│   └── [helpers].ts               ← 工具函数
-└── index.ts                       ← 公开接口
-```
+│ └── [helpers].ts ← 工具函数
+└── index.ts ← 公开接口
+
+````
 
 **要求**：
 - 通过 `index.ts` 暴露公开接口
@@ -404,8 +420,9 @@ src/features/[feature-name]/
 export { [MainComponent] } from './ui/[MainComponent]'
 export { use[FeatureName] } from './model/use[FeatureName]'
 export type { [FeatureTypes] } from './types'
-```
-```
+````
+
+````
 
 ---
 
@@ -457,7 +474,7 @@ export type { [FeatureTypes] } from './types'
 2. 逐个迁移功能（保持可运行）
 3. 更新引用
 4. 删除旧文件
-```
+````
 
 ---
 
@@ -469,25 +486,30 @@ export type { [FeatureTypes] } from './types'
 ## 请按照以下清单自检生成的代码：
 
 ### 架构合规性
+
 - [ ] 依赖方向正确（外→内）？
 - [ ] 没有跨层导入？
 - [ ] 符合所在层的职责？
 
 ### 代码质量
+
 - [ ] 文件 < 300 行？
 - [ ] 函数 < 50 行？
 - [ ] 没有重复代码？
 - [ ] 命名清晰一致？
 
 ### 单一职责
+
 - [ ] 能用一句话描述职责？
 - [ ] 只有一个改变的理由？
 
 ### 测试覆盖
+
 - [ ] Domain/Application 层有单元测试？
 - [ ] 测试覆盖关键路径？
 
 ### 文档
+
 - [ ] 复杂逻辑有注释？
 - [ ] 公开接口有 JSDoc？
 
@@ -502,7 +524,7 @@ export type { [FeatureTypes] } from './types'
 
 在生成代码的提示词末尾加上：
 
-```markdown
+````markdown
 ---
 
 **生成代码后，请按照 [REFACTORING_CHECKLIST.md](./REFACTORING_CHECKLIST.md) 进行自检。**
@@ -513,16 +535,20 @@ export type { [FeatureTypes] } from './types'
 ## 自检结果
 
 ### ✅ 通过的检查项
+
 - [x] 依赖方向正确
 - [x] 文件 < 300 行
 - ...
 
 ### ❌ 未通过的检查项
+
 - [ ] 函数 > 50 行（`calculateTotal` 函数有 65 行）
 
 ### 🔧 改进方案
+
 - 将 `calculateTotal` 拆分为 `calculateSubtotal` 和 `calculateTax`
 ```
+````
 
 ---
 
@@ -536,11 +562,13 @@ export type { [FeatureTypes] } from './types'
 ❌ 你生成的代码违反了以下规则：
 
 **违规 1**：依赖方向错误
+
 - 位置：`src/domain/rules/kpi-calculator.ts:15`
 - 问题：Domain 层导入了 React（`import { useMemo } from 'react'`）
 - 规则：Domain 层不能依赖任何框架
 
 **违规 2**：单一职责违反
+
 - 位置：`src/features/data-upload/ui/FileUpload.tsx`
 - 问题：组件包含业务逻辑（KPI 计算）
 - 规则：UI 组件只负责渲染
@@ -552,10 +580,11 @@ export type { [FeatureTypes] } from './types'
 
 #### Step 2：提供正确示例
 
-```markdown
+````markdown
 ## 正确的做法：
 
 **违规 1 的正确做法**：
+
 ```typescript
 // ✅ 正确：Domain 层不使用 React hooks
 export function calculateKPI(records: InsuranceRecord[]): KPIResult {
@@ -570,8 +599,10 @@ export function useKPIData() {
   return kpi
 }
 ```
+````
 
 **违规 2 的正确做法**：
+
 ```typescript
 // ✅ 正确：UI 组件只负责渲染
 function FileUpload() {
@@ -605,7 +636,7 @@ class UploadDataUseCase {
 
 ### 让 AI 扮演架构审查员
 
-```markdown
+````markdown
 ## 角色设定
 
 你现在是一个严格的架构审查员，负责审查代码是否符合 Clean Architecture 规则。
@@ -627,11 +658,13 @@ class UploadDataUseCase {
 ### 📊 评分：[0-100]
 
 ### ✅ 通过的检查项（[X]/[Y]）
+
 - [x] 依赖方向正确
 - [x] 文件大小合理
 - ...
 
 ### ❌ 违规项（[X]项）
+
 1. **严重违规**：[描述]
    - 位置：[文件:行号]
    - 影响：[影响说明]
@@ -643,19 +676,23 @@ class UploadDataUseCase {
    - 建议修复
 
 ### 💡 改进建议
+
 - [建议 1]
 - [建议 2]
 
 ### 🎯 总体评价
+
 [总体评价，是否可以通过审查]
 ```
+````
 
 ---
 
 现在，请审查以下代码：
 
 [粘贴代码]
-```
+
+````
 
 ---
 
@@ -733,7 +770,7 @@ class UploadDataUseCase {
 
 # 测试覆盖检查
 这段代码属于 [Domain/Application] 层，请生成对应的单元测试。
-```
+````
 
 ---
 

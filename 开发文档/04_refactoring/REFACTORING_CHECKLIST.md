@@ -18,6 +18,7 @@
 
 ```markdown
 每个检查项前的符号：
+
 - [ ] 未检查
 - [x] 已检查且通过
 - [!] 检查发现问题，需要修复
@@ -59,6 +60,7 @@
 ```
 
 **自动检查命令**：
+
 ```bash
 # 检查 Domain 层是否违规
 grep -r "from 'react'" src/domain/ && echo "❌ 违规" || echo "✅ 通过"
@@ -79,6 +81,7 @@ grep -r "fetch\|axios\|supabase" src/domain/ && echo "❌ 违规" || echo "✅ �
 ```
 
 **反模式识别**：
+
 ```typescript
 // ❌ 错误：Application 层依赖具体实现
 import { DuckDBRepository } from '@/infrastructure/adapters/DuckDBRepository'
@@ -115,9 +118,9 @@ import { IDataRepository } from '@/application/ports/IDataRepository'
       （如果无关联 → 内聚度低）
 
 - [ ] 文件名清晰表达职责？
-      ✅ kpi-calculator.ts  (计算 KPI)
-      ❌ utils.ts           (太泛化)
-      ❌ helpers.ts         (太模糊)
+      ✅ kpi-calculator.ts (计算 KPI)
+      ❌ utils.ts (太泛化)
+      ❌ helpers.ts (太模糊)
 ```
 
 ### 函数职责检查
@@ -126,13 +129,13 @@ import { IDataRepository } from '@/application/ports/IDataRepository'
 - [ ] 函数名是动词开头？（表达清晰的操作）
       ✅ calculateKPI()
       ✅ validateData()
-      ❌ data()  (名词，不清晰)
+      ❌ data() (名词，不清晰)
 
 - [ ] 函数参数 < 5 个？
       （超过 5 个 → 职责可能过多）
 
 - [ ] 函数只做一件事？
-      ❌ fetchDataAndCalculateAndSave()  (做了 3 件事)
+      ❌ fetchDataAndCalculateAndSave() (做了 3 件事)
       ✅ fetchData() + calculate() + save()
 ```
 
@@ -160,6 +163,7 @@ import { IDataRepository } from '@/application/ports/IDataRepository'
 ```
 
 **拆分标准**：
+
 ```typescript
 // ❌ 臃肿的组件（300+ 行）
 function ProductPage() {
@@ -188,9 +192,9 @@ function ProductPage() {
 ## 自定义 Hook 检查：
 
 - [ ] Hook 职责单一？
-      ✅ useProductData()  (获取产品数据)
-      ✅ useCart()         (购物车操作)
-      ❌ useEverything()   (包罗万象)
+      ✅ useProductData() (获取产品数据)
+      ✅ useCart() (购物车操作)
+      ❌ useEverything() (包罗万象)
 
 - [ ] Hook 不包含业务计算？
       （业务计算应在 Domain 层）
@@ -240,6 +244,7 @@ function ProductPage() {
 ```
 
 **检测方法**：
+
 ```bash
 # 查找可能的重复代码
 pnpm add -D jscpd
@@ -252,8 +257,8 @@ npx jscpd src/
 
 ```markdown
 - [ ] 业务规则是否散落各处？
-      ❌ if (premium > 10000) { ... }  // 出现在 5 个文件中
-      ✅ isHighValuePolicy(premium)    // 集中定义在 Domain 层
+      ❌ if (premium > 10000) { ... } // 出现在 5 个文件中
+      ✅ isHighValuePolicy(premium) // 集中定义在 Domain 层
 
 - [ ] 验证逻辑是否重复？
       ❌ 每个表单都写一遍邮箱验证
@@ -276,7 +281,7 @@ npx jscpd src/
 - [ ] 使用 kebab-case？
       ✅ kpi-calculator.ts
       ✅ data-service.ts
-      ❌ KPICalculator.ts  (PascalCase 用于类名)
+      ❌ KPICalculator.ts (PascalCase 用于类名)
       ❌ kpi_calculator.ts (snake_case 用于 Python)
 
 - [ ] 组件文件用 PascalCase？
@@ -298,22 +303,22 @@ npx jscpd src/
       ✅ isLoading
       ✅ hasPermission
       ✅ canEdit
-      ❌ loading  (不清楚类型)
+      ❌ loading (不清楚类型)
 
 - [ ] 数组用复数？
       ✅ products
       ✅ users
-      ❌ productList  (冗余)
+      ❌ productList (冗余)
 
 - [ ] 函数用动词开头？
       ✅ calculateTotal()
       ✅ fetchData()
-      ❌ total()  (名词)
+      ❌ total() (名词)
 
 - [ ] 常量用 UPPER_SNAKE_CASE？
       ✅ MAX_RETRY_COUNT
       ✅ API_BASE_URL
-      ❌ maxRetryCount  (常量应全大写)
+      ❌ maxRetryCount (常量应全大写)
 ```
 
 ---
@@ -324,7 +329,7 @@ npx jscpd src/
 - [ ] 接口用 I 开头（可选）或描述性名称？
       ✅ IDataRepository / DataRepository
       ✅ IUserService / UserService
-      ❌ Data  (太泛化)
+      ❌ Data (太泛化)
 
 - [ ] 类型用 PascalCase？
       ✅ InsuranceRecord
@@ -351,7 +356,7 @@ npx jscpd src/
 - [ ] index.ts 明确声明导出内容？
 - [ ] 只导出必要的符号？
       ✅ export { ProductList } from './ui/ProductList'
-      ❌ export * from './ui'  (导出所有，破坏封装)
+      ❌ export \* from './ui' (导出所有，破坏封装)
 
 - [ ] 内部实现不被外部直接导入？
       ❌ import { ProductCard } from '@/features/products/ui/ProductCard'
@@ -359,6 +364,7 @@ npx jscpd src/
 ```
 
 **示例**：
+
 ```typescript
 // src/features/kpi-dashboard/index.ts
 export { KPIDashboard } from './ui/KPIDashboard'
@@ -385,6 +391,7 @@ export type { KPIResult } from './types'
 ```
 
 **检测命令**：
+
 ```bash
 pnpm test:coverage
 # 查看覆盖率报告
@@ -404,11 +411,11 @@ pnpm test:coverage
 
 - [ ] 测试数据清晰？
       ✅ const testUser = { id: '1', name: 'Alice' }
-      ❌ const data = {...}  (不知道是什么)
+      ❌ const data = {...} (不知道是什么)
 
 - [ ] 测试断言明确？
       ✅ expect(result).toBe(0.85)
-      ❌ expect(result).toBeTruthy()  (太模糊)
+      ❌ expect(result).toBeTruthy() (太模糊)
 ```
 
 ---
@@ -427,11 +434,11 @@ pnpm test:coverage
       （解释"为什么"而非"是什么"）
 
 - [ ] 公开接口有 JSDoc？
-      /**
-       * 计算满期赔付率
-       * @param records - 保险记录数组
-       * @returns 赔付率（0-1 之间的小数）
-       */
+      /\*\*
+      _ 计算满期赔付率
+      _ @param records - 保险记录数组
+      _ @returns 赔付率（0-1 之间的小数）
+      _/
       export function calculateClaimRate(records: InsuranceRecord[]): number
 
 - [ ] 没有过时的注释？
@@ -469,7 +476,7 @@ pnpm test:coverage
 
 - [ ] 列表渲染有 key？
       ✅ {items.map(item => <div key={item.id}>...)}
-      ❌ {items.map(item => <div>...)}  (会导致重渲染)
+      ❌ {items.map(item => <div>...)} (会导致重渲染)
 
 - [ ] 避免不必要的重渲染？
       （使用 React.memo、useCallback）
@@ -536,20 +543,21 @@ echo "✅ 所有检查通过！可以提交代码。"
 
 ### 自评表
 
-| 检查项 | 权重 | 通过？ | 得分 |
-|--------|------|--------|------|
-| 依赖方向正确 | 20 | [ ] | /20 |
-| 单一职责 | 15 | [ ] | /15 |
-| 关注点分离 | 15 | [ ] | /15 |
-| 无重复代码 | 10 | [ ] | /10 |
-| 命名规范 | 10 | [ ] | /10 |
-| 公开接口清晰 | 10 | [ ] | /10 |
-| 有测试覆盖 | 10 | [ ] | /10 |
-| 有必要文档 | 5 | [ ] | /5 |
-| 性能优化 | 5 | [ ] | /5 |
-| **总分** | **100** | | **/100** |
+| 检查项       | 权重    | 通过？ | 得分     |
+| ------------ | ------- | ------ | -------- |
+| 依赖方向正确 | 20      | [ ]    | /20      |
+| 单一职责     | 15      | [ ]    | /15      |
+| 关注点分离   | 15      | [ ]    | /15      |
+| 无重复代码   | 10      | [ ]    | /10      |
+| 命名规范     | 10      | [ ]    | /10      |
+| 公开接口清晰 | 10      | [ ]    | /10      |
+| 有测试覆盖   | 10      | [ ]    | /10      |
+| 有必要文档   | 5       | [ ]    | /5       |
+| 性能优化     | 5       | [ ]    | /5       |
+| **总分**     | **100** |        | **/100** |
 
 **评级**：
+
 - 90-100：优秀 ⭐⭐⭐⭐⭐
 - 70-89：良好 ⭐⭐⭐⭐
 - 50-69：及格 ⭐⭐⭐

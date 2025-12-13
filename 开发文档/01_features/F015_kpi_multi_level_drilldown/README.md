@@ -23,6 +23,7 @@
 ### 2. 全局下钻导航条
 
 新的下钻交互模式：
+
 - **位置**：位于顶部筛选器与主要内容区之间。
 - **展示**：从左至右逐级展示已选择的维度（面包屑），清晰呈现下钻路径。
 - **交互**：
@@ -62,13 +63,16 @@ interface DrillDownStoreState {
 #### 3. UI组件
 
 **下钻导航条** (`src/components/features/drill-down/drill-down-bar.tsx`)
+
 - 核心交互组件，集成面包屑导航和维度添加功能。
 - 根据 `activeKPI` 状态自动显示或隐藏。
 
 **面包屑导航** (`src/components/features/drill-down/drill-down-breadcrumb.tsx`)
+
 - 展示下钻路径，支持点击返回。
 
 **维度选择器** (`src/components/features/drill-down/dimension-selector.tsx`)
+
 - 提供维度选择和值过滤功能。
 
 ### 集成方式
@@ -78,11 +82,13 @@ interface DrillDownStoreState {
 在 `TopToolbar` 和主要内容区之间集成 `DrillDownBar`：
 
 ```tsx
-{hasData && (activeTab === 'kpi' || activeTab === 'trend') && (
-  <div className="mb-6">
-    <DrillDownBar />
-  </div>
-)}
+{
+  hasData && (activeTab === 'kpi' || activeTab === 'trend') && (
+    <div className="mb-6">
+      <DrillDownBar />
+    </div>
+  )
+}
 ```
 
 #### 2. KPI卡片集成 (`src/components/features/kpi-card-with-drilldown.tsx`)
@@ -127,13 +133,16 @@ const handlePointClick = (point) => {
 ## 更新日志
 
 ### v1.3.0 (2025-12-09)
+
 - ♻️ **重构交互**：移除弹窗式下钻，采用全局下钻导航条。
 - ✨ **体验优化**：下钻路径可视化更清晰，操作更便捷。
 - 🔧 **趋势图集成**：趋势图点击交互适配新的下钻模式。
 - 🗑️ **代码清理**：移除旧版 `DrillDownControl` 和相关 Dialog 组件。
 
 ### v1.2.0 (2025-12-07)
+
 - ✅ 趋势分析组件集成多层下钻功能
 
 ### v1.0.0 (2025-12-07)
+
 - ✅ 实现多层下钻核心功能

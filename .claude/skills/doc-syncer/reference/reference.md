@@ -6,6 +6,7 @@
 **最后更新**: 2025-12-06
 **状态**: ✅ 活跃使用
 **关联文档**:
+
 - [SKILL.md](../SKILL.md) - 文档同步智能助手主文档
 - [sync-rules.md](./sync-rules.md) - 详细的同步规则
 - [doc-registry.md](./doc-registry.md) - 文档注册表
@@ -16,20 +17,21 @@
 
 根据代码变更类型，确定需要更新的文档：
 
-| 变更类型 | 相关文档 |
-|---------|---------|
-| CSV 数据结构变更 | `开发文档/03_technical_design/data_architecture.md` |
-| KPI 计算逻辑变更 | `开发文档/03_technical_design/core_calculations.md` |
-| 新增/修改功能 | `开发文档/01_features/FXXX_功能名/` 对应功能文档 |
-| 技术栈更新 | `开发文档/03_technical_design/tech_stack.md` |
-| 架构调整 | `开发文档/03_technical_design/architecture_refactoring.md` |
-| 维度字典更新 | `开发文档/03_technical_design/dimensions_dictionary.md` |
-| 重大决策 | `开发文档/02_decisions/` 对应决策文档 |
-| 阶段性总结 | `开发文档/03_technical_design/PHASE*_COMPLETION_REPORT.md` |
+| 变更类型         | 相关文档                                                   |
+| ---------------- | ---------------------------------------------------------- |
+| CSV 数据结构变更 | `开发文档/03_technical_design/data_architecture.md`        |
+| KPI 计算逻辑变更 | `开发文档/03_technical_design/core_calculations.md`        |
+| 新增/修改功能    | `开发文档/01_features/FXXX_功能名/` 对应功能文档           |
+| 技术栈更新       | `开发文档/03_technical_design/tech_stack.md`               |
+| 架构调整         | `开发文档/03_technical_design/architecture_refactoring.md` |
+| 维度字典更新     | `开发文档/03_technical_design/dimensions_dictionary.md`    |
+| 重大决策         | `开发文档/02_decisions/` 对应决策文档                      |
+| 阶段性总结       | `开发文档/03_technical_design/PHASE*_COMPLETION_REPORT.md` |
 
 ## 项目特定注意事项
 
 ### 文档目录结构
+
 ```
 开发文档/
 ├── 00_conventions.md           # 文档约定
@@ -50,6 +52,7 @@
 ```
 
 ### 核心原则
+
 1. **遵循 CLAUDE.md 的五条黄金法则**
    - 优先修改,而非新建
    - 小步快跑,持续验证

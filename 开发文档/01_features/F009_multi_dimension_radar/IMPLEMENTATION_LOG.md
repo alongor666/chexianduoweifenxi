@@ -9,11 +9,13 @@
 ## 改造概述
 
 ### 原功能
+
 - 对比当前周与上周的KPI数据
 - 单一雷达图，两条折线（当前周 vs 上周）
 - 固定的颜色方案（深蓝 vs 灰色）
 
 ### 新功能
+
 - 对比最多7个三级机构的KPI数据
 - 单一雷达图，最多7条折线（每个机构一条）
 - Tableau 专业配色方案（7种高对比度颜色）
@@ -58,6 +60,7 @@
 **文件**: `src/components/features/organization-selector.tsx`
 
 **功能**:
+
 - 快捷筛选按钮区域
 - 自定义选择区域（搜索 + 勾选）
 - 已选机构展示（带颜色标识）
@@ -65,6 +68,7 @@
 - 超限提示（最多7个）
 
 **交互**:
+
 - 点击快捷筛选：自动选择对应机构（最多7个）
 - 搜索机构：实时过滤机构列表
 - 勾选/取消：动态更新已选列表
@@ -75,6 +79,7 @@
 **文件**: `src/components/features/multi-dimension-radar.tsx`
 
 **主要变更**:
+
 - ❌ 移除 `currentKpi`, `compareKpi`, `compareWeekNumber` props
 - ✅ 组件内部维护 `selectedOrganizations` 状态
 - ✅ 使用 `useMultipleOrganizationKPIs` 获取机构KPI
@@ -84,6 +89,7 @@
 - ✅ 移除维度详细卡片（简化UI）
 
 **数据结构变更**:
+
 ```typescript
 // 旧结构
 interface RadarDataPoint {
@@ -96,7 +102,7 @@ interface RadarDataPoint {
 // 新结构
 interface RadarDataPoint {
   dimension: string
-  [orgName: string]: number  // 动态字段
+  [orgName: string]: number // 动态字段
   rawValues: Record<string, number>
   levels: Record<string, number>
   colors: Record<string, string>
@@ -109,6 +115,7 @@ interface RadarDataPoint {
 **文件**: `src/components/dashboard-client.tsx`
 
 **变更**:
+
 ```typescript
 // 旧代码
 <MultiDimensionRadar
@@ -134,17 +141,18 @@ interface RadarDataPoint {
 
 ```typescript
 const ORG_COLORS = [
-  '#1F77B4',  // 深蓝色
-  '#FF7F0E',  // 橙色
-  '#2CA02C',  // 绿色
-  '#D62728',  // 深红色
-  '#9467BD',  // 紫色
-  '#8C564B',  // 棕红色
-  '#E377C2',  // 粉紫色
+  '#1F77B4', // 深蓝色
+  '#FF7F0E', // 橙色
+  '#2CA02C', // 绿色
+  '#D62728', // 深红色
+  '#9467BD', // 紫色
+  '#8C564B', // 棕红色
+  '#E377C2', // 粉紫色
 ]
 ```
 
 **优势**:
+
 - 经过 Tableau 团队验证的专业配色
 - 色盲友好设计
 - 高对比度，任意两种颜色都能清晰区分
@@ -163,6 +171,7 @@ if (premium > 50_000_000) {
 ```
 
 这意味着：
+
 - 筛选结果始终准确反映当前数据
 - 筛选按钮显示实际机构数量
 - 适应数据变化，无需手动更新
@@ -286,17 +295,20 @@ Type error: FilterState 类型不匹配
 本次改造是 F009 功能的重大升级，从单一的时间对比转变为灵活的机构对比，极大提升了业务洞察能力：
 
 ✅ **核心价值提升**:
+
 - 支持同时对比7个机构，而非仅2个时间点
 - 快捷筛选让机构选择更智能、更高效
 - Tableau 配色让可视化更专业、更易读
 
 ✅ **用户体验优化**:
+
 - 所见即所得的颜色标识
 - 一键快捷筛选
 - 实时综合排名
 - 智能超限提示
 
 ✅ **技术质量保证**:
+
 - 类型安全的 TypeScript 实现
 - 性能优化的 useMemo 缓存
 - 可扩展的模块化设计

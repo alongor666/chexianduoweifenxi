@@ -50,9 +50,7 @@ function buildScriptsTable(packageScripts) {
 
   for (const { key, description } of SCRIPT_ENTRIES) {
     const scriptValue = String(packageScripts[key])
-    lines.push(
-      `| \`pnpm ${key}\` | \`${scriptValue}\` | ${description} |`
-    )
+    lines.push(`| \`pnpm ${key}\` | \`${scriptValue}\` | ${description} |`)
   }
 
   return lines.join('\n')
@@ -87,12 +85,7 @@ function main() {
   const generated = buildScriptsTable(scripts)
   const readme = readText(README_PATH)
 
-  const nextReadme = replaceBetween(
-    readme,
-    START_MARKER,
-    END_MARKER,
-    generated
-  )
+  const nextReadme = replaceBetween(readme, START_MARKER, END_MARKER, generated)
 
   if (nextReadme === readme) {
     process.stdout.write('[readme] 已是最新，无需更新。\n')

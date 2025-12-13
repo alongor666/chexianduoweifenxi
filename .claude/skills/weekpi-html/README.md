@@ -50,9 +50,11 @@ python generate_html_dashboard.py ../data.xlsx 49 四川分公司 ../references
 ## 配置文件
 
 ### references/thresholds.json
+
 定义阈值和状态评价标准。
 
 ### references/plans.json
+
 保费计划数据，用于计算达成率（可选）。
 
 ## 输出示例

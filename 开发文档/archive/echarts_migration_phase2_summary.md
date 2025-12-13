@@ -10,6 +10,7 @@
 ## 迁移组件清单
 
 ### 1. DistributionPieChart（分布饼图）✅
+
 - **复杂度**: 简单
 - **文件**: `src/components/features/distribution-pie-chart.tsx`
 - **变更内容**:
@@ -20,6 +21,7 @@
 - **性能优化**: 已应用 React.memo
 
 ### 2. DimensionBarChart（维度柱状图）✅
+
 - **复杂度**: 中等
 - **文件**: `src/components/features/dimension-bar-chart.tsx`
 - **变更内容**:
@@ -30,6 +32,7 @@
   - TopN 控制
 
 ### 3. CustomerSegmentationBubble（客户细分气泡图）✅
+
 - **复杂度**: 中等
 - **文件**: `src/components/features/customer-segmentation-bubble.tsx`
 - **变更内容**:
@@ -40,6 +43,7 @@
   - 支持客户类型/业务类型切换
 
 ### 4. ForecastPanel（预测趋势面板）✅
+
 - **复杂度**: 中等
 - **文件**: `src/components/features/forecast-panel.tsx`
 - **变更内容**:
@@ -49,6 +53,7 @@
   - 可配置预测步数
 
 ### 5. ComparisonAnalysis（对比分析）✅
+
 - **复杂度**: 复杂
 - **文件**: `src/components/features/comparison-analysis.tsx`
 - **包含子组件**:
@@ -60,6 +65,7 @@
   - 饼图 + 详细数据卡片布局
 
 ### 6. MultiDimensionRadar（多维健康度雷达图）✅
+
 - **复杂度**: 复杂
 - **文件**: `src/components/features/multi-dimension-radar.tsx`
 - **变更内容**:
@@ -93,7 +99,9 @@ useEffect(() => {
   }
 
   const chart = chartInstanceRef.current
-  const option: echarts.EChartsOption = { /* ... */ }
+  const option: echarts.EChartsOption = {
+    /* ... */
+  }
   chart.setOption(option, true)
 
   // 响应式调整
@@ -124,6 +132,7 @@ useEffect(() => {
 ### 2. 关键技术点
 
 #### 双 Y 轴配置
+
 ```typescript
 yAxis: [
   {
@@ -135,11 +144,12 @@ yAxis: [
     type: 'value',
     name: '边际贡献率(%)',
     position: 'right',
-  }
+  },
 ]
 ```
 
 #### 雷达图配置
+
 ```typescript
 radar: {
   indicator: radarData.map((d) => ({
@@ -153,10 +163,14 @@ radar: {
 ```
 
 #### 散点图气泡大小
+
 ```typescript
 symbolSize: (data: number[]) => {
   const policyCount = data[2]
-  return minSize + ((policyCount - minCount) / (maxCount - minCount)) * (maxSize - minSize)
+  return (
+    minSize +
+    ((policyCount - minCount) / (maxCount - minCount)) * (maxSize - minSize)
+  )
 }
 ```
 
@@ -171,16 +185,18 @@ symbolSize: (data: number[]) => {
 ## 依赖清理
 
 ### 移除的依赖
+
 ```json
 {
-  "recharts": "^3.3.0"  // ❌ 已移除
+  "recharts": "^3.3.0" // ❌ 已移除
 }
 ```
 
 ### 保留的依赖
+
 ```json
 {
-  "echarts": "^6.0.0"  // ✅ 已使用
+  "echarts": "^6.0.0" // ✅ 已使用
 }
 ```
 
@@ -189,6 +205,7 @@ symbolSize: (data: number[]) => {
 在迁移过程中修复了项目中预先存在的 TypeScript 错误：
 
 ### 1. src/lib/charts/builders.ts
+
 ```typescript
 // 修复前
 export function buildXAxis(
@@ -196,12 +213,11 @@ export function buildXAxis(
 ): EChartsOption['xAxis']
 
 // 修复后
-export function buildXAxis(
-  config?: Partial<any>
-): any
+export function buildXAxis(config?: Partial<any>): any
 ```
 
 ### 2. src/lib/charts/theme.ts
+
 ```typescript
 // 修复前
 color: CHART_COLORS.primary,  // readonly 数组
@@ -211,6 +227,7 @@ color: [...CHART_COLORS.primary] as any,  // 可变数组
 ```
 
 ### 3. src/lib/charts/templates/trend.ts
+
 ```typescript
 // 修复前
 // 缺少 buildYAxis 导入
@@ -218,13 +235,14 @@ color: [...CHART_COLORS.primary] as any,  // 可变数组
 // 修复后
 import {
   buildXAxis,
-  buildYAxis,  // ✅ 添加
+  buildYAxis, // ✅ 添加
   buildDualYAxis,
   // ...
 } from '../builders'
 ```
 
 ### 4. src/lib/charts/templates/heatmap.ts
+
 ```typescript
 // 修复前
 data: heatmapData,
@@ -234,9 +252,10 @@ data: heatmapData as any,
 ```
 
 ### 5. src/components/features/trend-chart/components/TrendTooltip.tsx
+
 ```typescript
 // 修复前
-import type { TooltipProps } from 'recharts'  // 未使用
+import type { TooltipProps } from 'recharts' // 未使用
 
 // 修复后
 // ✅ 已删除未使用的导入
@@ -245,21 +264,27 @@ import type { TooltipProps } from 'recharts'  // 未使用
 ## 测试结果
 
 ### TypeScript 检查
+
 ```bash
 pnpm tsc --noEmit
 ```
+
 ✅ 所有迁移组件无 TypeScript 错误
 
 ### 生产构建
+
 ```bash
 pnpm build
 ```
+
 ✅ 构建成功
+
 - 编译成功
 - 类型检查通过
 - 静态页面生成成功
 
 ### 构建产物
+
 ```
 Route (app)                    Size     First Load JS
 ┌ ○ /                          644 kB   837 kB
@@ -286,18 +311,21 @@ Route (app)                    Size     First Load JS
 ## 迁移优势
 
 ### 功能方面
+
 ✅ 保持所有原有功能
 ✅ 更丰富的交互体验
 ✅ 更灵活的配置选项
 ✅ 更好的 TypeScript 支持
 
 ### 性能方面
+
 ✅ Canvas 渲染性能更优
 ✅ 更小的包体积（移除 Recharts）
 ✅ 更好的大数据处理能力
 ✅ 优化的响应式处理
 
 ### 维护方面
+
 ✅ 统一的图表库
 ✅ 活跃的社区支持
 ✅ 完善的官方文档

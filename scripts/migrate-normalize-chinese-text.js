@@ -13,13 +13,19 @@ const { execSync } = require('child_process')
 console.log('🔄 开始迁移 normalizeChineseText 调用...\n')
 
 // 获取需要迁移的文件列表
-const filesToMigrate = execSync(`
+const filesToMigrate = execSync(
+  `
   grep -r "from '@/lib/utils'" src --include="*.ts" --include="*.tsx" |
   grep "normalizeChineseText" |
   cut -d: -f1 |
   sort |
   uniq
-`, { encoding: 'utf8' }).trim().split('\n').filter(Boolean)
+`,
+  { encoding: 'utf8' }
+)
+  .trim()
+  .split('\n')
+  .filter(Boolean)
 
 console.log(`📁 找到 ${filesToMigrate.length} 个需要迁移的文件:`)
 filesToMigrate.forEach(file => console.log(`  - ${file}`))
@@ -41,7 +47,9 @@ filesToMigrate.forEach(filePath => {
     let content = fs.readFileSync(fullPath, 'utf8')
 
     // 检查是否真的需要迁移
-    if (!content.includes("import { normalizeChineseText } from '@/lib/utils'")) {
+    if (
+      !content.includes("import { normalizeChineseText } from '@/lib/utils'")
+    ) {
       console.warn(`⚠️  ${filePath}: 不需要迁移`)
       return
     }
@@ -56,7 +64,6 @@ filesToMigrate.forEach(filePath => {
 
     console.log(`✅ ${filePath}`)
     successCount++
-
   } catch (error) {
     console.error(`❌ ${filePath}: ${error.message}`)
     errorCount++
@@ -70,11 +77,14 @@ console.log(`❌ 失败: ${errorCount}`)
 console.log('\n🔍 验证迁移结果...')
 try {
   // 检查是否还有遗漏的导入
-  const remaining = execSync(`
+  const remaining = execSync(
+    `
     grep -r "from '@/lib/utils'" src --include="*.ts" --include="*.tsx" |
     grep "normalizeChineseText" |
     wc -l
-  `, { encoding: 'utf8' }).trim()
+  `,
+    { encoding: 'utf8' }
+  ).trim()
 
   if (remaining === '0') {
     console.log('✅ 所有 normalizeChineseText 调用已成功迁移到 Domain 层')
@@ -86,7 +96,6 @@ try {
   console.log('🔨 检查编译...')
   execSync('npm run build', { stdio: 'inherit', encoding: 'utf8' })
   console.log('✅ 编译通过')
-
 } catch (error) {
   console.error('❌ 验证失败:', error.message)
   process.exit(1)

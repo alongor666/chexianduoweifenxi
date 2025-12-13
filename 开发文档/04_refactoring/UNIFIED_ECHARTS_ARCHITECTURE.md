@@ -77,7 +77,7 @@ src/
 ```tsx
 import { BaseEChart } from '@/components/charts/BaseEChart'
 
-<BaseEChart
+;<BaseEChart
   option={chartOption}
   height={400}
   loading={isLoading}
@@ -280,7 +280,7 @@ import { globalChartEventManager } from '@/lib/charts/interactions'
 globalChartEventManager.registerChart('chart-1', chartInstance)
 
 // 注册下钻处理器
-globalChartEventManager.onDrillDown('chart-1', (data) => {
+globalChartEventManager.onDrillDown('chart-1', data => {
   console.log('下钻到:', data.targetDimension)
   // 更新筛选条件
   updateFilters(drillDownToFilters(data, currentFilters))
@@ -446,12 +446,12 @@ const customOption = {
 import { BaseEChart } from '@/components/charts/BaseEChart'
 import { buildClickHandler, drillDownToFilters } from '@/lib/charts'
 
-const handleDrillDown = (data) => {
+const handleDrillDown = data => {
   const newFilters = drillDownToFilters(data, currentFilters)
   updateFilters(newFilters)
 }
 
-<BaseEChart
+;<BaseEChart
   option={option}
   onClick={buildClickHandler(
     'my-chart',

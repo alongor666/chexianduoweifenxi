@@ -7,29 +7,29 @@
 
 ## 📊 知识库概览
 
-| 类别 | 数量 | 说明 |
-|------|------|------|
-| 🎯 功能模块 | 13 | 产品功能文档（P0/P1/P2优先级） |
-| 🏗️ 技术决策 | 3 | ADR架构决策记录 |
-| ⚙️ 技术设计 | 10 | 数据架构、计算公式、技术栈 |
-| 🔧 重构文档 | 8 | 架构优化和重构计划 |
-| 📦 历史归档 | 39 | 旧版本文档归档 |
-| **📝 总计** | **34** | **活跃文档总数** |
+| 类别        | 数量   | 说明                           |
+| ----------- | ------ | ------------------------------ |
+| 🎯 功能模块 | 13     | 产品功能文档（P0/P1/P2优先级） |
+| 🏗️ 技术决策 | 3      | ADR架构决策记录                |
+| ⚙️ 技术设计 | 10     | 数据架构、计算公式、技术栈     |
+| 🔧 重构文档 | 8      | 架构优化和重构计划             |
+| 📦 历史归档 | 39     | 旧版本文档归档                 |
+| **📝 总计** | **34** | **活跃文档总数**               |
 
 ---
 
 ## 🔥 最近更新（30天内）
 
-- 🎯 [F015: KPI多层下钻功能](01_features/F015_kpi_multi_level_drilldown/README.md) - *2天前*
-- ⚙️ [核心指标计算引擎 V2.0](03_technical_design/core_calculations.md) - *2天前*
-- 🎯 [数据上传与解析模块](01_features/F001_data_import/README.md) - *5天前*
-- ⚙️ [技术栈与开发环境](03_technical_design/tech_stack.md) - *5天前*
-- ⚙️ [数据架构](03_technical_design/data_architecture.md) - *5天前*
-- ⚙️ [纯静态部署指南](03_technical_design/static_deployment.md) - *5天前*
-- ⚙️ [DuckDB 集成验证与边界指南](03_technical_design/duckdb_validation_guide.md) - *5天前*
-- ⚙️ [Store架构迁移计划](03_technical_design/store_migration_plan.md) - *11天前*
-- ⚙️ [DuckDB 集成文档](03_technical_design/duckdb_integration.md) - *11天前*
-- ⚙️ [维度字典与枚举值（Insuralytics）](03_technical_design/dimensions_dictionary.md) - *11天前*
+- 🎯 [F015: KPI多层下钻功能](01_features/F015_kpi_multi_level_drilldown/README.md) - _2天前_
+- ⚙️ [核心指标计算引擎 V2.0](03_technical_design/core_calculations.md) - _2天前_
+- 🎯 [数据上传与解析模块](01_features/F001_data_import/README.md) - _5天前_
+- ⚙️ [技术栈与开发环境](03_technical_design/tech_stack.md) - _5天前_
+- ⚙️ [数据架构](03_technical_design/data_architecture.md) - _5天前_
+- ⚙️ [纯静态部署指南](03_technical_design/static_deployment.md) - _5天前_
+- ⚙️ [DuckDB 集成验证与边界指南](03_technical_design/duckdb_validation_guide.md) - _5天前_
+- ⚙️ [Store架构迁移计划](03_technical_design/store_migration_plan.md) - _11天前_
+- ⚙️ [DuckDB 集成文档](03_technical_design/duckdb_integration.md) - _11天前_
+- ⚙️ [维度字典与枚举值（Insuralytics）](03_technical_design/dimensions_dictionary.md) - _11天前_
 
 ---
 
@@ -134,10 +134,10 @@
 
 > Architecture Decision Records - 记录关键技术选型和设计决策
 
-| ADR编号 | 决策标题 | 摘要 | 文档 |
-|---------|---------|------|------|
-| ADR-001 | ADR-001: 状态管理选型 - Zustand | > **状态**: ✅ 已采纳 > **决策日期**: 2025-01-20 (推断) > **决策人**: 开发团队 **选择 Zustand 作为全局状态管... | [`ADR-001_状态管理选型-Zustand.md`](02_decisions/ADR-001_状态管理选型-Zustand.md) |
-| ADR-002 | ADR-002: CSV解析策略 - 流式处理 | > **状态**: ✅ 已采纳 > **决策日期**: 2025-01-20 > **决策人**: 开发团队 **采用Papa Parse库的流式解析 (Wor... | [`ADR-002_CSV解析策略-流式处理.md`](02_decisions/ADR-002_CSV解析策略-流式处理.md) |
+| ADR编号 | 决策标题                               | 摘要                                                                                                                                               | 文档                                                                                            |
+| ------- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| ADR-001 | ADR-001: 状态管理选型 - Zustand        | > **状态**: ✅ 已采纳 > **决策日期**: 2025-01-20 (推断) > **决策人**: 开发团队 \*\*选择 Zustand 作为全局状态管...                                  | [`ADR-001_状态管理选型-Zustand.md`](02_decisions/ADR-001_状态管理选型-Zustand.md)               |
+| ADR-002 | ADR-002: CSV解析策略 - 流式处理        | > **状态**: ✅ 已采纳 > **决策日期**: 2025-01-20 > **决策人**: 开发团队 \*\*采用Papa Parse库的流式解析 (Wor...                                     | [`ADR-002_CSV解析策略-流式处理.md`](02_decisions/ADR-002_CSV解析策略-流式处理.md)               |
 | ADR-003 | ADR-003: 数据持久化策略 - LocalStorage | 已接受 (2025-01-20) 车险多维数据分析平台需要实现数据的本地持久化存储，以提升用户体验和数据安全性。用户上传的CSV数据需要在页面刷新或重新访问时能... | [`ADR-003_数据持久化策略-LocalStorage.md`](02_decisions/ADR-003_数据持久化策略-LocalStorage.md) |
 
 ---
@@ -230,54 +230,58 @@
 ### 热门标签
 
 **#94a3b8** (2个文档)
+
 - 🎯 [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md)
 - 🎯 [周度经营趋势分析模块](01_features/F011_weekly_operational_trend/README.md)
 
 **#3b82f6** (2个文档)
+
 - 🎯 [周度经营趋势分析模块](01_features/F011_weekly_operational_trend/README.md)
 - 🔧 [统一可视化引擎架构文档（ECharts）](04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md)
 
 **#ef4444** (2个文档)
+
 - 🎯 [周度经营趋势分析模块](01_features/F011_weekly_operational_trend/README.md)
 - 🔧 [统一可视化引擎架构文档（ECharts）](04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md)
 
 **#f97316** (2个文档)
+
 - 🎯 [周度经营趋势分析模块](01_features/F011_weekly_operational_trend/README.md)
 - 🔧 [统一可视化引擎架构文档（ECharts）](04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md)
 
 ### 所有标签
 
-| 标签 | 文档数 | 文档列表 |
-|------|--------|----------|
-| #10b981 | 1 | [统一可视化引擎架构文档（ECharts）](04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md) |
-| #1565C0 | 1 | [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md) |
-| #1976D2 | 1 | [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md) |
-| #2E7D32 | 1 | [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md) |
-| #3b82f6 | 2 | [周度经营趋势分析模块](01_features/F011_weekly_operational_trend/README.md), [统一可视化引擎架构文档（ECharts）](04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md) |
-| #4CAF50 | 1 | [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md) |
-| #8b5cf6 | 1 | [周度经营趋势分析模块](01_features/F011_weekly_operational_trend/README.md) |
-| #94a3b8 | 2 | [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md), [周度经营趋势分析模块](01_features/F011_weekly_operational_trend/README.md) |
-| #D32F2F | 1 | [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md) |
-| #F57C00 | 1 | [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md) |
-| #FBC02D | 1 | [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md) |
-| #FF6B35 | 1 | [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md) |
-| #ai | 1 | [🤖 AI 协作约定](04_refactoring/AI_COLLABORATION.md) |
-| #ef4444 | 2 | [周度经营趋势分析模块](01_features/F011_weekly_operational_trend/README.md), [统一可视化引擎架构文档（ECharts）](04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md) |
-| #f59e0b | 1 | [统一可视化引擎架构文档（ECharts）](04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md) |
-| #f97316 | 2 | [周度经营趋势分析模块](01_features/F011_weekly_operational_trend/README.md), [统一可视化引擎架构文档（ECharts）](04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md) |
-| #上下文注入模板 | 1 | [🤖 AI 协作约定](04_refactoring/AI_COLLABORATION.md) |
-| #为什么需要 | 1 | [🤖 AI 协作约定](04_refactoring/AI_COLLABORATION.md) |
-| #常见场景的标准提示词 | 1 | [🤖 AI 协作约定](04_refactoring/AI_COLLABORATION.md) |
-| #提示词工程 | 1 | [🤖 AI 协作约定](04_refactoring/AI_COLLABORATION.md) |
-| #故障排除 | 1 | [DuckDB 集成文档](03_technical_design/duckdb_integration.md) |
-| #最佳实践 | 1 | [DuckDB 集成文档](03_technical_design/duckdb_integration.md) |
-| #第一部分底层规律不可违反的物理定律 | 1 | [🏛️ 软件架构规则体系（完整版）](04_refactoring/ARCHITECTURE_RULES.md) |
-| #第三部分分层规则clean | 1 | [🏛️ 软件架构规则体系（完整版）](04_refactoring/ARCHITECTURE_RULES.md) |
-| #第二部分架构原则战术层面的指导方针 | 1 | [🏛️ 软件架构规则体系（完整版）](04_refactoring/ARCHITECTURE_RULES.md) |
-| #第五部分检查清单可执行的检查项 | 1 | [🏛️ 软件架构规则体系（完整版）](04_refactoring/ARCHITECTURE_RULES.md) |
-| #第六部分ai | 1 | [🏛️ 软件架构规则体系（完整版）](04_refactoring/ARCHITECTURE_RULES.md) |
-| #第四部分阶段规则按项目规模 | 1 | [🏛️ 软件架构规则体系（完整版）](04_refactoring/ARCHITECTURE_RULES.md) |
-| #错误纠正流程 | 1 | [🤖 AI 协作约定](04_refactoring/AI_COLLABORATION.md) |
+| 标签                                | 文档数 | 文档列表                                                                                                                                                         |
+| ----------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| #10b981                             | 1      | [统一可视化引擎架构文档（ECharts）](04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md)                                                                              |
+| #1565C0                             | 1      | [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md)                                                                                        |
+| #1976D2                             | 1      | [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md)                                                                                        |
+| #2E7D32                             | 1      | [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md)                                                                                        |
+| #3b82f6                             | 2      | [周度经营趋势分析模块](01_features/F011_weekly_operational_trend/README.md), [统一可视化引擎架构文档（ECharts）](04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md) |
+| #4CAF50                             | 1      | [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md)                                                                                        |
+| #8b5cf6                             | 1      | [周度经营趋势分析模块](01_features/F011_weekly_operational_trend/README.md)                                                                                      |
+| #94a3b8                             | 2      | [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md), [周度经营趋势分析模块](01_features/F011_weekly_operational_trend/README.md)           |
+| #D32F2F                             | 1      | [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md)                                                                                        |
+| #F57C00                             | 1      | [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md)                                                                                        |
+| #FBC02D                             | 1      | [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md)                                                                                        |
+| #FF6B35                             | 1      | [F009 多维健康度雷达图](01_features/F009_multi_dimension_radar/README.md)                                                                                        |
+| #ai                                 | 1      | [🤖 AI 协作约定](04_refactoring/AI_COLLABORATION.md)                                                                                                             |
+| #ef4444                             | 2      | [周度经营趋势分析模块](01_features/F011_weekly_operational_trend/README.md), [统一可视化引擎架构文档（ECharts）](04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md) |
+| #f59e0b                             | 1      | [统一可视化引擎架构文档（ECharts）](04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md)                                                                              |
+| #f97316                             | 2      | [周度经营趋势分析模块](01_features/F011_weekly_operational_trend/README.md), [统一可视化引擎架构文档（ECharts）](04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md) |
+| #上下文注入模板                     | 1      | [🤖 AI 协作约定](04_refactoring/AI_COLLABORATION.md)                                                                                                             |
+| #为什么需要                         | 1      | [🤖 AI 协作约定](04_refactoring/AI_COLLABORATION.md)                                                                                                             |
+| #常见场景的标准提示词               | 1      | [🤖 AI 协作约定](04_refactoring/AI_COLLABORATION.md)                                                                                                             |
+| #提示词工程                         | 1      | [🤖 AI 协作约定](04_refactoring/AI_COLLABORATION.md)                                                                                                             |
+| #故障排除                           | 1      | [DuckDB 集成文档](03_technical_design/duckdb_integration.md)                                                                                                     |
+| #最佳实践                           | 1      | [DuckDB 集成文档](03_technical_design/duckdb_integration.md)                                                                                                     |
+| #第一部分底层规律不可违反的物理定律 | 1      | [🏛️ 软件架构规则体系（完整版）](04_refactoring/ARCHITECTURE_RULES.md)                                                                                            |
+| #第三部分分层规则clean              | 1      | [🏛️ 软件架构规则体系（完整版）](04_refactoring/ARCHITECTURE_RULES.md)                                                                                            |
+| #第二部分架构原则战术层面的指导方针 | 1      | [🏛️ 软件架构规则体系（完整版）](04_refactoring/ARCHITECTURE_RULES.md)                                                                                            |
+| #第五部分检查清单可执行的检查项     | 1      | [🏛️ 软件架构规则体系（完整版）](04_refactoring/ARCHITECTURE_RULES.md)                                                                                            |
+| #第六部分ai                         | 1      | [🏛️ 软件架构规则体系（完整版）](04_refactoring/ARCHITECTURE_RULES.md)                                                                                            |
+| #第四部分阶段规则按项目规模         | 1      | [🏛️ 软件架构规则体系（完整版）](04_refactoring/ARCHITECTURE_RULES.md)                                                                                            |
+| #错误纠正流程                       | 1      | [🤖 AI 协作约定](04_refactoring/AI_COLLABORATION.md)                                                                                                             |
 
 ---
 
@@ -303,129 +307,153 @@
 <summary>点击展开完整引用关系</summary>
 
 **01_features/F001_data_import/README.md** 引用:
-  - `../../02_decisions/ADR-002_CSV解析策略-流式处理.md`
-  - `../../archive/CSV导入规范.md`
-  - `../../archive/测试记录-2025-10-20-最终.md`
+
+- `../../02_decisions/ADR-002_CSV解析策略-流式处理.md`
+- `../../archive/CSV导入规范.md`
+- `../../archive/测试记录-2025-10-20-最终.md`
 
 **01_features/F003_trend_analysis/README.md** 引用:
-  - `../../02_decisions/ADR-004.md`
+
+- `../../02_decisions/ADR-004.md`
 
 **01_features/F004_filters/README.md** 引用:
-  - `../../archive/全局筛选器重构总结.md`
-  - `../../03_technical_design/dimensions_dictionary.md`
-  - `../../archive/CSV导入规范.md`
-  - `../../archive/测试记录-2025-10-20-最终.md`
+
+- `../../archive/全局筛选器重构总结.md`
+- `../../03_technical_design/dimensions_dictionary.md`
+- `../../archive/CSV导入规范.md`
+- `../../archive/测试记录-2025-10-20-最终.md`
 
 **01_features/F005_structure_analysis/README.md** 引用:
-  - `../../archive/边贡分析模块改造测试记录.md`
-  - `../../03_technical_design/core_calculations.md`
-  - `../../archive/测试记录-2025-10-20-最终.md`
+
+- `../../archive/边贡分析模块改造测试记录.md`
+- `../../03_technical_design/core_calculations.md`
+- `../../archive/测试记录-2025-10-20-最终.md`
 
 **01_features/F006_data_export/README.md** 引用:
-  - `../../archive/全局筛选器重构总结.md`
-  - `../../archive/测试记录-2025-10-20-最终.md`
+
+- `../../archive/全局筛选器重构总结.md`
+- `../../archive/测试记录-2025-10-20-最终.md`
 
 **01_features/F008_data_persistence/README.md** 引用:
-  - `../../03_technical_design/data_architecture.md`
-  - `../../03_technical_design/tech_stack.md`
-  - `../../02_decisions/ADR-002_CSV解析策略-流式处理.md`
+
+- `../../03_technical_design/data_architecture.md`
+- `../../03_technical_design/tech_stack.md`
+- `../../02_decisions/ADR-002_CSV解析策略-流式处理.md`
 
 **01_features/F009_multi_dimension_radar/README.md** 引用:
-  - `../../03_technical_design/core_calculations.md`
-  - `../../03_technical_design/data_architecture.md`
-  - `../../03_technical_design/color_system.md`
-  - `../F005_structure_analysis/README.md`
+
+- `../../03_technical_design/core_calculations.md`
+- `../../03_technical_design/data_architecture.md`
+- `../../03_technical_design/color_system.md`
+- `../F005_structure_analysis/README.md`
 
 **01_features/F010_multi_week_import/README.md** 引用:
-  - `../F001_data_import/README.md`
-  - `../F008_data_persistence/README.md`
-  - `../../03_technical_design/data_architecture.md`
-  - `../../02_decisions/ADR-002_CSV解析策略-流式处理.md`
+
+- `../F001_data_import/README.md`
+- `../F008_data_persistence/README.md`
+- `../../03_technical_design/data_architecture.md`
+- `../../02_decisions/ADR-002_CSV解析策略-流式处理.md`
 
 **01_features/F011_weekly_operational_trend/README.md** 引用:
-  - `../F003_trend_analysis/README.md`
-  - `../../03_technical_design/data_architecture.md`
+
+- `../F003_trend_analysis/README.md`
+- `../../03_technical_design/data_architecture.md`
 
 **01_features/F013_premium_claim_bar_charts/README.md** 引用:
-  - `../F004_filters/README.md`
-  - `../F009_multi_dimension_radar/README.md`
-  - `../../03_technical_design/core_calculations.md`
+
+- `../F004_filters/README.md`
+- `../F009_multi_dimension_radar/README.md`
+- `../../03_technical_design/core_calculations.md`
 
 **01_features/F014_multi_chart_tabs/README.md** 引用:
-  - `../F009_multi_dimension_radar/README.md`
-  - `../F013_premium_claim_bar_charts/README.md`
-  - `../F013_premium_claim_bar_charts/README.md`
-  - `../F005_structure_analysis/README.md`
-  - `../../03_technical_design/core_calculations.md`
 
-**02_decisions/ADR-001_状态管理选型-Zustand.md** 引用:
-  - `../01_features/F001_data_import/README.md`
-  - `../01_features/F002_kpi_dashboard/README.md`
-  - `../01_features/F004_filters/README.md`
+- `../F009_multi_dimension_radar/README.md`
+- `../F013_premium_claim_bar_charts/README.md`
+- `../F013_premium_claim_bar_charts/README.md`
+- `../F005_structure_analysis/README.md`
+- `../../03_technical_design/core_calculations.md`
+
+**02*decisions/ADR-001*状态管理选型-Zustand.md** 引用:
+
+- `../01_features/F001_data_import/README.md`
+- `../01_features/F002_kpi_dashboard/README.md`
+- `../01_features/F004_filters/README.md`
 
 **02_decisions/ADR-002_CSV解析策略-流式处理.md** 引用:
-  - `../archive/CSV导入规范.md`
-  - `../01_features/F001_data_import/README.md`
 
-**02_decisions/ADR-003_数据持久化策略-LocalStorage.md** 引用:
-  - `./ADR-001_状态管理选型-Zustand.md`
-  - `./ADR-002_CSV解析策略-流式处理.md`
+- `../archive/CSV导入规范.md`
+- `../01_features/F001_data_import/README.md`
+
+**02*decisions/ADR-003*数据持久化策略-LocalStorage.md** 引用:
+
+- `./ADR-001_状态管理选型-Zustand.md`
+- `./ADR-002_CSV解析策略-流式处理.md`
 
 **03_technical_design/architecture_refactoring.md** 引用:
-  - `./data_architecture.md`
-  - `./core_calculations.md`
-  - `./tech_stack.md`
+
+- `./data_architecture.md`
+- `./core_calculations.md`
+- `./tech_stack.md`
 
 **03_technical_design/core_calculations.md** 引用:
-  - `../archive/KPI看板-4x4网格布局-测试记录.md`
-  - `../archive/紧凑版KPI看板测试记录-V2.md`
-  - `../archive/边贡分析模块改造测试记录.md`
+
+- `../archive/KPI看板-4x4网格布局-测试记录.md`
+- `../archive/紧凑版KPI看板测试记录-V2.md`
+- `../archive/边贡分析模块改造测试记录.md`
 
 **03_technical_design/data_architecture.md** 引用:
-  - `../01_features/F008_data_persistence/README.md`
-  - `../archive/CSV导入规范.md`
+
+- `../01_features/F008_data_persistence/README.md`
+- `../archive/CSV导入规范.md`
 
 **03_technical_design/duckdb_integration.md** 引用:
-  - `../../scripts/README.md`
+
+- `../../scripts/README.md`
 
 **03_technical_design/duckdb_validation_guide.md** 引用:
-  - `./duckdb_integration.md`
-  - `./data_architecture.md`
-  - `../../scripts/README.md`
-  - `./core_calculations.md`
+
+- `./duckdb_integration.md`
+- `./data_architecture.md`
+- `../../scripts/README.md`
+- `./core_calculations.md`
 
 **04_refactoring/AI_COLLABORATION.md** 引用:
-  - `./REFACTORING_CHECKLIST.md`
-  - `./REFACTORING_CHECKLIST.md`
+
+- `./REFACTORING_CHECKLIST.md`
+- `./REFACTORING_CHECKLIST.md`
 
 **04_refactoring/APPLICATION_LAYER_SUMMARY.md** 引用:
-  - `./REFACTORING_PLAN.md`
+
+- `./REFACTORING_PLAN.md`
 
 **04_refactoring/CHART_COMPONENTS_OPTIMIZATION.md** 引用:
-  - `./ARCHITECTURE_RULES.md`
-  - `./REFACTORING_PLAN.md`
+
+- `./ARCHITECTURE_RULES.md`
+- `./REFACTORING_PLAN.md`
 
 **04_refactoring/README.md** 引用:
-  - `./ARCHITECTURE_RULES.md`
-  - `./REFACTORING_PLAN.md`
-  - `./REFACTORING_CHECKLIST.md`
-  - `./AI_COLLABORATION.md`
-  - `./APPLICATION_LAYER_SUMMARY.md`
-  - `./REFACTORING_PLAN.md`
-  - `./ARCHITECTURE_RULES.md`
-  - `./REFACTORING_PLAN.md`
-  - `./ARCHITECTURE_RULES.md`
-  - `./REFACTORING_PLAN.md`
-  - `./AI_COLLABORATION.md`
-  - `./REFACTORING_CHECKLIST.md`
-  - `../../PROJECT_STATUS.md`
+
+- `./ARCHITECTURE_RULES.md`
+- `./REFACTORING_PLAN.md`
+- `./REFACTORING_CHECKLIST.md`
+- `./AI_COLLABORATION.md`
+- `./APPLICATION_LAYER_SUMMARY.md`
+- `./REFACTORING_PLAN.md`
+- `./ARCHITECTURE_RULES.md`
+- `./REFACTORING_PLAN.md`
+- `./ARCHITECTURE_RULES.md`
+- `./REFACTORING_PLAN.md`
+- `./AI_COLLABORATION.md`
+- `./REFACTORING_CHECKLIST.md`
+- `../../PROJECT_STATUS.md`
 
 **04_refactoring/REFACTORING_PLAN.md** 引用:
-  - `./ARCHITECTURE_RULES.md`
-  - `./ARCHITECTURE_RULES.md`
-  - `./REFACTORING_CHECKLIST.md`
-  - `./AI_COLLABORATION.md`
-  - `./ARCHITECTURE_RULES.md`
+
+- `./ARCHITECTURE_RULES.md`
+- `./ARCHITECTURE_RULES.md`
+- `./REFACTORING_CHECKLIST.md`
+- `./AI_COLLABORATION.md`
+- `./ARCHITECTURE_RULES.md`
 
 </details>
 
@@ -445,11 +473,13 @@
 ### 文档维护规范
 
 ✅ **必须做的事情**：
+
 - 代码变更后立即更新对应功能文档
 - 重大技术决策创建新的ADR文档
 - 每次功能发布前运行 `python scripts/generate_docs_index.py 开发文档`
 
 ❌ **禁止做的事情**：
+
 - 基于"记忆"而非代码标记功能状态
 - 保留与代码实现不符的过期文档
 - 直接修改自动生成的索引文件
@@ -476,5 +506,5 @@ python generate_docs_index.py ../开发文档
 
 ---
 
-*本索引由 `scripts/generate_docs_index.py` 自动生成*
-*如需更新，请运行: `python scripts/generate_docs_index.py 开发文档`*
+_本索引由 `scripts/generate_docs_index.py` 自动生成_
+_如需更新，请运行: `python scripts/generate_docs_index.py 开发文档`_

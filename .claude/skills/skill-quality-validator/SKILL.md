@@ -20,6 +20,7 @@ Claude技能质量检查器,基于官方创建流程规范自动验证技能质�
    - 或打包的.skill文件
 
 2. **执行检查**
+
    ```bash
    python scripts/check_skill.py <技能路径>
    ```
@@ -31,12 +32,12 @@ Claude技能质量检查器,基于官方创建流程规范自动验证技能质�
 
 ### 支持的输入方式
 
-| 输入类型 | 示例 | 说明 |
-|---------|------|------|
-| 技能目录 | `/mnt/skills/user/my-skill` | 本地技能目录 |
+| 输入类型   | 示例                          | 说明           |
+| ---------- | ----------------------------- | -------------- |
+| 技能目录   | `/mnt/skills/user/my-skill`   | 本地技能目录   |
 | .skill文件 | `/home/claude/my-skill.skill` | 打包的技能文件 |
-| 相对路径 | `./my-skill` | 当前目录的技能 |
-| 绝对路径 | `/home/claude/skill-folder` | 任意位置的技能 |
+| 相对路径   | `./my-skill`                  | 当前目录的技能 |
+| 绝对路径   | `/home/claude/skill-folder`   | 任意位置的技能 |
 
 ## 检查内容
 
@@ -79,13 +80,13 @@ Claude技能质量检查器,基于官方创建流程规范自动验证技能质�
 
 ### 评分等级
 
-| 分数 | 等级 | 说明 |
-|-----|------|------|
-| 90-100 | A - 优秀 | 完全符合最佳实践 |
-| 80-89 | B - 良好 | 基本符合,有少量改进空间 |
-| 70-79 | C - 合格 | 满足基本要求,建议优化 |
-| 60-69 | D - 需改进 | 存在明显问题 |
-| 0-59 | F - 不合格 | 有致命问题 |
+| 分数   | 等级       | 说明                    |
+| ------ | ---------- | ----------------------- |
+| 90-100 | A - 优秀   | 完全符合最佳实践        |
+| 80-89  | B - 良好   | 基本符合,有少量改进空间 |
+| 70-79  | C - 合格   | 满足基本要求,建议优化   |
+| 60-69  | D - 需改进 | 存在明显问题            |
+| 0-59   | F - 不合格 | 有致命问题              |
 
 **通过标准:** 评分≥70分 且 无致命问题
 
@@ -118,16 +119,19 @@ Claude技能质量检查器,基于官方创建流程规范自动验证技能质�
 ### 问题分级系统
 
 **🔴 致命问题 (Critical)**
+
 - 阻止技能正常工作
 - 必须立即修复
 - 每项扣10-30分
 
 **⚠️ 警告 (Warning)**
+
 - 影响技能质量
 - 建议尽快修复
 - 每项扣3-10分
 
 **⭐ 建议 (Suggestion)**
+
 - 优化改进方向
 - 可逐步实施
 - 不扣分
@@ -214,6 +218,7 @@ if not any(keyword in description.lower() for keyword in ...):
 ### 场景1: 新技能开发验证
 
 **工作流:**
+
 ```bash
 # 1. 创建技能
 python /mnt/skills/examples/skill-creator/scripts/init_skill.py my-skill
@@ -232,6 +237,7 @@ python /mnt/skills/user/skill-quality-validator/scripts/check_skill.py my-skill
 ### 场景2: 现有技能更新检查
 
 **工作流:**
+
 ```bash
 # 1. 修改技能内容
 # ... 更新SKILL.md或添加新功能 ...
@@ -245,6 +251,7 @@ python scripts/check_skill.py /mnt/skills/user/existing-skill
 ### 场景3: 第三方技能评估
 
 **工作流:**
+
 ```bash
 # 1. 下载技能文件
 # downloaded-skill.skill
@@ -258,6 +265,7 @@ python scripts/check_skill.py downloaded-skill.skill
 ### 场景4: 批量技能检查
 
 **工作流:**
+
 ```bash
 # 检查所有用户技能
 for skill in /mnt/skills/user/*/; do

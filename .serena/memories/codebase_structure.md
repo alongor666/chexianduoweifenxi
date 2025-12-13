@@ -35,6 +35,7 @@ chexianduoweifenxi/
 ## src/ 目录详细结构
 
 ### app/ - Next.js App Router
+
 ```
 src/app/
 ├── page.tsx           # 首页（主仪表盘）
@@ -47,6 +48,7 @@ src/app/
 ```
 
 ### components/ - React 组件
+
 ```
 src/components/
 ├── features/          # 功能组件（业务逻辑）
@@ -76,6 +78,7 @@ src/components/
 ```
 
 ### hooks/ - 自定义 Hooks
+
 ```
 src/hooks/
 ├── domains/          # 领域特定 Hooks
@@ -93,6 +96,7 @@ src/hooks/
 ```
 
 ### lib/ - 库和工具
+
 ```
 src/lib/
 ├── calculations/     # 业务计算逻辑
@@ -120,6 +124,7 @@ src/lib/
 ```
 
 ### store/ - 状态管理
+
 ```
 src/store/
 ├── use-app-store.ts        # 主应用状态（Zustand）
@@ -128,6 +133,7 @@ src/store/
 ```
 
 ### types/ - TypeScript 类型定义
+
 ```
 src/types/
 ├── insurance.ts            # 保险数据类型
@@ -138,6 +144,7 @@ src/types/
 ```
 
 ### 其他目录
+
 ```
 src/
 ├── config/           # 配置文件
@@ -180,6 +187,7 @@ src/
 ## 关键文件说明
 
 ### 配置文件
+
 - `package.json`: 项目依赖和脚本定义
 - `tsconfig.json`: TypeScript 编译配置
 - `next.config.mjs`: Next.js 框架配置
@@ -188,11 +196,13 @@ src/
 - `.eslintrc.json`: 代码检查规则
 
 ### 入口文件
+
 - `src/app/page.tsx`: 应用主页面入口
 - `src/app/layout.tsx`: 根布局组件
 - `src/store/use-app-store.ts`: 全局状态管理
 
 ### 核心业务文件
+
 - `src/lib/validations/insurance-schema.ts`: 数据验证 Schema
 - `src/lib/calculations/kpi-calculator.ts`: KPI 计算逻辑
 - `src/hooks/use-kpi.ts`: KPI 数据 Hook

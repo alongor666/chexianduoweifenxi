@@ -8,12 +8,14 @@
 ## 一、改造概述
 
 ### 原设计
+
 ```
 [当前周数据] vs [上周数据]
 单一雷达图，两条折线
 ```
 
 ### 新设计
+
 ```
 [机构A] vs [机构B] vs [机构C] ... (最多7个)
 单一雷达图，多条折线（每个机构一条）
@@ -28,9 +30,18 @@
 
 ```typescript
 const ALL_ORGANIZATIONS = [
-  '天府', '高新', '新都', '青羊',  // 成都
-  '宜宾', '武侯', '泸州', '德阳',  // 异地A组
-  '乐山', '资阳', '自贡', '达州',  // 异地B组
+  '天府',
+  '高新',
+  '新都',
+  '青羊', // 成都
+  '宜宾',
+  '武侯',
+  '泸州',
+  '德阳', // 异地A组
+  '乐山',
+  '资阳',
+  '自贡',
+  '达州', // 异地B组
   // '本部' 暂不纳入
 ]
 ```
@@ -40,13 +51,13 @@ const ALL_ORGANIZATIONS = [
 ```typescript
 // Tableau 风格配色方案 - 经过验证的数据可视化专业配色
 const ORG_COLORS = [
-  '#1F77B4',  // 1. 深蓝色 — 稳重、专业，适合基础与关键单位
-  '#FF7F0E',  // 2. 橙色 — 活力、突出的视觉效果
-  '#2CA02C',  // 3. 绿色 — 平衡、易于接受
-  '#D62728',  // 4. 深红色 — 强烈的对比，吸引注意
-  '#9467BD',  // 5. 紫色 — 独特，能够清晰分辨
-  '#8C564B',  // 6. 棕红色 — 较为柔和，与其它颜色有明显对比
-  '#E377C2',  // 7. 粉紫色 — 视觉上较柔和，但足够突出
+  '#1F77B4', // 1. 深蓝色 — 稳重、专业，适合基础与关键单位
+  '#FF7F0E', // 2. 橙色 — 活力、突出的视觉效果
+  '#2CA02C', // 3. 绿色 — 平衡、易于接受
+  '#D62728', // 4. 深红色 — 强烈的对比，吸引注意
+  '#9467BD', // 5. 紫色 — 独特，能够清晰分辨
+  '#8C564B', // 6. 棕红色 — 较为柔和，与其它颜色有明显对比
+  '#E377C2', // 7. 粉紫色 — 视觉上较柔和，但足够突出
 ]
 
 // 色彩特点:
@@ -156,14 +167,23 @@ const QUICK_FILTERS: QuickFilter[] = [
     label: '成都',
     icon: '📍',
     description: '成都地区机构',
-    organizations: ['天府', '高新', '新都', '青羊']
+    organizations: ['天府', '高新', '新都', '青羊'],
   },
   {
     id: 'yidi',
     label: '异地',
     icon: '🌏',
     description: '成都以外机构',
-    organizations: ['宜宾', '武侯', '泸州', '德阳', '乐山', '资阳', '自贡', '达州']
+    organizations: [
+      '宜宾',
+      '武侯',
+      '泸州',
+      '德阳',
+      '乐山',
+      '资阳',
+      '自贡',
+      '达州',
+    ],
   },
   {
     id: 'high_premium',
@@ -171,35 +191,35 @@ const QUICK_FILTERS: QuickFilter[] = [
     icon: '💰',
     description: '累计保费 > 5000万',
     // 动态计算,基于当前数据
-    organizations: [] // 运行时填充
+    organizations: [], // 运行时填充
   },
   {
     id: 'medium_premium',
     label: '中保费',
     icon: '💵',
     description: '2000万 < 保费 ≤ 5000万',
-    organizations: []
+    organizations: [],
   },
   {
     id: 'low_premium',
     label: '低保费',
     icon: '💴',
     description: '保费 ≤ 2000万',
-    organizations: []
+    organizations: [],
   },
   {
     id: 'high_loss_ratio',
     label: '高赔付',
     icon: '⚠️',
     description: '赔付率 > 70%',
-    organizations: []
+    organizations: [],
   },
   {
     id: 'low_loss_ratio',
     label: '低赔付',
     icon: '✅',
     description: '赔付率 < 50%',
-    organizations: []
+    organizations: [],
   },
 ]
 ```
@@ -350,9 +370,9 @@ interface MultiDimensionRadarState {
 ```typescript
 interface RadarDataPoint {
   // 维度信息
-  dimension: string        // 简称 "边贡率"
-  fullLabel: string        // 全称
-  dimensionKey: string     // key
+  dimension: string // 简称 "边贡率"
+  fullLabel: string // 全称
+  dimensionKey: string // key
 
   // 动态机构评分字段
   [orgName: string]: number | string
@@ -365,9 +385,9 @@ interface RadarDataPoint {
   description: string
 
   // 辅助数据(用于Tooltip)
-  rawValues: { [orgName: string]: number }  // 原始值
-  levels: { [orgName: string]: string }     // 等级
-  colors: { [orgName: string]: string }     // 颜色
+  rawValues: { [orgName: string]: number } // 原始值
+  levels: { [orgName: string]: string } // 等级
+  colors: { [orgName: string]: string } // 颜色
 }
 
 // 示例
@@ -383,8 +403,8 @@ const radarData: RadarDataPoint[] = [
 
     // 原始值
     rawValues: {
-      天府: 0.125,  // 12.5%
-      高新: 0.138,  // 13.8%
+      天府: 0.125, // 12.5%
+      高新: 0.138, // 13.8%
     },
 
     // 等级
@@ -400,7 +420,7 @@ const radarData: RadarDataPoint[] = [
     },
 
     unit: '%',
-    description: '反映业务盈利能力'
+    description: '反映业务盈利能力',
   },
   // ... 其他4个维度
 ]
@@ -421,13 +441,13 @@ async function getKPIByOrganization(
   // 构造新的筛选条件,锁定三级机构
   const orgFilters = {
     ...filters,
-    thirdLevelOrg: [orgName]  // 仅此机构
+    thirdLevelOrg: [orgName], // 仅此机构
   }
 
   // 调用现有 KPI API
   const response = await fetch('/api/kpi', {
     method: 'POST',
-    body: JSON.stringify(orgFilters)
+    body: JSON.stringify(orgFilters),
   })
 
   return await response.json()
@@ -441,8 +461,9 @@ async function getKPIsForOrganizations(
   filters: FilterState
 ): Promise<Map<string, KPIResult>> {
   const promises = orgNames.map(org =>
-    getKPIByOrganization(org, filters)
-      .then(kpi => [org, kpi] as [string, KPIResult])
+    getKPIByOrganization(org, filters).then(
+      kpi => [org, kpi] as [string, KPIResult]
+    )
   )
 
   const results = await Promise.all(promises)
@@ -563,19 +584,20 @@ const CustomTooltip = ({ active, payload }: any) => {
 
 ```typescript
 interface ComparisonTableRow {
-  dimension: string           // 维度名称
-  dimensionKey: string        // 维度key
-  orgScores: {                // 各机构评分
+  dimension: string // 维度名称
+  dimensionKey: string // 维度key
+  orgScores: {
+    // 各机构评分
     [orgName: string]: {
-      score: number           // 评分 0-100
-      rawValue: number        // 原始值
-      level: string           // 等级
-      color: string           // 颜色
-      isBest: boolean         // 是否最优
+      score: number // 评分 0-100
+      rawValue: number // 原始值
+      level: string // 等级
+      color: string // 颜色
+      isBest: boolean // 是否最优
     }
   }
-  bestOrg: string            // 最优机构
-  worstOrg: string           // 最差机构
+  bestOrg: string // 最优机构
+  worstOrg: string // 最差机构
 }
 ```
 
@@ -642,12 +664,8 @@ interface ComparisonTableRow {
           {calculateOverallScore(org).toFixed(1)}
         </td>
       ))}
-      <td className="p-3 text-center text-green-700">
-        {getBestOverallOrg()}
-      </td>
-      <td className="p-3 text-center text-red-700">
-        {getWorstOverallOrg()}
-      </td>
+      <td className="p-3 text-center text-green-700">{getBestOverallOrg()}</td>
+      <td className="p-3 text-center text-red-700">{getWorstOverallOrg()}</td>
     </tr>
   </tbody>
 </table>
@@ -681,11 +699,14 @@ async function calculatePremiumTiers(
   const low: string[] = []
 
   premiumMap.forEach((premium, org) => {
-    if (premium > 50_000_000) {  // > 5000万
+    if (premium > 50_000_000) {
+      // > 5000万
       high.push(org)
-    } else if (premium > 20_000_000) {  // 2000-5000万
+    } else if (premium > 20_000_000) {
+      // 2000-5000万
       medium.push(org)
-    } else {  // < 2000万
+    } else {
+      // < 2000万
       low.push(org)
     }
   })
@@ -699,7 +720,7 @@ async function calculatePremiumTiers(
 ```typescript
 async function calculateLossRatioTiers(
   filters: FilterState
-): Promise<{ high: string[], low: string[] }> {
+): Promise<{ high: string[]; low: string[] }> {
   const allOrgs = ALL_ORGANIZATIONS
   const lossRatioMap = new Map<string, number>()
 
@@ -712,9 +733,11 @@ async function calculateLossRatioTiers(
   const low: string[] = []
 
   lossRatioMap.forEach((ratio, org) => {
-    if (ratio > 0.7) {  // > 70%
+    if (ratio > 0.7) {
+      // > 70%
       high.push(org)
-    } else if (ratio < 0.5) {  // < 50%
+    } else if (ratio < 0.5) {
+      // < 50%
       low.push(org)
     }
   })
@@ -802,10 +825,7 @@ const orgKPIsCache = useMemo(() => {
 }, [selectedOrganizations, filters])
 
 // 2. 防抖快捷筛选
-const debouncedQuickFilter = useMemo(
-  () => debounce(handleQuickFilter, 300),
-  []
-)
+const debouncedQuickFilter = useMemo(() => debounce(handleQuickFilter, 300), [])
 
 // 3. 虚拟滚动(如果机构列表很长)
 import { useVirtualizer } from '@tanstack/react-virtual'
@@ -821,7 +841,7 @@ const [showComparisonTable, setShowComparisonTable] = useState(false)
 if (!kpi || kpi.totalPremium === 0) {
   return {
     ...defaultKPI,
-    _noData: true  // 标记无数据
+    _noData: true, // 标记无数据
   }
 }
 
@@ -903,7 +923,7 @@ if (selectedOrganizations.length === 0) {
 // 选择第8个机构时
 if (selectedOrganizations.length >= 7) {
   toast.warning('最多选择7个机构进行对比', {
-    description: '请先移除部分机构后再添加新机构'
+    description: '请先移除部分机构后再添加新机构',
   })
   return
 }
@@ -931,10 +951,10 @@ if (selectedOrganizations.length === 1) {
 // Tableau 配色的对比度特性
 const COLOR_PROPERTIES = [
   { color: '#1F77B4', name: '深蓝色', lightness: 50, saturation: 68 },
-  { color: '#FF7F0E', name: '橙色',   lightness: 56, saturation: 100 },
-  { color: '#2CA02C', name: '绿色',   lightness: 45, saturation: 58 },
+  { color: '#FF7F0E', name: '橙色', lightness: 56, saturation: 100 },
+  { color: '#2CA02C', name: '绿色', lightness: 45, saturation: 58 },
   { color: '#D62728', name: '深红色', lightness: 49, saturation: 71 },
-  { color: '#9467BD', name: '紫色',   lightness: 56, saturation: 48 },
+  { color: '#9467BD', name: '紫色', lightness: 56, saturation: 48 },
   { color: '#8C564B', name: '棕红色', lightness: 43, saturation: 30 },
   { color: '#E377C2', name: '粉紫色', lightness: 71, saturation: 63 },
 ]

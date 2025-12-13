@@ -12,15 +12,8 @@
     "src/components/features/upload-history.tsx",
     "src/store/use-app-store.ts"
   ],
-  "related_decisions": [
-    "ADR-003"
-  ],
+  "related_decisions": ["ADR-003"],
   "related_issues": [],
-  "tags": [
-    "数据持久化",
-    "本地存储",
-    "上传历史",
-    "P1"
-  ],
+  "tags": ["数据持久化", "本地存储", "上传历史", "P1"],
   "description": "实现数据的本地持久化存储和上传历史记录功能，包括数据自动保存、恢复、重复文件检测和历史记录可视化。"
 }

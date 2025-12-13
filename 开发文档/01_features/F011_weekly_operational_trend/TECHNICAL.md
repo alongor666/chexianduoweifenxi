@@ -1,6 +1,7 @@
 # 周度经营趋势分析 - 技术实现文档
 
 ## 目录
+
 - [核心架构](#核心架构)
 - [ECharts配置详解](#echarts配置详解)
 - [数据处理流程](#数据处理流程)
@@ -11,6 +12,7 @@
 ## 核心架构
 
 ### 组件层级
+
 ```
 WeeklyOperationalTrend (主组件)
   ├─ 数据获取层 (useTrendData)
@@ -29,6 +31,7 @@ WeeklyOperationalTrend (主组件)
 ```
 
 ### 技术栈
+
 - **React**: 18.x - UI框架
 - **ECharts**: 6.0.0 - 图表渲染引擎
 - **TypeScript**: 5.x - 类型系统
@@ -37,6 +40,7 @@ WeeklyOperationalTrend (主组件)
 ## ECharts配置详解
 
 ### 1. 网格配置 (Grid)
+
 ```typescript
 grid: {
   left: '3%',        // 左边距（自动计算Y轴标签）
@@ -48,56 +52,66 @@ grid: {
 ```
 
 ### 2. X轴配置 (XAxis)
+
 ```typescript
-xAxis: [{
-  type: 'category',        // 类目轴
-  data: weeks,             // 周次标签数组
-  axisPointer: {
-    type: 'shadow'         // 悬浮时显示阴影指示器
+xAxis: [
+  {
+    type: 'category', // 类目轴
+    data: weeks, // 周次标签数组
+    axisPointer: {
+      type: 'shadow', // 悬浮时显示阴影指示器
+    },
+    axisLabel: {
+      fontSize: 11,
+      rotate: 45, // 标签旋转45度（避免重叠）
+      color: '#64748b',
+    },
   },
-  axisLabel: {
-    fontSize: 11,
-    rotate: 45,            // 标签旋转45度（避免重叠）
-    color: '#64748b'
-  }
-}]
+]
 ```
 
 ### 3. Y轴配置 (YAxis)
 
 #### 左Y轴（签单保费）
+
 ```typescript
-yAxis: [{
-  type: 'value',
-  name: '签单保费（万元）',
-  position: 'left',
-  axisLabel: {
-    formatter: (value) => formatNumber(value, 0)  // 格式化为整数
+yAxis: [
+  {
+    type: 'value',
+    name: '签单保费（万元）',
+    position: 'left',
+    axisLabel: {
+      formatter: value => formatNumber(value, 0), // 格式化为整数
+    },
+    splitLine: {
+      lineStyle: { color: '#f1f5f9' }, // 浅灰色网格线
+    },
   },
-  splitLine: {
-    lineStyle: { color: '#f1f5f9' }  // 浅灰色网格线
-  }
-}]
+]
 ```
 
 #### 右Y轴（赔付率）
+
 ```typescript
-yAxis: [{
-  type: 'value',
-  name: '赔付率（%）',
-  position: 'right',
-  axisLabel: {
-    formatter: (value) => `${value.toFixed(0)}%`  // 格式化为百分比
+yAxis: [
+  {
+    type: 'value',
+    name: '赔付率（%）',
+    position: 'right',
+    axisLabel: {
+      formatter: value => `${value.toFixed(0)}%`, // 格式化为百分比
+    },
+    splitLine: { show: false }, // 不显示网格线（避免与左轴冲突）
+    min: value => Math.floor(value.min / 10) * 10, // 向下取整到10
+    max: value => Math.ceil(value.max / 10) * 10, // 向上取整到10
   },
-  splitLine: { show: false },  // 不显示网格线（避免与左轴冲突）
-  min: (value) => Math.floor(value.min / 10) * 10,  // 向下取整到10
-  max: (value) => Math.ceil(value.max / 10) * 10    // 向上取整到10
-}]
+]
 ```
 
 ### 4. 系列配置 (Series)
 
 #### 签单保费面积图
+
 ```typescript
 {
   name: '签单保费',
@@ -122,6 +136,7 @@ yAxis: [{
 ```
 
 #### 赔付率正常点
+
 ```typescript
 {
   name: '赔付率',
@@ -136,6 +151,7 @@ yAxis: [{
 ```
 
 #### 赔付率风险点（高亮）
+
 ```typescript
 {
   name: '赔付率（风险）',
@@ -161,6 +177,7 @@ yAxis: [{
 ```
 
 #### 阈值线（70%）
+
 ```typescript
 {
   name: '阈值线 70%',
@@ -178,6 +195,7 @@ yAxis: [{
 ```
 
 #### 趋势线
+
 ```typescript
 {
   name: '趋势线',
@@ -194,6 +212,7 @@ yAxis: [{
 ```
 
 ### 5. DataZoom配置
+
 ```typescript
 dataZoom: [
   // 滑块型缩放
@@ -220,6 +239,7 @@ dataZoom: [
 ```
 
 ### 6. Tooltip配置
+
 ```typescript
 tooltip: {
   trigger: 'axis',
@@ -241,6 +261,7 @@ tooltip: {
 ## 数据处理流程
 
 ### 1. 原始数据获取
+
 ```typescript
 const rawData = useTrendData()
 // 返回格式：
@@ -255,18 +276,19 @@ const rawData = useTrendData()
 ```
 
 ### 2. 数据转换
+
 ```typescript
 const chartData = useMemo(() => {
   if (!rawData || rawData.length === 0) return []
 
   return rawData
-    .map((d) => ({
+    .map(d => ({
       week: d.label,
       weekNumber: d.week,
       year: d.year,
       signedPremium: d.signed_premium_10k,
       lossRatio: d.loss_ratio,
-      isRisk: d.loss_ratio !== null && d.loss_ratio >= 70  // 风险标识
+      isRisk: d.loss_ratio !== null && d.loss_ratio >= 70, // 风险标识
     }))
     .sort((a, b) => {
       if (a.year !== b.year) return a.year - b.year
@@ -276,10 +298,11 @@ const chartData = useMemo(() => {
 ```
 
 ### 3. 趋势线计算（线性回归）
+
 ```typescript
 function calculateTrendLine(data: ChartDataPoint[]): number[] {
   const lossRatios = data
-    .map((d) => d.lossRatio)
+    .map(d => d.lossRatio)
     .filter((v): v is number => v !== null)
 
   if (lossRatios.length < 2) return []
@@ -301,6 +324,7 @@ function calculateTrendLine(data: ChartDataPoint[]): number[] {
 ```
 
 ### 4. 经营摘要生成
+
 ```typescript
 function generateOperationalSummary(data: ChartDataPoint[]): string {
   if (data.length === 0) return ''
@@ -319,7 +343,7 @@ function generateOperationalSummary(data: ChartDataPoint[]): string {
     }
   }
 
-  const totalRiskWeeks = data.filter((d) => d.isRisk).length
+  const totalRiskWeeks = data.filter(d => d.isRisk).length
 
   let summary = `截至${latestPoint.year}年第${latestPoint.weekNumber}周，`
   summary += `年度累计签单保费 ${formatNumber(latestPremium / 10000, 2)} 亿元`
@@ -340,12 +364,13 @@ function generateOperationalSummary(data: ChartDataPoint[]): string {
 ## 交互事件实现
 
 ### 1. 点击事件注册
+
 ```typescript
 useEffect(() => {
   // ... ECharts初始化代码
 
   // 注册点击事件
-  chart.off('click')  // 先清除旧事件
+  chart.off('click') // 先清除旧事件
   chart.on('click', (params: any) => {
     if (params.componentType === 'series' && params.seriesType === 'scatter') {
       const dataIndex = params.dataIndex
@@ -359,6 +384,7 @@ useEffect(() => {
 ```
 
 ### 2. 点击事件处理
+
 ```typescript
 const handlePointClick = (point: ChartDataPoint) => {
   console.log('🔍 下钻分析：', point)
@@ -379,6 +405,7 @@ const handlePointClick = (point: ChartDataPoint) => {
 ```
 
 ### 3. 响应式调整
+
 ```typescript
 useEffect(() => {
   // ... ECharts初始化代码
@@ -401,11 +428,14 @@ useEffect(() => {
 ## 性能优化策略
 
 ### 1. React优化
+
 ```typescript
 // 组件级memo
-export const WeeklyOperationalTrend = React.memo(function WeeklyOperationalTrend() {
-  // ...
-})
+export const WeeklyOperationalTrend = React.memo(
+  function WeeklyOperationalTrend() {
+    // ...
+  }
+)
 
 // 计算密集型数据缓存
 const chartData = useMemo(() => {
@@ -421,38 +451,41 @@ const chartInstanceRef = useRef<echarts.ECharts | null>(null)
 ```
 
 ### 2. ECharts优化
+
 ```typescript
 // LTTB降采样（大数据量时自动触发）
-series: [{
-  // ...
-  sampling: 'lttb'  // Largest-Triangle-Three-Buckets算法
-}]
+series: [
+  {
+    // ...
+    sampling: 'lttb', // Largest-Triangle-Three-Buckets算法
+  },
+]
 
 // 禁用动画（提升渲染性能）
-series: [{
-  // ...
-  animation: false
-}]
+series: [
+  {
+    // ...
+    animation: false,
+  },
+]
 
 // Canvas渲染（比SVG快）
 echarts.init(chartRef.current, undefined, {
-  renderer: 'canvas'
+  renderer: 'canvas',
 })
 ```
 
 ### 3. 事件优化
+
 ```typescript
 // 防抖处理（如果需要）
-const debouncedResize = useMemo(
-  () => debounce(() => chart.resize(), 200),
-  []
-)
+const debouncedResize = useMemo(() => debounce(() => chart.resize(), 200), [])
 
 // 事件清理
 useEffect(() => {
   return () => {
     if (chartInstanceRef.current) {
-      chartInstanceRef.current.dispose()  // 销毁实例
+      chartInstanceRef.current.dispose() // 销毁实例
       chartInstanceRef.current = null
     }
   }
@@ -462,35 +495,60 @@ useEffect(() => {
 ## 代码示例
 
 ### 完整的ECharts Option
+
 ```typescript
 const option: echarts.EChartsOption = {
   backgroundColor: 'transparent',
-  grid: { /* ... */ },
-  tooltip: { /* ... */ },
-  legend: { /* ... */ },
-  xAxis: [{ /* ... */ }],
+  grid: {
+    /* ... */
+  },
+  tooltip: {
+    /* ... */
+  },
+  legend: {
+    /* ... */
+  },
+  xAxis: [
+    {
+      /* ... */
+    },
+  ],
   yAxis: [
-    { /* 左Y轴：签单保费 */ },
-    { /* 右Y轴：赔付率 */ }
+    {
+      /* 左Y轴：签单保费 */
+    },
+    {
+      /* 右Y轴：赔付率 */
+    },
   ],
-  dataZoom: [
-    { type: 'slider', /* ... */ },
-    { type: 'inside', /* ... */ }
-  ],
+  dataZoom: [{ type: 'slider' /* ... */ }, { type: 'inside' /* ... */ }],
   series: [
-    { /* 签单保费面积图 */ },
-    { /* 赔付率正常点 */ },
-    { /* 赔付率风险点 */ },
-    { /* 赔付率连线 */ },
-    { /* 阈值线70% */ },
-    { /* 趋势线 */ }
-  ]
+    {
+      /* 签单保费面积图 */
+    },
+    {
+      /* 赔付率正常点 */
+    },
+    {
+      /* 赔付率风险点 */
+    },
+    {
+      /* 赔付率连线 */
+    },
+    {
+      /* 阈值线70% */
+    },
+    {
+      /* 趋势线 */
+    },
+  ],
 }
 
-chart.setOption(option, true)  // true表示不合并，完全替换
+chart.setOption(option, true) // true表示不合并，完全替换
 ```
 
 ### Tooltip HTML格式化示例
+
 ```typescript
 formatter: (params: any) => {
   const dataIndex = params[0].dataIndex
@@ -518,35 +576,46 @@ formatter: (params: any) => {
 ## 常见问题
 
 ### Q1: 图表不显示？
+
 **A**: 检查以下几点：
+
 1. 容器高度是否设置（`style={{ height: '480px' }}`）
 2. 数据是否正确加载（`console.log(chartData)`）
 3. ECharts是否成功初始化（`console.log(chartInstanceRef.current)`）
 
 ### Q2: 点击事件不触发？
+
 **A**: 确保：
+
 1. 事件绑定在正确的series上（`seriesType === 'scatter'`）
 2. 点击的是scatter点而不是line线
 3. 事件未被其他元素遮挡（检查`zlevel`）
 
 ### Q3: 趋势线不准确？
+
 **A**: 检查：
+
 1. 数据是否已排序
 2. null值是否正确过滤
 3. 线性回归算法是否正确实现
 
 ### Q4: 性能问题？
+
 **A**: 优化方案：
+
 1. 启用LTTB采样（`sampling: 'lttb'`）
 2. 限制数据点数量（如只显示最近52周）
 3. 使用Canvas渲染而非SVG
 4. 禁用动画（`animation: false`）
 
 ### Q5: 报错 "Cannot read properties of undefined (reading 'coord')"？
+
 **A**: 这是 `visualMap` 配置问题。解决方案：
+
 1. 移除 `visualMap` 配置
 2. 使用 `markArea` 代替实现背景风险区
 3. 在赔付率连线series中添加：
+
 ```typescript
 markArea: {
   silent: true,
@@ -571,5 +640,5 @@ markArea: {
 
 ---
 
-*文档创建时间: 2025-10-26*
-*最后更新: 2025-10-26*
+_文档创建时间: 2025-10-26_
+_最后更新: 2025-10-26_

@@ -87,20 +87,19 @@ pnpm lint && pnpm tsc --noEmit && pnpm build
 ## 关键入口点
 
 - **数据模型与验证规则**:
-
   - `prisma/schema.prisma`: 数据库表结构的唯一真实来源。
   - `src/lib/schema/insurance.ts`: Zod 定义的数据验证 schema。
   - `开发文档/03_technical_design/data_architecture.md`: 数据架构、字段定义和CSV导入规范的详细文档。
-- **核心业务逻辑**:
 
+- **核心业务逻辑**:
   - `src/app/api/kpi/route.ts`: 后端 KPI 计算的核心 API 端点。
   - `开发文档/03_technical_design/core_calculations.md`: 所有核心KPI的计算公式与业务逻辑。
-- **前端页面与组件**:
 
+- **前端页面与组件**:
   - `src/app/page.tsx`: 应用主页面，包含布局和核心组件集成。
   - `src/components/data-table.tsx`: 核心数据展示表格。
-- **技术栈与环境**:
 
+- **技术栈与环境**:
   - `开发文档/03_technical_design/tech_stack.md`: 包含项目技术选型、关键库和本地开发环境设置的完整指南。
 
 ## 知识库导航
@@ -119,12 +118,14 @@ pnpm lint && pnpm tsc --noEmit && pnpm build
 ## 文档管理工具
 
 ### 📚 知识库索引生成
+
 ```bash
 # 扫描开发文档并生成索引（包含标签索引和依赖关系图）
 pnpm docs:index
 ```
 
 ### 🗂️ 归档清理工具
+
 ```bash
 # 分析归档文档（仅报告）
 pnpm docs:archive:analyze
@@ -137,6 +138,7 @@ pnpm docs:archive:auto-clean
 ```
 
 ### 🤖 CI/CD 集成
+
 - **检查索引**: PR 创建时自动检查文档索引是否最新
 - **自动更新**: PR 中文档变更时自动更新索引并提交
 

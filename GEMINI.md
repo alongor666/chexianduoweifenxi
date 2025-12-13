@@ -1,4 +1,3 @@
-
 # AI 协作导航
 
 本文档是与 AI 协作者 进行高效协作的核心指南，旨在通过提供高级原则、关键入口和统一的知识库链接，确保开发过程的连贯性与高质量。
@@ -88,20 +87,19 @@ pnpm lint && pnpm tsc --noEmit && pnpm build
 ## 关键入口点
 
 - **数据模型与验证规则**:
-
   - `prisma/schema.prisma`: 数据库表结构的唯一真实来源。
   - `src/lib/schema/insurance.ts`: Zod 定义的数据验证 schema。
   - `开发文档/03_technical_design/data_architecture.md`: 数据架构、字段定义和CSV导入规范的详细文档。
-- **核心业务逻辑**:
 
+- **核心业务逻辑**:
   - `src/app/api/kpi/route.ts`: 后端 KPI 计算的核心 API 端点。
   - `开发文档/03_technical_design/core_calculations.md`: 所有核心KPI的计算公式与业务逻辑。
-- **前端页面与组件**:
 
+- **前端页面与组件**:
   - `src/app/page.tsx`: 应用主页面，包含布局和核心组件集成。
   - `src/components/data-table.tsx`: 核心数据展示表格。
-- **技术栈与环境**:
 
+- **技术栈与环境**:
   - `开发文档/03_technical_design/tech_stack.md`: 包含项目技术选型、关键库和本地开发环境设置的完整指南。
 
 ## 知识库导航

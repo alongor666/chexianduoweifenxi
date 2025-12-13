@@ -55,4 +55,3 @@ pnpm validate
 - ❌ 修复 lint 后不跑 `pnpm tsc --noEmit`
 - ❌ 修复类型问题后不跑 `pnpm build`
 - ❌ 只修复报错行，不理解报错原因
-

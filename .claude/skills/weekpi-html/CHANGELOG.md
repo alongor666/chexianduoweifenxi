@@ -5,7 +5,9 @@
 ### 重大改进 - KPI计算准确性修复
 
 #### 核心问题
+
 使用kpi-calculator技能验证后发现，HTML中显示的KPI数据存在严重偏差：
+
 - 满期赔付率偏差：-10% ~ +133%
 - 费用率偏差：-25%
 - 变动成本率偏差：-13% ~ +104%
@@ -15,6 +17,7 @@
 #### 修复内容
 
 **1. 支持原始CSV直接输入（推荐）**
+
 - ✅ 技能现在可以直接读取原始CSV（包含 `signed_premium_yuan` 等金额字段）
 - ✅ 按kpi-calculator标准公式计算所有KPI比率
 - ✅ 公式：`满期赔付率 = SUM(已报告赔款) / SUM(满期保费) × 100%`
@@ -22,20 +25,25 @@
 - ✅ 公式：`变动成本率 = 满期赔付率 + 费用率`
 
 **2. 兼容预处理CSV（向后兼容）**
+
 - ⚠️ 仍支持读取预处理CSV（包含中文字段和已计算比率）
 - ⚠️ 会显示警告：可能存在KPI计算误差
 
 **3. 智能格式检测**
+
 - 自动识别输入数据是原始CSV还是预处理CSV
 - 根据格式选择正确的计算方法
 
 #### 修改的函数
+
 - `_load_data()`: 增加格式检测和验证
 - `_aggregate_by_dimension()`: 原始CSV使用标准KPI公式计算，预处理CSV保持兼容
 - `_calculate_summary_metrics()`: 原始CSV重新计算所有比率
 
 #### 验证结果
+
 使用kpi-calculator技能验证修复后的输出：
+
 - ✅ 签单保费：完全一致
 - ✅ 满期赔付率：误差 < 0.01%
 - ✅ 费用率：误差 < 0.01%
@@ -44,6 +52,7 @@
 ### 使用建议
 
 **推荐工作流（新）**:
+
 ```bash
 # 直接使用原始CSV，无需预处理
 python generate_html_dashboard.py \
@@ -54,6 +63,7 @@ python generate_html_dashboard.py \
 ```
 
 **旧工作流（仍支持但不推荐）**:
+
 ```bash
 # 1. 预处理（可能产生误差）
 python preprocess_data.py 原始.csv 预处理.csv
@@ -65,6 +75,7 @@ python generate_html_dashboard.py 预处理.csv 49 "四川分公司" references/
 ## [1.0.1] - 2025-12-09
 
 ### Bug修复
+
 - 🐛 **关键修复**: 修复JavaScript语法错误 `}]]` → `}]`
   - 问题：ECharts series配置中的多余方括号导致JavaScript解析失败
   - 影响：完全无法显示图表和切换标签页
@@ -72,6 +83,7 @@ python generate_html_dashboard.py 预处理.csv 49 "四川分公司" references/
   - 位置：`generate_html_dashboard.py` 第673, 723, 785, 839, 895行
 
 ### 测试验证
+
 - ✅ 使用Node.js验证JavaScript语法无错误
 - ✅ 验证5个标签页都能正常切换
 - ✅ 验证所有图表都能正确渲染
@@ -84,6 +96,7 @@ python generate_html_dashboard.py 预处理.csv 49 "四川分公司" references/
 基于 `insurance-weekly-report` 技能创建的HTML可视化生成器。
 
 #### 核心功能
+
 - ✅ 交互式网页仪表盘生成
 - ✅ 5个标签页切换（经营概览、保费进度、变动成本、损失暴露、费用支出）
 - ✅ 双维度下钻分析（按机构/按客户类别）
@@ -92,18 +105,21 @@ python generate_html_dashboard.py 预处理.csv 49 "四川分公司" references/
 - ✅ 麦肯锡风格配色方案
 
 #### 支持的数据格式
+
 - Excel (.xlsx, .xls)
 - CSV (.csv)
 - JSON (.json)
 - DuckDB (.db, .duckdb)
 
 #### 可视化图表类型
+
 - 四象限散点图（经营概览、变动成本、损失暴露）
 - 柱状图（保费进度）
 - 气泡图（损失暴露）
 - 组合图（柱状图+折线图）
 
 #### 交互功能
+
 - 标签页切换
 - 维度切换（机构/客户类别）
 - 鼠标悬停显示详情
@@ -111,27 +127,32 @@ python generate_html_dashboard.py 预处理.csv 49 "四川分公司" references/
 - 数据点点击高亮
 
 #### 技术栈
+
 - Python 3.7+ (pandas, numpy)
 - ECharts 5.x (CDN)
 - HTML5 + CSS3 + JavaScript
 - 单文件输出（自包含）
 
 #### 配置文件
+
 - `references/thresholds.json` - 阈值配置
 - `references/plans.json` - 保费计划（可选）
 
 #### 与 insurance-weekly-report 的关系
+
 - 共享数据处理逻辑
 - 共享配置文件格式
 - KPI 计算公式一致
 - 输出格式互补（PPT vs HTML）
 
 ### 已知限制
+
 - 不支持多周趋势对比（计划在 v1.1 添加）
 - 图表导出功能需要手动操作（右键菜单）
 - 移动端布局优化待改进
 
 ### 下一步计划
+
 - [ ] 添加多周数据对比功能
 - [ ] 增强图表导出功能（一键导出所有图表）
 - [ ] 优化移动端布局

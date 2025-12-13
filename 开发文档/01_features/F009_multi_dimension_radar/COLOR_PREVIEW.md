@@ -8,15 +8,15 @@
 
 ## 颜色列表
 
-| 序号 | 颜色示例 | HEX 代码 | 颜色名称 | 适用特征 | 视觉效果 |
-|-----|---------|---------|---------|---------|---------|
-| 1️⃣ | ![#1F77B4](https://via.placeholder.com/60x30/1F77B4/1F77B4.png) | `#1F77B4` | 深蓝色 | 稳重、专业 | 适合基础与关键单位 |
-| 2️⃣ | ![#FF7F0E](https://via.placeholder.com/60x30/FF7F0E/FF7F0E.png) | `#FF7F0E` | 橙色 | 活力、醒目 | 突出的视觉效果 |
-| 3️⃣ | ![#2CA02C](https://via.placeholder.com/60x30/2CA02C/2CA02C.png) | `#2CA02C` | 绿色 | 平衡、积极 | 易于接受 |
-| 4️⃣ | ![#D62728](https://via.placeholder.com/60x30/D62728/D62728.png) | `#D62728` | 深红色 | 强烈、警示 | 强烈对比，吸引注意 |
-| 5️⃣ | ![#9467BD](https://via.placeholder.com/60x30/9467BD/9467BD.png) | `#9467BD` | 紫色 | 独特、高雅 | 清晰分辨 |
-| 6️⃣ | ![#8C564B](https://via.placeholder.com/60x30/8C564B/8C564B.png) | `#8C564B` | 棕红色 | 柔和、稳定 | 明显对比 |
-| 7️⃣ | ![#E377C2](https://via.placeholder.com/60x30/E377C2/E377C2.png) | `#E377C2` | 粉紫色 | 柔和、优雅 | 足够突出 |
+| 序号 | 颜色示例                                                        | HEX 代码  | 颜色名称 | 适用特征   | 视觉效果           |
+| ---- | --------------------------------------------------------------- | --------- | -------- | ---------- | ------------------ |
+| 1️⃣   | ![#1F77B4](https://via.placeholder.com/60x30/1F77B4/1F77B4.png) | `#1F77B4` | 深蓝色   | 稳重、专业 | 适合基础与关键单位 |
+| 2️⃣   | ![#FF7F0E](https://via.placeholder.com/60x30/FF7F0E/FF7F0E.png) | `#FF7F0E` | 橙色     | 活力、醒目 | 突出的视觉效果     |
+| 3️⃣   | ![#2CA02C](https://via.placeholder.com/60x30/2CA02C/2CA02C.png) | `#2CA02C` | 绿色     | 平衡、积极 | 易于接受           |
+| 4️⃣   | ![#D62728](https://via.placeholder.com/60x30/D62728/D62728.png) | `#D62728` | 深红色   | 强烈、警示 | 强烈对比，吸引注意 |
+| 5️⃣   | ![#9467BD](https://via.placeholder.com/60x30/9467BD/9467BD.png) | `#9467BD` | 紫色     | 独特、高雅 | 清晰分辨           |
+| 6️⃣   | ![#8C564B](https://via.placeholder.com/60x30/8C564B/8C564B.png) | `#8C564B` | 棕红色   | 柔和、稳定 | 明显对比           |
+| 7️⃣   | ![#E377C2](https://via.placeholder.com/60x30/E377C2/E377C2.png) | `#E377C2` | 粉紫色   | 柔和、优雅 | 足够突出           |
 
 ---
 
@@ -32,6 +32,7 @@
 ```
 
 **雷达图图例**:
+
 ```
 ━━ 天府 (深蓝)  ━━ 高新 (橙色)  ━━ 新都 (绿色)  ━━ 青羊 (深红)
 ```
@@ -49,6 +50,7 @@
 ```
 
 **雷达图图例**:
+
 ```
 ━━ 天府 (深蓝)  ━━ 高新 (橙色)  ━━ 宜宾 (绿色)  ━━ 武侯 (深红)  ━━ 泸州 (紫色)
 ```
@@ -68,6 +70,7 @@
 ```
 
 **雷达图图例**:
+
 ```
 ━━ 天府 (深蓝)  ━━ 高新 (橙色)  ━━ 新都 (绿色)  ━━ 青羊 (深红)
 ━━ 宜宾 (紫色)  ━━ 武侯 (棕红)  ━━ 泸州 (粉紫)
@@ -107,16 +110,17 @@
 不同机构颜色在雷达图上的区分度：
 
 |          | 深蓝 | 橙色 | 绿色 | 深红 | 紫色 | 棕红 | 粉紫 |
-|----------|-----|-----|-----|-----|-----|-----|-----|
-| **深蓝** | ●   | ★★★ | ★★★ | ★★★ | ★★  | ★★  | ★★★ |
-| **橙色** | ★★★ | ●   | ★★★ | ★★★ | ★★★ | ★★  | ★★  |
-| **绿色** | ★★★ | ★★★ | ●   | ★★★ | ★★  | ★★  | ★★  |
-| **深红** | ★★★ | ★★★ | ★★★ | ●   | ★★★ | ★★  | ★★  |
-| **紫色** | ★★  | ★★★ | ★★  | ★★★ | ●   | ★★  | ★★  |
-| **棕红** | ★★  | ★★  | ★★  | ★★  | ★★  | ●   | ★★  |
-| **粉紫** | ★★★ | ★★  | ★★  | ★★  | ★★  | ★★  | ●   |
+| -------- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+| **深蓝** | ●    | ★★★  | ★★★  | ★★★  | ★★   | ★★   | ★★★  |
+| **橙色** | ★★★  | ●    | ★★★  | ★★★  | ★★★  | ★★   | ★★   |
+| **绿色** | ★★★  | ★★★  | ●    | ★★★  | ★★   | ★★   | ★★   |
+| **深红** | ★★★  | ★★★  | ★★★  | ●    | ★★★  | ★★   | ★★   |
+| **紫色** | ★★   | ★★★  | ★★   | ★★★  | ●    | ★★   | ★★   |
+| **棕红** | ★★   | ★★   | ★★   | ★★   | ★★   | ●    | ★★   |
+| **粉紫** | ★★★  | ★★   | ★★   | ★★   | ★★   | ★★   | ●    |
 
 **说明**:
+
 - ● = 自己
 - ★★★ = 对比度优秀（容易区分）
 - ★★ = 对比度良好（可以区分）
@@ -191,11 +195,9 @@
   wrapperStyle={{
     paddingTop: '20px',
   }}
-  iconType="line"         // 线条图标
+  iconType="line" // 线条图标
   formatter={(value, entry) => (
-    <span style={{ color: entry.color, fontWeight: 500 }}>
-      {value}
-    </span>
+    <span style={{ color: entry.color, fontWeight: 500 }}>{value}</span>
   )}
 />
 ```
@@ -220,36 +222,33 @@
 ### 标签 UI 代码
 
 ```tsx
-{selectedOrganizations.map((org, index) => {
-  const color = ORG_COLORS[index]
+{
+  selectedOrganizations.map((org, index) => {
+    const color = ORG_COLORS[index]
 
-  return (
-    <div
-      key={org}
-      className="inline-flex items-center gap-2 rounded-lg border px-3 py-1.5"
-      style={{ borderColor: color }}
-    >
-      {/* 颜色条 */}
+    return (
       <div
-        className="h-3 w-8 rounded"
-        style={{ backgroundColor: color }}
-      />
-
-      {/* 机构名 */}
-      <span className="text-sm font-medium text-slate-800">
-        {org}
-      </span>
-
-      {/* 删除按钮 */}
-      <button
-        onClick={() => removeOrganization(org)}
-        className="ml-1 text-slate-500 hover:text-slate-700"
+        key={org}
+        className="inline-flex items-center gap-2 rounded-lg border px-3 py-1.5"
+        style={{ borderColor: color }}
       >
-        ×
-      </button>
-    </div>
-  )
-})}
+        {/* 颜色条 */}
+        <div className="h-3 w-8 rounded" style={{ backgroundColor: color }} />
+
+        {/* 机构名 */}
+        <span className="text-sm font-medium text-slate-800">{org}</span>
+
+        {/* 删除按钮 */}
+        <button
+          onClick={() => removeOrganization(org)}
+          className="ml-1 text-slate-500 hover:text-slate-700"
+        >
+          ×
+        </button>
+      </div>
+    )
+  })
+}
 ```
 
 ---
@@ -275,6 +274,7 @@
 ## 总结
 
 ✅ **优势**:
+
 1. 经过 Tableau 团队验证的专业配色
 2. 色相分布均匀，覆盖整个色环
 3. 亮度和饱和度变化合理
@@ -282,6 +282,7 @@
 5. 在白色/浅色背景下都清晰可见
 
 ✅ **适用性**:
+
 - ✅ 桌面端大屏展示
 - ✅ 投影仪演示
 - ✅ 打印输出（彩色打印）
@@ -289,6 +290,7 @@
 - ✅ 色盲用户
 
 ✅ **兼容性**:
+
 - ✅ 所有现代浏览器
 - ✅ Recharts 图表库
 - ✅ 导出为 PNG/SVG/PDF

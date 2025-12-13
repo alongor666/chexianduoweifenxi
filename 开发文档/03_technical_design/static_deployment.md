@@ -5,6 +5,7 @@
 ## 概述
 
 车险分析平台采用 **LocalStorage + DuckDB WASM** 架构，天然支持纯静态部署：
+
 - ✅ 所有数据处理在浏览器中完成（DuckDB WASM）
 - ✅ 数据持久化使用 LocalStorage
 - ✅ 无需后端服务器或数据库
@@ -30,15 +31,15 @@ DuckDB WASM 查询和计算
 
 ### 静态 vs 服务器模式对比
 
-| 功能 | 静态模式 | 服务器模式 |
-|------|---------|-----------|
-| CSV 数据上传 | ✅ 客户端处理 | ✅ 客户端处理 |
-| 数据持久化 | ✅ LocalStorage | ✅ LocalStorage 或数据库 |
-| KPI 计算 | ✅ 客户端（DuckDB WASM） | ✅ 客户端或 API |
-| 数据可视化 | ✅ 完整支持 | ✅ 完整支持 |
-| PDF 报告导出 | ✅ 客户端生成 | ✅ 客户端生成 |
-| 数据加工（Python ETL） | ❌ 不支持 | ✅ API Routes |
-| Supabase 集成 | ❌ 不支持 | ✅ 支持 |
+| 功能                   | 静态模式                 | 服务器模式               |
+| ---------------------- | ------------------------ | ------------------------ |
+| CSV 数据上传           | ✅ 客户端处理            | ✅ 客户端处理            |
+| 数据持久化             | ✅ LocalStorage          | ✅ LocalStorage 或数据库 |
+| KPI 计算               | ✅ 客户端（DuckDB WASM） | ✅ 客户端或 API          |
+| 数据可视化             | ✅ 完整支持              | ✅ 完整支持              |
+| PDF 报告导出           | ✅ 客户端生成            | ✅ 客户端生成            |
+| 数据加工（Python ETL） | ❌ 不支持                | ✅ API Routes            |
+| Supabase 集成          | ❌ 不支持                | ✅ 支持                  |
 
 ## 配置步骤
 
@@ -284,6 +285,7 @@ pnpm build
 ### 3. CDN 缓存
 
 推荐配置缓存策略：
+
 - HTML: `Cache-Control: no-cache`
 - JS/CSS: `Cache-Control: public, max-age=31536000, immutable`
 - 其他静态资源: `Cache-Control: public, max-age=31536000`
@@ -295,6 +297,7 @@ pnpm build
 **原因**: 可能是基础路径配置问题
 
 **解决**:
+
 1. 检查 `next.config.js` 中的 `basePath`（如果部署到子路径）
 2. 确保环境变量正确设置
 
@@ -303,6 +306,7 @@ pnpm build
 **原因**: SPA 路由需要服务器配置
 
 **解决**:
+
 - **Vercel/Netlify**: 自动处理
 - **GitHub Pages**: 添加 `out/404.html`（复制 `index.html`）
 - **Nginx**: 使用 `try_files` 配置
@@ -310,11 +314,13 @@ pnpm build
 ### Q3: LocalStorage 数据丢失？
 
 **原因**:
+
 - 浏览器隐私模式
 - 用户清除缓存
 - 跨域问题
 
 **解决**:
+
 1. 提示用户定期导出数据
 2. 提供数据恢复功能
 3. 文档中说明数据存储机制
@@ -324,6 +330,7 @@ pnpm build
 **原因**: MIME 类型配置或 CORS 问题
 
 **解决**:
+
 - 确保服务器配置正确的 WASM MIME 类型
 - 检查 CDN 配置
 
@@ -332,12 +339,14 @@ pnpm build
 如果需要恢复服务器端功能：
 
 1. 修改环境变量:
+
 ```bash
 NEXT_PUBLIC_DEPLOY_MODE=server
 NEXT_PUBLIC_DATA_SOURCE=supabase
 ```
 
 2. 修改 `next.config.js`:
+
 ```javascript
 const nextConfig = {
   // 移除 output: 'export'
@@ -369,6 +378,7 @@ const nextConfig = {
 ## 总结
 
 静态部署模式提供了：
+
 - ✅ 零服务器成本
 - ✅ 快速访问（全球 CDN）
 - ✅ 高可用性（无服务器宕机）

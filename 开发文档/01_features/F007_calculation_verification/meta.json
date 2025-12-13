@@ -7,14 +7,8 @@
   "version": "v0.5.0",
   "last_updated": "2025-10-20",
   "last_verified": "2025-10-20",
-  "core_files": [
-    "src/lib/calculations/kpi-formulas.ts"
-  ],
+  "core_files": ["src/lib/calculations/kpi-formulas.ts"],
   "related_decisions": [],
   "related_issues": [],
-  "tags": [
-    "数据准确性",
-    "透明化",
-    "P1"
-  ]
+  "tags": ["数据准确性", "透明化", "P1"]
 }

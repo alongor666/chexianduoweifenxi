@@ -1,6 +1,6 @@
-# 车险多维分析平台（Insuralytics）
+# 车险多维分析平台
 
-Insuralytics 是一个面向车险经营分析的“静态优先 / 本地优先”多维分析应用：默认以浏览器本地数据（CSV / DuckDB 文件）完成导入、持久化与计算；可选接入 Supabase 作为远程数据源/同步层。
+chexianduoweifenxi是一个面向车险经营分析的“静态优先 / 本地优先”多维分析应用：默认以浏览器本地数据（CSV / DuckDB 文件）完成导入、持久化与计算；可选接入 Supabase 作为远程数据源/同步层。
 
 ## 功能概览
 
@@ -39,16 +39,18 @@ pnpm dev
 ## 常用命令
 
 <!-- AUTO-GENERATED:pnpm-scripts:start -->
-| 命令 | 实际执行 | 说明 |
-|---|---|---|
-| `pnpm dev` | `NODE_OPTIONS='--max-old-space-size=2048' next dev` | 启动开发服务器 |
-| `pnpm build` | `NODE_OPTIONS='--max-old-space-size=2048' next build` | 构建（静态导出到 out/） |
-| `pnpm deploy` | `pnpm run build:static && touch out/.nojekyll` | 生成 out/（用于静态托管） |
-| `pnpm deploy:preview` | `pnpm run deploy && pnpm run preview` | 本地预览 out/（静态） |
-| `pnpm validate` | `pnpm lint && pnpm tsc --noEmit && pnpm build` | 基础校验（lint + tsc + build） |
-| `pnpm test:unit` | `vitest -c configs/vitest.config.mts` | 单元测试（Vitest） |
-| `pnpm test:e2e` | `playwright test` | 端到端测试（Playwright） |
-| `pnpm docs:index` | `python3 scripts/generate_docs_index.py 开发文档` | 更新知识库索引（开发文档/） |
+
+| 命令                  | 实际执行                                              | 说明                           |
+| --------------------- | ----------------------------------------------------- | ------------------------------ |
+| `pnpm dev`            | `NODE_OPTIONS='--max-old-space-size=2048' next dev`   | 启动开发服务器                 |
+| `pnpm build`          | `NODE_OPTIONS='--max-old-space-size=2048' next build` | 构建（静态导出到 out/）        |
+| `pnpm deploy`         | `pnpm run build:static && touch out/.nojekyll`        | 生成 out/（用于静态托管）      |
+| `pnpm deploy:preview` | `pnpm run deploy && pnpm run preview`                 | 本地预览 out/（静态）          |
+| `pnpm validate`       | `pnpm lint && pnpm tsc --noEmit && pnpm build`        | 基础校验（lint + tsc + build） |
+| `pnpm test:unit`      | `vitest -c configs/vitest.config.mts`                 | 单元测试（Vitest）             |
+| `pnpm test:e2e`       | `playwright test`                                     | 端到端测试（Playwright）       |
+| `pnpm docs:index`     | `python3 scripts/generate_docs_index.py 开发文档`     | 更新知识库索引（开发文档/）    |
+
 <!-- AUTO-GENERATED:pnpm-scripts:end -->
 
 ## 数据与部署模式

@@ -12,7 +12,7 @@ const testResults = {
   passed: 0,
   failed: 0,
   warnings: 0,
-  details: []
+  details: [],
 }
 
 // 辅助函数：添加测试结果
@@ -21,7 +21,7 @@ function addTestResult(name, passed, message, isWarning = false) {
     name,
     passed,
     message,
-    isWarning
+    isWarning,
   }
 
   testResults.details.push(result)
@@ -34,14 +34,14 @@ function addTestResult(name, passed, message, isWarning = false) {
     testResults.failed++
   }
 
-  const icon = isWarning ? '⚠️' : (passed ? '✅' : '❌')
+  const icon = isWarning ? '⚠️' : passed ? '✅' : '❌'
   console.log(`${icon} ${name}: ${message}`)
 }
 
 // 1. 测试CSV文件存在性和可读性
 function testCSVFiles() {
   console.log('\n📁 测试阶段 1: CSV文件检查')
-  console.log('=' .repeat(60))
+  console.log('='.repeat(60))
 
   const testDir = path.join(__dirname, '../test/clean')
 
@@ -73,7 +73,7 @@ function testCSVFiles() {
 // 2. 测试CSV解析
 function testCSVParsing(filePath) {
   console.log('\n📊 测试阶段 2: CSV解析')
-  console.log('=' .repeat(60))
+  console.log('='.repeat(60))
 
   if (!filePath) {
     addTestResult('CSV解析', false, '没有可用的测试文件')
@@ -83,14 +83,18 @@ function testCSVParsing(filePath) {
   const fileContent = fs.readFileSync(filePath, 'utf-8')
   const fileSize = Buffer.byteLength(fileContent, 'utf-8')
 
-  addTestResult('文件读取', true, `文件大小: ${(fileSize / 1024).toFixed(2)} KB`)
+  addTestResult(
+    '文件读取',
+    true,
+    `文件大小: ${(fileSize / 1024).toFixed(2)} KB`
+  )
 
   let parseResult
   try {
     parseResult = Papa.parse(fileContent, {
       header: true,
       skipEmptyLines: true,
-      transformHeader: (header) => header.trim()
+      transformHeader: header => header.trim(),
     })
 
     addTestResult('CSV解析', true, `成功解析 ${parseResult.data.length} 行数据`)
@@ -100,7 +104,12 @@ function testCSVParsing(filePath) {
   }
 
   if (parseResult.errors.length > 0) {
-    addTestResult('解析错误检查', false, `发现 ${parseResult.errors.length} 个解析错误`, true)
+    addTestResult(
+      '解析错误检查',
+      false,
+      `发现 ${parseResult.errors.length} 个解析错误`,
+      true
+    )
     console.log('解析错误详情:', parseResult.errors.slice(0, 5))
   } else {
     addTestResult('解析错误检查', true, '无解析错误')
@@ -112,7 +121,7 @@ function testCSVParsing(filePath) {
 // 3. 测试数据结构验证
 function testDataStructure(data) {
   console.log('\n🔍 测试阶段 3: 数据结构验证')
-  console.log('=' .repeat(60))
+  console.log('='.repeat(60))
 
   if (!data || data.length === 0) {
     addTestResult('数据可用性', false, '没有数据可供验证')
@@ -141,7 +150,7 @@ function testDataStructure(data) {
     'expense_amount_yuan',
     'commercial_premium_before_discount_yuan',
     'marginal_contribution_amount_yuan',
-    'week_number'
+    'week_number',
   ]
 
   // 检查第一行数据的字段
@@ -151,18 +160,31 @@ function testDataStructure(data) {
   addTestResult('字段数量', true, `实际字段数: ${actualFields.length}`)
 
   // 检查必需字段
-  const missingFields = requiredFields.filter(field => !actualFields.includes(field))
+  const missingFields = requiredFields.filter(
+    field => !actualFields.includes(field)
+  )
 
   if (missingFields.length > 0) {
-    addTestResult('必需字段检查', false, `缺失字段: ${missingFields.join(', ')}`)
+    addTestResult(
+      '必需字段检查',
+      false,
+      `缺失字段: ${missingFields.join(', ')}`
+    )
   } else {
     addTestResult('必需字段检查', true, '所有必需字段都存在')
   }
 
   // 额外字段检查
-  const extraFields = actualFields.filter(field => !requiredFields.includes(field))
+  const extraFields = actualFields.filter(
+    field => !requiredFields.includes(field)
+  )
   if (extraFields.length > 0) {
-    addTestResult('额外字段检查', true, `发现额外字段: ${extraFields.join(', ')}`, true)
+    addTestResult(
+      '额外字段检查',
+      true,
+      `发现额外字段: ${extraFields.join(', ')}`,
+      true
+    )
   }
 
   // 数据类型验证（抽样前10行）
@@ -191,7 +213,9 @@ function testDataStructure(data) {
     const premium = parseFloat(row.signed_premium_yuan)
     if (isNaN(premium)) {
       typeErrors++
-      console.log(`  行 ${i + 1}: 签单保费格式无效 (${row.signed_premium_yuan})`)
+      console.log(
+        `  行 ${i + 1}: 签单保费格式无效 (${row.signed_premium_yuan})`
+      )
     }
   }
 
@@ -207,7 +231,7 @@ function testDataStructure(data) {
 // 4. 测试数据统计
 function testDataStatistics(data) {
   console.log('\n📈 测试阶段 4: 数据统计分析')
-  console.log('=' .repeat(60))
+  console.log('='.repeat(60))
 
   if (!data || data.length === 0) {
     addTestResult('数据统计', false, '没有数据可供统计')
@@ -235,7 +259,9 @@ function testDataStatistics(data) {
 
   console.log(`  总记录数: ${data.length}`)
   console.log(`  年份范围: ${Array.from(years).sort().join(', ')}`)
-  console.log(`  周数范围: ${Math.min(...Array.from(weeks))} - ${Math.max(...Array.from(weeks))}`)
+  console.log(
+    `  周数范围: ${Math.min(...Array.from(weeks))} - ${Math.max(...Array.from(weeks))}`
+  )
   console.log(`  业务类型数: ${businessTypes.size}`)
   console.log(`  三级机构数: ${organizations.size}`)
   console.log(`  总保费: ${(totalPremium / 10000).toFixed(2)} 万元`)
@@ -252,13 +278,19 @@ function testDataStatistics(data) {
 
   data.forEach(row => {
     Object.keys(row).forEach(field => {
-      if (row[field] === '' || row[field] === null || row[field] === undefined) {
+      if (
+        row[field] === '' ||
+        row[field] === null ||
+        row[field] === undefined
+      ) {
         nullCounts[field]++
       }
     })
   })
 
-  const fieldsWithNulls = Object.entries(nullCounts).filter(([_, count]) => count > 0)
+  const fieldsWithNulls = Object.entries(nullCounts).filter(
+    ([_, count]) => count > 0
+  )
 
   if (fieldsWithNulls.length > 0) {
     console.log('\n空值统计:')
@@ -266,7 +298,12 @@ function testDataStatistics(data) {
       const percentage = ((count / data.length) * 100).toFixed(2)
       console.log(`  ${field}: ${count} (${percentage}%)`)
     })
-    addTestResult('数据完整性', true, `发现 ${fieldsWithNulls.length} 个字段包含空值`, true)
+    addTestResult(
+      '数据完整性',
+      true,
+      `发现 ${fieldsWithNulls.length} 个字段包含空值`,
+      true
+    )
   } else {
     addTestResult('数据完整性', true, '所有字段都无空值')
   }
@@ -275,7 +312,7 @@ function testDataStatistics(data) {
 // 5. 测试筛选逻辑
 function testFilterLogic(data) {
   console.log('\n🔍 测试阶段 5: 筛选逻辑')
-  console.log('=' .repeat(60))
+  console.log('='.repeat(60))
 
   if (!data || data.length === 0) {
     addTestResult('筛选逻辑', false, '没有数据可供筛选')
@@ -287,17 +324,20 @@ function testFilterLogic(data) {
   addTestResult('年份筛选', true, `2024年数据: ${year2024Data.length} 条`)
 
   // 测试业务类型筛选
-  const businessTypes = [...new Set(data.map(row => row.business_type_category))]
+  const businessTypes = [
+    ...new Set(data.map(row => row.business_type_category)),
+  ]
   if (businessTypes.length > 0) {
     const firstType = businessTypes[0]
-    const typeData = data.filter(row => row.business_type_category === firstType)
+    const typeData = data.filter(
+      row => row.business_type_category === firstType
+    )
     addTestResult('业务类型筛选', true, `${firstType}: ${typeData.length} 条`)
   }
 
   // 测试组合筛选
-  const complexFilter = data.filter(row =>
-    row.policy_start_year === '2024' &&
-    row.insurance_type === '商业险'
+  const complexFilter = data.filter(
+    row => row.policy_start_year === '2024' && row.insurance_type === '商业险'
   )
   addTestResult('组合筛选', true, `2024年商业险: ${complexFilter.length} 条`)
 }
@@ -305,7 +345,7 @@ function testFilterLogic(data) {
 // 6. 测试KPI计算
 function testKPICalculation(data) {
   console.log('\n💰 测试阶段 6: KPI计算')
-  console.log('=' .repeat(60))
+  console.log('='.repeat(60))
 
   if (!data || data.length === 0) {
     addTestResult('KPI计算', false, '没有数据可供计算')
@@ -339,7 +379,11 @@ function testKPICalculation(data) {
     return sum + (parseFloat(row.marginal_contribution_amount_yuan) || 0)
   }, 0)
 
-  addTestResult('边际贡献计算', true, `${(totalContribution / 10000).toFixed(2)} 万元`)
+  addTestResult(
+    '边际贡献计算',
+    true,
+    `${(totalContribution / 10000).toFixed(2)} 万元`
+  )
 
   // 计算边际贡献率
   if (totalPremium > 0) {
@@ -355,7 +399,8 @@ function generateReport() {
   console.log('='.repeat(60))
 
   const total = testResults.passed + testResults.failed
-  const passRate = total > 0 ? ((testResults.passed / total) * 100).toFixed(2) : 0
+  const passRate =
+    total > 0 ? ((testResults.passed / total) * 100).toFixed(2) : 0
 
   console.log(`\n通过: ${testResults.passed}`)
   console.log(`失败: ${testResults.failed}`)
@@ -383,12 +428,12 @@ function generateReport() {
     'CSV文件发现',
     'CSV解析',
     '必需字段检查',
-    '数据类型验证'
+    '数据类型验证',
   ]
 
-  const criticalPassed = testResults.details
-    .filter(r => criticalTests.includes(r.name) && r.passed)
-    .length
+  const criticalPassed = testResults.details.filter(
+    r => criticalTests.includes(r.name) && r.passed
+  ).length
 
   if (criticalPassed === criticalTests.length) {
     console.log('✅ 数据流完整性测试: 通过')

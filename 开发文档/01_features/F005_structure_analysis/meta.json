@@ -13,13 +13,7 @@
     "src/components/features/distribution-pie-chart.tsx",
     "src/components/features/thematic-analysis.tsx"
   ],
-  "related_decisions": [
-    "ADR-004"
-  ],
+  "related_decisions": ["ADR-004"],
   "related_issues": [],
-  "tags": [
-    "数据分析",
-    "可视化",
-    "P1"
-  ]
+  "tags": ["数据分析", "可视化", "P1"]
 }

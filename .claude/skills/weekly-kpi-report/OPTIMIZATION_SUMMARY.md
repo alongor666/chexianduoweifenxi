@@ -8,6 +8,7 @@
 ## Optimization Overview
 
 This skill has been restructured following Anthropic's official skill creation best practices to improve:
+
 - **Discoverability** - Better metadata triggers skill at the right time
 - **Maintainability** - Clear separation of concerns using progressive disclosure
 - **Usability** - Lean SKILL.md with detailed references on-demand
@@ -18,16 +19,19 @@ This skill has been restructured following Anthropic's official skill creation b
 ### 1. Skill Naming (CRITICAL) ✅
 
 **Before:**
+
 ```yaml
 name: insurance-weekly-board-report-mckinsey
 ```
 
 **After:**
+
 ```yaml
 name: weekly-kpi-report
 ```
 
 **Rationale:**
+
 - Follows official naming conventions (lowercase, hyphens only, max 64 chars)
 - Shorter, more actionable name improves discoverability
 - Generic enough for broader applicability while remaining descriptive
@@ -35,16 +39,19 @@ name: weekly-kpi-report
 ### 2. SKILL.md Description Enhancement (CRITICAL) ✅
 
 **Before:**
+
 ```yaml
 description: Generate McKinsey-style board presentation PPTs from weekly auto insurance data for Hua'an Insurance. Automatically calculates KPIs, creates executive-level slides with actionable insights, and supports week-over-week comparisons. Trigger when user uploads auto insurance cost data and requests board report, weekly presentation, or executive briefing slides.
 ```
 
 **After:**
+
 ```yaml
 description: Generate McKinsey-style board presentation PPTs from weekly auto insurance data. Automatically calculates 16+ KPIs, creates executive-level slides with actionable insights, and supports week-over-week comparisons. Use when user uploads insurance cost data (Excel/CSV) and requests board report, weekly presentation, executive briefing, or mentions keywords like 董事会汇报, 周报PPT, 经营分析演示, McKinsey-style reports.
 ```
 
 **Improvements:**
+
 - ✅ Added specific file types (Excel/CSV) for better activation detection
 - ✅ Quantified KPIs (16+) to set clear expectations
 - ✅ Included Chinese keywords that users naturally say (董事会汇报, 周报PPT, 经营分析演示)
@@ -57,6 +64,7 @@ description: Generate McKinsey-style board presentation PPTs from weekly auto in
 **New file:** Comprehensive usage examples with 400+ lines
 
 **Contents:**
+
 - 6 detailed usage scenarios with full inputs/outputs
 - Edge case handling (missing week numbers, data quality issues, etc.)
 - Multi-language report generation example
@@ -65,6 +73,7 @@ description: Generate McKinsey-style board presentation PPTs from weekly auto in
 - Performance tips for large datasets
 
 **Benefits:**
+
 - Progressive disclosure: detailed examples not loaded unless needed
 - Token efficiency: SKILL.md stays lean, examples loaded on-demand
 - Better learning: users can reference comprehensive scenarios
@@ -72,6 +81,7 @@ description: Generate McKinsey-style board presentation PPTs from weekly auto in
 ### 4. File Structure Reorganization ✅
 
 **After:**
+
 ```
 weekly-kpi-report/                          [RENAMED from insurance-weekly-board-report-mckinsey]
 ├── SKILL.md                                ✅ Optimized frontmatter, streamlined content
@@ -96,6 +106,7 @@ weekly-kpi-report/                          [RENAMED from insurance-weekly-board
 ```
 
 **Key Changes:**
+
 - ✅ Directory renamed: `insurance-weekly-board-report-mckinsey` → `weekly-kpi-report`
 - ✅ Created `examples.md` (progressive disclosure)
 - ✅ Clarified `config.json` purpose with comment
@@ -104,6 +115,7 @@ weekly-kpi-report/                          [RENAMED from insurance-weekly-board
 ### 3. Documentation Quality ✅
 
 **SKILL.md Metadata:**
+
 ```yaml
 Before:
 description: 分析华安保险车险周报数据并生成董事会级别的专业汇报 PPT...
@@ -117,11 +129,13 @@ data and requests board report, weekly presentation, or executive briefing slide
 ```
 
 **Improvements:**
+
 - ✅ English description for broader compatibility
 - ✅ Clear trigger keywords ("board report", "McKinsey", "executive briefing")
 - ✅ Mentions key features in description for better matching
 
 **README.md:**
+
 - ✅ Bilingual support maintained
 - ✅ Quick start section at top
 - ✅ Clear feature highlights
@@ -129,12 +143,14 @@ data and requests board report, weekly presentation, or executive briefing slide
 - ✅ References to detailed documentation
 
 **references/mckinsey-style-guide.md:**
+
 - ✅ Complete McKinsey design principles (moved from MCKINSEY_STYLE_GUIDE.md)
 - ✅ Color extraction methodology
 - ✅ SCQA framework explanation
 - ✅ Business value justification
 
 **references/config-guide.md:**
+
 - ✅ Configuration scenarios (moved from CONFIG_GUIDE.md)
 - ✅ Complete JSON structure documentation
 - ✅ Common questions and troubleshooting
@@ -142,6 +158,7 @@ data and requests board report, weekly presentation, or executive briefing slide
 ### 4. Writing Style Transformation ✅
 
 **Before (Second Person):**
+
 ```
 用户输入：我上传了第45周的车险数据,帮我生成董事会汇报PPT
 
@@ -151,15 +168,18 @@ Skill 执行流程：
 ```
 
 **After (Imperative):**
-```
+
+````
 Execute the data validator to ensure data quality:
 ```bash
 python scripts/data_validator.py <uploaded_file_path>
-```
+````
 
 The validator checks:
+
 - Required field completeness
 - Data type correctness
+
 ```
 
 **Improvements:**
@@ -232,14 +252,16 @@ Against `.claude/skill-creator/SKILL.md` requirements:
 ### Recommended Actions
 
 1. **Test the optimized skill:**
-   ```
-   我上传了第45周的车险数据,帮我生成董事会汇报PPT
-   ```
+```
+
+我上传了第45周的车险数据,帮我生成董事会汇报PPT
+
+````
 
 2. **Package for distribution:**
-   ```bash
-   scripts/package_skill.py .claude/skills/insurance-weekly-board-report-mckinsey
-   ```
+```bash
+scripts/package_skill.py .claude/skills/insurance-weekly-board-report-mckinsey
+````
 
 3. **Iterate based on usage:**
    - Monitor which references/ docs are loaded most
@@ -292,15 +314,15 @@ This optimization transforms the skill into a **professionally organized, guidel
 
 ## Compliance Summary
 
-| Guideline Category | Compliance | Details |
-|-------------------|------------|---------|
-| Naming conventions | ✅ 100% | Lowercase, hyphens only, <64 chars |
-| Description quality | ✅ 100% | Specific triggers, file types, keywords, <1024 chars |
-| YAML frontmatter | ✅ 100% | Properly formatted with required fields |
-| File structure | ✅ 100% | SKILL.md, examples.md, assets/, references/ |
-| Progressive disclosure | ✅ 100% | Core in SKILL.md, details in examples.md/references/ |
-| Documentation | ✅ 100% | 6+ comprehensive examples, clear references |
-| Token efficiency | ✅ 100% | Optimized context loading |
+| Guideline Category     | Compliance | Details                                              |
+| ---------------------- | ---------- | ---------------------------------------------------- |
+| Naming conventions     | ✅ 100%    | Lowercase, hyphens only, <64 chars                   |
+| Description quality    | ✅ 100%    | Specific triggers, file types, keywords, <1024 chars |
+| YAML frontmatter       | ✅ 100%    | Properly formatted with required fields              |
+| File structure         | ✅ 100%    | SKILL.md, examples.md, assets/, references/          |
+| Progressive disclosure | ✅ 100%    | Core in SKILL.md, details in examples.md/references/ |
+| Documentation          | ✅ 100%    | 6+ comprehensive examples, clear references          |
+| Token efficiency       | ✅ 100%    | Optimized context loading                            |
 
 **Result:** Production-ready skill v1.3.0 following official Anthropic best practices. ✅
 

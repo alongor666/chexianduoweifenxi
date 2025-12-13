@@ -60,7 +60,7 @@ checkCommand(
 
 checkCommand(
   'Domain 层没有导入 API 客户端',
-  "grep -r \"fetch\\|axios\\|supabase\" src/domain/ --include='*.ts' 2>/dev/null | wc -l",
+  'grep -r "fetch\\|axios\\|supabase" src/domain/ --include=\'*.ts\' 2>/dev/null | wc -l',
   output => parseInt(output) === 0
 )
 
@@ -82,9 +82,12 @@ console.log('\n## 第二层：代码质量检查\n')
 
 // 文件大小检查
 console.log('### 文件大小检查')
-const oversizedFiles = execSync(`
+const oversizedFiles = execSync(
+  `
   find src -name "*.ts" -o -name "*.tsx" | xargs wc -l | awk '$1 > 300 { print $2 ": " $1 " 行" }'
-`, { encoding: 'utf8' }).trim()
+`,
+  { encoding: 'utf8' }
+).trim()
 
 if (oversizedFiles) {
   check('没有超过 300 行的文件', false, oversizedFiles.split('\n').join(', '))
@@ -118,7 +121,7 @@ const requiredDirs = [
   'src/application/use-cases',
   'src/application/services',
   'src/infrastructure',
-  'src/infrastructure/adapters'
+  'src/infrastructure/adapters',
 ]
 
 requiredDirs.forEach(dir => {
@@ -133,7 +136,7 @@ const coreFiles = [
   'src/domain/entities/InsuranceRecord.ts',
   'src/application/ports/IDataRepository.ts',
   'src/application/ports/IFileParser.ts',
-  'src/application/ports/IExporter.ts'
+  'src/application/ports/IExporter.ts',
 ]
 
 coreFiles.forEach(file => {

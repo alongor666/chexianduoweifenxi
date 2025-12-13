@@ -18,6 +18,7 @@ python init_project_kb.py "车险周报自动化" "/home/claude/my-projects"
 ```
 
 生成结果:
+
 - 标准目录结构（docs/decisions/patterns/reports）
 - 2个文档模板（项目启动文档、技术方案文档）
 - README索引文件
@@ -29,6 +30,7 @@ python extract_patterns.py /path/to/source /home/claude/my-projects/knowledge-ba
 ```
 
 自动提取:
+
 - 技术决策（@decision标记）
 - 代码模式（函数签名+docstring）
 - 配置模板（JSON/YAML结构）
@@ -167,6 +169,7 @@ python init_project_kb.py "数据分析平台" "/home/claude/projects/kb"
 ```
 
 **输出**:
+
 - 目录结构: docs/, decisions/, patterns/, reports/
 - 文档模板: 项目启动文档.md, 技术方案文档.md
 - README.md
@@ -183,6 +186,7 @@ python extract_patterns.py /mnt/skills/user/insurance-weekly-report /home/claude
 ```
 
 **提取规则**:
+
 - `# @decision: xxx` → 技术决策记录
 - `def func(): """docstring"""` → 代码模式
 - `.json` 文件 → 配置模板
@@ -210,6 +214,7 @@ python generate_index.py <知识库目录>
 **适用场景**: 新项目启动、明确范围和目标、干系人对齐
 
 **核心章节**:
+
 1. 项目背景与目标（业务痛点、KPI）
 2. 项目范围（功能、数据、分析维度）
 3. 干系人与角色
@@ -222,6 +227,7 @@ python generate_index.py <知识库目录>
 **适用场景**: 技术选型与架构设计、关键决策记录
 
 **核心章节**:
+
 1. 技术选型（语言、框架、依赖库）
 2. 系统架构设计（整体架构、模块设计、数据流）
 3. 关键技术决策（使用@decision标记便于后续提取）
@@ -262,11 +268,11 @@ knowledge-base/
 
 ## 故障排查
 
-| 问题 | 可能原因 | 解决方案 |
-|------|---------|---------|
-| 脚本运行失败 | Python版本/依赖 | 确保Python>=3.8，安装pandas |
-| 提取不到@decision | 格式不对 | 使用 `# @decision: 内容` 格式 |
-| README缺少内容 | 无YAML frontmatter | 文档开头添加 `---` 包围的元数据 |
+| 问题              | 可能原因           | 解决方案                        |
+| ----------------- | ------------------ | ------------------------------- |
+| 脚本运行失败      | Python版本/依赖    | 确保Python>=3.8，安装pandas     |
+| 提取不到@decision | 格式不对           | 使用 `# @decision: 内容` 格式   |
+| README缺少内容    | 无YAML frontmatter | 文档开头添加 `---` 包围的元数据 |
 
 ---
 

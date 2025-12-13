@@ -51,14 +51,15 @@ const nextConfig = {
 
   // GitHub Pages 部署时的基础路径
   basePath: process.env.NODE_ENV === 'production' ? '/chexianduoweifenxi' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/chexianduoweifenxi/' : '',
+  assetPrefix:
+    process.env.NODE_ENV === 'production' ? '/chexianduoweifenxi/' : '',
 
   // 环境变量配置
   env: {
     NEXT_PUBLIC_APP_VERSION: process.env.npm_package_version || '0.1.0',
   },
 
-  webpack: (config, { isServer}) => {
+  webpack: (config, { isServer }) => {
     // DuckDB-WASM 仅在客户端使用，服务器端需要排除
     if (!isServer) {
       // 客户端：配置 fallback 避免 Node.js 模块错误
@@ -72,10 +73,7 @@ const nextConfig = {
       }
     } else {
       // 服务器端：完全排除 DuckDB 模块
-      config.externals = [
-        ...config.externals,
-        '@duckdb/duckdb-wasm',
-      ]
+      config.externals = [...config.externals, '@duckdb/duckdb-wasm']
     }
 
     // 支持 WASM
@@ -87,6 +85,6 @@ const nextConfig = {
 
     return config
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig
