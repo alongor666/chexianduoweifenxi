@@ -1,6 +1,6 @@
 # 车险数据分析平台 - 知识库索引
 
-> 📅 最后更新: 2025-12-13 07:01:53
+> 📅 最后更新: 2025-12-13 07:22:19
 > 🔄 自动生成 by `scripts/generate_docs_index.py`
 
 ---
@@ -20,7 +20,9 @@
 
 ## 🔥 最近更新（30天内）
 
+- ⚙️ [Store架构迁移计划](03_technical_design/store_migration_plan.md) - *今天*
 - ⚙️ [技术栈与开发环境](03_technical_design/tech_stack.md) - *今天*
+- 🎯 [F014 多维图表标签页优化](01_features/F014_multi_chart_tabs/README.md) - *今天*
 - 🎯 [F015: KPI多层下钻功能](01_features/F015_kpi_multi_level_drilldown/README.md) - *今天*
 - 🏗️ [ADR-001: 状态管理选型 - Zustand](02_decisions/ADR-001_状态管理选型-Zustand.md) - *今天*
 - 🏗️ [ADR-002: CSV解析策略 - 流式处理](02_decisions/ADR-002_CSV解析策略-流式处理.md) - *今天*
@@ -28,8 +30,6 @@
 - ⚙️ [架构重构阶段2完成报告](03_technical_design/PHASE2_COMPLETION_REPORT.md) - *今天*
 - ⚙️ [架构重构指南 - 模块化升级](03_technical_design/architecture_refactoring.md) - *今天*
 - ⚙️ [核心指标计算引擎 V2.0](03_technical_design/core_calculations.md) - *今天*
-- ⚙️ [数据架构](03_technical_design/data_architecture.md) - *今天*
-- ⚙️ [维度字典与枚举值（Insuralytics）](03_technical_design/dimensions_dictionary.md) - *今天*
 
 ---
 
