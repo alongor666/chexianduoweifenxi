@@ -1,6 +1,6 @@
 # 车险数据分析平台 - 知识库索引
 
-> 📅 最后更新: 2025-12-13 21:59:26
+> 📅 最后更新: 2025-12-13 23:12:31
 > 🔄 自动生成 by `scripts/generate_docs_index.py`
 
 ---
@@ -20,16 +20,16 @@
 
 ## 🔥 最近更新（30天内）
 
-- 🎯 [F016: 企业驾驶舱 (Enterprise Cockpit)](01_features/F016_enterprise_cockpit/README.md) - *今天*
-- 🏗️ [ADR-007: 现代驾驶舱架构 (Modern Cockpit Architecture)](02_decisions/ADR-007_现代驾驶舱架构.md) - *今天*
-- ⚙️ [核心指标计算引擎 V2.0](03_technical_design/core_calculations.md) - *今天*
-- ⚙️ [数据架构](03_technical_design/data_architecture.md) - *今天*
-- ⚙️ [技术栈与开发环境](03_technical_design/tech_stack.md) - *今天*
-- ⚙️ [Store架构迁移计划](03_technical_design/store_migration_plan.md) - *今天*
 - ⚙️ [纯静态部署指南](03_technical_design/static_deployment.md) - *今天*
+- ⚙️ [Store架构迁移计划](03_technical_design/store_migration_plan.md) - *今天*
+- ⚙️ [技术栈与开发环境](03_technical_design/tech_stack.md) - *今天*
+- 🎯 [F015: KPI多层下钻功能](01_features/F015_kpi_multi_level_drilldown/README.md) - *今天*
+- 🎯 [F016: 企业驾驶舱 (Enterprise Cockpit)](01_features/F016_enterprise_cockpit/README.md) - *今天*
+- 🏗️ [ADR-001: 状态管理选型 - Zustand](02_decisions/ADR-001_状态管理选型-Zustand.md) - *今天*
+- 🏗️ [ADR-002: CSV解析策略 - 流式处理](02_decisions/ADR-002_CSV解析策略-流式处理.md) - *今天*
+- 🏗️ [ADR-003: 数据持久化策略 - LocalStorage](02_decisions/ADR-003_数据持久化策略-LocalStorage.md) - *今天*
+- 🏗️ [ADR-007: 现代驾驶舱架构 (Modern Cockpit Architecture)](02_decisions/ADR-007_现代驾驶舱架构.md) - *今天*
 - ⚙️ [架构重构阶段2完成报告](03_technical_design/PHASE2_COMPLETION_REPORT.md) - *今天*
-- ⚙️ [DuckDB 集成验证与边界指南](03_technical_design/duckdb_validation_guide.md) - *今天*
-- ⚙️ [DuckDB 集成文档](03_technical_design/duckdb_integration.md) - *今天*
 
 ---
 
