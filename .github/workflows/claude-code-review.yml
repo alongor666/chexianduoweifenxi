@@ -12,6 +12,9 @@ on:
 
 jobs:
   claude-review:
+    # 仅对同仓 PR 运行，避免 fork PR 无法获取 secrets 导致失败
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+
     # Optional: Filter by PR author
     # if: |
     #   github.event.pull_request.user.login == 'external-contributor' ||
@@ -21,8 +24,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: read
-      issues: read
+      pull-requests: write
+      issues: write
       id-token: write
 
     steps:
@@ -34,6 +37,8 @@ jobs:
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ github.token }}
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: |
