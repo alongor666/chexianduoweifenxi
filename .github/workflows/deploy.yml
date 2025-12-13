@@ -32,17 +32,11 @@ jobs:
     - name: Install dependencies
       run: pnpm install
 
-    - name: Build for static deployment
-      run: pnpm build
+    - name: Build and export for static deployment
+      run: pnpm run deploy
       env:
         NODE_ENV: production
         CI: false
-        NEXT_PUBLIC_DEPLOY_MODE: static
-        NEXT_PUBLIC_DATA_SOURCE: local
-        NEXT_TELEMETRY_DISABLED: 1
-
-    - name: Add .nojekyll file
-      run: touch out/.nojekyll
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3

@@ -14,7 +14,7 @@
 
 ### 1. GitHub Actions 工作流
 
-项目已配置自动部署工作流 `.github/workflows/deploy.yml`，当推送到 `main` 分支时会自动触发部署。
+项目已配置自动部署工作流 `.github/workflows/deploy.yml`，当推送到 `main` 分支时会自动触发部署。工作流会运行 `pnpm run deploy`，完成静态导出并生成用于 GitHub Pages 的 `out/` 目录。
 
 ### 2. Next.js 静态导出配置
 
@@ -42,14 +42,14 @@ const nextConfig = {
 
 ### 方法二：手动部署
 
-1. 本地构建静态文件：
+1. 本地构建并导出静态文件：
    ```bash
-   npm run build
+   pnpm run deploy
    ```
 
-2. 部署到 GitHub Pages：
+2. （可选）预览导出结果：
    ```bash
-   npm run deploy
+   pnpm run preview
    ```
 
 ## GitHub Pages 设置
@@ -96,11 +96,11 @@ const nextConfig = {
 在部署前可以本地测试静态构建：
 
 ```bash
-# 构建静态文件
-npm run build
+# 构建并导出静态文件
+pnpm run deploy
 
 # 预览构建结果（可选）
-npx serve out
+pnpm run preview
 ```
 
 ## 更新部署
