@@ -25,7 +25,8 @@
   - `src/components/features/cockpit/kpi-metrics-row.tsx`
   - `src/components/features/cockpit/statistics-row.tsx`
   - `src/components/features/cockpit/business-observation/*`
-- 主页面集成：`src/components/dashboard-client.tsx`（在 `cockpit` 标签页渲染 `EnterpriseCockpit`）
+  - 主页面集成：`src/components/dashboard-client.tsx`（在 `cockpit` 标签页渲染 `EnterpriseCockpit`）
+- KPI卡片：`src/components/features/compact-kpi-card.tsx`（支持显示公式提示，公式口径来自《核心指标计算引擎 V2.0》）
 
 ## 统一规范接入
 - 样式（0.1）：去网格线、文字加粗、预警线、X轴不倾斜、自动避让、值标签固定、气泡轴名称可见、16:9 主体框架

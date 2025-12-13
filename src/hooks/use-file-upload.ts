@@ -176,9 +176,15 @@ export function useFileUpload() {
   const uploadFile = useCallback(
     async (
       file: File,
-      config: UploadConfig = {}
+      config: UploadConfig = {},
+      position?: {
+        currentFile: number
+        totalFiles: number
+      }
     ): Promise<FileUploadResult> => {
       const startTime = Date.now()
+      const currentFileIndex = position?.currentFile ?? 1
+      const totalFiles = position?.totalFiles ?? 1
 
       try {
         setStatus('uploading')
@@ -206,7 +212,11 @@ export function useFileUpload() {
           config,
           appProgress => {
             // 转换进度信息并更新UI状态
-            const uiProgress = convertToUIProgress(appProgress, 1, 1)
+            const uiProgress = convertToUIProgress(
+              appProgress,
+              currentFileIndex,
+              totalFiles
+            )
             setProgress(uiProgress)
 
             // 更新状态
@@ -285,6 +295,7 @@ export function useFileUpload() {
       let totalRecords = 0
       let validRecords = 0
       let invalidRecords = 0
+      let completedFiles = 0
 
       try {
         setStatus('uploading')
@@ -309,23 +320,31 @@ export function useFileUpload() {
           }
         }
 
-        // 逐个上传文件
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i]
+        const concurrency = Math.max(1, Math.min(3, config.concurrency ?? 2))
+        const queue = files.map((file, index) => ({ file, index }))
 
-          // 更新进度
+        const processNext = async (): Promise<void> => {
+          const item = queue.shift()
+          if (!item) return
+
+          const { file, index } = item
+
           setProgress({
-            currentFile: i + 1,
+            currentFile: index + 1,
             totalFiles: files.length,
             fileName: file.name,
             fileProgress: 0,
-            overallProgress: Math.round((i / files.length) * 100),
+            overallProgress: Math.round((completedFiles / files.length) * 100),
             currentPhase: 'parsing',
             processedRows: 0,
           })
 
-          const result = await uploadFile(file, config)
-          results.push(result)
+          const result = await uploadFile(file, config, {
+            currentFile: index + 1,
+            totalFiles: files.length,
+          })
+
+          results[index] = result
 
           if (result.success) {
             successCount++
@@ -335,7 +354,30 @@ export function useFileUpload() {
           } else {
             failureCount++
           }
+
+          completedFiles++
+
+          setProgress({
+            currentFile: index + 1,
+            totalFiles: files.length,
+            fileName: file.name,
+            fileProgress: 100,
+            overallProgress: Math.round((completedFiles / files.length) * 100),
+            currentPhase: 'completed',
+            processedRows: result.result?.processedRecords || 0,
+            totalRows: result.result?.processedRecords,
+            errorCount: result.result?.failedRecords,
+          })
+
+          await processNext()
         }
+
+        const workers = Array.from(
+          { length: Math.min(concurrency, files.length) },
+          () => processNext()
+        )
+
+        await Promise.all(workers)
 
         const batchResult: BatchUploadResult = {
           totalFiles: files.length,

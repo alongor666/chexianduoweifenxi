@@ -33,6 +33,12 @@ export interface InsuranceTypeStructure {
   avgPremiumPerPolicy: number
 }
 
+export interface BusinessTypeComparison {
+  businessType: string
+  kpi: KPIResult
+  recordCount: number
+}
+
 /**
  * 机构对比分析
  */
@@ -75,6 +81,44 @@ export function useOrganizationComparison() {
     comparisons.forEach((item, index) => {
       item.rank = index + 1
     })
+
+    return comparisons
+  }, [filteredData])
+}
+
+/**
+ * 业务类型对比分析
+ */
+export function useBusinessTypeComparison() {
+  const filteredData = useFilteredData()
+
+  return useMemo(() => {
+    if (!filteredData || filteredData.length === 0) {
+      return []
+    }
+
+    const typeMap = new Map<string, InsuranceRecord[]>()
+    filteredData.forEach(record => {
+      const businessType = record.business_type_category
+      if (!typeMap.has(businessType)) {
+        typeMap.set(businessType, [])
+      }
+      typeMap.get(businessType)!.push(record)
+    })
+
+    const comparisons: BusinessTypeComparison[] = Array.from(typeMap.entries())
+      .map(([businessType, records]) => ({
+        businessType,
+        kpi: calculateKPIs(
+          records.map(r => DomainInsuranceRecord.fromRawData(r))
+        ),
+        recordCount: records.length,
+      }))
+      .sort(
+        (a, b) =>
+          (b.kpi.contribution_margin_ratio || 0) -
+          (a.kpi.contribution_margin_ratio || 0)
+      )
 
     return comparisons
   }, [filteredData])
