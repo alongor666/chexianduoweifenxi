@@ -23,16 +23,17 @@
 │   ├── ADR-001_状态管理选型.md
 │   ├── ADR-002_CSV解析策略.md
 │   └── ...
-├── 03_logs/                   # 开发日志
-│   ├── 2025-01/
-│   │   ├── 2025-01-20_CSV上传优化.md
-│   │   └── 2025-01-28_类型错误修复.md
+├── 03_technical_design/       # 技术设计文档
+│   └── ...
+├── 04_refactoring/            # 重构记录
 │   └── ...
 └── archive/                   # 历史文档归档
     ├── PRD-best.md
     ├── PROGRESS.md
     └── ...
 ```
+
+【已对齐当前代码事实】
 
 ---
 
@@ -45,7 +46,7 @@
   - ✅ 任何功能状态判断必须基于实际代码审查
   - ✅ 文档更新必须在代码修改后同步进行
   - ❌ 不得基于"计划"或"记忆"标记功能为"已实现"
-- **验证**: 定期运行 `node analyze-codebase.js` 自动同步状态
+- **验证**: 定期运行 `node scripts/analyze-codebase.js` 自动同步状态 【已对齐当前代码事实】
 
 ### 2. 原子化文档 (Atomic Documentation)
 
@@ -111,7 +112,7 @@ pnpm build
 
 **状态更新流程:**
 1. 开发者完成代码提交
-2. 运行 `node analyze-codebase.js` 生成分析报告
+2. 运行 `node scripts/analyze-codebase.js` 生成分析报告 【已对齐当前代码事实】
 3. 根据报告更新 `meta.json` 中的 `status` 和 `completeness`
 4. 更新功能卡片中的状态描述
 
@@ -157,7 +158,7 @@ pnpm build
 - [ ] 集成测试: {测试场景}
 
 ## 已知问题
-- [ISSUE-001](../../03_logs/issues/ISSUE-001.md) - 问题描述
+- [ISSUE-001](../../archive/问题记录表.md#issue-001) - 问题描述 【已对齐当前代码事实】
 ```
 
 **`meta.json` 模板:**
@@ -303,7 +304,7 @@ graph LR
 
 ```mermaid
 graph LR
-    A[代码变更提交] --> B[运行analyze-codebase.js]
+    A[代码变更提交] --> B[运行 scripts/analyze-codebase.js] 【已对齐当前代码事实】
     B --> C[检查分析报告]
     C --> D{状态变化?}
     D -->|是| E[更新meta.json]
@@ -318,7 +319,7 @@ graph LR
 
 ### 自动化分析工具
 
-**文件**: `analyze-codebase.js`
+**文件**: `scripts/analyze-codebase.js` 【已对齐当前代码事实】
 
 **功能**:
 - 扫描 `src/` 目录检测实际实现
@@ -328,7 +329,8 @@ graph LR
 
 **使用方法**:
 ```bash
-node analyze-codebase.js
+node scripts/analyze-codebase.js
+【已对齐当前代码事实】
 ```
 
 ### 元数据验证脚本 (待开发)
@@ -361,8 +363,8 @@ node analyze-codebase.js
 ## 📞 问题反馈
 
 如果发现文档与代码不符,请:
-1. 运行 `node analyze-codebase.js` 确认差异
-2. 创建 Issue 记录到 `03_logs/issues/`
+1. 运行 `node scripts/analyze-codebase.js` 确认差异 【已对齐当前代码事实】
+2. 创建 Issue 记录到 `archive/问题记录表.md` 【已对齐当前代码事实】
 3. 更新相关文档
 
 ---
@@ -370,3 +372,7 @@ node analyze-codebase.js
 *本文档版本: v1.0.0*
 *最后更新: 2025-01-20*
 *维护者: 开发团队*
+### 文档现实对齐流程
+当发现文档与当前代码事实不一致且不涉及设计重写时，应执行“现实对齐（Reality Alignment）”：仅进行事实性修正，确保描述与现状一致；完成后在 `开发文档/开发记录表.md` 增加记录，并注明验证状态。 【已对齐当前代码事实】
+### 分析报告产物
+`codebase-analysis.json` 为 `node scripts/analyze-codebase.js` 生成的分析产物，建议在关键里程碑随代码一同提交；如需更新，应先运行该脚本再提交最新报告。 【已对齐当前代码事实】

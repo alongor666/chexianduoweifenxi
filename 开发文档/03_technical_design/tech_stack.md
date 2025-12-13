@@ -6,9 +6,7 @@
 
 - **前端**: Next.js 14.2.33 (React 18 框架)
   - **UI 库**: shadcn/ui (基于 Radix UI 和 Tailwind CSS 3.4.1)
-  - **图表**:
-    - **主要**: Recharts 3.3.0 (React 原生图表)
-    - **高级**: ECharts 6.0.0 (复杂可视化、雷达图、热力图)
+  - **图表**: ECharts 6.0.0 + echarts-for-react 3.0.5 【已对齐当前代码事实】
   - **状态管理**: Zustand 5.0.8
   - **数据请求**: 原生 `fetch` API
 
@@ -32,13 +30,12 @@
 ### 数据处理
 - **`papaparse` 5.5.3**: 用于在前端解析 CSV 文件，实现客户端数据预览与初步验证。
 - **`zod` 4.1.12**: 用于定义数据结构（Schema）并执行严格的数据验证，确保进入系统的数据符合预设格式。
-- **`date-fns` 4.2.1**: 提供可靠的日期处理功能，用于处理 `snapshot_date` 等时间序列数据。
 - **`@duckdb/duckdb-wasm` 1.30.0**: WebAssembly 编译的列式数据库，支持大数据量的高性能 SQL 查询。
+【已对齐当前代码事实】
 
 ### 可视化与导出
-- **`recharts` 3.3.0**: React 生态的声明式图表库，用于趋势图、柱状图等基础可视化。
-- **`echarts` 6.0.0**: 百度开源的专业级数据可视化库，用于雷达图、热力图等高级图表。
-- **`echarts-for-react` 3.0.2**: ECharts 的 React 封装。
+- **`echarts` 6.0.0**: 百度开源的专业级数据可视化库，用于雷达图、热力图等高级图表。 【已对齐当前代码事实】
+- **`echarts-for-react` 3.0.5**: ECharts 的 React 封装。 【已对齐当前代码事实】
 - **`jspdf` 3.0.3**: 在浏览器端生成 PDF 文档，用于导出报告。
 - **`html2canvas` 1.4.1**: 将 HTML 元素转换为 Canvas 图像，配合 jsPDF 实现图表导出。
 

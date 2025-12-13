@@ -1,0 +1,265 @@
+{
+  "timestamp": "2025-12-13T04:41:33.608Z",
+  "features": {
+    "F001_data_import": {
+      "id": "F001_data_import",
+      "name": "数据上传与解析模块",
+      "status": "partial",
+      "coreFiles": {
+        "found": 3,
+        "total": 4,
+        "details": [
+          {
+            "file": "src/components/features/file-upload.tsx",
+            "exists": true
+          },
+          {
+            "file": "src/lib/parsers/csv-parser.ts",
+            "exists": false
+          },
+          {
+            "file": "src/lib/validations/insurance-schema.ts",
+            "exists": true
+          },
+          {
+            "file": "src/hooks/use-file-upload.ts",
+            "exists": true
+          }
+        ]
+      },
+      "indicators": {
+        "fuzzy_match": true,
+        "batch_upload": false,
+        "error_handling": false
+      },
+      "completeness": 62
+    },
+    "F002_kpi_dashboard": {
+      "id": "F002_kpi_dashboard",
+      "name": "核心KPI看板模块",
+      "status": "in_progress",
+      "coreFiles": {
+        "found": 0,
+        "total": 4,
+        "details": [
+          {
+            "file": "src/components/features/kpi-dashboard.tsx",
+            "exists": false
+          },
+          {
+            "file": "src/components/features/compact-kpi-dashboard.tsx",
+            "exists": false
+          },
+          {
+            "file": "src/lib/calculations/kpi-engine.ts",
+            "exists": false
+          },
+          {
+            "file": "src/lib/calculations/kpi-formulas.ts",
+            "exists": false
+          }
+        ]
+      },
+      "indicators": {
+        "formula_display": false,
+        "sparkline": true,
+        "compact_mode": false
+      },
+      "completeness": 10
+    },
+    "F003_trend_analysis": {
+      "id": "F003_trend_analysis",
+      "name": "趋势分析图表模块",
+      "status": "in_progress",
+      "coreFiles": {
+        "found": 2,
+        "total": 3,
+        "details": [
+          {
+            "file": "src/components/features/trend-chart.tsx",
+            "exists": false
+          },
+          {
+            "file": "src/lib/analytics/anomaly-detection.ts",
+            "exists": true
+          },
+          {
+            "file": "src/lib/analytics/trend-fitting.ts",
+            "exists": true
+          }
+        ]
+      },
+      "indicators": {
+        "anomaly_detection": false,
+        "trend_fitting": false
+      },
+      "completeness": 47
+    },
+    "F004_filters": {
+      "id": "F004_filters",
+      "name": "多维度数据筛选与切片模块",
+      "status": "partial",
+      "coreFiles": {
+        "found": 5,
+        "total": 5,
+        "details": [
+          {
+            "file": "src/components/filters/filter-panel.tsx",
+            "exists": true
+          },
+          {
+            "file": "src/components/filters/time-filter.tsx",
+            "exists": true
+          },
+          {
+            "file": "src/components/filters/organization-filter.tsx",
+            "exists": true
+          },
+          {
+            "file": "src/components/filters/compact-time-filter.tsx",
+            "exists": true
+          },
+          {
+            "file": "src/components/filters/compact-organization-filter.tsx",
+            "exists": true
+          }
+        ]
+      },
+      "indicators": {
+        "cascade": false,
+        "presets": false,
+        "dual_mode": false,
+        "feedback": false
+      },
+      "completeness": 70
+    },
+    "F005_structure_analysis": {
+      "id": "F005_structure_analysis",
+      "name": "结构分析与对比模块",
+      "status": "partial",
+      "coreFiles": {
+        "found": 4,
+        "total": 4,
+        "details": [
+          {
+            "file": "src/components/features/comparison-analysis.tsx",
+            "exists": true
+          },
+          {
+            "file": "src/components/features/structure-bar-chart.tsx",
+            "exists": true
+          },
+          {
+            "file": "src/components/features/distribution-pie-chart.tsx",
+            "exists": true
+          },
+          {
+            "file": "src/components/features/thematic-analysis.tsx",
+            "exists": true
+          }
+        ]
+      },
+      "indicators": {
+        "bubble_chart": false,
+        "heatmap": false
+      },
+      "completeness": 70
+    },
+    "F006_data_export": {
+      "id": "F006_data_export",
+      "name": "数据导出与分享模块",
+      "status": "partial",
+      "coreFiles": {
+        "found": 5,
+        "total": 5,
+        "details": [
+          {
+            "file": "src/components/features/data-export.tsx",
+            "exists": true
+          },
+          {
+            "file": "src/lib/export/csv-exporter.ts",
+            "exists": true
+          },
+          {
+            "file": "src/lib/export/chart-exporter.ts",
+            "exists": true
+          },
+          {
+            "file": "src/lib/export/pdf-exporter.ts",
+            "exists": true
+          },
+          {
+            "file": "src/components/features/pdf-report-export.tsx",
+            "exists": true
+          }
+        ]
+      },
+      "indicators": {
+        "chart_export": false,
+        "pdf_export": false
+      },
+      "completeness": 70
+    },
+    "F007_calculation_verification": {
+      "id": "F007_calculation_verification",
+      "name": "计算核对与透明化模块",
+      "status": "not_implemented",
+      "coreFiles": {
+        "found": 0,
+        "total": 1,
+        "details": [
+          {
+            "file": "src/lib/calculations/kpi-formulas.ts",
+            "exists": false
+          }
+        ]
+      },
+      "indicators": {
+        "formula_tooltip": false
+      },
+      "completeness": 0
+    }
+  },
+  "architecture": {
+    "state_management": {
+      "name": "状态管理架构",
+      "adopted": false,
+      "evidence": []
+    },
+    "data_validation": {
+      "name": "数据验证架构",
+      "adopted": false,
+      "evidence": []
+    },
+    "csv_parsing": {
+      "name": "CSV解析策略",
+      "adopted": false,
+      "evidence": []
+    },
+    "chart_library": {
+      "name": "图表库选型",
+      "adopted": false,
+      "evidence": []
+    },
+    "ui_framework": {
+      "name": "UI组件库",
+      "adopted": false,
+      "evidence": []
+    },
+    "storage_strategy": {
+      "name": "数据持久化策略",
+      "adopted": false,
+      "evidence": []
+    }
+  },
+  "statistics": {
+    "implemented": 0,
+    "total": 7,
+    "completeness": 47
+  },
+  "metrics_definition": {
+    "implemented": "仅统计 status=implemented 的模块数量",
+    "completeness": "partial / in_progress 模块不计入已实现，但纳入平均完整度计算"
+  }
+}
