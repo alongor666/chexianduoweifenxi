@@ -22,6 +22,16 @@ export interface OrganizationComparison {
 }
 
 /**
+ * 业务类型对比数据
+ */
+export interface BusinessTypeComparison {
+  businessType: string
+  kpi: KPIResult
+  recordCount: number
+  rank: number
+}
+
+/**
  * 险种结构数据
  */
 export interface InsuranceTypeStructure {
@@ -33,10 +43,51 @@ export interface InsuranceTypeStructure {
   avgPremiumPerPolicy: number
 }
 
-export interface BusinessTypeComparison {
-  businessType: string
-  kpi: KPIResult
-  recordCount: number
+/**
+ * 业务类型对比分析
+ */
+export function useBusinessTypeComparison() {
+  const filteredData = useFilteredData()
+
+  return useMemo(() => {
+    if (!filteredData || filteredData.length === 0) {
+      return []
+    }
+
+    // 按业务类型分组
+    const typeMap = new Map<string, InsuranceRecord[]>()
+    filteredData.forEach(record => {
+      const type = record.business_type_category
+      if (!typeMap.has(type)) {
+        typeMap.set(type, [])
+      }
+      typeMap.get(type)!.push(record)
+    })
+
+    // 计算每个业务类型的KPI
+    const comparisons: BusinessTypeComparison[] = Array.from(
+      typeMap.entries()
+    ).map(([businessType, records]) => ({
+      businessType,
+      kpi: calculateKPIs(
+        records.map(r => DomainInsuranceRecord.fromRawData(r))
+      ),
+      recordCount: records.length,
+      rank: 0, // 稍后填充
+    }))
+
+    // 按满期边际贡献率排序并设置排名
+    comparisons.sort(
+      (a, b) =>
+        (b.kpi.contribution_margin_ratio || 0) -
+        (a.kpi.contribution_margin_ratio || 0)
+    )
+    comparisons.forEach((item, index) => {
+      item.rank = index + 1
+    })
+
+    return comparisons
+  }, [filteredData])
 }
 
 /**
@@ -81,44 +132,6 @@ export function useOrganizationComparison() {
     comparisons.forEach((item, index) => {
       item.rank = index + 1
     })
-
-    return comparisons
-  }, [filteredData])
-}
-
-/**
- * 业务类型对比分析
- */
-export function useBusinessTypeComparison() {
-  const filteredData = useFilteredData()
-
-  return useMemo(() => {
-    if (!filteredData || filteredData.length === 0) {
-      return []
-    }
-
-    const typeMap = new Map<string, InsuranceRecord[]>()
-    filteredData.forEach(record => {
-      const businessType = record.business_type_category
-      if (!typeMap.has(businessType)) {
-        typeMap.set(businessType, [])
-      }
-      typeMap.get(businessType)!.push(record)
-    })
-
-    const comparisons: BusinessTypeComparison[] = Array.from(typeMap.entries())
-      .map(([businessType, records]) => ({
-        businessType,
-        kpi: calculateKPIs(
-          records.map(r => DomainInsuranceRecord.fromRawData(r))
-        ),
-        recordCount: records.length,
-      }))
-      .sort(
-        (a, b) =>
-          (b.kpi.contribution_margin_ratio || 0) -
-          (a.kpi.contribution_margin_ratio || 0)
-      )
 
     return comparisons
   }, [filteredData])
