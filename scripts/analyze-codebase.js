@@ -7,7 +7,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const PROJECT_ROOT = __dirname;
+const PROJECT_ROOT = path.resolve(__dirname, '..');
 const SRC_DIR = path.join(PROJECT_ROOT, 'src');
 
 // 功能特征定义 (基于代码结构推断功能)
@@ -327,6 +327,10 @@ function generateReport() {
       implemented: implementedCount,
       total: totalCount,
       completeness: avgCompleteness
+    },
+    metrics_definition: {
+      implemented: '仅统计 status=implemented 的模块数量',
+      completeness: 'partial / in_progress 模块不计入已实现，但纳入平均完整度计算'
     }
   };
 
