@@ -56,6 +56,7 @@ import {
   type LossDimensionItem,
 } from '@/hooks/use-loss-dimension-analysis'
 import { useMarginalContributionAnalysis } from '@/hooks/use-marginal-contribution-analysis'
+import { BusinessTypeDualAxisChart } from './business-type-dual-axis-chart'
 
 // ============= 接口定义 =============
 
@@ -1590,7 +1591,25 @@ function ContributionAnalysisTab({ compact = false }: TabContentProps) {
   )
 }
 
-// 内部组件的引用集合，便于调试和防止被摇树优化移除
+/**
+ * 趋势分析标签页
+ * 业务类型双Y轴复合图
+ */
+function TrendAnalysisTab({ compact = false }: TabContentProps) {
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-base font-semibold text-slate-800">业务类型经营趋势</h2>
+        <p className="text-xs text-slate-500">
+          横向对比各业务类型的规模、占比与经营指标,识别增长机会与风险点
+        </p>
+      </div>
+      <BusinessTypeDualAxisChart />
+    </div>
+  )
+}
+
+// 内部组件的引用集合,便于调试和防止被摇树优化移除
 export const ThematicAnalysisInternals = {
   TimeProgressAnalysisCard,
   RatioOverviewCard,
@@ -1611,10 +1630,11 @@ export function ThematicAnalysis({
     <div className={cn('w-full', className)}>
       <Tabs defaultValue="premium" className="w-full">
         <TabsList
-          className={cn('grid w-full', compact ? 'grid-cols-2' : 'grid-cols-2')}
+          className={cn('grid w-full', compact ? 'grid-cols-3' : 'grid-cols-3')}
         >
           <TabsTrigger value="premium">保费分析</TabsTrigger>
           <TabsTrigger value="loss">赔付分析</TabsTrigger>
+          <TabsTrigger value="trend">趋势分析</TabsTrigger>
           {/* <TabsTrigger value="contribution">边贡分析</TabsTrigger> */}
         </TabsList>
 
@@ -1630,6 +1650,15 @@ export function ThematicAnalysis({
 
         <TabsContent value="loss" className="mt-4">
           <LossAnalysisTab
+            currentKpis={currentKpis}
+            compareKpis={compareKpis}
+            timeProgress={timeProgress}
+            compact={compact}
+          />
+        </TabsContent>
+
+        <TabsContent value="trend" className="mt-4">
+          <TrendAnalysisTab
             currentKpis={currentKpis}
             compareKpis={compareKpis}
             timeProgress={timeProgress}
