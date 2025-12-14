@@ -1,3 +1,17 @@
+---
+id: _04_examples_failure_cases
+title: 失败用例清单(Failure Cases)
+author: AI_Refactor
+status: stable
+type: analysis
+domain: claims
+tags:
+- analysis
+- claims
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 失败用例清单(Failure Cases)
 
 - 版本:v0.1

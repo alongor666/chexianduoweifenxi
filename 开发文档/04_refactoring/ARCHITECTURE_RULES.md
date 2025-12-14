@@ -1,3 +1,17 @@
+---
+id: 04_refactoring_architecture_rules
+title: 🏛️ 软件架构规则体系（完整版）
+author: AI_Refactor
+status: stable
+type: refactoring
+domain: product
+tags:
+- refactoring
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 🏛️ 软件架构规则体系（完整版）
 
 > **适用范围**：任何前端项目，任何规模，任何技术栈

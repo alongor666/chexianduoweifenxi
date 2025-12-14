@@ -8,7 +8,7 @@ import os
 import re
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Any
 
 class DocsIndexer:
     """文档索引器 - 适配车险项目文档结构"""
@@ -35,8 +35,55 @@ class DocsIndexer:
         # 新增：文档依赖关系 {文档: [它引用的文档列表]}
         self.dependencies: Dict[str, List[str]] = {}
 
-    def extract_title(self, file_path: Path) -> str:
-        """从Markdown文件提取标题"""
+    def extract_frontmatter(self, file_path: Path) -> Dict[str, Any]:
+        """提取 YAML Frontmatter 元数据"""
+        metadata = {
+            'id': '',
+            'title': '',
+            'author': '',
+            'status': '',
+            'created_at': '',
+            'updated_at': '',
+            'tags': [],
+            'domain': '',
+            'complexity': ''
+        }
+        
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+                lines = content.split('\n')
+                
+                if not lines or lines[0].strip() != '---':
+                    return metadata
+                
+                for line in lines[1:]:
+                    if line.strip() == '---':
+                        break
+                    
+                    if ':' in line:
+                        key, value = line.split(':', 1)
+                        key = key.strip()
+                        value = value.strip()
+                        
+                        if key == 'tags':
+                            # 处理 [tag1, tag2]
+                            value = value.strip('[]')
+                            tags = [t.strip().strip('"\'') for t in value.split(',') if t.strip()]
+                            metadata['tags'] = tags
+                        else:
+                            metadata[key] = value
+                            
+        except Exception as e:
+            pass
+            
+        return metadata
+
+    def extract_title(self, file_path: Path, metadata: Dict = {}) -> str:
+        """从Markdown文件提取标题，优先使用 metadata"""
+        if metadata and metadata.get('title'):
+            return metadata['title']
+            
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 for line in f:
@@ -97,41 +144,38 @@ class DocsIndexer:
         except:
             return ''
 
-    def get_file_stats(self, file_path: Path) -> Dict:
-        """获取文件统计信息"""
+    def get_file_stats(self, file_path: Path, metadata: Dict = {}) -> Dict:
+        """获取文件统计信息，优先使用 metadata 中的 updated_at"""
         stat = file_path.stat()
-        return {
+        stats = {
             'size': stat.st_size,
             'created': datetime.fromtimestamp(stat.st_ctime),
             'modified': datetime.fromtimestamp(stat.st_mtime)
         }
+        
+        if metadata and metadata.get('updated_at'):
+            try:
+                # 尝试解析 YYYY-MM-DD
+                dt = datetime.strptime(metadata['updated_at'], '%Y-%m-%d')
+                stats['modified'] = dt
+            except:
+                pass
+                
+        return stats
 
-    def extract_tags(self, file_path: Path) -> List[str]:
+    def extract_tags(self, file_path: Path, metadata: Dict = {}) -> List[str]:
         """从文件中提取标签（frontmatter 和 hashtags）"""
         tags = set()
+        
+        # 1. 从 metadata 中获取
+        if metadata and metadata.get('tags'):
+            for tag in metadata['tags']:
+                tags.add(tag)
 
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
-                lines = content.split('\n')
-
-                # 1. 提取 YAML frontmatter 中的标签
-                if lines and lines[0].strip() == '---':
-                    in_frontmatter = True
-                    for i, line in enumerate(lines[1:], 1):
-                        if line.strip() == '---':
-                            break
-                        # tags: [tag1, tag2] 或 tags: tag1, tag2
-                        if line.strip().startswith('tags:'):
-                            tags_str = line.split(':', 1)[1].strip()
-                            # 移除方括号
-                            tags_str = tags_str.strip('[]')
-                            # 分割并清理
-                            for tag in tags_str.split(','):
-                                tag = tag.strip().strip('"\'')
-                                if tag:
-                                    tags.add(tag)
-
+                
                 # 2. 提取文档中的 hashtags (#标签)
                 hashtag_pattern = re.compile(r'#(\w+[\u4e00-\u9fa5\w]*)')
                 for match in hashtag_pattern.finditer(content):
@@ -170,6 +214,98 @@ class DocsIndexer:
             pass
 
         return links
+        
+    def get_status_emoji(self, status: str) -> str:
+        """获取状态对应的 emoji"""
+        status_map = {
+            'stable': '✅',
+            'draft': '🚧',
+            'review': '👀',
+            'deprecated': '❌',
+            'archived': '📦'
+        }
+        return status_map.get(status.lower(), '📄') if status else '📄'
+
+    def extract_related_code(self, file_path: Path, metadata: Dict = {}) -> List[str]:
+        """提取关联代码 (related_code)"""
+        code_files = []
+        if metadata and metadata.get('related_code'):
+            if isinstance(metadata['related_code'], list):
+                code_files = metadata['related_code']
+            elif isinstance(metadata['related_code'], str):
+                code_files = [metadata['related_code']]
+        return code_files
+
+    def process_file(self, file_path: Path, category: str, category_list: List):
+        """通用文件处理逻辑"""
+        # 映射 category 到 stats key
+        stats_key_map = {
+            'feature': 'features',
+            'decision': 'decisions',
+            'technical': 'technical_docs',
+            'refactoring': 'refactoring_docs'
+        }
+        stats_key = stats_key_map.get(category)
+        if stats_key:
+            self.stats[stats_key] += 1
+
+        self.stats['total_files'] += 1
+
+        metadata = self.extract_frontmatter(file_path)
+        title = self.extract_title(file_path, metadata)
+        summary = self.extract_summary(file_path)
+        stats = self.get_file_stats(file_path, metadata)
+        tags = self.extract_tags(file_path, metadata)
+        links = self.extract_links(file_path)
+        related_code = self.extract_related_code(file_path, metadata)
+
+        relative_path = str(file_path.relative_to(self.docs_dir))
+        
+        # 确定 ID
+        doc_id = metadata.get('id') or file_path.stem
+
+        status_value = metadata.get('status', '')
+        entry = {
+            'id': doc_id,
+            'file': file_path.name,
+            'title': title,
+            'summary': summary,
+            'path': relative_path,
+            'modified': stats['modified'],
+            'tags': tags,
+            'status': status_value,
+            'author': metadata.get('author', ''),
+            'domain': metadata.get('domain', ''),
+            'type': category,
+            'related_code': related_code
+        }
+
+        category_list.append(entry)
+
+        # 更新标签索引
+        for tag in tags:
+            if tag not in self.tags_index:
+                self.tags_index[tag] = []
+            self.tags_index[tag].append({
+                'title': title,
+                'path': relative_path,
+                'type': category,
+                'status': status_value
+            })
+
+        # 更新依赖关系
+        if links:
+            self.dependencies[relative_path] = links
+
+        # 检查是否是最近更新的
+        if (datetime.now() - stats['modified']).days < 30:
+            self.index['recent_updates'].append({
+                'type': category,
+                'title': title,
+                'path': relative_path,
+                'modified': stats['modified'],
+                'status': status_value
+            })
 
     def scan_features(self):
         """扫描01_features目录"""
@@ -183,50 +319,7 @@ class DocsIndexer:
 
             readme = feature_dir / 'README.md'
             if readme.exists():
-                self.stats['features'] += 1
-                self.stats['total_files'] += 1
-
-                title = self.extract_title(readme)
-                summary = self.extract_summary(readme)
-                stats = self.get_file_stats(readme)
-                tags = self.extract_tags(readme)
-                links = self.extract_links(readme)
-
-                relative_path = str(readme.relative_to(self.docs_dir))
-
-                feature_entry = {
-                    'id': feature_dir.name,
-                    'title': title,
-                    'summary': summary,
-                    'path': relative_path,
-                    'modified': stats['modified'],
-                    'tags': tags
-                }
-
-                self.index['features'].append(feature_entry)
-
-                # 更新标签索引
-                for tag in tags:
-                    if tag not in self.tags_index:
-                        self.tags_index[tag] = []
-                    self.tags_index[tag].append({
-                        'title': title,
-                        'path': relative_path,
-                        'type': 'feature'
-                    })
-
-                # 更新依赖关系
-                if links:
-                    self.dependencies[relative_path] = links
-
-                # 检查是否是最近更新的
-                if (datetime.now() - stats['modified']).days < 30:
-                    self.index['recent_updates'].append({
-                        'type': 'feature',
-                        'title': title,
-                        'path': relative_path,
-                        'modified': stats['modified']
-                    })
+                self.process_file(readme, 'feature', self.index['features'])
 
     def scan_decisions(self):
         """扫描02_decisions目录"""
@@ -235,49 +328,7 @@ class DocsIndexer:
             return
 
         for md_file in sorted(decisions_dir.glob('*.md')):
-            self.stats['decisions'] += 1
-            self.stats['total_files'] += 1
-
-            title = self.extract_title(md_file)
-            summary = self.extract_summary(md_file)
-            stats = self.get_file_stats(md_file)
-            tags = self.extract_tags(md_file)
-            links = self.extract_links(md_file)
-
-            relative_path = str(md_file.relative_to(self.docs_dir))
-
-            decision_entry = {
-                'file': md_file.name,
-                'title': title,
-                'summary': summary,
-                'path': relative_path,
-                'modified': stats['modified'],
-                'tags': tags
-            }
-
-            self.index['decisions'].append(decision_entry)
-
-            # 更新标签索引
-            for tag in tags:
-                if tag not in self.tags_index:
-                    self.tags_index[tag] = []
-                self.tags_index[tag].append({
-                    'title': title,
-                    'path': relative_path,
-                    'type': 'decision'
-                })
-
-            # 更新依赖关系
-            if links:
-                self.dependencies[relative_path] = links
-
-            if (datetime.now() - stats['modified']).days < 30:
-                self.index['recent_updates'].append({
-                    'type': 'decision',
-                    'title': title,
-                    'path': relative_path,
-                    'modified': stats['modified']
-                })
+            self.process_file(md_file, 'decision', self.index['decisions'])
 
     def scan_technical(self):
         """扫描03_technical_design目录"""
@@ -286,49 +337,7 @@ class DocsIndexer:
             return
 
         for md_file in sorted(tech_dir.glob('*.md')):
-            self.stats['technical_docs'] += 1
-            self.stats['total_files'] += 1
-
-            title = self.extract_title(md_file)
-            summary = self.extract_summary(md_file)
-            stats = self.get_file_stats(md_file)
-            tags = self.extract_tags(md_file)
-            links = self.extract_links(md_file)
-
-            relative_path = str(md_file.relative_to(self.docs_dir))
-
-            tech_entry = {
-                'file': md_file.name,
-                'title': title,
-                'summary': summary,
-                'path': relative_path,
-                'modified': stats['modified'],
-                'tags': tags
-            }
-
-            self.index['technical'].append(tech_entry)
-
-            # 更新标签索引
-            for tag in tags:
-                if tag not in self.tags_index:
-                    self.tags_index[tag] = []
-                self.tags_index[tag].append({
-                    'title': title,
-                    'path': relative_path,
-                    'type': 'technical'
-                })
-
-            # 更新依赖关系
-            if links:
-                self.dependencies[relative_path] = links
-
-            if (datetime.now() - stats['modified']).days < 30:
-                self.index['recent_updates'].append({
-                    'type': 'technical',
-                    'title': title,
-                    'path': relative_path,
-                    'modified': stats['modified']
-                })
+            self.process_file(md_file, 'technical', self.index['technical'])
 
     def scan_refactoring(self):
         """扫描04_refactoring目录"""
@@ -337,41 +346,7 @@ class DocsIndexer:
             return
 
         for md_file in sorted(refactor_dir.glob('*.md')):
-            self.stats['refactoring_docs'] += 1
-            self.stats['total_files'] += 1
-
-            title = self.extract_title(md_file)
-            summary = self.extract_summary(md_file)
-            stats = self.get_file_stats(md_file)
-            tags = self.extract_tags(md_file)
-            links = self.extract_links(md_file)
-
-            relative_path = str(md_file.relative_to(self.docs_dir))
-
-            refactor_entry = {
-                'file': md_file.name,
-                'title': title,
-                'summary': summary,
-                'path': relative_path,
-                'modified': stats['modified'],
-                'tags': tags
-            }
-
-            self.index['refactoring'].append(refactor_entry)
-
-            # 更新标签索引
-            for tag in tags:
-                if tag not in self.tags_index:
-                    self.tags_index[tag] = []
-                self.tags_index[tag].append({
-                    'title': title,
-                    'path': relative_path,
-                    'type': 'refactoring'
-                })
-
-            # 更新依赖关系
-            if links:
-                self.dependencies[relative_path] = links
+            self.process_file(md_file, 'refactoring', self.index['refactoring'])
 
     def count_archived(self):
         """统计归档文档数量"""
@@ -414,10 +389,13 @@ class DocsIndexer:
                 emoji_map = {
                     'feature': '🎯',
                     'decision': '🏗️',
-                    'technical': '⚙️'
+                    'technical': '⚙️',
+                    'refactoring': '🔧'
                 }
                 emoji = emoji_map.get(item['type'], '📄')
-                content += f"- {emoji} [{item['title']}]({item['path']}) - *{time_str}*\n"
+                status_emoji = self.get_status_emoji(item.get('status'))
+                
+                content += f"- {emoji} {status_emoji} [{item['title']}]({item['path']}) - *{time_str}*\n"
         else:
             content += "*暂无最近更新*\n"
 
@@ -431,8 +409,12 @@ class DocsIndexer:
             for feature in self.index['features']:
                 # 提取优先级（从ID中）
                 priority = "P0" if "F001" in feature['id'] or "F002" in feature['id'] or "F003" in feature['id'] or "F004" in feature['id'] else "P1/P2"
-                content += f"### [{feature['id']}] {feature['title']}\n\n"
+                status_emoji = self.get_status_emoji(feature.get('status'))
+                
+                content += f"### {status_emoji} [{feature['id']}] {feature['title']}\n\n"
                 content += f"- **优先级**: {priority}\n"
+                if feature.get('status'):
+                    content += f"- **状态**: {feature['status']}\n"
                 content += f"- **路径**: [`{feature['path']}`]({feature['path']})\n"
                 if feature['summary']:
                     content += f"- **说明**: {feature['summary']}\n"
@@ -447,14 +429,16 @@ class DocsIndexer:
         content += "> Architecture Decision Records - 记录关键技术选型和设计决策\n\n"
 
         if self.index['decisions']:
-            content += "| ADR编号 | 决策标题 | 摘要 | 文档 |\n"
-            content += "|---------|---------|------|------|\n"
+            content += "| 状态 | ADR编号 | 决策标题 | 摘要 | 文档 |\n"
+            content += "|------|---------|---------|------|------|\n"
             for decision in self.index['decisions']:
                 # 提取ADR编号
                 match = re.search(r'ADR-(\d+)', decision['file'])
                 adr_num = match.group(1) if match else "N/A"
-                summary_short = decision['summary'][:80] + '...' if len(decision['summary']) > 80 else decision['summary']
-                content += f"| ADR-{adr_num} | {decision['title']} | {summary_short} | [`{decision['file']}`]({decision['path']}) |\n"
+                summary_short = decision['summary'][:60] + '...' if len(decision['summary']) > 60 else decision['summary']
+                status_emoji = self.get_status_emoji(decision.get('status'))
+                
+                content += f"| {status_emoji} | ADR-{adr_num} | {decision['title']} | {summary_short} | [`{decision['file']}`]({decision['path']}) |\n"
         else:
             content += "*暂无技术决策文档*\n\n"
 
@@ -465,16 +449,18 @@ class DocsIndexer:
         content += "> 核心技术架构、数据模型、计算公式等\n\n"
 
         if self.index['technical']:
+            content += "| 状态 | 域 | 标题 | 内容 | 路径 |\n"
+            content += "|------|----|------|------|------|\n"
             for tech in self.index['technical']:
-                content += f"### {tech['title']}\n\n"
-                content += f"- **路径**: [`{tech['path']}`]({tech['path']})\n"
-                if tech['summary']:
-                    content += f"- **内容**: {tech['summary']}\n"
-                content += f"- **最后更新**: {tech['modified'].strftime('%Y-%m-%d')}\n\n"
+                status_emoji = self.get_status_emoji(tech.get('status'))
+                domain = tech.get('domain', '-') or '-'
+                summary_short = tech['summary'][:50] + '...' if len(tech['summary']) > 50 else tech['summary']
+                
+                content += f"| {status_emoji} | {domain} | {tech['title']} | {summary_short} | [`{tech['path']}`]({tech['path']}) |\n"
         else:
             content += "*暂无技术设计文档*\n\n"
 
-        content += "---\n\n"
+        content += "\n---\n\n"
 
         # 重构文档
         content += "## 🔧 重构与优化文档\n\n"
@@ -482,7 +468,8 @@ class DocsIndexer:
 
         if self.index['refactoring']:
             for refactor in self.index['refactoring']:
-                content += f"- [{refactor['title']}]({refactor['path']})\n"
+                status_emoji = self.get_status_emoji(refactor.get('status'))
+                content += f"- {status_emoji} [{refactor['title']}]({refactor['path']})\n"
         else:
             content += "*暂无重构文档*\n\n"
 
@@ -511,7 +498,8 @@ class DocsIndexer:
                             'refactoring': '🔧'
                         }
                         emoji = emoji_map.get(doc['type'], '📄')
-                        content += f"- {emoji} [{doc['title']}]({doc['path']})\n"
+                        status_emoji = self.get_status_emoji(doc.get('status') or '')
+                        content += f"- {emoji} {status_emoji} [{doc['title']}]({doc['path']})\n"
                     content += "\n"
 
             # 所有标签（字母序）
@@ -598,100 +586,36 @@ class DocsIndexer:
 ```bash
 # 扫描开发文档并重新生成索引
 python scripts/generate_docs_index.py 开发文档
-
-# 或使用相对路径
-cd scripts
-python generate_docs_index.py ../开发文档
 ```
-
----
-
-## 🔗 相关资源
-
-- **项目主页**: [../README.md](../README.md)
-- **AI协作指南**: [../CLAUDE.md](../CLAUDE.md)
-- **开发约定**: [00_conventions.md](00_conventions.md)
-- **历史归档**: [archive/](archive/)
-
----
-
-*本索引由 `scripts/generate_docs_index.py` 自动生成*
-*如需更新，请运行: `python scripts/generate_docs_index.py 开发文档`*
 '''
-
         return content
 
-    def save_index(self):
-        """保存索引文件"""
-        index_path = self.docs_dir / 'KNOWLEDGE_INDEX.md'
+    def run(self):
+        """执行索引生成流程"""
+        print(f"正在扫描文档目录: {self.docs_dir}")
+        
+        self.scan_features()
+        self.scan_decisions()
+        self.scan_technical()
+        self.scan_refactoring()
+        self.count_archived()
+        
         content = self.generate_index_content()
-
-        with open(index_path, 'w', encoding='utf-8') as f:
+        
+        output_file = self.docs_dir / 'KNOWLEDGE_INDEX.md'
+        with open(output_file, 'w', encoding='utf-8') as f:
             f.write(content)
-
-        return index_path
-
-def main():
-    import sys
-
-    if len(sys.argv) < 2:
-        print("用法: python generate_docs_index.py <开发文档目录>")
-        print("示例: python generate_docs_index.py 开发文档")
-        sys.exit(1)
-
-    docs_dir = sys.argv[1]
-
-    if not os.path.exists(docs_dir):
-        print(f"❌ 文档目录不存在: {docs_dir}")
-        sys.exit(1)
-
-    print(f"🚀 开始生成知识库索引")
-    print(f"📁 文档目录: {docs_dir}\n")
-
-    # 创建索引器
-    indexer = DocsIndexer(docs_dir)
-
-    # 扫描各类文档
-    print("🔍 扫描功能模块文档...")
-    indexer.scan_features()
-    print(f"  ✓ 找到 {indexer.stats['features']} 个功能模块")
-
-    print("🔍 扫描技术决策文档...")
-    indexer.scan_decisions()
-    print(f"  ✓ 找到 {indexer.stats['decisions']} 个ADR文档")
-
-    print("🔍 扫描技术设计文档...")
-    indexer.scan_technical()
-    print(f"  ✓ 找到 {indexer.stats['technical_docs']} 个技术文档")
-
-    print("🔍 扫描重构文档...")
-    indexer.scan_refactoring()
-    print(f"  ✓ 找到 {indexer.stats['refactoring_docs']} 个重构文档")
-
-    print("🔍 统计归档文档...")
-    indexer.count_archived()
-    print(f"  ✓ 找到 {indexer.stats['archived_docs']} 个归档文档")
-
-    # 生成索引
-    print("\n💾 生成知识库索引...")
-    index_path = indexer.save_index()
-    print(f"  ✅ 索引保存至: {index_path}")
-
-    # 输出统计
-    print(f"\n📊 知识库统计:")
-    print(f"  - 功能模块: {indexer.stats['features']}")
-    print(f"  - 技术决策: {indexer.stats['decisions']}")
-    print(f"  - 技术设计: {indexer.stats['technical_docs']}")
-    print(f"  - 重构文档: {indexer.stats['refactoring_docs']}")
-    print(f"  - 历史归档: {indexer.stats['archived_docs']}")
-    print(f"  - 活跃文档: {indexer.stats['total_files']}")
-    print(f"  - 最近更新: {len(indexer.index['recent_updates'])} 个（30天内）")
-
-    print(f"\n✨ 索引生成完成!")
-    print(f"📖 查看索引: {index_path}")
-
-    return 0
+            
+        print(f"索引生成完成! 已保存至: {output_file}")
+        print(f"总计扫描文件: {self.stats['total_files']}")
 
 if __name__ == '__main__':
     import sys
-    sys.exit(main())
+    
+    if len(sys.argv) < 2:
+        print("Usage: python generate_docs_index.py <docs_dir>")
+        sys.exit(1)
+        
+    docs_dir = sys.argv[1]
+    indexer = DocsIndexer(docs_dir)
+    indexer.run()

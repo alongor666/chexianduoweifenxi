@@ -1,3 +1,17 @@
+---
+id: 03_technical_design_tech_stack
+title: 技术栈与开发环境
+author: AI_Refactor
+status: stable
+type: technical
+domain: product
+tags:
+- technical
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 技术栈与开发环境
 
 本文档概述了车险分析平台所采用的技术栈、关键库以及本地开发环境的配置指南。

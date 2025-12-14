@@ -1,3 +1,17 @@
+---
+id: 01_features_f011_weekly_operational_trend_readme
+title: 周度经营趋势分析模块
+author: AI_Refactor
+status: stable
+type: feature
+domain: product
+tags:
+- feature
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 周度经营趋势分析模块
 
 > **状态**: ✅ 完成

@@ -1,3 +1,17 @@
+---
+id: 03_technical_design_store_migration_plan
+title: Store架构迁移计划
+author: AI_Refactor
+status: stable
+type: technical
+domain: product
+tags:
+- technical
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # Store架构迁移计划
 
 > 生成时间：2025-11-25

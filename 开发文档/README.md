@@ -1,3 +1,16 @@
+---
+id: README
+title: 车险数据分析平台 - 动态知识库
+author: AI_Refactor
+status: stable
+type: other
+domain: product
+tags:
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 车险数据分析平台 - 动态知识库
 
 > **核心原则**: 代码是唯一事实 (Code is the Single Source of Truth)

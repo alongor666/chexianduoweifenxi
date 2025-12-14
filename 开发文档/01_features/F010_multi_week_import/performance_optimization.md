@@ -1,3 +1,17 @@
+---
+id: 01_features_f010_multi_week_import_performance_optimization
+title: 性能优化记录 - 趋势分析多周数据支持
+author: AI_Refactor
+status: stable
+type: feature
+domain: product
+tags:
+- feature
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 性能优化记录 - 趋势分析多周数据支持
 
 ## 优化目标

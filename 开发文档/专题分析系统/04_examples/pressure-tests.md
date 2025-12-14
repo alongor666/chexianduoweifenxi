@@ -1,3 +1,17 @@
+---
+id: _04_examples_pressure_tests
+title: 压力测试结果(Pressure Tests)
+author: AI_Refactor
+status: stable
+type: analysis
+domain: claims
+tags:
+- analysis
+- claims
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 压力测试结果(Pressure Tests)
 
 - 版本:v0.1

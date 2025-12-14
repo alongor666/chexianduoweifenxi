@@ -1,3 +1,17 @@
+---
+id: 01_features_f006_data_export_readme
+title: 数据导出与分享模块
+author: AI_Refactor
+status: stable
+type: feature
+domain: product
+tags:
+- feature
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 数据导出与分享模块
 
 > **状态**: ✅ stable

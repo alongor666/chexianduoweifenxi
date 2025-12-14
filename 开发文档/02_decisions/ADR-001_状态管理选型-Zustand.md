@@ -1,3 +1,17 @@
+---
+id: 02_decisions_adr_001_zustand
+title: 'ADR-001: 状态管理选型 - Zustand'
+author: 开发团队
+status: stable
+type: decision
+domain: product
+tags:
+- decision
+- product
+created_at: '2025-01-20'
+updated_at: '2025-12-13'
+---
+
 # ADR-001: 状态管理选型 - Zustand
 
 > **状态**: ✅ 已采纳

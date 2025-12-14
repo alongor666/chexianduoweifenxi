@@ -1,3 +1,17 @@
+---
+id: 01_features_f011_weekly_operational_trend_technical
+title: 周度经营趋势分析 - 技术实现文档
+author: AI_Refactor
+status: stable
+type: feature
+domain: claims
+tags:
+- feature
+- claims
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 周度经营趋势分析 - 技术实现文档
 
 ## 目录

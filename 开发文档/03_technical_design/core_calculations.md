@@ -1,3 +1,23 @@
+---
+id: 03_technical_design_core_calculations
+title: 核心指标计算引擎 V2.0
+author: AI
+status: stable
+type: technical
+domain: finance
+tags:
+- kpi
+- calculation
+- formula
+- core
+created_at: 2024-05-20
+updated_at: 2025-12-06
+related_code:
+- src/domain/rules/kpi-calculator-enhanced.ts
+- src/app/api/kpi/route.ts
+complexity: high
+---
+
 # 核心指标计算引擎 V2.0
 
 本文件定义了平台的KPI体系架构、计算公式、业务逻辑和显示规则。

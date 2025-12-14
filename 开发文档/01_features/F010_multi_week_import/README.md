@@ -1,3 +1,17 @@
+---
+id: 01_features_f010_multi_week_import_readme
+title: F010 - 多周同时导入功能
+author: AI_Refactor
+status: draft
+type: feature
+domain: product
+tags:
+- feature
+- product
+created_at: '2025-10-26'
+updated_at: '2025-12-13'
+---
+
 # F010 - 多周同时导入功能
 
 > **状态**: 🚧 开发中

@@ -1,3 +1,17 @@
+---
+id: _02_templates_unified_template_v1_0
+title: 《专题分析统一母模板 v1.0（冻结版）》
+author: AI_Refactor
+status: stable
+type: analysis
+domain: policy
+tags:
+- analysis
+- policy
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 《专题分析统一母模板 v1.0（冻结版）》
 
 - 版本：v1.0

@@ -1,3 +1,17 @@
+---
+id: 01_features_f001_data_import_readme
+title: 数据上传与解析模块
+author: AI_Refactor
+status: stable
+type: feature
+domain: product
+tags:
+- feature
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 数据上传与解析模块
 
 > **状态**: ✅ stable

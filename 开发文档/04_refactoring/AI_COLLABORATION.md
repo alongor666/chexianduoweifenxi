@@ -1,3 +1,17 @@
+---
+id: 04_refactoring_ai_collaboration
+title: 🤖 AI 协作约定
+author: AI_Refactor
+status: stable
+type: refactoring
+domain: product
+tags:
+- refactoring
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 🤖 AI 协作约定
 
 > **目标**：让 AI 助手严格遵守项目的架构规则

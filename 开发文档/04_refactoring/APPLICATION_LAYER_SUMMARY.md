@@ -1,3 +1,17 @@
+---
+id: 04_refactoring_application_layer_summary
+title: Application 层实现总结
+author: AI_Refactor
+status: stable
+type: refactoring
+domain: tech
+tags:
+- refactoring
+- tech
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # Application 层实现总结
 
 > **完成时间**：2025-11-14

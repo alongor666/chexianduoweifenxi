@@ -1,3 +1,24 @@
+---
+id: 03_technical_design_data_architecture
+title: 数据架构
+author: AI
+status: stable
+type: technical
+domain: tech
+tags:
+- data-model
+- schema
+- csv
+- validation
+created_at: 2024-05-20
+updated_at: 2025-10-21
+related_code:
+- src/lib/schema/insurance.ts
+- prisma/schema.prisma
+- src/domain/entities/InsuranceRecord.ts
+complexity: high
+---
+
 # 数据架构
 
 > **[warning] 警告：数据库模型缺失**

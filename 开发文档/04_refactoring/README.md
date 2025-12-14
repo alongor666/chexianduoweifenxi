@@ -1,3 +1,17 @@
+---
+id: 04_refactoring_readme
+title: 重构文档目录
+author: AI_Refactor
+status: stable
+type: refactoring
+domain: product
+tags:
+- refactoring
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 重构文档目录
 
 > **重构项目**：Clean Architecture + FSD 架构重构

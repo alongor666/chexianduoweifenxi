@@ -1,3 +1,17 @@
+---
+id: 04_refactoring_refactoring_plan
+title: 🔧 车险分析平台重构计划
+author: AI_Refactor
+status: stable
+type: refactoring
+domain: product
+tags:
+- refactoring
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 🔧 车险分析平台重构计划
 
 > **基于**：[架构规则体系](./ARCHITECTURE_RULES.md)

@@ -1,3 +1,17 @@
+---
+id: 01_features_f005_structure_analysis_readme
+title: 结构分析与对比模块
+author: AI_Refactor
+status: stable
+type: feature
+domain: product
+tags:
+- feature
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 结构分析与对比模块
 
 > **状态**: ✅ stable

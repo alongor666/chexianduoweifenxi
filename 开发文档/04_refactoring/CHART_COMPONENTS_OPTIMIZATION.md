@@ -1,3 +1,17 @@
+---
+id: 04_refactoring_chart_components_optimization
+title: 图表组件优化记录
+author: AI_Refactor
+status: stable
+type: refactoring
+domain: product
+tags:
+- refactoring
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 图表组件优化记录
 
 ## 优化日期

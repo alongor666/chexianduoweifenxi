@@ -1,3 +1,17 @@
+---
+id: 02_decisions_adr_003_localstorage
+title: 'ADR-003: 数据持久化策略 - LocalStorage'
+author: AI_Refactor
+status: stable
+type: decision
+domain: product
+tags:
+- decision
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # ADR-003: 数据持久化策略 - LocalStorage
 
 ## 状态

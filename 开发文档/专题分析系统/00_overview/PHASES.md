@@ -1,3 +1,17 @@
+---
+id: _00_overview_phases
+title: 项目阶段规划（Project Phases）
+author: AI_Refactor
+status: stable
+type: analysis
+domain: finance
+tags:
+- analysis
+- finance
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 项目阶段规划（Project Phases）
 
 本文件定义《专题分析系统（车险经营）》的阶段划分、目标边界与协作约束。

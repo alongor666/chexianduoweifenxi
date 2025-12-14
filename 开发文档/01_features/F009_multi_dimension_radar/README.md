@@ -1,3 +1,17 @@
+---
+id: 01_features_f009_multi_dimension_radar_readme
+title: F009 多维健康度雷达图
+author: AI_Refactor
+status: stable
+type: feature
+domain: product
+tags:
+- feature
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # F009 多维健康度雷达图
 
 **功能标识**: F009

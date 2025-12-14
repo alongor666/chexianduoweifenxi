@@ -1,3 +1,17 @@
+---
+id: 03_technical_design_dimensions_dictionary
+title: 维度字典与枚举值（Insuralytics）
+author: AI_Refactor
+status: stable
+type: technical
+domain: product
+tags:
+- technical
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 维度字典与枚举值（Insuralytics）
 
 本文档汇总平台内所有可选维度及其对应的枚举值，作为代码与数据规范的统一参考。适用于：目标管理、筛选器系统、CSV 导入、统计分析模块。

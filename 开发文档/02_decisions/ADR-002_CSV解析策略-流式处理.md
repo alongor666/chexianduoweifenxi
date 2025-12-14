@@ -1,3 +1,17 @@
+---
+id: 02_decisions_ADR-002_CSV解析策略-流式处理
+title: 'ADR-002: CSV解析策略 - 流式处理'
+author: 开发团队
+status: stable
+type: decision
+domain: product
+tags:
+- decision
+- product
+created_at: '2025-01-20'
+updated_at: '2025-12-13'
+---
+
 # ADR-002: CSV解析策略 - 流式处理
 
 > **状态**: ✅ 已采纳

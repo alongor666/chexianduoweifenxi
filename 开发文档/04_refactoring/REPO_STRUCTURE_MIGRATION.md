@@ -1,3 +1,17 @@
+---
+id: 04_refactoring_repo_structure_migration
+title: 仓库结构治理与迁移跟踪（Repo Structure Migration）
+author: AI_Refactor
+status: stable
+type: refactoring
+domain: tech
+tags:
+- refactoring
+- tech
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 仓库结构治理与迁移跟踪（Repo Structure Migration）
 
 > **目标**：建立稳定、单一事实来源的顶层结构（文档/脚本/配置/工具），在不破坏现有使用的前提下渐进收敛。

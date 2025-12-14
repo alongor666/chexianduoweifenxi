@@ -1,3 +1,16 @@
+---
+id: 00_conventions
+title: 知识库协作约定
+author: AI_Refactor
+status: stable
+type: other
+domain: product
+tags:
+- product
+created_at: '2025-12-14'
+updated_at: '2025-12-14'
+---
+
 # 知识库协作约定
 
 > **最高准则: 代码是唯一事实 (Code is the Single Source of Truth)**
@@ -65,6 +78,37 @@
   - ✅ 决策记录通过 `affects_features` 链接功能
 - ✅ 日志通过 `related_features` 链接功能
 - **工具**: 使用 `meta.json` 存储结构化关联关系
+
+---
+
+## 🧠 AI 协作规范：元数据驱动的上下文
+
+> **核心理念**: AI 不是靠“猜”来理解项目，而是靠**精准的元数据索引**。
+> 文档不仅是给人看的，更是给 AI 构建 RAG (Retrieval-Augmented Generation) 上下文的索引源。
+
+### 1. 文档即代码 (Docs as Code)
+
+所有 Markdown 文档必须包含 YAML Frontmatter，遵循 [`00_doc_meta_standard.md`](./00_doc_meta_standard.md) 标准。
+
+**必须包含的字段**:
+- `id`: 唯一标识符
+- `status`: 生命周期状态 (`stable` 为最高置信度)
+- `domain`: 业务域边界 (帮助 AI 排除干扰信息)
+- `related_code`: **关键！** 建立文档与代码的强关联
+
+### 2. 上下文加载原则
+
+AI 在处理任务时，应根据元数据智能加载上下文：
+
+1.  **明确业务域**: 处理理赔问题时，优先加载 `domain: claims` 的文档。
+2.  **代码反查**: 修改 `src/domain/rules/kpi.ts` 前，必须检索 `related_code` 包含该文件的文档。
+3.  **置信度过滤**: 遇到冲突时，`status: stable` 的文档优于 `status: draft`，代码实现优于任何文档。
+
+### 3. 维护责任
+
+- **新建文档**: 必须包含完整 Frontmatter。
+- **代码重构**: 如果重命名了核心类/文件，必须同步更新引用该文件的文档中的 `related_code` 路径。
+- **废弃文档**: 将 `status` 标记为 `deprecated`，切勿直接删除（保留历史上下文）。
 
 ---
 

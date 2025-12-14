@@ -1,3 +1,17 @@
+---
+id: 01_features_f012_data_source_selection_readme
+title: F012 - 数据源选择功能
+author: AI_Refactor
+status: stable
+type: feature
+domain: finance
+tags:
+- feature
+- finance
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # F012 - 数据源选择功能
 
 ## 功能概述

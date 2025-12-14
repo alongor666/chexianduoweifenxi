@@ -1,3 +1,17 @@
+---
+id: 04_refactoring_unified_echarts_architecture
+title: 统一可视化引擎架构文档（ECharts）
+author: AI_Refactor
+status: stable
+type: refactoring
+domain: product
+tags:
+- refactoring
+- product
+created_at: '2025-12-14'
+updated_at: '2025-12-14'
+---
+
 # 统一可视化引擎架构文档（ECharts）
 
 ## 📋 文档概述
@@ -488,33 +502,7 @@ const handleDrillDown = data => {
 
 ## 📝 迁移记录
 
-### 2025-12-07
-
-**完成内容**：
-
-1. ✅ 创建基础架构
-
-   - BaseEChart 组件
-   - 主题配置系统（theme.ts）
-   - 配置构建函数（builders.ts）
-   - 联动与下钻机制（interactions.ts）
-2. ✅ 创建标准模板
-
-   - 趋势类图模板（trend.ts）
-   - 散点/气泡图模板（scatter.ts）
-   - 热力图模板（heatmap.ts）
-3. ✅ 迁移首个组件
-
-   - Sparkline 组件（微型趋势图）
-   - 向后兼容旧接口
-
-**下一步**：
-
-- 迁移 DistributionPieChart
-- 本地验证功能
-- 性能测试
-
----
+> ℹ️ **提示**：详细开发记录已迁移至 [开发记录表](../开发记录表.md)。
 
 ## 🔍 参考资料
 

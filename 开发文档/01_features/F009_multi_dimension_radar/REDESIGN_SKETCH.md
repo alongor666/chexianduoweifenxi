@@ -1,3 +1,17 @@
+---
+id: 01_features_f009_multi_dimension_radar_redesign_sketch
+title: 多维雷达图改造草图 v2.0
+author: AI_Refactor
+status: stable
+type: feature
+domain: product
+tags:
+- feature
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 多维雷达图改造草图 v2.0
 
 **改造日期**: 2025-11-02

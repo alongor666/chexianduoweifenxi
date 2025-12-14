@@ -1,19 +1,28 @@
 {
   "id": "F016",
   "name": "企业驾驶舱",
-  "status": "in_progress",
+  "status": "completed",
+  "priority": "P0",
   "owners": ["开发团队"],
   "routes": ["/?tab=cockpit"],
   "components": [
     "src/components/features/enterprise-cockpit.tsx",
     "src/components/features/cockpit/kpi-metrics-row.tsx",
     "src/components/features/cockpit/statistics-row.tsx",
-    "src/components/features/cockpit/business-observation/*"
+    "src/components/features/cockpit/business-observation/TimeProgressAnalysis.tsx",
+    "src/components/features/cockpit/business-observation/CostRiskAnalysis.tsx",
+    "src/components/features/cockpit/business-observation/BusinessHealthHeatmap.tsx",
+    "src/components/features/cockpit/business-observation/MultiDimensionRadarWrapper.tsx",
+    "src/components/features/cockpit/business-observation/DynamicBarChart.tsx",
+    "src/components/features/cockpit/business-observation/ProportionChart.tsx"
   ],
   "dependencies": [
     "src/config/thresholds.ts",
-    "src/utils/sorting.ts",
+    "src/hooks/use-kpi.ts",
+    "src/hooks/use-comparison-analysis.ts",
     "src/domain/rules/kpi-calculator-enhanced.ts"
   ],
-  "last_updated": "2025-12-13"
+  "last_updated": "2025-12-13",
+  "completion_percentage": 90,
+  "tags": ["驾驶舱", "KPI监控", "风险预警", "阈值体系", "可视化"]
 }

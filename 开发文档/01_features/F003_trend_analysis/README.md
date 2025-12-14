@@ -1,3 +1,17 @@
+---
+id: 01_features_f003_trend_analysis_readme
+title: 趋势分析图表模块
+author: AI_Refactor
+status: draft
+type: feature
+domain: product
+tags:
+- feature
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 趋势分析图表模块
 
 > **状态**: ✅ beta  

@@ -1,3 +1,17 @@
+---
+id: 01_features_f013_premium_claim_bar_charts_readme
+title: 保费与赔付分析条形图模块
+author: AI_Refactor
+status: draft
+type: feature
+domain: product
+tags:
+- feature
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 保费与赔付分析条形图模块
 
 > **状态**: ✅ active

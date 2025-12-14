@@ -1,3 +1,17 @@
+---
+id: 03_technical_design_static_deployment
+title: 纯静态部署指南
+author: AI_Refactor
+status: stable
+type: technical
+domain: tech
+tags:
+- technical
+- tech
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 纯静态部署指南
 
 本文档说明如何将车险分析平台配置为纯静态部署模式，实现零服务器成本、快速访问的静态网站部署。

@@ -1,3 +1,17 @@
+---
+id: 01_features_f009_multi_dimension_radar_color_preview
+title: 多维雷达图 - 机构颜色方案预览
+author: AI_Refactor
+status: stable
+type: feature
+domain: claims
+tags:
+- feature
+- claims
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 多维雷达图 - 机构颜色方案预览
 
 **配色方案**: Tableau Classic

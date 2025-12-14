@@ -1,3 +1,17 @@
+---
+id: 01_features_f008_data_persistence_readme
+title: F008 - 数据持久化与上传历史模块
+author: AI_Refactor
+status: stable
+type: feature
+domain: product
+tags:
+- feature
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # F008 - 数据持久化与上传历史模块
 
 ## 功能概述

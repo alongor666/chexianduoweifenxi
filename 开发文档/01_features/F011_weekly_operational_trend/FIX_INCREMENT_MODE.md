@@ -1,3 +1,17 @@
+---
+id: 01_features_f011_weekly_operational_trend_fix_increment_mode
+title: 周增量模式赔付率计算逻辑修复
+author: AI_Refactor
+status: stable
+type: feature
+domain: tech
+tags:
+- feature
+- tech
+created_at: '2025-10-26'
+updated_at: '2025-12-13'
+---
+
 # 周增量模式赔付率计算逻辑修复
 
 > **修复日期**: 2025-10-26

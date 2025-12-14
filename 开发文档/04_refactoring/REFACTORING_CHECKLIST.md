@@ -1,3 +1,17 @@
+---
+id: 04_refactoring_refactoring_checklist
+title: ✅ 重构检查清单
+author: AI_Refactor
+status: stable
+type: refactoring
+domain: product
+tags:
+- refactoring
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # ✅ 重构检查清单
 
 > **用途**：每次编写/修改代码前必须检查的规则

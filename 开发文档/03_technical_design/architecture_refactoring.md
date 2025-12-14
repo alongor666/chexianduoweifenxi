@@ -1,3 +1,17 @@
+---
+id: 03_technical_design_architecture_refactoring
+title: 架构重构指南 - 模块化升级
+author: AI_Refactor
+status: stable
+type: technical
+domain: product
+tags:
+- technical
+- product
+created_at: '2025-12-13'
+updated_at: '2025-12-13'
+---
+
 # 架构重构指南 - 模块化升级
 
 ## 📅 文档信息
