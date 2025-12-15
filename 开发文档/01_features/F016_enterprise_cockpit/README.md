@@ -9,12 +9,12 @@ tags:
 - feature
 - product
 created_at: '2025-12-14'
-updated_at: '2025-12-14'
+updated_at: '2025-12-15'
 ---
 
 # F016: 企业驾驶舱 (Enterprise Cockpit)
 
-**最后更新**: 2025-12-13
+**最后更新**: 2025-12-15
 **状态**: ✅ 已完成核心功能重构
 **优先级**: P0
 
@@ -119,6 +119,16 @@ EnterpriseCockpit (主容器)
   - 顶部显示风险统计
   - `sortByValue()` 排序
 
+#### 5. BusinessHealthHeatmap / BusinessTypeHeatmap
+- **路径**:
+  - 包装组件：`src/components/features/cockpit/business-observation/BusinessHealthHeatmap.tsx`
+  - 核心图表：`src/components/features/business-type-heatmap.tsx`
+- **数据对齐口径**：内部按 `BusinessTypeCode`（英文代码）聚合与对齐，避免 CSV/历史口径中文文案不一致导致“整行缺失”（例如：`10吨以上-普货`、`2-9吨营业货车` 等会先映射为稳定 code，再映射回标准中文全称用于展示）。
+- **缺失呈现规则**：
+  - 某周某业务类型无记录 → 显示“暂无数据”
+  - 有记录但分母为 0（指标不可计算）→ Domain 层计算返回 `null`，前端同样显示“暂无数据”（不再用 0 伪造健康值）
+- **KPI计算统一**：使用 `src/domain/rules/kpi-calculator-enhanced.ts` 的 `calculate*Ratio` 系列函数，确保口径与核心计算引擎一致。
+
 ### 数据源Hook
 
 #### useKPI()
@@ -167,9 +177,58 @@ const sorted = sortByValue(items, item => item.kpi.loss_ratio, 'loss_ratio')
 - **排序工具**: `src/config/thresholds.ts` 中的 `sortByValue()` 函数
 - **指标计算**: Domain 层 `src/domain/rules/kpi-calculator-enhanced.ts`
 - **架构规范**: Hook 层调用 Domain 层，组件层调用 Hook 层，不在组件内做业务计算
+- **年度计划**: `src/config/year-plans.json` - 各机构年度保费目标配置
+
+## 年度目标配置
+
+**时间进度达成率**依赖年度保费目标进行计算。系统提供以下方式管理目标:
+
+### 1. 年度计划导入
+
+**配置文件**: `src/config/year-plans.json`
+```json
+{
+  "年度保费计划": {
+    "四川分公司": 431000000,
+    "天府": 197300000,
+    ...
+  }
+}
+```
+
+**导入方式**: 在浏览器控制台执行
+```javascript
+import('/utils/import-year-plans').then(m => m.importYearPlans())
+```
+
+**详细指南**: 参见 [年度计划导入指南](../../05_guides/年度计划导入指南.md)
+
+### 2. 目标解析优先级
+
+系统使用以下优先级解析目标（在 `use-kpi.ts` 中实现）:
+1. 业务类型目标 (最高)
+2. 三级机构目标 (year-plans.json 导入的数据)
+3. 客户类别目标
+4. 险种目标
+5. 全公司总目标 (最低)
+
+### 3. 计算公式
+
+**累计模式**:
+```
+时间进度达成率 = (累计签单保费 / 年度目标) ÷ (当前周数 / 50周) × 100%
+```
+
+**增量模式**:
+```
+时间进度达成率 = (本周签单保费 / 周均目标) × 100%
+```
+
+**实现位置**: `src/domain/rules/kpi-calculator-enhanced.ts:346-364`
 
 ## 相关文档
 - [统一阈值配置](../../03_technical_design/core_calculations.md)
 - [驾驶舱架构决策](../../02_decisions/ADR-007_现代驾驶舱架构.md)
 - [统一ECharts架构](../../04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md)
-
+- [年度计划集成方案](../../02_decisions/ADR-009_年度计划集成方案.md)
+- [年度计划导入指南](../../05_guides/年度计划导入指南.md)

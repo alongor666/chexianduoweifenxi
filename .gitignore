@@ -9,19 +9,22 @@ node_modules
 test-results/
 coverage/
 
-# DuckDB 数据库文件(本地测试用,不提交到仓库)
+# 数据文件防泄密 (全局忽略 - CSV/Excel/DB等)
+*.csv
+*.xls
+*.xlsx
+*.xlsm
 *.duckdb
 *.duckdb.wal
 *.db
+*.sqlite
+*.sqlite3
+*.parquet
 
 # Python 虚拟环境
 venv/
 __pycache__/
 *.pyc
-
-# 实际数据文件(敏感数据)
-实际数据/*.csv
-实际数据/*.duckdb
 
 # 开发环境配置
 .env.local

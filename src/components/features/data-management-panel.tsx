@@ -10,14 +10,15 @@ import { FileUpload } from './file-upload'
 import { DataExport } from './data-export'
 import { PDFReportExport } from './pdf-report-export'
 import { DataProcessingPanel } from './data-processing-panel' // 导入 DataProcessingPanel
+import { YearPlanImportPanel } from './year-plan-import-panel'
 
 import { useAppStore } from '@/store/use-app-store'
 import { usePersistData } from '@/hooks/use-persist-data'
-import { Database, Download, Trash2, Filter } from 'lucide-react'
+import { Database, Download, Trash2, Filter, Target } from 'lucide-react'
 
 export function DataManagementPanel() {
   const [activeSubTab, setActiveSubTab] = useState<
-    'upload' | 'export' | 'process'
+    'upload' | 'export' | 'process' | 'targets'
   >('upload')
   const { clearPersistedData } = usePersistData()
   const rawData = useAppStore(state => state.rawData)
@@ -68,7 +69,7 @@ export function DataManagementPanel() {
         <Tabs
           value={activeSubTab}
           onValueChange={v =>
-            setActiveSubTab(v as 'upload' | 'export' | 'process')
+            setActiveSubTab(v as 'upload' | 'export' | 'process' | 'targets')
           }
         >
           <div className="border-b border-slate-200 px-6 pt-4">
@@ -80,6 +81,10 @@ export function DataManagementPanel() {
               <TabsTrigger value="export" className="gap-2">
                 <Download className="w-4 h-4" />
                 导出数据
+              </TabsTrigger>
+              <TabsTrigger value="targets" className="gap-2">
+                <Target className="w-4 h-4" />
+                年度目标
               </TabsTrigger>
               {!isStaticMode && (
                 <TabsTrigger value="process" className="gap-2">
@@ -127,6 +132,10 @@ export function DataManagementPanel() {
                 </div>
               </div>
             </div>
+          </TabsContent>
+
+          <TabsContent value="targets" className="p-6 m-0">
+            <YearPlanImportPanel />
           </TabsContent>
 
           {!isStaticMode && (

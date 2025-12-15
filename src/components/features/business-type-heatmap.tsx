@@ -31,12 +31,21 @@ import {
 } from '@/components/ui/select'
 import { useFilteredData } from '@/hooks/use-filtered-data'
 import {
-  CANONICAL_BUSINESS_TYPES,
-  getBusinessTypeLabel,
+  CANONICAL_BUSINESS_CODES,
+  getBusinessTypeCode,
+  getBusinessTypeFullCNByCode,
+  getBusinessTypeShortLabelByCode,
+  type BusinessTypeCode,
 } from '@/constants/dimensions'
 import { formatPercent } from '@/utils/formatters'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { TrendingUp, TrendingDown, AlertTriangle } from 'lucide-react'
+import {
+  calculateContributionMarginRatio,
+  calculateExpenseRatio,
+  calculateLossRatio,
+  calculateVariableCostRatio,
+} from '@/domain/rules/kpi-calculator-enhanced'
 
 /**
  * 可切换的指标类型
@@ -91,15 +100,16 @@ const METRIC_CONFIG: Record<
  * 热力图数据点
  */
 interface HeatmapDataPoint {
-  businessType: string
+  businessType: BusinessTypeCode
   weekNumber: number
   metricValue: number | null
-  signedPremium: number
+  signedPremiumYuan: number
   policyCount: number
   // Intermediate fields for calculation
-  maturedPremium: number
-  reportedClaimPayment: number
-  expenseAmount: number
+  maturedPremiumYuan: number
+  reportedClaimPaymentYuan: number
+  expenseAmountYuan: number
+  marginalContributionAmountYuan: number
 }
 
 /**
@@ -107,7 +117,7 @@ interface HeatmapDataPoint {
  */
 interface AnomalyPattern {
   type: 'continuous_danger' | 'v_shape' | 'excellent_streak'
-  businessType: string
+  businessType: BusinessTypeCode
   description: string
   severity: 'high' | 'medium' | 'low'
 }
@@ -120,11 +130,11 @@ export function BusinessTypeHeatmap() {
   // 计算热力图数据
   const { heatmapData, weekNumbers, anomalies } = useMemo(() => {
     const metricConfig = METRIC_CONFIG[selectedMetric]
-    const dataMap = new Map<string, Map<number, HeatmapDataPoint>>()
+    const dataMap = new Map<BusinessTypeCode, Map<number, HeatmapDataPoint>>()
 
     // 按业务类型和周次聚合数据
     filteredData.forEach(record => {
-      const businessType = record.business_type_category
+      const businessType = getBusinessTypeCode(record.business_type_category)
       const weekNumber = record.week_number
 
       if (!dataMap.has(businessType)) {
@@ -136,59 +146,52 @@ export function BusinessTypeHeatmap() {
         businessType,
         weekNumber,
         metricValue: null,
-        signedPremium: 0,
+        signedPremiumYuan: 0,
         policyCount: 0,
-        maturedPremium: 0,
-        reportedClaimPayment: 0,
-        expenseAmount: 0,
+        maturedPremiumYuan: 0,
+        reportedClaimPaymentYuan: 0,
+        expenseAmountYuan: 0,
+        marginalContributionAmountYuan: 0,
       }
 
-      existing.signedPremium += record.signed_premium_yuan / 10000
+      existing.signedPremiumYuan += record.signed_premium_yuan
       existing.policyCount += record.policy_count
-      existing.maturedPremium += record.matured_premium_yuan / 10000
-      existing.reportedClaimPayment +=
-        record.reported_claim_payment_yuan / 10000
-      existing.expenseAmount += record.expense_amount_yuan / 10000
+      existing.maturedPremiumYuan += record.matured_premium_yuan
+      existing.reportedClaimPaymentYuan += record.reported_claim_payment_yuan
+      existing.expenseAmountYuan += record.expense_amount_yuan
+      existing.marginalContributionAmountYuan +=
+        record.marginal_contribution_amount_yuan
 
       // 计算指标值
       let metricValue: number | null = null
       switch (selectedMetric) {
         case 'variableCostRatio': {
-          const lossRatio =
-            existing.maturedPremium > 0
-              ? (existing.reportedClaimPayment / existing.maturedPremium) * 100
-              : 0
-          const expenseRatio =
-            existing.signedPremium > 0
-              ? (existing.expenseAmount / existing.signedPremium) * 100
-              : 0
-          metricValue = lossRatio + expenseRatio
+          metricValue = calculateVariableCostRatio(
+            existing.reportedClaimPaymentYuan,
+            existing.expenseAmountYuan,
+            existing.signedPremiumYuan
+          )
           break
         }
         case 'contributionMarginRatio': {
-          const lossRatio =
-            existing.maturedPremium > 0
-              ? (existing.reportedClaimPayment / existing.maturedPremium) * 100
-              : 0
-          const expenseRatio =
-            existing.signedPremium > 0
-              ? (existing.expenseAmount / existing.signedPremium) * 100
-              : 0
-          metricValue = 100 - (lossRatio + expenseRatio)
+          metricValue = calculateContributionMarginRatio(
+            existing.marginalContributionAmountYuan,
+            existing.maturedPremiumYuan
+          )
           break
         }
         case 'lossRatio': {
-          metricValue =
-            existing.maturedPremium > 0
-              ? (existing.reportedClaimPayment / existing.maturedPremium) * 100
-              : 0
+          metricValue = calculateLossRatio(
+            existing.reportedClaimPaymentYuan,
+            existing.maturedPremiumYuan
+          )
           break
         }
         case 'expenseRatio': {
-          metricValue =
-            existing.signedPremium > 0
-              ? (existing.expenseAmount / existing.signedPremium) * 100
-              : 0
+          metricValue = calculateExpenseRatio(
+            existing.expenseAmountYuan,
+            existing.signedPremiumYuan
+          )
           break
         }
       }
@@ -206,7 +209,7 @@ export function BusinessTypeHeatmap() {
 
     // 转换为 ECharts 热力图数据格式 [weekIndex, businessTypeIndex, value]
     const heatData: [number, number, number][] = []
-    CANONICAL_BUSINESS_TYPES.forEach((businessType, bizIndex) => {
+    CANONICAL_BUSINESS_CODES.forEach((businessType, bizIndex) => {
       const weekMap = dataMap.get(businessType)
       sortedWeeks.forEach((week, weekIndex) => {
         const data = weekMap?.get(week)
@@ -217,7 +220,7 @@ export function BusinessTypeHeatmap() {
 
     // 检测异常模式
     const detectedAnomalies: AnomalyPattern[] = []
-    CANONICAL_BUSINESS_TYPES.forEach(businessType => {
+    CANONICAL_BUSINESS_CODES.forEach(businessType => {
       const weekMap = dataMap.get(businessType)
       if (!weekMap) return
 
@@ -226,7 +229,10 @@ export function BusinessTypeHeatmap() {
       // 检测连续3周危险值
       let consecutiveDanger = 0
       values.forEach((value, index) => {
-        if (value === null || value === undefined) return
+        if (value === null || value === undefined) {
+          consecutiveDanger = 0
+          return
+        }
 
         const isDanger = metricConfig.isInverse
           ? value >= metricConfig.thresholds.danger
@@ -250,7 +256,10 @@ export function BusinessTypeHeatmap() {
       // 检测优秀连续记录
       let consecutiveExcellent = 0
       values.forEach(value => {
-        if (value === null || value === undefined) return
+        if (value === null || value === undefined) {
+          consecutiveExcellent = 0
+          return
+        }
 
         const isExcellent = metricConfig.isInverse
           ? value <= metricConfig.thresholds.excellent
@@ -283,6 +292,76 @@ export function BusinessTypeHeatmap() {
   const option: EChartsOption = useMemo(() => {
     const metricConfig = METRIC_CONFIG[selectedMetric]
 
+    const noDataPiece = {
+      value: -1,
+      label: '无数据',
+      color: '#e2e8f0',
+    }
+
+    const pieces = metricConfig.isInverse
+      ? [
+          noDataPiece,
+          {
+            lte: metricConfig.thresholds.excellent,
+            label: `≤${metricConfig.thresholds.excellent}%`,
+            color: '#22c55e',
+          },
+          {
+            gt: metricConfig.thresholds.excellent,
+            lte: metricConfig.thresholds.good,
+            label: `${metricConfig.thresholds.excellent}-${metricConfig.thresholds.good}%`,
+            color: '#84cc16',
+          },
+          {
+            gt: metricConfig.thresholds.good,
+            lte: metricConfig.thresholds.warning,
+            label: `${metricConfig.thresholds.good}-${metricConfig.thresholds.warning}%`,
+            color: '#eab308',
+          },
+          {
+            gt: metricConfig.thresholds.warning,
+            lte: metricConfig.thresholds.danger,
+            label: `${metricConfig.thresholds.warning}-${metricConfig.thresholds.danger}%`,
+            color: '#f97316',
+          },
+          {
+            gt: metricConfig.thresholds.danger,
+            label: `>${metricConfig.thresholds.danger}%`,
+            color: '#ef4444',
+          },
+        ]
+      : [
+          noDataPiece,
+          {
+            lte: metricConfig.thresholds.danger,
+            label: `≤${metricConfig.thresholds.danger}%`,
+            color: '#ef4444',
+          },
+          {
+            gt: metricConfig.thresholds.danger,
+            lte: metricConfig.thresholds.warning,
+            label: `${metricConfig.thresholds.danger}-${metricConfig.thresholds.warning}%`,
+            color: '#f97316',
+          },
+          {
+            gt: metricConfig.thresholds.warning,
+            lte: metricConfig.thresholds.good,
+            label: `${metricConfig.thresholds.warning}-${metricConfig.thresholds.good}%`,
+            color: '#eab308',
+          },
+          {
+            gt: metricConfig.thresholds.good,
+            lte: metricConfig.thresholds.excellent,
+            label: `${metricConfig.thresholds.good}-${metricConfig.thresholds.excellent}%`,
+            color: '#84cc16',
+          },
+          {
+            gt: metricConfig.thresholds.excellent,
+            label: `>${metricConfig.thresholds.excellent}%`,
+            color: '#22c55e',
+          },
+        ]
+
     return {
       tooltip: {
         position: 'top',
@@ -298,12 +377,12 @@ export function BusinessTypeHeatmap() {
           if (value === -1) {
             return `<div style="padding: 8px;">
               <div style="font-weight: 600;">暂无数据</div>
-              <div>第${weekNumbers[weekIndex]}周 - ${getBusinessTypeLabel(CANONICAL_BUSINESS_TYPES[bizIndex])}</div>
+              <div>第${weekNumbers[weekIndex]}周 - ${getBusinessTypeFullCNByCode(CANONICAL_BUSINESS_CODES[bizIndex])}</div>
             </div>`
           }
 
           return `<div style="padding: 8px;">
-            <div style="font-weight: 600; margin-bottom: 4px;">第${weekNumbers[weekIndex]}周 - ${getBusinessTypeLabel(CANONICAL_BUSINESS_TYPES[bizIndex])}</div>
+            <div style="font-weight: 600; margin-bottom: 4px;">第${weekNumbers[weekIndex]}周 - ${getBusinessTypeFullCNByCode(CANONICAL_BUSINESS_CODES[bizIndex])}</div>
             <div>${metricConfig.label}: ${formatPercent(value, 2)}</div>
           </div>`
         },
@@ -330,7 +409,9 @@ export function BusinessTypeHeatmap() {
       },
       yAxis: {
         type: 'category',
-        data: CANONICAL_BUSINESS_TYPES.map(bt => getBusinessTypeLabel(bt)),
+        data: CANONICAL_BUSINESS_CODES.map(code =>
+          getBusinessTypeShortLabelByCode(code)
+        ),
         splitArea: {
           show: false,
         },
@@ -341,22 +422,12 @@ export function BusinessTypeHeatmap() {
         },
       },
       visualMap: {
-        min: metricConfig.isInverse
-          ? metricConfig.thresholds.excellent
-          : metricConfig.thresholds.danger,
-        max: metricConfig.isInverse
-          ? metricConfig.thresholds.danger
-          : metricConfig.thresholds.excellent,
-        calculable: true,
+        type: 'piecewise',
+        pieces,
+        selectedMode: false,
         orient: 'vertical',
         right: 10,
         top: 'center',
-        inRange: {
-          color: metricConfig.isInverse
-            ? ['#22c55e', '#84cc16', '#eab308', '#f97316', '#ef4444'] // 绿→红（逆向）
-            : ['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e'], // 红→绿（正向）
-        },
-        text: ['高', '低'],
         textStyle: {
           fontSize: 11,
           fontWeight: 'bold',
@@ -454,7 +525,7 @@ export function BusinessTypeHeatmap() {
                     )}
                     <div>
                       <span className="font-medium">
-                        {getBusinessTypeLabel(anomaly.businessType)}
+                        {getBusinessTypeShortLabelByCode(anomaly.businessType)}
                       </span>
                       ：{anomaly.description}
                     </div>

@@ -16,10 +16,7 @@ import { useMemo } from 'react'
 import { useFilteredData } from '@/hooks/use-filtered-data'
 import { InsuranceRecord } from '@/types/insurance'
 import { formatPercent, formatCurrency, formatNumber } from '@/utils/format'
-import {
-  getMetricColor,
-  getThresholdLevel,
-} from '@/config/thresholds'
+import { getMetricColor, getThresholdLevel } from '@/config/thresholds'
 
 interface HeatmapCell {
   organization: string
