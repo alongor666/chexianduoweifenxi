@@ -9,7 +9,7 @@
   "last_verified": "2025-10-20",
   "core_files": [
     "src/components/features/file-upload.tsx",
-    "src/lib/parsers/csv-parser.ts",
+    "src/domain/services/csv-parser-service.ts",
     "src/lib/validations/insurance-schema.ts",
     "src/hooks/use-file-upload.ts"
   ],

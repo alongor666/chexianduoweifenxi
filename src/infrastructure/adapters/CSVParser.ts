@@ -33,8 +33,8 @@ export class CSVParser implements IFileParser {
     'application/vnd.ms-excel',
   ]
 
-  // 最大文件大小（100MB）
-  private readonly maxFileSize = 100 * 1024 * 1024
+  // 最大文件大小（200MB）
+  private readonly maxFileSize = 200 * 1024 * 1024
 
   // 必需字段列表
   private readonly requiredFields = [

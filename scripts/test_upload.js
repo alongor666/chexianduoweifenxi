@@ -40,6 +40,9 @@ const REQUIRED_FIELDS = [
   'week_number',
 ]
 
+// 可选字段：允许出现在 CSV 中，但不作为“额外字段”提示
+const OPTIONAL_FIELDS = ['second_level_organization']
+
 const SUPPORTED_ENCODINGS = ['utf-8', 'gb18030', 'gbk', 'gb2312']
 
 function decodeBufferWithEncoding(buffer, encoding) {
@@ -274,8 +277,7 @@ function transformRow(row, index, warnOut) {
     reported_claim_payment_yuan: parseNumber(
       row.reported_claim_payment_yuan,
       'reported_claim_payment_yuan',
-      errors,
-      { min: 0 }
+      errors
     ),
     expense_amount_yuan: parseNumber(
       row.expense_amount_yuan,
@@ -332,7 +334,9 @@ function checkHeaders(rows) {
   if (!rows || rows.length === 0) return { ok: false, missing: REQUIRED_FIELDS }
   const fields = Object.keys(rows[0])
   const missing = REQUIRED_FIELDS.filter(f => !fields.includes(f))
-  const extra = fields.filter(f => !REQUIRED_FIELDS.includes(f))
+  const extra = fields.filter(
+    f => !REQUIRED_FIELDS.includes(f) && !OPTIONAL_FIELDS.includes(f)
+  )
   return { ok: missing.length === 0, missing, extra, fields }
 }
 

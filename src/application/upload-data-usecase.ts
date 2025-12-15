@@ -9,7 +9,7 @@
  * - 错误处理与回滚
  */
 
-import { parseCSV, convertToInsuranceRecords } from '../domain'
+import { parseCSVFile, convertToInsuranceRecords } from '../domain'
 import type { CSVParseConfig } from '../domain'
 import { InsuranceRecord } from '../domain/entities/InsuranceRecord'
 import type { RawInsuranceData } from '../domain'
@@ -149,14 +149,44 @@ export class UploadDataUseCase {
         currentItem: file.name,
       })
 
-      const content = await file.text()
       const parseConfig: CSVParseConfig = {
         header: true,
         skipEmptyLines: true,
         maxErrorRows: config.maxErrorRows || 100,
       }
 
-      const parseResult = parseCSV(content, parseConfig)
+      let lastParsingPercentage = 0
+      let lastParsingEmitTime = 0
+
+      const parseResult = await parseCSVFile(file, parseConfig, progress => {
+        const ratio =
+          progress.totalBytes > 0
+            ? progress.processedBytes / progress.totalBytes
+            : 0
+        const percentage = Math.min(
+          29,
+          Math.max(10, 10 + Math.round(ratio * 19))
+        )
+
+        const now = Date.now()
+        if (
+          percentage === lastParsingPercentage &&
+          now - lastParsingEmitTime < 200
+        ) {
+          return
+        }
+
+        lastParsingPercentage = percentage
+        lastParsingEmitTime = now
+
+        onProgress?.({
+          phase: 'parsing',
+          percentage,
+          processedRows: progress.processedRows,
+          totalRows: 0,
+          currentItem: file.name,
+        })
+      })
 
       if (!parseResult.success && parseResult.data.length === 0) {
         result.errors.push({

@@ -96,6 +96,15 @@ export interface CSVParseStatistics {
 }
 
 /**
+ * CSV 文件解析进度（流式）
+ */
+export interface CSVFileParseProgress {
+  processedBytes: number
+  totalBytes: number
+  processedRows: number
+}
+
+/**
  * 必需字段列表（26个）
  * 按实际CSV文件字段顺序排列
  */
@@ -483,6 +492,143 @@ export function parseCSV(
       message: error instanceof Error ? error.message : String(error),
     })
     result.success = false
+  }
+
+  return result
+}
+
+/**
+ * 流式解析 CSV 文件（Worker + Chunk）
+ *
+ * 目的：避免 `file.text()` 将大文件整体读入内存，降低内存峰值，支持 200MB 单文件导入。
+ */
+export async function parseCSVFile(
+  file: File,
+  config: Partial<CSVParseConfig> = {},
+  onProgress?: (progress: CSVFileParseProgress) => void
+): Promise<CSVParseResult> {
+  const startTime = Date.now()
+  const finalConfig = { ...DEFAULT_CONFIG, ...config }
+
+  const result: CSVParseResult = {
+    success: false,
+    data: [],
+    errors: [],
+    warnings: [],
+    statistics: {
+      totalRows: 0,
+      successRows: 0,
+      errorRows: 0,
+      emptyRows: 0,
+      parseTime: 0,
+    },
+  }
+
+  const maxErrorRows = finalConfig.maxErrorRows ?? 100
+  const chunkSize = file.size > 10 * 1024 * 1024 ? 256 * 1024 : 64 * 1024
+  let headerValidated = false
+  let aborted = false
+
+  try {
+    await new Promise<void>((resolve, reject) => {
+      Papa.parse<Record<string, any>>(file, {
+        header: finalConfig.header,
+        delimiter: finalConfig.delimiter,
+        skipEmptyLines: finalConfig.skipEmptyLines,
+        worker: true,
+        chunkSize,
+        chunk: (chunkResult, parser) => {
+          if (!headerValidated) {
+            const headers = chunkResult.meta.fields || []
+            result.errors.push(...validateHeader(headers))
+            headerValidated = true
+          }
+
+          const rows = chunkResult.data || []
+          for (let i = 0; i < rows.length; i++) {
+            const rowIndex = result.statistics.totalRows
+            const row = rows[i]
+            result.statistics.totalRows++
+
+            if (
+              Object.values(row).every(
+                value => value === null || value === undefined || value === ''
+              )
+            ) {
+              result.statistics.emptyRows++
+              continue
+            }
+
+            const validationErrors = validateRow(row, rowIndex)
+            if (validationErrors.length > 0) {
+              result.errors.push(...validationErrors)
+              result.statistics.errorRows++
+
+              if (result.statistics.errorRows >= maxErrorRows) {
+                result.warnings.push(
+                  `错误行数超过限制(${maxErrorRows})，停止处理后续行`
+                )
+                aborted = true
+                parser.abort()
+                break
+              }
+              continue
+            }
+
+            const transformResult = transformRow(row, rowIndex)
+            if (transformResult.error) {
+              result.errors.push(transformResult.error)
+              result.statistics.errorRows++
+
+              if (result.statistics.errorRows >= maxErrorRows) {
+                result.warnings.push(
+                  `错误行数超过限制(${maxErrorRows})，停止处理后续行`
+                )
+                aborted = true
+                parser.abort()
+                break
+              }
+              continue
+            }
+
+            if (transformResult.data) {
+              result.data.push(transformResult.data)
+              result.statistics.successRows++
+            }
+          }
+
+          const processedBytes =
+            typeof (parser as any)?.getCharIndex === 'function'
+              ? (parser as any).getCharIndex()
+              : 0
+          onProgress?.({
+            processedBytes,
+            totalBytes: file.size,
+            processedRows: result.statistics.totalRows,
+          })
+        },
+        complete: () => resolve(),
+        error: error => reject(error),
+      })
+    })
+
+    if (!headerValidated) {
+      result.errors.push({
+        type: 'PARSE_ERROR',
+        message: 'CSV文件缺少表头，无法识别字段',
+      })
+    }
+  } catch (error) {
+    if (!aborted) {
+      result.errors.push({
+        type: 'PARSE_ERROR',
+        message: error instanceof Error ? error.message : String(error),
+      })
+    }
+  } finally {
+    result.statistics.parseTime = Date.now() - startTime
+    result.success =
+      result.errors.length === 0 || result.statistics.successRows > 0
   }
 
   return result

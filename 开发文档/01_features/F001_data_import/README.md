@@ -39,7 +39,7 @@ updated_at: '2025-12-13'
 ### 核心文件 (3/3)
 
 - ✅ [`src/components/features/file-upload.tsx`](../../../src/components/features/file-upload.tsx)
-- ✅ [`src/lib/parsers/csv-parser.ts`](../../../src/lib/parsers/csv-parser.ts) (内置验证逻辑)
+- ✅ [`src/domain/services/csv-parser-service.ts`](../../../src/domain/services/csv-parser-service.ts) (内置验证逻辑 + 流式解析)
 - ✅ [`src/hooks/use-file-upload.ts`](../../../src/hooks/use-file-upload.ts)
 
 ### 增强功能

@@ -181,6 +181,20 @@ CSV文件必须包含以下27个字段（其中2个可选：`second_level_organi
 - **周度明细文件**: `YYYY保单第WW周变动成本明细表.csv` (例: `2024保单第28周变动成本明细表.csv`)
 - **汇总文件**: `YY年保单WW-WW周变动成本汇总表.csv` (例: `25年保单28-41周变动成本汇总表.csv`)
 
+## 数据合并与清洗脚本（推荐）
+
+当每周数据以多个 CSV 分片存放在 `实际数据/` 时，可使用脚本合并为单一、可直接上传的 CSV：
+
+- 合并清洗（默认输出 27 列标准字段，包含 `second_level_organization`）：
+  - `python3 "scripts/合并脚本/merge_actual_data_to_csv.py"`
+- 输出文件：
+  - `outputs/actual_data_merged_clean.csv`（清洗后的合并文件）
+  - `outputs/actual_data_invalid_rows.csv`（被剔除的行与原因；若无无效行则仅保留表头）
+- 兼容模式（输出时移除 `second_level_organization` 列）：
+  - `python3 "scripts/合并脚本/merge_actual_data_to_csv.py" --drop-second-level-organization`
+- 本地快速校验（与上传口径一致的轻量验证）：
+  - `node "scripts/test_upload.js" "outputs/actual_data_merged_clean.csv"`
+
 ## 错误处理机制
 
 系统在导入时会对每行数据进行验证。

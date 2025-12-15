@@ -109,7 +109,7 @@ updated_at: '2025-12-13'
 
 ### Papa Parse配置
 
-**文件**: `src/lib/parsers/csv-parser.ts`
+**文件**: `src/domain/services/csv-parser-service.ts`
 
 ```typescript
 import Papa from 'papaparse'
@@ -251,7 +251,7 @@ function processBatch(
 **验证代码存在**:
 
 ```bash
-grep -r "Papa.parse" src/lib/parsers/csv-parser.ts
+grep -r "Papa.parse" src/domain/services/csv-parser-service.ts
 # 输出: Papa.parse(file, { worker: true, chunkSize, ... })
 ```
 

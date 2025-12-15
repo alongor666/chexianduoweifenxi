@@ -75,11 +75,13 @@ describe('CSVParser', () => {
     })
 
     it('应该拒绝过大的文件', async () => {
-      // 创建一个超过 100MB 的文件（模拟）
-      const largeContent = 'x'.repeat(101 * 1024 * 1024)
-      const file = createTestFile([largeContent], 'large.csv', {
+      // 避免分配超大字符串：仅模拟 size 超过 200MB
+      const file = {
+        name: 'large.csv',
         type: 'text/csv',
-      })
+        size: 201 * 1024 * 1024,
+        text: async () => 'snapshot_date,policy_start_year\n2024-01-01,2024',
+      } as unknown as File
       const result = await parser.validate(file)
 
       expect(result.isValid).toBe(false)

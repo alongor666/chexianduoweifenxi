@@ -88,7 +88,7 @@ export interface FileValidationOptions {
  * 默认验证选项
  */
 const DEFAULT_VALIDATION_OPTIONS: FileValidationOptions = {
-  maxFileSize: 50 * 1024 * 1024, // 50MB
+  maxFileSize: 200 * 1024 * 1024, // 200MB
   allowedExtensions: ['.csv'],
   maxFiles: 10,
   validateFileName: false, // 文件名不再是强制要求

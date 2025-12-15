@@ -85,6 +85,7 @@ export {
 // CSV 解析服务
 export {
   parseCSV,
+  parseCSVFile,
   parseCSVBatch,
   convertToInsuranceRecords,
   REQUIRED_FIELDS,
@@ -92,6 +93,7 @@ export {
   type CSVParseResult,
   type CSVParseError,
   type CSVParseStatistics,
+  type CSVFileParseProgress,
   type FieldValidationRule,
 } from './services/csv-parser-service'
 

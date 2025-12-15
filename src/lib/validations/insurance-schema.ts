@@ -171,9 +171,8 @@ export const InsuranceRecordSchema = z
       .int('赔案件数必须是整数')
       .nonnegative('赔案件数必须为非负数'),
 
-    reported_claim_payment_yuan: z
-      .number()
-      .nonnegative('已报告赔款必须为非负数'),
+    // 注意：允许为负数（如追偿/冲减），详见 开发文档/03_technical_design/data_architecture.md
+    reported_claim_payment_yuan: z.number(),
 
     expense_amount_yuan: z.number().nonnegative('费用金额必须为非负数'),
 

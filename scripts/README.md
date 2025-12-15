@@ -1,5 +1,10 @@
 # Python 数据处理脚本
 
+## 实际数据合并与清洗（生成可上传CSV）
+
+- 说明文档：`scripts/合并脚本/readme.md`
+- 数据规范：`开发文档/03_technical_design/data_architecture.md`
+
 ## CSV 转 DuckDB 转换工具
 
 ### 快速开始
