@@ -213,14 +213,32 @@ export function calculateContributionMarginRatio(
 
 /**
  * 计算变动成本率
+ *
+ * 公式：变动成本率 = 满期赔付率 + 费用率
+ *      = (已报告赔款 / 满期保费) + (费用金额 / 签单保费)
+ *
+ * 重要：率值必须基于绝对值聚合，不能简单地将分子相加后除以单一分母
+ * 因为满期赔付率和费用率的分母不同（满期保费 vs 签单保费）
  */
 export function calculateVariableCostRatio(
   reportedClaimPayment: number,
+  maturedPremium: number,
   expenseAmount: number,
   signedPremium: number
 ): number | null {
-  const variableCost = reportedClaimPayment + expenseAmount
-  return toPercentage(safeDivide(variableCost, signedPremium))
+  // 计算满期赔付率（比率，0-1之间）
+  const lossRatio = safeDivide(reportedClaimPayment, maturedPremium)
+
+  // 计算费用率（比率，0-1之间）
+  const expenseRatio = safeDivide(expenseAmount, signedPremium)
+
+  // 如果任一比率计算失败，返回null
+  if (lossRatio === null || expenseRatio === null) {
+    return null
+  }
+
+  // 两个比率相加后转为百分比
+  return toPercentage(lossRatio + expenseRatio)
 }
 
 /**
@@ -329,6 +347,7 @@ export function calculateKPIs(
 
   const variable_cost_ratio = calculateVariableCostRatio(
     aggregated.reported_claim_payment_yuan,
+    aggregated.matured_premium_yuan,
     aggregated.expense_amount_yuan,
     aggregated.signed_premium_yuan
   )
@@ -573,6 +592,7 @@ function calculateKPIsFromAggregation(
 
   const variable_cost_ratio = calculateVariableCostRatio(
     aggregated.reported_claim_payment_yuan,
+    aggregated.matured_premium_yuan,
     aggregated.expense_amount_yuan,
     aggregated.signed_premium_yuan
   )

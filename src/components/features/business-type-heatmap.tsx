@@ -168,6 +168,7 @@ export function BusinessTypeHeatmap() {
         case 'variableCostRatio': {
           metricValue = calculateVariableCostRatio(
             existing.reportedClaimPaymentYuan,
+            existing.maturedPremiumYuan,
             existing.expenseAmountYuan,
             existing.signedPremiumYuan
           )

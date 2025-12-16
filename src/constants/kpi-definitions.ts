@@ -24,8 +24,10 @@ export const KPI_FORMULAS: Record<string, KPIFormulaDefinition> = {
     businessMeaning: '盈利能力结果指标，衡量最终的盈利空间。',
   },
   premium_time_progress_achievement_rate: {
-    formula: '当期签单保费 / (年度目标保费 / 365 * 当期天数)',
-    businessMeaning: '衡量保费达成进度与时间进度的匹配程度。',
+    formula: '(签单保费 / 年度目标) / (当前周次 / 50) × 100%',
+    businessMeaning:
+      '衡量保费达成进度与时间进度的匹配程度（基于50周工作制，考虑春节和国庆长假）。',
+    example: '示例：第25周累计5500万，目标1亿，达成率 = (55% / 50%) = 110%',
   },
   loss_ratio: {
     formula: '满期赔付 / 满期保费',

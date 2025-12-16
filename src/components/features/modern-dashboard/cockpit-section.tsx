@@ -165,6 +165,7 @@ export function CockpitSection({
     return orgAgg.filter(org => {
       const ratio = calculateVariableCostRatio(
         org.reported,
+        org.matured,
         org.expense,
         org.signed
       )
