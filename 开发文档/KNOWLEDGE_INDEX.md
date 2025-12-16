@@ -1,6 +1,6 @@
 # 车险数据分析平台 - 知识库索引
 
-> 📅 最后更新: 2025-12-16 06:32:47
+> 📅 最后更新: 2025-12-16 06:42:34
 > 🔄 自动生成 by `scripts/generate_docs_index.py`
 
 ---
@@ -20,16 +20,16 @@
 
 ## 🔥 最近更新（30天内）
 
-- 🎯 ✅ ['F016: 企业驾驶舱 (Enterprise Cockpit)'](01_features/F016_enterprise_cockpit/README.md) - *今天*
-- 🔧 ✅ [仓库结构治理与迁移跟踪（Repo Structure Migration）](04_refactoring/REPO_STRUCTURE_MIGRATION.md) - *今天*
-- 🔧 ✅ [统一可视化引擎架构文档（ECharts）](04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md) - *今天*
-- 🔧 ✅ [🔧 车险分析平台重构计划](04_refactoring/REFACTORING_PLAN.md) - *今天*
+- 🔧 ✅ [图表组件优化记录](04_refactoring/CHART_COMPONENTS_OPTIMIZATION.md) - *今天*
 - 🔧 ✅ [重构文档目录](04_refactoring/README.md) - *今天*
 - 🔧 ✅ [✅ 重构检查清单](04_refactoring/REFACTORING_CHECKLIST.md) - *今天*
-- 🔧 ✅ [🏛️ 软件架构规则体系（完整版）](04_refactoring/ARCHITECTURE_RULES.md) - *今天*
-- 🔧 ✅ [图表组件优化记录](04_refactoring/CHART_COMPONENTS_OPTIMIZATION.md) - *今天*
-- 🔧 ✅ [🤖 AI 协作约定](04_refactoring/AI_COLLABORATION.md) - *今天*
-- 🔧 ✅ [Application 层实现总结](04_refactoring/APPLICATION_LAYER_SUMMARY.md) - *今天*
+- 🔧 ✅ [🔧 车险分析平台重构计划](04_refactoring/REFACTORING_PLAN.md) - *今天*
+- 🔧 ✅ [仓库结构治理与迁移跟踪（Repo Structure Migration）](04_refactoring/REPO_STRUCTURE_MIGRATION.md) - *今天*
+- 🔧 ✅ [统一可视化引擎架构文档（ECharts）](04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md) - *今天*
+- ⚙️ ✅ [维度字典与枚举值（Insuralytics）](03_technical_design/dimensions_dictionary.md) - *今天*
+- ⚙️ ✅ [DuckDB 集成文档](03_technical_design/duckdb_integration.md) - *今天*
+- ⚙️ ✅ [DuckDB 集成验证与边界指南](03_technical_design/duckdb_validation_guide.md) - *今天*
+- ⚙️ ✅ [纯静态部署指南](03_technical_design/static_deployment.md) - *今天*
 
 ---
 
