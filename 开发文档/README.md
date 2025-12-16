@@ -24,15 +24,23 @@ updated_at: '2025-12-13'
 
 唯一规范导航入口，供所有后续开发、文档更新与 AI 协作引用。
 
-- 协作约定：开发文档/00_conventions.md
-- 架构规则：开发文档/04_refactoring/ARCHITECTURE_RULES.md
-- 数据结构：开发文档/03_technical_design/data_architecture.md
-- CSV导入：开发文档/archive/CSV导入规范.md
-- 维度枚举：开发文档/03_technical_design/dimensions_dictionary.md
-- 指标口径：开发文档/03_technical_design/core_calculations.md
-- 可视化主题：开发文档/04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md
-- 趋势交互：开发文档/01_features/F011_weekly_operational_trend/USAGE.md
-- 目标验收：开发文档/使用与验收说明.md
+### 核心规范 (00_standards/)
+- **[规范索引](./00_standards/README.md)** - 📚 知识库规范与模板总览
+- 协作约定：[00_standards/conventions.md](./00_standards/conventions.md)
+- AI协作方法论：[00_standards/ai_knowledge_methodology.md](./00_standards/ai_knowledge_methodology.md)
+- 元数据规范：[00_standards/doc_meta_standard.md](./00_standards/doc_meta_standard.md)
+
+### 架构与设计
+- 架构规则：[04_refactoring/ARCHITECTURE_RULES.md](./04_refactoring/ARCHITECTURE_RULES.md)
+- 数据结构：[03_technical_design/data_architecture.md](./03_technical_design/data_architecture.md)
+- CSV导入：[archive/CSV导入规范.md](./archive/CSV导入规范.md)
+- 维度枚举：[03_technical_design/dimensions_dictionary.md](./03_technical_design/dimensions_dictionary.md)
+- 指标口径：[03_technical_design/core_calculations.md](./03_technical_design/core_calculations.md)
+
+### 功能与交互
+- 可视化主题：[04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md](./04_refactoring/UNIFIED_ECHARTS_ARCHITECTURE.md)
+- 趋势交互：[01_features/F011_weekly_operational_trend/USAGE.md](./01_features/F011_weekly_operational_trend/USAGE.md)
+- 目标验收：[使用与验收说明.md](./使用与验收说明.md)
 
 ---
 
@@ -49,11 +57,14 @@ updated_at: '2025-12-13'
 ### 快速链接
 
 - **[📖 知识库索引](./KNOWLEDGE_INDEX.md)** - 🆕 自动生成的完整文档导航（推荐）
-- [协作约定](./00_conventions.md) - 必读!理解"代码优先"原则
+- **[📚 规范与模板](./00_standards/README.md)** - 🆕 知识库规范、文档模板、AI协作方法论
+- [协作约定](./00_standards/conventions.md) - 必读!理解"代码优先"原则
 - [功能清单](./01_features/) - 13个功能模块（P0/P1/P2）
 - [架构决策](./02_decisions/) - 技术选型和设计原理（ADR）
 - [技术设计](./03_technical_design/) - 数据架构、计算公式、技术栈
 - [重构文档](./04_refactoring/) - 架构演进和代码优化
+- [开发日志](./logs/) - 🆕 开发记录和进度跟踪
+- [分析报告](./reports/) - 🆕 代码分析和一致性报告
 - [历史归档](./archive/) - 旧版本文档归档
 
 ---
