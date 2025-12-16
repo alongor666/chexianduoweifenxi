@@ -15,7 +15,7 @@ interface TopToolbarProps {
 }
 
 function resolveWeekSelectionMode(tab: AnalysisTabValue): WeekSelectionMode {
-  if (tab === 'trend' || tab === 'multichart') {
+  if (tab === 'cockpit' || tab === 'trend' || tab === 'multichart') {
     return 'flexible'
   }
   return 'single-only'
