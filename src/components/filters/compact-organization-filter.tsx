@@ -3,6 +3,7 @@
 import { Building2, X } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { useAppStore } from '@/store/use-app-store'
+import { useFilterStore } from '@/store/domains/filterStore'
 import { filterRecordsWithExclusions } from '@/store/use-app-store'
 import { cn } from '@/lib/utils'
 import { normalizeChineseText } from '@/domain/rules/data-normalization'
@@ -19,6 +20,9 @@ export function CompactOrganizationFilter() {
   const filters = useAppStore(state => state.filters)
   const updateFilters = useAppStore(state => state.updateFilters)
   const rawData = useAppStore(state => state.rawData)
+
+  // 同步更新 FilterStore 以保持状态一致
+  const updateFilterStore = useFilterStore(state => state.updateFilters)
 
   // 联动：根据其他筛选条件提取唯一的机构（规范化去重）
   const recordsForOrganizations = filterRecordsWithExclusions(
@@ -63,20 +67,24 @@ export function CompactOrganizationFilter() {
   }, [isOpen])
 
   const handleOrgToggle = (org: string) => {
-    const normalized = normalizeChineseText(org)
-    const newOrgs = filters.organizations.includes(normalized)
-      ? filters.organizations.filter(o => o !== normalized)
-      : [...filters.organizations, normalized]
+    const newOrgs = filters.organizations.includes(org)
+      ? filters.organizations.filter(o => o !== org)
+      : [...filters.organizations, org]
+    
+    // 同时更新两个 store 以保持状态同步
     updateFilters({ organizations: newOrgs })
+    updateFilterStore({ organizations: newOrgs })
   }
 
   const handleReset = () => {
     updateFilters({ organizations: [] })
+    updateFilterStore({ organizations: [] })
     setSearchTerm('')
   }
 
   const handleSelectAll = () => {
     updateFilters({ organizations: [...availableOrganizations] })
+    updateFilterStore({ organizations: [...availableOrganizations] })
   }
 
   const handleInvertSelection = () => {
@@ -85,6 +93,7 @@ export function CompactOrganizationFilter() {
       org => !filters.organizations.includes(org)
     )
     updateFilters({ organizations: inverted })
+    updateFilterStore({ organizations: inverted })
   }
 
   const showBulkActions = availableOrganizations.length > 3

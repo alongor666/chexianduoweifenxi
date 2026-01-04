@@ -260,7 +260,8 @@ export function normalizeInsuranceRecord(
     expenseAmountYuan,
     commercialPremiumBeforeDiscountYuan,
     premiumPlanYuan,
-    marginalContributionAmountYuan
+    marginalContributionAmountYuan,
+    raw.second_level_organization
   )
 }
 
@@ -338,7 +339,8 @@ export function normalizeInsuranceData(
         r.expenseAmountYuan,
         r.commercialPremiumBeforeDiscountYuan,
         r.premiumPlanYuan,
-        r.marginalContributionAmountYuan
+        r.marginalContributionAmountYuan,
+        r.secondLevelOrganization
       )
   )
 }

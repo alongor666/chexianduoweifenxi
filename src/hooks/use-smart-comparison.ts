@@ -12,6 +12,7 @@ import {
   InsuranceRecord as DomainInsuranceRecord,
 } from '@/domain'
 import type { InsuranceRecord, FilterState } from '@/types/insurance'
+import { normalizeChineseText } from '@/domain/rules/data-normalization'
 
 /**
  * 应用筛选条件（除了周次）
@@ -32,7 +33,7 @@ function applyFiltersExceptWeek(
     // 机构筛选
     if (
       filters.organizations.length > 0 &&
-      !filters.organizations.includes(record.third_level_organization)
+      !filters.organizations.includes(normalizeChineseText(record.third_level_organization))
     ) {
       return false
     }
@@ -40,7 +41,7 @@ function applyFiltersExceptWeek(
     // 险种筛选
     if (
       filters.insuranceTypes.length > 0 &&
-      !filters.insuranceTypes.includes(record.insurance_type)
+      !filters.insuranceTypes.includes(normalizeChineseText(record.insurance_type))
     ) {
       return false
     }
@@ -56,7 +57,7 @@ function applyFiltersExceptWeek(
     // 险别筛选
     if (
       filters.coverageTypes.length > 0 &&
-      !filters.coverageTypes.includes(record.coverage_type)
+      !filters.coverageTypes.includes(normalizeChineseText(record.coverage_type))
     ) {
       return false
     }
@@ -64,7 +65,7 @@ function applyFiltersExceptWeek(
     // 客户分类筛选
     if (
       filters.customerCategories.length > 0 &&
-      !filters.customerCategories.includes(record.customer_category_3)
+      !filters.customerCategories.includes(normalizeChineseText(record.customer_category_3))
     ) {
       return false
     }
@@ -73,7 +74,7 @@ function applyFiltersExceptWeek(
     if (
       filters.vehicleGrades.length > 0 &&
       record.vehicle_insurance_grade &&
-      !filters.vehicleGrades.includes(record.vehicle_insurance_grade)
+      !filters.vehicleGrades.includes(normalizeChineseText(record.vehicle_insurance_grade))
     ) {
       return false
     }
@@ -81,7 +82,7 @@ function applyFiltersExceptWeek(
     // 终端来源筛选
     if (
       filters.terminalSources.length > 0 &&
-      !filters.terminalSources.includes(record.terminal_source)
+      !filters.terminalSources.includes(normalizeChineseText(record.terminal_source))
     ) {
       return false
     }
@@ -97,7 +98,7 @@ function applyFiltersExceptWeek(
     // 续保状态筛选
     if (
       filters.renewalStatuses.length > 0 &&
-      !filters.renewalStatuses.includes(record.renewal_status)
+      !filters.renewalStatuses.includes(normalizeChineseText(record.renewal_status))
     ) {
       return false
     }
@@ -250,17 +251,19 @@ export function useSmartComparison(
       }
       if (
         organizations.length > 0 &&
-        !organizations.includes(record.third_level_organization)
+        !organizations.includes(normalizeChineseText(record.third_level_organization))
       ) {
         return false
       }
       if (
         insuranceTypes.length > 0 &&
-        !insuranceTypes.includes(record.insurance_type)
+        !insuranceTypes.includes(normalizeChineseText(record.insurance_type))
       ) {
         return false
       }
-      if (businessTypes.length > 0) {
+      if (
+        businessTypes.length > 0
+      ) {
         // 代码端统一使用英文代码进行比对
         const btCode = getBusinessTypeCode(record.business_type_category)
         if (!businessTypes.includes(btCode)) {
@@ -269,26 +272,26 @@ export function useSmartComparison(
       }
       if (
         coverageTypes.length > 0 &&
-        !coverageTypes.includes(record.coverage_type)
+        !coverageTypes.includes(normalizeChineseText(record.coverage_type))
       ) {
         return false
       }
       if (
         customerCategories.length > 0 &&
-        !customerCategories.includes(record.customer_category_3)
+        !customerCategories.includes(normalizeChineseText(record.customer_category_3))
       ) {
         return false
       }
       if (
         vehicleGrades.length > 0 &&
         record.vehicle_insurance_grade &&
-        !vehicleGrades.includes(record.vehicle_insurance_grade)
+        !vehicleGrades.includes(normalizeChineseText(record.vehicle_insurance_grade))
       ) {
         return false
       }
       if (
         terminalSources.length > 0 &&
-        !terminalSources.includes(record.terminal_source)
+        !terminalSources.includes(normalizeChineseText(record.terminal_source))
       ) {
         return false
       }

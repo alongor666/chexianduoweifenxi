@@ -12,6 +12,9 @@ export type { RawInsuranceData } from './entities/InsuranceRecord'
 export {
   calculateKPIs,
   calculateIncrementKPIs,
+  calculateOrganizationKPIs,
+  calculateMultipleOrganizationKPIs,
+  calculateOrganizationIncrementKPIs,
   calculateLossRatio,
   calculateExpenseRatio,
   calculateMaturityRatio,
@@ -26,8 +29,8 @@ export {
   aggregateInsuranceRecords,
   getEmptyKPIResult,
   WORKING_WEEKS_PER_YEAR,
-} from './rules/kpi-calculator'
-export type { KPIResult, KPICalculationOptions } from './rules/kpi-calculator'
+} from './rules/kpi-calculator-enhanced'
+export type { KPIResult, KPICalculationOptions } from './rules/kpi-calculator-enhanced'
 
 // 业务规则 - 数据规范化
 export {

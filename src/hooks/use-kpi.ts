@@ -4,12 +4,13 @@
  * 支持当周值和周增量两种模式
  */
 
-import { useMemo } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import { useAppStore } from '@/store/use-app-store'
 import { useFilteredData } from '@/hooks/use-filtered-data'
 import {
   calculateKPIs,
   calculateIncrementKPIs,
+  calculateOrganizationKPIs,
   InsuranceRecord as DomainInsuranceRecord,
 } from '@/domain'
 import type { KPIResult, InsuranceRecord } from '@/types/insurance'
@@ -19,6 +20,7 @@ import {
   getBusinessTypeCode,
 } from '@/constants/dimensions'
 import { safeMax } from '@/lib/utils/array-utils'
+import { yearPlanRepository } from '@/domain/repositories/YearPlanRepository'
 
 /**
  * 使用 KPI 计算
@@ -44,10 +46,55 @@ export function useKPI(): KPIResult | null {
   const singleModeWeek = useAppStore(state => state.filters.singleModeWeek)
   const dataViewType = useAppStore(state => state.filters.dataViewType)
   const premiumTargets = useAppStore(state => state.premiumTargets)
+  const [yearPlansData, setYearPlansData] = useState<any[]>([])
+  const [isLoadingYearPlans, setIsLoadingYearPlans] = useState(false)
+
+  // 加载年度计划数据
+  useEffect(() => {
+    const loadYearPlans = async () => {
+      if (organizations.length > 0) {
+        setIsLoadingYearPlans(true)
+        try {
+          const plans = await yearPlanRepository.loadPlans()
+          setYearPlansData(plans)
+        } catch (error) {
+          console.warn('加载年度计划数据失败，使用localStorage数据:', error)
+          setYearPlansData([])
+        } finally {
+          setIsLoadingYearPlans(false)
+        }
+      }
+    }
+    
+    loadYearPlans()
+  }, [organizations.length])
 
   const currentTargetYuan = useMemo(() => {
+    // 优先使用year-plans.json数据（机构维度）
+    // 关键：永远从year-plans.json读取年度计划，忽略CSV中的premium_plan_yuan
+    if (organizations.length > 0 && yearPlansData.length > 0) {
+      const currentYear =
+        years.length > 0 ? safeMax(years) : new Date().getFullYear()
+
+      // 计算所有选中机构的年度目标总和
+      const totalTarget = organizations.reduce((sum, org) => {
+        const normalizedOrg = normalizeChineseText(org)
+        const plan = yearPlansData.find(
+          p =>
+            normalizeChineseText(p.third_level_organization) === normalizedOrg &&
+            p.policy_start_year === currentYear
+        )
+        return sum + (plan?.premium_plan_yuan || 0)
+      }, 0)
+
+      if (totalTarget > 0) {
+        return totalTarget
+      }
+    }
+
     if (!premiumTargets) return null
 
+    // 备用：使用localStorage中的premiumTargets
     // 优先级：业务类型 > 三级机构 > 客户分类 > 保险类型 > 总体目标
 
     // 1. 业务类型目标
@@ -110,6 +157,8 @@ export function useKPI(): KPIResult | null {
     customerCategories,
     insuranceTypes,
     premiumTargets,
+    years,
+    yearPlansData,
   ])
 
   const kpiResult = useMemo(() => {
@@ -186,13 +235,13 @@ export function useKPI(): KPIResult | null {
       // 应用其他筛选条件
       if (
         filters.organizations.length > 0 &&
-        !filters.organizations.includes(record.third_level_organization)
+        !filters.organizations.includes(normalizeChineseText(record.third_level_organization))
       ) {
         return false
       }
       if (
         filters.insuranceTypes.length > 0 &&
-        !filters.insuranceTypes.includes(record.insurance_type)
+        !filters.insuranceTypes.includes(normalizeChineseText(record.insurance_type))
       ) {
         return false
       }
@@ -204,26 +253,26 @@ export function useKPI(): KPIResult | null {
       }
       if (
         filters.coverageTypes.length > 0 &&
-        !filters.coverageTypes.includes(record.coverage_type)
+        !filters.coverageTypes.includes(normalizeChineseText(record.coverage_type))
       ) {
         return false
       }
       if (
         filters.customerCategories.length > 0 &&
-        !filters.customerCategories.includes(record.customer_category_3)
+        !filters.customerCategories.includes(normalizeChineseText(record.customer_category_3))
       ) {
         return false
       }
       if (
         filters.vehicleGrades.length > 0 &&
         record.vehicle_insurance_grade &&
-        !filters.vehicleGrades.includes(record.vehicle_insurance_grade)
+        !filters.vehicleGrades.includes(normalizeChineseText(record.vehicle_insurance_grade))
       ) {
         return false
       }
       if (
         filters.terminalSources.length > 0 &&
-        !filters.terminalSources.includes(record.terminal_source)
+        !filters.terminalSources.includes(normalizeChineseText(record.terminal_source))
       ) {
         return false
       }
@@ -235,7 +284,7 @@ export function useKPI(): KPIResult | null {
       }
       if (
         filters.renewalStatuses.length > 0 &&
-        !filters.renewalStatuses.includes(record.renewal_status)
+        !filters.renewalStatuses.includes(normalizeChineseText(record.renewal_status))
       ) {
         return false
       }

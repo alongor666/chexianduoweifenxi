@@ -12,6 +12,7 @@ import {
 } from '@/domain'
 import type { KPIResult, InsuranceRecord } from '@/types/insurance'
 import { safeMax } from '@/lib/utils/array-utils'
+import { normalizeChineseText } from '@/domain/rules/data-normalization'
 
 /**
  * 获取指定机构的KPI数据
@@ -26,8 +27,8 @@ export function useOrganizationKPI(organizationName: string): KPIResult | null {
   const kpiResult = useMemo(() => {
     // 筛选该机构的数据，同时应用其他筛选条件（除了机构筛选）
     const orgData = rawData.filter((record: InsuranceRecord) => {
-      // 机构筛选 - 仅该机构
-      if (record.third_level_organization !== organizationName) {
+      //机构筛选 - 仅该机构（使用规范化确保匹配）
+      if (normalizeChineseText(record.third_level_organization) !== normalizeChineseText(organizationName)) {
         return false
       }
 
@@ -53,7 +54,7 @@ export function useOrganizationKPI(organizationName: string): KPIResult | null {
       // 应用保险类型筛选
       if (
         filters.insuranceTypes.length > 0 &&
-        !filters.insuranceTypes.includes(record.insurance_type)
+        !filters.insuranceTypes.includes(normalizeChineseText(record.insurance_type))
       ) {
         return false
       }
@@ -69,7 +70,7 @@ export function useOrganizationKPI(organizationName: string): KPIResult | null {
       // 应用承保类型筛选
       if (
         filters.coverageTypes.length > 0 &&
-        !filters.coverageTypes.includes(record.coverage_type)
+        !filters.coverageTypes.includes(normalizeChineseText(record.coverage_type))
       ) {
         return false
       }
@@ -77,7 +78,7 @@ export function useOrganizationKPI(organizationName: string): KPIResult | null {
       // 应用客户分类筛选
       if (
         filters.customerCategories.length > 0 &&
-        !filters.customerCategories.includes(record.customer_category_3)
+        !filters.customerCategories.includes(normalizeChineseText(record.customer_category_3))
       ) {
         return false
       }
@@ -86,7 +87,7 @@ export function useOrganizationKPI(organizationName: string): KPIResult | null {
       if (
         filters.vehicleGrades.length > 0 &&
         record.vehicle_insurance_grade &&
-        !filters.vehicleGrades.includes(record.vehicle_insurance_grade)
+        !filters.vehicleGrades.includes(normalizeChineseText(record.vehicle_insurance_grade))
       ) {
         return false
       }
@@ -94,7 +95,7 @@ export function useOrganizationKPI(organizationName: string): KPIResult | null {
       // 应用终端来源筛选
       if (
         filters.terminalSources.length > 0 &&
-        !filters.terminalSources.includes(record.terminal_source)
+        !filters.terminalSources.includes(normalizeChineseText(record.terminal_source))
       ) {
         return false
       }
@@ -110,7 +111,7 @@ export function useOrganizationKPI(organizationName: string): KPIResult | null {
       // 应用续保状态筛选
       if (
         filters.renewalStatuses.length > 0 &&
-        !filters.renewalStatuses.includes(record.renewal_status)
+        !filters.renewalStatuses.includes(normalizeChineseText(record.renewal_status))
       ) {
         return false
       }
@@ -196,8 +197,8 @@ export function useMultipleOrganizationKPIs(
     organizationNames.forEach(orgName => {
       // 筛选该机构的数据
       const orgData = rawData.filter((record: InsuranceRecord) => {
-        // 机构筛选
-        if (record.third_level_organization !== orgName) {
+        // 机构筛选（使用规范化确保匹配）
+        if (normalizeChineseText(record.third_level_organization) !== normalizeChineseText(orgName)) {
           return false
         }
 
@@ -221,7 +222,7 @@ export function useMultipleOrganizationKPIs(
 
         if (
           filters.insuranceTypes.length > 0 &&
-          !filters.insuranceTypes.includes(record.insurance_type)
+          !filters.insuranceTypes.includes(normalizeChineseText(record.insurance_type))
         ) {
           return false
         }
@@ -235,14 +236,14 @@ export function useMultipleOrganizationKPIs(
 
         if (
           filters.coverageTypes.length > 0 &&
-          !filters.coverageTypes.includes(record.coverage_type)
+          !filters.coverageTypes.includes(normalizeChineseText(record.coverage_type))
         ) {
           return false
         }
 
         if (
           filters.customerCategories.length > 0 &&
-          !filters.customerCategories.includes(record.customer_category_3)
+          !filters.customerCategories.includes(normalizeChineseText(record.customer_category_3))
         ) {
           return false
         }
@@ -250,14 +251,14 @@ export function useMultipleOrganizationKPIs(
         if (
           filters.vehicleGrades.length > 0 &&
           record.vehicle_insurance_grade &&
-          !filters.vehicleGrades.includes(record.vehicle_insurance_grade)
+          !filters.vehicleGrades.includes(normalizeChineseText(record.vehicle_insurance_grade))
         ) {
           return false
         }
 
         if (
           filters.terminalSources.length > 0 &&
-          !filters.terminalSources.includes(record.terminal_source)
+          !filters.terminalSources.includes(normalizeChineseText(record.terminal_source))
         ) {
           return false
         }
@@ -271,7 +272,7 @@ export function useMultipleOrganizationKPIs(
 
         if (
           filters.renewalStatuses.length > 0 &&
-          !filters.renewalStatuses.includes(record.renewal_status)
+          !filters.renewalStatuses.includes(normalizeChineseText(record.renewal_status))
         ) {
           return false
         }
@@ -322,4 +323,37 @@ export function useMultipleOrganizationKPIs(
   ])
 
   return kpiMap
+}
+
+/**
+ * 使用新的年度计划数据获取机构KPI
+ * @param organizationName 机构名称
+ * @param level 机构级别：'second' | 'third'
+ * @returns KPI计算结果
+ */
+export function useOrganizationKPIWithYearPlans(
+  organizationName: string,
+  level: 'second' | 'third' = 'third'
+): KPIResult | null {
+  const rawData = useAppStore(state => state.rawData)
+  const filters = useAppStore(state => state.filters)
+  
+  // 注意：简化实现，暂时使用现有的premiumTargets
+  // 实际使用时需要集成YearPlanRepository
+  return useOrganizationKPI(organizationName)
+}
+
+/**
+ * 批量获取多个机构的KPI数据（使用年度计划）
+ * @param organizationNames 机构名称列表
+ * @param level 机构级别
+ * @returns 机构名称到KPI的映射
+ */
+export function useMultipleOrganizationKPIsWithYearPlans(
+  organizationNames: string[],
+  level: 'second' | 'third' = 'third'
+): Map<string, KPIResult | null> {
+  // 注意：简化实现，暂时使用现有的实现
+  // 实际使用时需要集成YearPlanRepository
+  return useMultipleOrganizationKPIs(organizationNames)
 }

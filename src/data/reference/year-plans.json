@@ -1,0 +1,82 @@
+{
+  "year_plans_2025": [
+    {
+      "policy_start_year": 2025,
+      "second_level_organization": "四川",
+      "third_level_organization": "本部",
+      "premium_plan_yuan": 1000000
+    },
+    {
+      "policy_start_year": 2025,
+      "second_level_organization": "四川",
+      "third_level_organization": "天府",
+      "premium_plan_yuan": 197300000
+    },
+    {
+      "policy_start_year": 2025,
+      "second_level_organization": "四川",
+      "third_level_organization": "武侯",
+      "premium_plan_yuan": 13500000
+    },
+    {
+      "policy_start_year": 2025,
+      "second_level_organization": "四川",
+      "third_level_organization": "高新",
+      "premium_plan_yuan": 55700000
+    },
+    {
+      "policy_start_year": 2025,
+      "second_level_organization": "四川",
+      "third_level_organization": "青羊",
+      "premium_plan_yuan": 43400000
+    },
+    {
+      "policy_start_year": 2025,
+      "second_level_organization": "四川",
+      "third_level_organization": "新都",
+      "premium_plan_yuan": 35000000
+    },
+    {
+      "policy_start_year": 2025,
+      "second_level_organization": "四川",
+      "third_level_organization": "德阳",
+      "premium_plan_yuan": 12800000
+    },
+    {
+      "policy_start_year": 2025,
+      "second_level_organization": "四川",
+      "third_level_organization": "宜宾",
+      "premium_plan_yuan": 22700000
+    },
+    {
+      "policy_start_year": 2025,
+      "second_level_organization": "四川",
+      "third_level_organization": "泸州",
+      "premium_plan_yuan": 10750000
+    },
+    {
+      "policy_start_year": 2025,
+      "second_level_organization": "四川",
+      "third_level_organization": "乐山",
+      "premium_plan_yuan": 11900000
+    },
+    {
+      "policy_start_year": 2025,
+      "second_level_organization": "四川",
+      "third_level_organization": "自贡",
+      "premium_plan_yuan": 9450000
+    },
+    {
+      "policy_start_year": 2025,
+      "second_level_organization": "四川",
+      "third_level_organization": "资阳",
+      "premium_plan_yuan": 12000000
+    },
+    {
+      "policy_start_year": 2025,
+      "second_level_organization": "四川",
+      "third_level_organization": "达州",
+      "premium_plan_yuan": 6500000
+    }
+  ]
+}

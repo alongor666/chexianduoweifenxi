@@ -14,6 +14,7 @@
  */
 
 import { InsuranceRecord } from '../entities/InsuranceRecord'
+import { YearPlan, OrganizationTarget, OrganizationLevel } from '../entities/YearPlan'
 
 // ============= 类型定义 =============
 
@@ -133,6 +134,9 @@ function calculateYearProgress(currentWeekNumber?: number | null): number {
 
 /**
  * 聚合保险记录数据
+ *
+ * 注意：premium_plan_yuan 字段被保留用于向后兼容，但不再使用。
+ * 年度计划值永远从 year-plans.json 中读取，不从CSV数据聚合。
  */
 export function aggregateInsuranceRecords(
   records: InsuranceRecord[]
@@ -153,7 +157,7 @@ export function aggregateInsuranceRecords(
       marginal_contribution_amount_yuan:
         acc.marginal_contribution_amount_yuan +
         record.marginalContributionAmountYuan,
-      premium_plan_yuan: acc.premium_plan_yuan + (record.premiumPlanYuan || 0),
+      premium_plan_yuan: 0, // 不再聚合CSV中的计划值，永远使用year-plans.json
     }),
     {
       signed_premium_yuan: 0,
@@ -316,13 +320,15 @@ export function calculateKPIs(
   const aggregated = aggregateInsuranceRecords(records)
 
   // 2. 处理目标值
+  // 关键：永远使用传入的annualTargetYuan（来自year-plans.json），
+  // 忽略CSV中的premium_plan_yuan字段
   const annualTargetYuan = options.annualTargetYuan
     ? Math.max(0, options.annualTargetYuan)
     : null
   const annualPolicyCountTarget = options.annualPolicyCountTarget
     ? Math.max(0, Math.round(options.annualPolicyCountTarget))
     : null
-  const premiumPlanYuan = annualTargetYuan ?? aggregated.premium_plan_yuan
+  const premiumPlanYuan = annualTargetYuan // 不再降级到aggregated.premium_plan_yuan
 
   // 3. 计算率值指标
   const loss_ratio = calculateLossRatio(
@@ -911,4 +917,164 @@ export function calculateKPIsWithEngine(
   options?: { annualTargetYuan?: number | null; useCache?: boolean }
 ): KPIResult {
   return kpiEngine.calculate(records, options)
+}
+
+// ============= 机构维度KPI计算 =============
+
+/**
+ * 根据机构筛选保险记录
+ * @param records 原始保险记录
+ * @param organization 机构名称
+ * @param level 机构级别
+ */
+function filterRecordsByOrganization(
+  records: InsuranceRecord[],
+  organization: string,
+  level: OrganizationLevel
+): InsuranceRecord[] {
+  if (level === 'third') {
+    // 三级机构：直接匹配 third_level_organization 字段
+    return records.filter(record => record.thirdLevelOrganization === organization)
+  } else {
+    // 二级机构：匹配 secondLevelOrganization 字段
+    return records.filter(record => 
+      record.secondLevelOrganization === organization
+    )
+  }
+}
+
+/**
+ * 计算机构维度的KPI
+ * 
+ * 支持按二级或三级机构分别计算保费时间进度达成率
+ * 
+ * @param records 保险记录数组
+ * @param organization 机构名称
+ * @param level 机构级别：'second' | 'third'
+ * @param yearPlans 年度计划数据
+ * @param options 计算选项
+ * @returns 机构KPI计算结果
+ */
+export function calculateOrganizationKPIs(
+  records: InsuranceRecord[],
+  organization: string,
+  level: OrganizationLevel,
+  yearPlans: YearPlan[],
+  options: KPICalculationOptions = {}
+): KPIResult {
+  // 1. 根据机构筛选数据
+  const organizationRecords = filterRecordsByOrganization(records, organization, level)
+  
+  if (organizationRecords.length === 0) {
+    return getEmptyKPIResult()
+  }
+
+  // 2. 查找对应机构的年度目标
+  let annualTargetYuan: number | null = null
+
+  if (level === 'third') {
+    // 三级机构：直接匹配目标
+    const plan = yearPlans.find(
+      p => p.third_level_organization === organization && 
+           p.policy_start_year === (options.year || new Date().getFullYear())
+    )
+    annualTargetYuan = plan?.premium_plan_yuan || null
+  } else {
+    // 二级机构：汇总该二级机构下所有三级机构的目标
+    const subPlans = yearPlans.filter(
+      p => p.second_level_organization === organization && 
+           p.policy_start_year === (options.year || new Date().getFullYear())
+    )
+    annualTargetYuan = subPlans.reduce((sum, plan) => sum + plan.premium_plan_yuan, 0)
+    if (annualTargetYuan === 0) annualTargetYuan = null
+  }
+
+  // 3. 调用现有KPI计算函数，传入机构专属目标
+  return calculateKPIs(organizationRecords, {
+    ...options,
+    annualTargetYuan
+  })
+}
+
+/**
+ * 批量计算多个机构的KPI
+ * 
+ * @param records 保险记录数组
+ * @param organizationTargets 机构目标列表
+ * @param yearPlans 年度计划数据
+ * @param options 计算选项
+ * @returns 机构名称到KPI结果的映射
+ */
+export function calculateMultipleOrganizationKPIs(
+  records: InsuranceRecord[],
+  organizationTargets: OrganizationTarget[],
+  yearPlans: YearPlan[],
+  options: KPICalculationOptions = {}
+): Map<string, KPIResult> {
+  const results = new Map<string, KPIResult>()
+
+  organizationTargets.forEach(target => {
+    const kpiResult = calculateOrganizationKPIs(
+      records,
+      target.organization,
+      target.level,
+      yearPlans,
+      options
+    )
+    results.set(target.organization, kpiResult)
+  })
+
+  return results
+}
+
+/**
+ * 计算机构周增量KPI
+ * 
+ * @param currentWeekRecords 当前周的记录（累计数据）
+ * @param previousWeekRecords 前一周的记录（累计数据）
+ * @param organization 机构名称
+ * @param level 机构级别
+ * @param yearPlans 年度计划数据
+ * @param options 计算选项
+ * @returns 机构周增量KPI结果
+ */
+export function calculateOrganizationIncrementKPIs(
+  currentWeekRecords: InsuranceRecord[],
+  previousWeekRecords: InsuranceRecord[],
+  organization: string,
+  level: OrganizationLevel,
+  yearPlans: YearPlan[],
+  options: KPICalculationOptions = {}
+): KPIResult {
+  // 1. 根据机构筛选当前周和前一周数据
+  const currentOrgRecords = filterRecordsByOrganization(currentWeekRecords, organization, level)
+  const previousOrgRecords = filterRecordsByOrganization(previousWeekRecords, organization, level)
+
+  if (currentOrgRecords.length === 0) {
+    return getEmptyKPIResult()
+  }
+
+  // 2. 查找对应机构的年度目标
+  let annualTargetYuan: number | null = null
+
+  if (level === 'third') {
+    const plan = yearPlans.find(
+      p => p.third_level_organization === organization && 
+           p.policy_start_year === (options.year || new Date().getFullYear())
+    )
+    annualTargetYuan = plan?.premium_plan_yuan || null
+  } else {
+    const subPlans = yearPlans.filter(
+      p => p.second_level_organization === organization && 
+           p.policy_start_year === (options.year || new Date().getFullYear())
+    )
+    annualTargetYuan = subPlans.reduce((sum, plan) => sum + plan.premium_plan_yuan, 0)
+    if (annualTargetYuan === 0) annualTargetYuan = null
+  }
+
+  // 3. 调用增量计算函数
+  return calculateIncrementKPIs(currentOrgRecords, previousOrgRecords, {
+    ...options,
+    annualTargetYuan
+  })
 }

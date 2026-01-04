@@ -37,7 +37,8 @@ export function OrganizationFilter() {
     .map(org => ({ label: org, value: org }))
 
   const handleOrganizationChange = (orgs: string[]) => {
-    handleUpdateFilters({ organizations: orgs.map(normalizeChineseText) })
+    // 直接传递原始数组，FilterStore 会负责规范化
+    handleUpdateFilters({ organizations: orgs })
   }
 
   const handleReset = () => {

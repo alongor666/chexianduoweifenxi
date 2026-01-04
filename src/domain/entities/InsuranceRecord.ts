@@ -55,7 +55,8 @@ export class InsuranceRecord {
     public readonly expenseAmountYuan: number, // 费用金额 ≥0
     public readonly commercialPremiumBeforeDiscountYuan: number, // 商业险折前保费 ≥0
     public readonly premiumPlanYuan: number | null, // 保费计划（可选）
-    public readonly marginalContributionAmountYuan: number // 边际贡献额（可负）
+    public readonly marginalContributionAmountYuan: number, // 边际贡献额（可负）
+    public readonly secondLevelOrganization?: string // 二级机构（可选）
   ) {
     // 基础验证（确保不变式）
     this.validateInvariants()
@@ -286,7 +287,8 @@ export class InsuranceRecord {
       raw.expense_amount_yuan,
       raw.commercial_premium_before_discount_yuan,
       raw.premium_plan_yuan ?? null,
-      raw.marginal_contribution_amount_yuan
+      raw.marginal_contribution_amount_yuan,
+      raw.second_level_organization
     )
   }
 }
