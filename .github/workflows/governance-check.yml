@@ -1,0 +1,18 @@
+name: Governance Check
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  governance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run governance script
+        run: node scripts/check-governance.mjs
