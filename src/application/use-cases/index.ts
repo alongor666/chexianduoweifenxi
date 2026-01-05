@@ -6,10 +6,6 @@
  * @layer Application
  */
 
-// 上传数据用例
-export { UploadDataUseCase, UploadError } from './upload-data'
-export type { UploadResult, UploadErrorCode } from './upload-data'
-
 // 计算 KPI 用例
 export { CalculateKPIUseCase, KPICalculationError } from './calculate-kpi'
 export type {
