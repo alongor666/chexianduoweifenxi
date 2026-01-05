@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 import { getComparisonColor, type ComparisonMetrics } from '@/utils/comparison'
 import { formatNumber } from '@/utils/formatters'
 import type { LossDimensionItem } from '@/hooks/use-loss-dimension-analysis'
+import { buildComparisonForMetric, formatSignedValue } from '../../utils'
 
 type LossTrendMetricKey =
   | 'reportedClaimPayment'
@@ -22,59 +23,6 @@ interface LossTrendCardProps {
   unit: string
   decimals?: number
   compact?: boolean
-}
-
-function buildComparisonForMetric(
-  current: number | null,
-  previous: number | null,
-  isHigherBetter: boolean
-): ComparisonMetrics {
-  if (current === null || previous === null) {
-    return {
-      current,
-      previous,
-      absoluteChange: null,
-      percentChange: null,
-      isBetter: false,
-      isWorsened: false,
-      direction: 'flat',
-    }
-  }
-
-  const absoluteChange = current - previous
-  const percentChange =
-    previous !== 0 ? (absoluteChange / Math.abs(previous)) * 100 : null
-  let direction: 'up' | 'down' | 'flat' = 'flat'
-
-  if (absoluteChange > 0) direction = 'up'
-  else if (absoluteChange < 0) direction = 'down'
-
-  let isBetter = false
-  if (direction === 'up' && isHigherBetter) isBetter = true
-  if (direction === 'down' && !isHigherBetter) isBetter = true
-
-  let isWorsened = false
-  if (direction === 'up' && !isHigherBetter) isWorsened = true
-  if (direction === 'down' && isHigherBetter) isWorsened = true
-
-  return {
-    current,
-    previous,
-    absoluteChange,
-    percentChange,
-    direction,
-    isBetter,
-    isWorsened,
-  }
-}
-
-function formatSignedValue(value: number | null, decimals = 1): string {
-  if (value === null || Number.isNaN(value)) {
-    return '-'
-  }
-  const abs = Math.abs(value)
-  const prefix = value > 0 ? '+' : value < 0 ? '-' : ''
-  return `${prefix}${formatNumber(abs, decimals)}`
 }
 
 export function LossTrendCard({

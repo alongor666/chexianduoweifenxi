@@ -8,6 +8,7 @@
 import { ArrowUp, ArrowDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { formatNumber } from '@/utils/formatters'
+import { formatSignedValue } from '../../utils'
 
 interface MarginAmountGridCardProps {
   label: string
@@ -16,15 +17,6 @@ interface MarginAmountGridCardProps {
   unit: string
   decimals?: number
   compact?: boolean
-}
-
-function formatSignedValue(value: number | null, decimals = 1): string {
-  if (value === null || Number.isNaN(value)) {
-    return '-'
-  }
-  const abs = Math.abs(value)
-  const prefix = value > 0 ? '+' : value < 0 ? '-' : ''
-  return `${prefix}${formatNumber(abs, decimals)}`
 }
 
 export function MarginAmountGridCard({
