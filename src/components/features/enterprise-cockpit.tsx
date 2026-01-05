@@ -5,10 +5,11 @@ import { KPIMetricsRow } from './cockpit/kpi-metrics-row'
 import { StatisticsRow } from './cockpit/statistics-row'
 import { TimeProgressAnalysis } from './cockpit/business-observation/TimeProgressAnalysis'
 import { CostRiskAnalysis } from './cockpit/business-observation/CostRiskAnalysis'
-import { BusinessHealthHeatmap } from './cockpit/business-observation/BusinessHealthHeatmap'
-import { MultiDimensionRadarWrapper } from './cockpit/business-observation/MultiDimensionRadarWrapper'
-import { DynamicBarChart } from './cockpit/business-observation/DynamicBarChart'
-import { ProportionChart } from './cockpit/business-observation/ProportionChart'
+import { ChartCardWrapper } from './cockpit/business-observation/ChartCardWrapper'
+import { BusinessTypeHeatmap } from './business-type-heatmap'
+import { MultiDimensionRadar } from './multi-dimension-radar'
+import { PremiumAnalysisBarChart } from './structure-bar-chart'
+import { DistributionPieChart } from './distribution-pie-chart'
 
 /**
  * 企业驾驶舱主组件
@@ -26,10 +27,18 @@ export function EnterpriseCockpit() {
       {/* 经营观察模块：一行一个图 */}
       <TimeProgressAnalysis />
       <CostRiskAnalysis />
-      <BusinessHealthHeatmap />
-      <MultiDimensionRadarWrapper />
-      <DynamicBarChart />
-      <ProportionChart />
+      <ChartCardWrapper title="业务健康度热力图">
+        <BusinessTypeHeatmap />
+      </ChartCardWrapper>
+      <ChartCardWrapper title="多维健康度雷达">
+        <MultiDimensionRadar />
+      </ChartCardWrapper>
+      <ChartCardWrapper title="动态条形图">
+        <PremiumAnalysisBarChart />
+      </ChartCardWrapper>
+      <ChartCardWrapper title="占比分析">
+        <DistributionPieChart />
+      </ChartCardWrapper>
     </div>
   )
 }
