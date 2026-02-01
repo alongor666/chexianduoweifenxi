@@ -3,6 +3,7 @@
 > 记录里程碑、阻塞与接力入口，保持与 BACKLOG 状态一致。
 
 ## 里程碑
+- **2026-02-01**: 引入 everything-claude-code 组件 [ECC-001] - 新增 Hooks（会话自动化）、Commands（8个快捷命令）、Rules（3套规则）。参考仓库：https://github.com/affaan-m/everything-claude-code
 - **2026-01-05**: 完成代码简化分析报告 [SIMPLIFY-001] - 识别 55+ 处冗余代码，预期可减少 8-12% 代码量。报告位置：开发文档/05_analysis/CODE_SIMPLIFICATION_REPORT.md
 
 ## 阻塞/风险

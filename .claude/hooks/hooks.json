@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "tool == \"Bash\" && tool_input.command matches \"git push\"",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"console.error('[Hook] 推送前检查...');console.error('[Hook] 确保已运行治理检查: node scripts/check-governance.mjs')\""
+          }
+        ],
+        "description": "Git push 前提醒运行治理检查"
+      },
+      {
+        "matcher": "tool == \"Edit\" && tool_input.file_path matches \"(core_calculations|data_architecture)\\\\.md$\"",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"console.error('[Hook] 警告: 正在编辑核心业务文档');console.error('[Hook] 根据 CLAUDE.md 护栏规则，此类文档仅可追加且需提供证据');console.error('[Hook] 请确认此次编辑是追加操作而非修改')\""
+          }
+        ],
+        "description": "编辑核心业务文档时警告"
+      },
+      {
+        "matcher": "tool == \"Edit\" && tool_input.file_path matches \"src/(domain|application|app)/\"",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"console.error('[Hook] 警告: 正在编辑核心业务实现');console.error('[Hook] 根据 CLAUDE.md 护栏规则，需先更新索引路径并在 BACKLOG 登记');console.error('[Hook] 确保已完成: 1) 更新 INDEX.md 2) 登记 BACKLOG')\""
+          }
+        ],
+        "description": "编辑核心目录时提醒更新索引和登记"
+      },
+      {
+        "matcher": "tool == \"Write\" && tool_input.file_path matches \"\\\\.(md|txt)$\" && !(tool_input.file_path matches \"(README|CLAUDE|AGENTS|BACKLOG|PROGRESS|INDEX|SKILL|CHANGELOG)\\\\.md$\")",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"const fs=require('fs');let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const i=JSON.parse(d);const p=i.tool_input?.file_path||'';if(/\\.(md|txt)$/.test(p)&&!/(README|CLAUDE|AGENTS|BACKLOG|PROGRESS|INDEX|SKILL|CHANGELOG)\\.md$/.test(p)&&!/开发文档/.test(p)&&!/\\.claude/.test(p)){console.error('[Hook] 注意: 创建新文档文件');console.error('[Hook] 文件: '+p);console.error('[Hook] 考虑是否应该放在 开发文档/ 或 .claude/ 目录下')}console.log(d)})\""
+          }
+        ],
+        "description": "创建新文档文件时提醒目录规范"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "tool == \"Bash\" && tool_input.command matches \"gh pr create\"",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const i=JSON.parse(d);const out=i.tool_output?.output||'';const m=out.match(/https:\\/\\/github.com\\/[^/]+\\/[^/]+\\/pull\\/\\d+/);if(m){console.error('[Hook] PR 已创建: '+m[0])}console.log(d)})\""
+          }
+        ],
+        "description": "PR 创建后显示链接"
+      },
+      {
+        "matcher": "tool == \"Edit\" && tool_input.file_path matches \"(BACKLOG|PROGRESS)\\\\.md$\"",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"console.error('[Hook] 项目文档已更新，记得同步 PROGRESS_INDEX.md 如有必要')\""
+          }
+        ],
+        "description": "更新项目文档后提醒同步索引"
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"console.error('[Session] 车险多维分析项目');console.error('[Session] 护栏: 禁改业务口径(core_calculations.md) | 核心目录需登记');console.error('[Session] 入口: CLAUDE.md -> DOC_INDEX.md | CODE_INDEX.md | BACKLOG.md')\""
+          }
+        ],
+        "description": "会话开始时显示项目关键信息"
+      }
+    ]
+  }
+}
